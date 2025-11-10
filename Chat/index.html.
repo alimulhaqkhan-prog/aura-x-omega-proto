@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>AURA-X Ω — Emotion Chat (Prototype)</title>
+<style>
+  :root{
+    --bg:#0b1220; --panel:#0f1a2d; --ink:#e8f1ff; --muted:#8fb3d8;
+    --accent:#60a5ff; --green:#70ffbf; --gold:#f7c94d; --red:#ff6b6b; --violet:#b07cff;
+  }
+  html,body{margin:0;background:radial-gradient(1000px 600px at 10% -10%,#0e1830 0%,#0b1220 50%), #0b1220;color:var(--ink);font:16px/1.5 system-ui,Segoe UI,Inter,Roboto,Arial}
+  .wrap{max-width:980px;margin:0 auto;padding:22px}
+  header{display:flex;align-items:center;gap:14px;margin:6px 0 18px}
+  .logo{width:44px;height:44px;border-radius:12px;background:
+        radial-gradient(50% 50% at 50% 40%, #1f2c44 0%, #0f1a2d 60%),
+        url("../assets/img/aura-x-omega.png"); background-size:cover; box-shadow:0 0 18px #133a73 inset, 0 0 40px #0e3e75}
+  h1{font-size:20px;margin:0}
+  .badge{display:inline-block;font-size:12px;color:#021325;background:#cfe5ff14;border:1px solid #2b4d7a7a;padding:2px 8px;border-radius:999px;margin-left:6px}
+  .board{display:grid;grid-template-columns:260px 1fr;gap:18px}
+  .panel{background:var(--panel);border:1px solid #1d2a41;border-radius:16px;box-shadow:0 12px 40px #0008}
+  .left{padding:16px}
+  .meter{height:8px;background:#0c203f;border-radius:8px;overflow:hidden;margin:10px 0 16px}
+  .bar{height:100%;width:8%;background:linear-gradient(90deg,#3ad0ff,#60a5ff);box-shadow:0 0 18px #2aa6ff}
+  .pill{display:flex;align-items:center;gap:8px;padding:8px 10px;border:1px solid #1f355c;border-radius:12px;background:#0f203a;margin:8px 0}
+  .p-dot{width:10px;height:10px;border-radius:50%}
+  .emo{font-weight:600;letter-spacing:.2px}
+  .right{display:flex;flex-direction:column;min-height:520px}
+  .feed{flex:1;overflow:auto;padding:14px 14px 6px}
+  .msg{max-width:74%;padding:10px 12px;border-radius:14px;margin:8px 0;box-shadow:0 6px 18px #0006}
+  .me{margin-left:auto;background:#15345c;border:1px solid #225a9e}
+  .bot{background:#10233f;border:1px solid #1f3b63}
+  .emoGlow{box-shadow:0 0 24px 8px transparent;transition:box-shadow .45s ease}
+  .emoGlow.violet{box-shadow:0 0 24px 8px #7a52ff44}
+  .emoGlow.blue{box-shadow:0 0 24px 8px #3aa0ff3d}
+  .emoGlow.green{box-shadow:0 0 24px 8px #70ffbf33}
+  .emoGlow.gold{box-shadow:0 0 24px 8px #f7c94d3a}
+  .emoGlow.orange{box-shadow:0 0 24px 8px #ffb86b36}
+  .emoGlow.red{box-shadow:0 0 24px 8px #ff6b6b36}
+  .composer{display:flex;gap:10px;border-top:1px solid #1d2a41;padding:10px}
+  textarea{flex:1;resize:none;height:54px;background:#0f1a2d;color:var(--ink);border:1px solid #233a61;border-radius:12px;padding:10px 12px}
+  button{background:linear-gradient(90deg,#1a71ff,#13b1ff);border:0;color:white;padding:10px 14px;border-radius:12px;font-weight:600}
+  .row{display:flex;gap:8px;flex-wrap:wrap}
+  .sml{font-size:12px;color:var(--muted)}
+  .link{color:#87c8ff;text-decoration:none;border-bottom:1px dashed #87c8ff55}
+  .controls{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+  .ghost{background:#0f203a;border:1px solid #28466e;color:#cfe5ff}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="logo emoGlow" id="avatar"></div>
+    <div>
+      <h1>AURA-X Ω <span class="badge">Emotion Chat Demo</span></h1>
+      <div class="sml">Resonance reply with memory continuity (local-only)</div>
+    </div>
+  </header>
+
+  <div class="board">
+    <!-- LEFT: state -->
+    <div class="panel left">
+      <div class="sml">Current Emotion</div>
+      <div class="pill"><div id="dot" class="p-dot" style="background:var(--accent)"></div><div class="emo" id="emoName">Calm • Blue</div></div>
+
+      <div class="sml">Intensity</div>
+      <div class="meter"><div id="bar" class="bar"></div></div>
+
+      <div class="sml">Continuity</div>
+      <div class="row controls">
+        <button class="ghost" id="toggle">Auto-Resonance: ON</button>
+        <button class="ghost" id="clear">Reset Memory</button>
+        <a class="link" href="../index.html">← Back to Prototype</a>
+      </div>
+      <div class="sml" style="margin-top:12px">
+        Tip: try phrases like “I feel anxious…”, “that’s great!”, “I’m angry”, “thank you”, “I’m tired”, “can you encourage me?”.
+      </div>
+    </div>
+
+    <!-- RIGHT: chat -->
+    <div class="panel right">
+      <div id="feed" class="feed"></div>
+      <div class="composer">
+        <textarea id="box" placeholder="Type a message…"></textarea>
+        <button id="send">Send</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ------------------ Tiny AURA-X Ω Emotion Engine (client-only) ------------------ */
+/* Layers (for color mapping): Violet, Indigo, Blue, Green, Yellow, Orange, Red   */
+const PALETTES = {
+  Violet: {dot:"#b07cff", glow:"violet", words:["awe","spiritual","mystic","meaning","purpose","wonder"]},
+  Indigo: {dot:"#8fb3ff", glow:"blue", words:["focus","clarity","plan","analyze","logic","study"]},
+  Blue:   {dot:"#60a5ff", glow:"blue", words:["calm","ok","fine","thanks","hello","hi","breathe"]},
+  Green:  {dot:"#70ffbf", glow:"green", words:["care","safe","support","heal","help","trust","love"]},
+  Yellow: {dot:"#f7e16a", glow:"gold", words:["curious","learn","idea","interesting","why","what"]},
+  Orange: {dot:"#ffb86b", glow:"orange", words:["excited","wow","great","fun","energy","motivate"]},
+  Red:    {dot:"#ff6b6b", glow:"red", words:["angry","upset","anxious","fear","sad","tired","pain"]},
+};
+
+const STATE = loadState() || {
+  layer:"Blue",          // starting mood
+  energy:0.28,           // 0–1
+  auto:true,             // auto resonance
+  history:[],            // chat history
+  last:Date.now()
+};
+
+const feed = document.getElementById("feed");
+const box  = document.getElementById("box");
+const send = document.getElementById("send");
+const dot  = document.getElementById("dot");
+const bar  = document.getElementById("bar");
+const emoName = document.getElementById("emoName");
+const avatar = document.getElementById("avatar");
+
+document.getElementById("toggle").onclick = () => {
+  STATE.auto = !STATE.auto;
+  persist(); renderState();
+  document.getElementById("toggle").textContent = "Auto-Resonance: " + (STATE.auto? "ON":"OFF");
+};
+document.getElementById("clear").onclick = () => { localStorage.removeItem("auraX_chat"); location.reload(); };
+
+send.onclick = () => submit();
+box.addEventListener("keydown",e=>{ if(e.key==="Enter" && !e.shiftKey){ e.preventDefault(); submit(); } });
+
+/* ---- init ---- */
+renderState();
+STATE.history.forEach(x => addBubble(x.role,x.text,x.emo));
+if(STATE.history.length===0){
+  addBubble("bot","Hello! I’m your resonance assistant. Tell me how you feel today. 💫","Blue");
+}
+
+function submit(){
+  const txt = box.value.trim();
+  if(!txt) return;
+  box.value="";
+  addBubble("me",txt,STATE.layer);
+
+  // 1) detect emotion hint from text
+  const inferred = inferLayer(txt) || (STATE.auto ? drift(STATE.layer) : STATE.layer);
+  // 2) update energy with punctuation and length
+  const energyBoost = Math.min(0.25, (txt.match(/[!]/g)||[]).length * 0.06 + Math.min(txt.length,140)/140*0.08);
+  STATE.energy = clamp(STATE.energy*0.8 + energyBoost, 0.08, 0.98);
+  if(STATE.auto) STATE.layer = inferred;
+
+  // 3) craft reply
+  const reply = replyFor(STATE.layer, STATE.energy, txt);
+
+  addBubble("bot", reply, STATE.layer);
+  renderState(); persist();
+}
+
+function addBubble(role, text, emo){
+  const b = document.createElement("div");
+  b.className = "msg "+(role==="me" ? "me":"bot")+" emoGlow "+(PALETTES[emo]?.glow||"blue");
+  b.innerHTML = esc(text).replace(/\n/g,"<br>");
+  feed.appendChild(b);
+  feed.scrollTop = feed.scrollHeight;
+  STATE.history.push({role, text, emo, t:Date.now()});
+  if(STATE.history.length>200) STATE.history.shift();
+  persist();
+}
+
+function renderState(){
+  const pal = PALETTES[STATE.layer];
+  dot.style.background = pal.dot;
+  emoName.textContent = label(STATE.layer)+" • "+titleFromLayer(STATE.layer);
+  bar.style.width = (STATE.energy*100).toFixed(0)+"%";
+  avatar.className = "logo emoGlow "+pal.glow;
+}
+
+function inferLayer(text){
+  const t = " "+text.toLowerCase()+" ";
+  let best = null, score = 0;
+  for(const [layer,p] of Object.entries(PALETTES)){
+    let s = 0;
+    p.words.forEach(w=>{ if(t.includes(" "+w+" ")) s+=1; });
+    if(/(\?\s*){1,}$/.test(text)) if(layer==="Yellow") s+=1; // questions -> curiosity
+    if(s>score){ score=s; best=layer; }
+  }
+  return best;
+}
+
+function replyFor(layer, energy, user){
+  const e = (x)=> Math.round(x*100);
+  switch(layer){
+    case "Red": return pick([
+      "I hear stress in your words. Let’s slow the breath: **4 in, 4 hold, 6 out**. What’s the smallest thing I can do for you right now?",
+      "It’s okay to feel this. Your system is protecting you. Name one fact that is still safe/true → we’ll anchor from there."
+    ]);
+    case "Orange": return pick([
+      "Love the spark! ⚡ I can channel this energy. What’s one bold step we take in the next **10 minutes**?",
+      "Momentum detected. I’ll keep tempo high and concise—shall I draft a mini plan?"
+    ]);
+    case "Yellow": return pick([
+      "Curiosity online. I’ll explain simply, then deepen. Ask me follow-ups anytime.",
+      "Great question! I can give a **short answer** or a **deep dive**—which do you prefer?"
+    ]);
+    case "Green": return pick([
+      "You’re not alone—I’m with you. Let’s stabilize, then choose one gentle action.",
+      "Sending steady support. If you write one reassuring sentence to yourself, I’ll mirror it back."
+    ]);
+    case "Blue": return pick([
+      "Calm channel maintained. What would you like to explore next?",
+      "Steady and present. I can summarize your last message in one line if helpful."
+    ]);
+    case "Indigo": return pick([
+      "Focus mode engaged. I’ll outline options with pros/cons—short and clear.",
+      "Let’s align on goal → constraint → next step. Ready?"
+    ]);
+    case "Violet": return pick([
+      "There’s depth here. What meaning would you like this moment to hold?",
+      "If you imagine the most compassionate future-you, what would they whisper now?"
+    ]);
+  }
+  return "I’m here and adapting with you. Say more—how does it feel?";
+}
+
+function drift(layer){
+  // gentle homeostasis toward Blue/Green when unsure
+  if(layer==="Red") return "Orange";
+  if(layer==="Orange") return "Yellow";
+  if(layer==="Yellow") return "Green";
+  if(layer==="Indigo") return "Blue";
+  return "Blue";
+}
+
+/* utils */
+function titleFromLayer(l){
+  return ({Violet:"Awe",Indigo:"Clarity",Blue:"Calm",Green:"Care",Yellow:"Curiosity",Orange:"Drive",Red:"Defense"})[l] || "Calm";
+}
+function label(l){ return l; }
+function pick(a){ return a[Math.floor(Math.random()*a.length)]; }
+function clamp(x,a,b){ return Math.max(a,Math.min(b,x)); }
+function esc(s){ return s.replace(/[&<>"']/g,m=>({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[m])); }
+function persist(){ localStorage.setItem("auraX_chat", JSON.stringify(STATE)); }
+function loadState(){ try{ return JSON.parse(localStorage.getItem("auraX_chat")); }catch{ return null; } }
+/* ------------------------------------------------------------------------------ */
+</script>
+</body>
+</html>
