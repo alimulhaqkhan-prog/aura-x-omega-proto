@@ -1,11 +1,144 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="refresh" content="0; url=Chat/" />
-    <title>AURA-X Ω Redirect</title>
-  </head>
-  <body style="font-family:sans-serif;text-align:center;margin-top:40px;color:#ccc;background:#000;">
-    <p>Redirecting to AURA-X Chat Interface…</p>
-  </body>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AURA-X Ω — Emotion Chat (Prototype)</title>
+  <style>
+    :root{
+      --bg:#0b1220; --ink:#e6f1ff; --accent:#6ad1ff; --muted:#1d2a3b;
+      --pill:#122a46; --bubble:#1b314d; --btn:#1aa3ff;
+      --shadow: 0 0 0 1px rgba(255,255,255,.03), 0 12px 40px rgba(0,0,0,.45);
+      --glow: 0 0 0 1px rgba(64,180,255,.3), 0 0 40px rgba(64,180,255,.18) inset;
+      --safeL: env(safe-area-inset-left, 0px);
+      --safeR: env(safe-area-inset-right, 0px);
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;background:radial-gradient(1000px 600px at 50% 10%,#0e1830,#0b1220 50%);color:var(--ink);font:16px/1.55 system-ui,-apple-system,Segoe UI,Roboto,Inter,sans-serif;overflow-x:hidden}
+    a{color:var(--accent);text-decoration:none}
+
+    /* --------------- layout --------------- */
+    .wrap{
+      max-width: 940px;
+      margin: 0 auto;
+      padding: 24px clamp(12px, 4vw, 28px);
+      padding-left: calc(clamp(12px, 4vw, 28px) + var(--safeL));
+      padding-right: calc(clamp(12px, 4vw, 28px) + var(--safeR));
+      overflow: visible;              /* <- prevents left crop */
+    }
+    .board{
+      border-radius: 22px; padding: 18px;
+      box-shadow: var(--glow); background: transparent;
+    }
+    .pill{display:inline-flex;gap:.6rem;align-items:center;background:var(--pill);padding:.75rem 1rem;border-radius:14px;box-shadow:var(--shadow)}
+    .bubble{
+      background:var(--bubble);border-radius:16px;box-shadow:var(--shadow);
+      padding:16px 18px;margin:12px 0
+    }
+    .feed{margin:12px 0 24px}
+    .row{display:flex;gap:10px;align-items:center}
+    .emo{font-size:20px}
+
+    /* --------------- input bar --------------- */
+    .dock{
+      position: sticky; bottom: 0; left: 0; right: 0;
+      background: linear-gradient(180deg, transparent, rgba(4,8,14,.5) 30%, rgba(4,8,14,.9) 70%);
+      padding: 10px 0 24px;
+    }
+    form{
+      display:flex; gap:12px; align-items:center;
+      max-width: 940px; margin: 0 auto;
+      padding-left: calc(16px + var(--safeL));
+      padding-right: calc(16px + var(--safeR));
+    }
+    textarea{
+      flex:1; min-height:46px; max-height:160px; resize:vertical;
+      background:#0e2139; color:var(--ink);
+      border:1px solid rgba(255,255,255,.06);
+      border-radius:14px; padding:12px 14px; outline:none;
+    }
+    button{
+      border:0; border-radius:12px; padding:12px 20px; font-weight:600;
+      background:var(--btn); color:#00131f; cursor:pointer; box-shadow:var(--shadow)
+    }
+    button:active{transform:translateY(1px)}
+    @media (max-width:480px){
+      .bubble{padding:14px}
+      .pill{padding:.6rem .85rem}
+      textarea{min-height:44px}
+    }
+  </style>
+</head>
+<body>
+
+  <div class="wrap">
+    <div class="board">
+      <div class="pill"><span class="emo">👋</span> Hello! I’m <b>AURA-X</b> — your emotional resonance prototype. Tell me how you feel today.</div>
+
+      <div id="feed" class="feed"></div>
+    </div>
+  </div>
+
+  <!-- input dock -->
+  <div class="dock">
+    <form id="chat">
+      <textarea id="msg" placeholder="Type your emotion or thought…"></textarea>
+      <button id="send" type="submit">Send</button>
+    </form>
+  </div>
+
+<script>
+/* ------------------- Very-light offline “emotion” logic ------------------- */
+/* No LLM here — rule-based affect with keywords to prove responsiveness.
+   You can replace this block later with your offline LLM pipeline. */
+
+const FEED = document.getElementById('feed');
+const FORM = document.getElementById('chat');
+const MSG  = document.getElementById('msg');
+
+const EMOTES = [
+  {name:'joy',   emoji:'😊',  keys:['happy','great','good','excited','alhamdulillah','awesome'], reply:(t)=>`I’m glad to feel your positivity. Hold that feeling and breathe in for 4 — out for 6.`},
+  {name:'anger', emoji:'😠',  keys:['angry','furious','hate','rage','annoyed'], reply:(t)=>`Anger detected. Let’s ground: unclench the jaw, drop the shoulders, sip water.`},
+  {name:'sad',   emoji:'😔',  keys:['sad','down','cry','lonely','hurt','depressed'], reply:(t)=>`I’m with you. Try this: name one thing you can see, hear, and touch right now.`},
+  {name:'fear',  emoji:'😟',  keys:['afraid','scared','fear','anxious','worry','tension'], reply:(t)=>`Anxiety signal noted. Box-breathing 4-4-4-4 can help stabilize your rhythm.`},
+  {name:'tired', emoji:'😴',  keys:['tired','sleepy','exhausted','fatigued'], reply:(t)=>`Low-energy state. A 90-second slow walk or a glass of water may restore focus.`},
+  {name:'love',  emoji:'💖',  keys:['love','grateful','thanks','shukriya','shukar'], reply:(t)=>`Gratitude expands resonance. Who or what are you thankful for right now?`}
+];
+
+function addBubble(role, text, emo=''){
+  const b=document.createElement('div');
+  b.className='bubble';
+  b.innerHTML = (emo? `<span class="emo">${emo}</span> `:'') + (role==='you' ? `<b>You:</b> ` : `Ω <b>AURA-X:</b> `) + text;
+  FEED.appendChild(b);
+  // auto scroll to bottom
+  window.scrollTo({top:document.body.scrollHeight, behavior:'smooth'});
+}
+
+function classify(text){
+  const t = text.toLowerCase();
+  for(const e of EMOTES){
+    if(e.keys.some(k => t.includes(k))) return e;
+  }
+  return {name:'neutral', emoji:'🌊', reply:()=>`I feel your tone… balancing emotional resonance 🌊`};
+}
+
+FORM.addEventListener('submit', (ev)=>{
+  ev.preventDefault();
+  const t = MSG.value.trim();
+  if(!t) return;
+  addBubble('you', t, '🧠');
+  MSG.value='';
+  // “processing” micro-feedback
+  setTimeout(()=>{
+    const e = classify(t);
+    addBubble('bot', e.reply(t), e.emoji);
+  }, 250);
+});
+
+// Optional: tap the Send button on Enter (mobile friendly)
+MSG.addEventListener('keydown', (e)=>{
+  if(e.key==='Enter' && !e.shiftKey){ e.preventDefault(); FORM.requestSubmit(); }
+});
+</script>
+</body>
 </html>
