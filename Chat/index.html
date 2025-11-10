@@ -1,63 +1,259 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AURA-X Ω | Emotional Chat</title>
-<link rel="icon" href="../assets/img/aura-x-omega.png">
-<style>
-body {
-  background: radial-gradient(circle at center,#0b1220,#02080f);
-  color: #e6f1ff;
-  font-family: 'Segoe UI',sans-serif;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  height:100vh;margin:0;
-}
-.chat-box {
-  width:90%;max-width:480px;background:#101b2a;border-radius:20px;
-  box-shadow:0 0 20px rgba(0,180,255,0.3);padding:20px;
-}
-.message {
-  background:#14263c;margin:10px 0;padding:12px 16px;border-radius:12px;
-}
-input {
-  width:100%;padding:12px;border-radius:10px;border:none;margin-top:10px;
-  background:#0e1830;color:#fff;
-}
-button {
-  background:#21b0ff;border:none;padding:10px 20px;margin-top:10px;
-  border-radius:8px;color:#fff;cursor:pointer;
-}
-</style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+  <title>AURA-X Ω — Emotion Chat (Prototype)</title>
+  <style>
+    :root{
+      --bg:#07121f; --bg2:#0d1f33; --ink:#e9f1ff;
+      --pill:#182b44; --accent:#4db7ff; --glow:#0aa6ff;
+      --ok:#38e1a4; --warn:#ffd15a; --bad:#ff7a7a;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; color:var(--ink); font:16px/1.5 ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto;
+      background: radial-gradient(1100px 650px at 50% -10%, #0c2440 0%, #081727 70%, var(--bg) 100%);
+    }
+
+    /* page frame */
+    .wrap{
+      max-width: 880px;
+      margin: 0 auto;
+      padding: 20px 14px 120px;  /* extra bottom for the dock */
+    }
+    .card{
+      background: linear-gradient(180deg, #0c2036 0%, #0b1e33 100%);
+      border-radius: 18px;
+      padding: 16px 18px;
+      box-shadow: 0 0 0 1px #0e2a49, 0 18px 40px rgba(0,0,0,.35), inset 0 0 85px rgba(13,167,255,.08);
+    }
+    .bubble{
+      background: var(--pill);
+      border-radius: 14px;
+      padding: 14px 16px;
+      margin: 12px 0;
+      box-shadow: 0 0 0 1px rgba(77,183,255,.08);
+    }
+    .hello{box-shadow: 0 0 0 1px rgba(77,183,255,.12), 0 0 40px rgba(0,170,255,.12);}
+    .tag{opacity:.8; letter-spacing:.02em}
+
+    /* fixed input dock */
+    .dock{
+      position: fixed;
+      left: 0; right: 0; bottom: 0;
+      background: linear-gradient(180deg, transparent 0%, rgba(4,12,22,.75) 30%, rgba(4,12,22,.95) 100%);
+      padding: 10px 10px calc(env(safe-area-inset-bottom,0) + 16px);
+      backdrop-filter: blur(8px);
+      border-top: 1px solid rgba(77,183,255,.08);
+    }
+    .dock-inner{
+      max-width: 880px;
+      margin: 0 auto;
+      padding: 0 4px;
+    }
+    form.msg{
+      display: flex; align-items: center; gap: 12px;
+      width: 100%;
+    }
+    /* CRITICAL: ensure the text field never hides on the left */
+    .msg input[type="text"]{
+      flex: 1; min-width: 0; /* prevents overflow/hide on mobile */
+      padding: 14px 14px;
+      border-radius: 12px;
+      border: 1px solid rgba(77,183,255,.20);
+      background: #0b1e33;
+      color: var(--ink);
+      outline: none;
+    }
+    .msg input::placeholder{color:#a6c4de99}
+    .msg button{
+      padding: 12px 18px;
+      border: 0; border-radius: 12px; color:#001624;
+      background: linear-gradient(180deg, var(--accent), #43a6eb);
+      box-shadow: 0 10px 30px rgba(13,166,255,.35), 0 0 0 1px #2b9fe6 inset;
+      font-weight: 700;
+    }
+
+    /* pills row */
+    .pills{display:flex; flex-wrap:wrap; gap:10px; margin:10px 0 0}
+    .pill{background:#0e2744; border:1px solid #184b76; padding:6px 10px; border-radius:999px; font-size:13px; opacity:.9}
+
+    /* small screens tweaks */
+    @media (max-width:480px){
+      .wrap{padding-left:10px; padding-right:10px;}
+      .msg button{padding:12px 16px}
+    }
+  </style>
 </head>
 <body>
-<div class="chat-box" id="chat">
-  <div class="message">👋 Hello! I’m AURA-X — your emotional resonance prototype. Tell me how you feel today.</div>
-</div>
-<input id="userInput" placeholder="Type your emotion or thought..."/>
-<button onclick="send()">Send</button>
+  <div class="wrap" id="wrap">
+    <div class="card hello">
+      <div class="bubble"><b>👋 Hello!</b> I’m AURA-X — your emotional resonance prototype. Tell me how you feel today.</div>
+      <div class="pills">
+        <div class="pill">Resonance Engine</div>
+        <div class="pill">BM-7 Layers</div>
+        <div class="pill">Local Rules</div>
+        <div class="pill">Prototype</div>
+      </div>
+    </div>
 
-<script>
-function send(){
-  const input=document.getElementById("userInput");
-  const msg=input.value.trim();
-  if(!msg)return;
-  const chat=document.getElementById("chat");
-  const userDiv=document.createElement("div");
-  userDiv.className="message";
-  userDiv.textContent="🧠 You: "+msg;
-  chat.appendChild(userDiv);
-  input.value="";
-  const botDiv=document.createElement("div");
-  botDiv.className="message";
-  const responses=[
-    "I feel your tone... balancing emotional resonance 🌊",
-    "Your energy suggests introspection — maintain inner alignment ✨",
-    "Processing emotional feedback... stay centered 💫"
-  ];
-  botDiv.textContent="Ω AURA-X: "+responses[Math.floor(Math.random()*responses.length)];
-  chat.appendChild(botDiv);
-}
-</script>
+    <div id="feed"></div>
+  </div>
+
+  <!-- input dock -->
+  <div class="dock">
+    <div class="dock-inner">
+      <form class="msg" id="form">
+        <input id="text" type="text" autocomplete="off"
+               placeholder="Type your emotion or thought…" />
+        <button id="send" type="submit">Send</button>
+      </form>
+      <div class="tag" style="margin-top:6px;opacity:.65">Ω AURA-X uses on-device emotion rules (no internet/LLM).</div>
+    </div>
+  </div>
+
+  <script>
+  /* ------------------------------
+     Minimal Offline Emotion Engine
+     ------------------------------ */
+
+  // tiny lexicon (you can expand later or load a JSON)
+  const LEX = {
+    joy:     ["happy","joy","great","awesome","alhamdulillah","excited","wonderful","good","love","grateful","thanks","shukria"],
+    calm:    ["calm","ok","fine","relaxed","peace","sukoon","centered"],
+    anger:   ["angry","mad","furious","rage","ghussa","annoyed","irritated"],
+    fear:    ["afraid","scared","fear","khauf","worry","worried","anxious","anxiety","tension","panic"],
+    sadness: ["sad","down","depressed","upset","rona","cry","lonely","hurt","broken","tired","thaka"],
+    stress:  ["stress","stressed","pressure","load","overwhelmed","burnout"],
+    pain:    ["pain","dard","hurt","sick","ill","fever","headache"],
+    hope:    ["hope","umeed","insha","dream","goal","plan","focus","progress"]
+  };
+
+  // layer weights (toy BM-7 mapping)
+  const LAYERS = {
+    Violet:  ["intuition","meaning"],
+    Indigo:  ["logic","alignment"],
+    Blue:    ["language","precision"],
+    Green:   ["empathy","healing"],
+    Yellow:  ["energy","drive"],
+    Orange:  ["emotion","reaction"],
+    Red:     ["stability","defense"]
+  };
+
+  // memory / continuity
+  const STATE = {
+    lastEmotion: "calm",
+    history: []
+  };
+
+  const feed = document.getElementById('feed');
+  const form = document.getElementById('form');
+  const text = document.getElementById('text');
+
+  // helpers
+  const add = (role, msg) => {
+    const div = document.createElement('div');
+    div.className = 'bubble';
+    div.innerHTML = (role === 'you' ? "🧠 <b>You:</b> " : "Ω <b>AURA-X:</b> ") + msg;
+    feed.appendChild(div);
+    // auto-scroll to latest
+    setTimeout(()=>window.scrollTo({top:document.body.scrollHeight, behavior:'smooth'}),50);
+  };
+
+  const classify = (s) => {
+    const t = " " + s.toLowerCase() + " ";
+    const score = {};
+    for (const emo in LEX){
+      score[emo] = 0;
+      for (const k of LEX[emo]){
+        if (t.includes(" " + k + " ")) score[emo] += 1;
+      }
+    }
+    // choose max; fallback to calm
+    let best = "calm", bestVal = -1;
+    for (const k in score){ if (score[k] > bestVal){ bestVal = score[k]; best = k; } }
+    // intensity simple heuristic
+    const intensity = Math.min(1, (bestVal/3));
+    return {emotion: best, intensity};
+  };
+
+  const respond = ({emotion,intensity}, raw) => {
+    // continuity blend
+    const prev = STATE.lastEmotion;
+    const changed = (emotion !== prev);
+
+    const EMOJI = {
+      joy:"😊", calm:"🫧", anger:"🔥", fear:"😟", sadness:"😢", stress:"🌀", pain:"🤕", hope:"🌅"
+    };
+
+    const openers = {
+      joy:     ["Your tone feels light and bright", "I sense warmth in your words"],
+      calm:    ["Steady and centered energy detected", "You sound grounded"],
+      anger:   ["Strong heat in your tone", "I hear tension—let’s cool this down"],
+      fear:    ["I notice worry in your words", "There’s some uncertainty present"],
+      sadness: ["Your energy feels heavy", "I hear a soft, low tone"],
+      stress:  ["You’re carrying a lot right now", "I feel the pressure in your pace"],
+      pain:    ["I sense discomfort", "Your signals show strain"],
+      hope:    ["A forward pull appears", "I feel optimism forming"]
+    };
+
+    const guides = {
+      joy:     "Anchor the joy with one calm breath in… out 🫁",
+      calm:    "Maintain the rhythm — slow inhale 4, hold 2, exhale 6.",
+      anger:   "Try a slow <em>box breath</em> 4-4-4-4 to release heat.",
+      fear:    "Name one thing you can control in the next 10 min.",
+      sadness: "Place a hand on chest; say: “I’m here for me.”",
+      stress:  "List 3 small tasks; pick 1 and do it gently.",
+      pain:    "If possible, hydrate and soften your shoulders.",
+      hope:    "Note one concrete step you’ll take today."
+    };
+
+    const intensityWord = intensity > .7 ? "strong" : intensity > .35 ? "medium" : "soft";
+    const opener = openers[emotion][Math.floor(Math.random()*openers[emotion].length)];
+    const msg1 = `${opener} — ${intensityWord} resonance ${EMOJI[emotion]}`;
+    const msg2 = guides[emotion];
+
+    // a tiny “content” reply that mirrors user text a bit
+    let mirror = "";
+    if (raw && raw.length > 3){
+      const slice = raw.length > 120 ? raw.slice(0,120)+"…" : raw;
+      mirror = `<br><span class="tag">Echo:</span> “${slice.replace(/[<>&]/g,'') }”`;
+    }
+
+    const continuity = changed
+      ? `<br><span class="tag">Continuity:</span> shifting from <b>${prev}</b> → <b>${emotion}</b>`
+      : `<br><span class="tag">Continuity:</span> staying in <b>${emotion}</b>`;
+
+    return `${msg1}<br>${msg2}${continuity}${mirror}`;
+  };
+
+  // submit
+  form.addEventListener('submit', (e)=>{
+    e.preventDefault();
+    const val = (text.value || "").trim();
+    if (!val) return;
+    add('you', val);
+
+    const cls = classify(val);
+    const out = respond(cls, val);
+    add('bot', out);
+
+    STATE.history.push({t:Date.now(), you:val, emo:cls.emotion, i:cls.intensity});
+    STATE.lastEmotion = cls.emotion;
+
+    text.value = "";
+    text.focus();
+  });
+
+  // allow Enter to send on mobile keyboards
+  text.addEventListener('keydown', (e)=>{
+    if (e.key === 'Enter' && !e.shiftKey){
+      e.preventDefault();
+      document.getElementById('send').click();
+    }
+  });
+  </script>
 </body>
 </html>
