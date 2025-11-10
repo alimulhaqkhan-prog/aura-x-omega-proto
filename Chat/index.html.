@@ -1,263 +1,216 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>AURA-X Ω — Emotion Chat (Prototype)</title>
-
   <style>
     :root{
       --bg:#07121d; --panel:#0b1826; --ink:#eaf2ff; --muted:#8fb3d8;
       --accent:#4cc1ff; --green:#42ffb0; --gold:#f7c94d; --violet:#8b7cff; --red:#ff6b7b;
-      --shadow: 0 18px 22px rgba(0,0,0,.35);
+      --shadow:0 18px 22px rgba(0,0,0,.35);
     }
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0;background:radial-gradient(1000px 600px at 10% -10%,#0e1830 0%,#081220 50%),#061120;color:var(--ink);font:16px/1.55 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;overflow-x:hidden}
+    /* SAFE-AREA fix so left side never hides */
+    .page{padding-left:max(12px,env(safe-area-inset-left));padding-right:max(12px,env(safe-area-inset-right));padding-top:max(8px,env(safe-area-inset-top));padding-bottom:max(8px,env(safe-area-inset-bottom))}
+    .wrap{max-width:980px;margin:0 auto;padding:14px clamp(12px,4vw,22px) 22px}
+    a{color:var(--accent);text-decoration:none}
 
-    *{ box-sizing:border-box }
-    html,body{ margin:0; padding:0; background:radial-gradient(1000px 600px at 10% -10%,#0e1830 0%,#081220 50%), #061120; color:var(--ink); font: 16px/1.55 system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
+    header{display:flex;align-items:center;gap:14px;margin:8px 0 18px}
+    .logo{width:44px;height:44px;border-radius:12px;background:url("../assets/img/aura-x-omega.png") center/cover no-repeat,linear-gradient(135deg,#122235,#0a1522);box-shadow:inset 0 0 0 1px #1e2c42,0 6px 26px rgba(0,0,0,.45)}
+    h1{margin:0;font-weight:800;letter-spacing:.3px}
+    .badge{background:#081a2b;border-radius:10px;padding:3px 10px;color:var(--muted);font-size:12px;margin-left:6px;border:1px solid #13314d}
 
-    a{ color:var(--accent); text-decoration:none }
+    .grid{display:grid;grid-template-columns:1fr 310px;gap:18px}
+    @media (max-width:880px){.grid{grid-template-columns:1fr}}
 
-    .wrap{ max-width:980px; margin:0 auto; padding:18px; }
+    .panel{background:var(--panel);border:1px solid #14263b;border-radius:14px;padding:14px;box-shadow:var(--shadow)}
 
-    /* Header */
-    header{ display:flex; align-items:center; gap:14px; margin:8px 0 18px; }
-    .logo{ width:44px; height:44px; border-radius:12px;
-           background: url("../assets/img/aura-x-omega.png") center/cover no-repeat,
-                       linear-gradient(135deg,#122235,#0a1522);
-           box-shadow: inset 0 0 0 1px #1e2c42, 0 6px 26px rgba(0,0,0,.45); }
-    h1{ margin:0; font-weight:800; letter-spacing:.3px }
-    .badge{ background:#081a2b; border-radius:10px; padding:3px 10px; color:var(--muted); font-size:12px; margin-left:6px; border:1px solid #13314d }
+    .feed{display:flex;flex-direction:column;gap:10px;height:55vh;min-height:380px;overflow:auto;scroll-behavior:smooth;padding:6px 4px}
+    .bubble{padding:12px 14px;border-radius:14px;max-width:100%;box-shadow:0 1px 0 rgba(255,255,255,.04) inset;margin:0 2px}
+    .user{align-self:flex-start;background:#0e2136;border:1px solid #14365a}
+    .bot{align-self:flex-end;background:#0f1d2d;border:1px solid #183351}
+    .lead{color:#b9d5ff;font-size:14px;margin-bottom:6px}
 
-    /* Layout */
-    .grid{ display:grid; grid-template-columns: 1fr 310px; gap:18px; }
-    @media (max-width:880px){ .grid{ grid-template-columns: 1fr } }
-
-    .panel{ background:var(--panel); border:1px solid #14263b; border-radius:14px; padding:14px; box-shadow:var(--shadow) }
-
-    /* Chat bubbles */
-    .feed{ display:flex; flex-direction:column; gap:10px; height:55vh; min-height:380px; overflow:auto; scroll-behavior:smooth; }
-    .bubble{ padding:12px 14px; border-radius:14px; max-width:86%; box-shadow: 0 1px 0 rgba(255,255,255,.04) inset; }
-    .user{ align-self:flex-start; background:#0e2136; border:1px solid #14365a }
-    .bot{ align-self:flex-end; background:#0f1d2d; border:1px solid #183351 }
-    .lead{ color:#b9d5ff; font-size:14px; margin-bottom:6px }
-
-    /* Composer + centered input fix */
-    .composer{ display:flex; gap:10px; align-items:center; margin-top:12px }
+    .composer{display:flex;gap:10px;align-items:center;margin-top:12px}
     input[type="text"]{
-      width:90%;
-      margin:0 auto;               /* center horizontally */
-      display:block;               /* needed for auto margins */
-      padding:12px 16px;           /* left padding so first letter is visible */
-      border-radius:12px; border:1px solid #16304a;
-      background:#0b1220; color:white; font-size:16px;
-      box-sizing:border-box;
+      width:90%;margin:0 auto;display:block;padding:12px 16px;
+      border-radius:12px;border:1px solid #16304a;background:#0b1220;color:#fff;font-size:16px
     }
-    button{
-      background:linear-gradient(180deg,#3dc6ff,#1aa0df);
-      border:none; color:white; padding:12px 18px; border-radius:12px; font-weight:700;
-      box-shadow:0 10px 24px rgba(40,160,250,.25);
-    }
-    button.ghost{ background:transparent; border:1px solid #24486e; color:#b8dafb }
+    button{background:linear-gradient(180deg,#3dc6ff,#1aa0df);border:none;color:#fff;padding:12px 18px;border-radius:12px;font-weight:700;box-shadow:0 10px 24px rgba(40,160,250,.25)}
+    button.ghost{background:transparent;border:1px solid #24486e;color:#b8dafb}
 
-    /* Board */
-    .board .row{ display:grid; grid-template-columns:110px 1fr; align-items:center; gap:10px; margin:8px 0 }
-    .meter{ height:12px; background:#0a1b2b; border-radius:16px; border:1px solid #14314e; overflow:hidden }
-    .bar{ height:100%; width:0%; background:linear-gradient(90deg,var(--accent),var(--violet)); transition: width .45s ease }
+    .board .row{display:grid;grid-template-columns:110px 1fr;align-items:center;gap:10px;margin:8px 0}
+    .meter{height:12px;background:#0a1b2b;border-radius:16px;border:1px solid #14314e;overflow:hidden}
+    .bar{height:100%;width:0%;background:linear-gradient(90deg,var(--accent),var(--violet));transition:width .45s ease}
 
-    .emoDot{ width:12px; height:12px; border-radius:50%; margin-right:6px; display:inline-block; vertical-align:-1px }
-    .emo{ font-weight:700 }
-    .link{ display:inline-block; margin-top:8px; font-size:13px }
+    .emoDot{width:12px;height:12px;border-radius:50%;margin-right:6px;display:inline-block;vertical-align:-1px}
+    .emo{font-weight:700}
+    .link{display:inline-block;margin-top:8px;font-size:13px}
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <header>
-      <div class="logo" title="AURA-X Ω"></div>
-      <div>
-        <h1>AURA-X Ω <span class="badge">Emotion Chat • Prototype</span></h1>
-        <div class="lead">Resonance feedback with continuity memory (local-only).</div>
+  <div class="page">
+    <div class="wrap">
+      <header>
+        <div class="logo" title="AURA-X Ω"></div>
+        <div>
+          <h1>AURA-X Ω <span class="badge">Emotion Chat • Prototype</span></h1>
+          <div class="lead">Local small-talk + emotion resonance (no external LLM).</div>
+        </div>
+      </header>
+
+      <div class="grid">
+        <!-- Chat -->
+        <section class="panel">
+          <div id="feed" class="feed" role="log" aria-live="polite"></div>
+          <form id="send" class="composer">
+            <input id="box" type="text" autocomplete="off" placeholder="Type your emotion or question…"/>
+            <button type="submit">Send</button>
+          </form>
+        </section>
+
+        <!-- State -->
+        <aside class="panel board">
+          <div class="row"><div>Emotion</div><div><span id="dot" class="emoDot" style="background:var(--accent)"></span><span id="emoName" class="emo">Neutral</span></div></div>
+          <div class="row"><div>Intensity</div><div class="meter"><div id="bar" class="bar"></div></div></div>
+          <div class="row"><div>Continuity</div><div class="meter"><div id="bar2" class="bar" style="background:linear-gradient(90deg,#42ffb0,#f7c94d)"></div></div></div>
+          <div style="margin-top:10px">
+            <button id="toggle" class="ghost" type="button">Auto-Resonance: ON</button>
+            <button id="clear" class="ghost" type="button">Reset Memory</button>
+            <a class="link" href="../index.html">← Back to Prototype</a>
+          </div>
+        </aside>
       </div>
-    </header>
-
-    <div class="grid">
-      <!-- LEFT: Chat -->
-      <section class="panel">
-        <div id="feed" class="feed" role="log" aria-live="polite"></div>
-
-        <form id="send" class="composer">
-          <input id="box" type="text" autocomplete="off" placeholder="Type your emotion or thought..." />
-          <button type="submit">Send</button>
-        </form>
-      </section>
-
-      <!-- RIGHT: State -->
-      <aside class="panel board">
-        <div class="row">
-          <div>Emotion</div>
-          <div><span id="dot" class="emoDot" style="background:var(--accent)"></span><span id="emoName" class="emo">Neutral</span></div>
-        </div>
-
-        <div class="row">
-          <div>Intensity</div>
-          <div class="meter"><div id="bar" class="bar"></div></div>
-        </div>
-
-        <div class="row">
-          <div>Continuity</div>
-          <div class="meter"><div id="bar2" class="bar" style="background:linear-gradient(90deg,#42ffb0,#f7c94d)"></div></div>
-        </div>
-
-        <div style="margin-top:10px">
-          <button id="toggle" class="ghost" type="button">Auto-Resonance: ON</button>
-          <button id="clear"  class="ghost" type="button">Reset Memory</button>
-          <a class="link" href="../index.html">← Back to Prototype</a>
-        </div>
-      </aside>
     </div>
   </div>
 
   <script>
-    /********************
-     * AURA-X Ω Emotion Engine (compact)
-     * - Keyword + emoji map (EN + a bit of UR/HI)
-     * - Intensity by matches & punctuation
-     * - Continuity memory with decay
-     ********************/
+    /* ========= Local Emotion + Smalltalk Engine (no LLM) ========= */
 
-    const FEED   = document.getElementById('feed');
-    const BOX    = document.getElementById('box');
-    const FORM   = document.getElementById('send');
-    const DOT    = document.getElementById('dot');
-    const NAME   = document.getElementById('emoName');
-    const BAR    = document.getElementById('bar');
-    const BAR2   = document.getElementById('bar2');
-
+    const FEED = document.getElementById('feed');
+    const BOX  = document.getElementById('box');
+    const FORM = document.getElementById('send');
+    const DOT  = document.getElementById('dot');
+    const NAME = document.getElementById('emoName');
+    const BAR  = document.getElementById('bar');
+    const BAR2 = document.getElementById('bar2');
     const TOGGLE = document.getElementById('toggle');
     const CLEAR  = document.getElementById('clear');
 
-    // Memory + State
-    const STATE = load() || {
-      last: 'Neutral',
-      intensity: 0.25,
-      continuity: 0.10,
-      auto: true,
-      history: []
-    };
-
-    // emotion palette
     const EMO = {
-      Joy:    { color:'var(--gold)',   emoji:'😊', keys:['happy','great','awesome','😁','love','khushi','acha','mazay','shukriya','thanks'] },
-      Calm:   { color:'var(--green)',  emoji:'🌿', keys:['calm','relax','fine','theek','ok','content','sukoon'] },
-      Sad:    { color:'var(--violet)', emoji:'😔', keys:['sad','down','dukhi','alone','miss','cry','😢'] },
-      Anger:  { color:'var(--red)',    emoji:'😠', keys:['angry','gussa','mad','furious','annoyed','hate','😡'] },
-      Fear:   { color:'var(--accent)', emoji:'😨', keys:['scared','dar','afraid','worry','anxious','tension','panic'] },
-      Surprise:{color:'#8b7cff',       emoji:'😮', keys:['wow','omg','surprise','shocked','what?!','😲'] },
-      Neutral:{ color:'var(--accent)', emoji:'🤖', keys:[] }
+      Joy:     { color:'var(--gold)',  emoji:'😊', keys:['happy','great','awesome','love','khushi','acha','mazay','thanks','shukriya','alhamdulillah','😁','❤️'] },
+      Calm:    { color:'var(--green)', emoji:'🌿', keys:['calm','relax','fine','theek','ok','content','sukoon'] },
+      Sad:     { color:'var(--violet)',emoji:'😔', keys:['sad','down','dukhi','alone','miss','cry','😢'] },
+      Anger:   { color:'var(--red)',   emoji:'😠', keys:['angry','gussa','mad','furious','annoyed','hate','😡'] },
+      Fear:    { color:'var(--accent)',emoji:'😨', keys:['scared','dar','afraid','worry','anxious','tension','panic'] },
+      Surprise:{ color:'#8b7cff',      emoji:'😮', keys:['wow','omg','surprise','shocked','what?!','😲'] },
+      Neutral: { color:'var(--accent)',emoji:'🤖', keys:[] }
     };
 
-    // helpers
+    // Very small small-talk intent map
+    const INTENTS = [
+      {name:'greet',  test: t => /\b(hi|hello|as ?salaam|salam|hey)\b/i.test(t),
+        reply: ()=>'👋 Hi! I’m AURA-X. Tell me how you feel or ask anything.'},
+      {name:'name',   test: t => /\b(your name|who are you|what are you)\b/i.test(t),
+        reply: ()=>'I’m AURA-X Ω — an emotional resonance prototype running in your browser.'},
+      {name:'origin', test: t => /\b(where.*from|location|country|live)\b/i.test(t),
+        reply: ()=>'I live locally on your device (GitHub Pages). No cloud brain yet 🙂'},
+      {name:'ability',test: t => /\b(what can you do|abilities|features|help)\b/i.test(t),
+        reply: ()=>'I detect tone, map emotion + intensity, keep continuity memory, and give reflective replies.'},
+      {name:'thanks', test: t => /\b(thanks|shukriya|thank you)\b/i.test(t),
+        reply: ()=>'You’re welcome! How do you feel now?'},
+    ];
+
+    const STATE = load() || { last:'Neutral', intensity:.25, continuity:.10, auto:true, history:[] };
+
     function persist(){ localStorage.setItem('aurax_chat', JSON.stringify(STATE)); }
     function load(){ try{ return JSON.parse(localStorage.getItem('aurax_chat')); }catch(e){ return null; } }
 
-    function addBubble(role, text, emo){
-      const b = document.createElement('div');
-      b.className = 'bubble ' + (role==='you' ? 'user':'bot');
-      b.innerHTML = (emo ? `<span class="lead">${emo}</span><br/>` : '') + text;
-      FEED.appendChild(b);
-      FEED.scrollTop = FEED.scrollHeight;
+    function addBubble(role,text,lead){
+      const b=document.createElement('div');
+      b.className='bubble ' + (role==='you'?'user':'bot');
+      b.innerHTML=(lead?`<span class="lead">${lead}</span><br/>`:'')+text;
+      FEED.appendChild(b); FEED.scrollTop=FEED.scrollHeight;
     }
 
-    // classify
-    function classify(t){
-      t = (t||'').toLowerCase();
-      let best = 'Neutral', score = 0;
-
-      for(const [name, obj] of Object.entries(EMO)){
-        let s = 0;
-        obj.keys.forEach(k => { if(t.includes(k)) s += 1; });
-        // emoticons
+    function classifyEmotion(t){
+      t=(t||'').toLowerCase(); let best='Neutral', score=0;
+      for(const [name,obj] of Object.entries(EMO)){
+        let s=0; obj.keys.forEach(k=>{ if(t.includes(k)) s+=1; });
         if(name==='Joy' && /:\)|😊|😁|❤️/.test(t)) s+=1;
         if(name==='Anger' && /!{2,}|😡/.test(t)) s+=1;
         if(name==='Sad' && /(sad|cry|😢)/.test(t)) s+=1;
-
-        if(s > score){ score = s; best = name; }
+        if(s>score){ score=s; best=name; }
       }
-      // punctuation amplifiers
-      const excl = (t.match(/!/g)||[]).length;
-      const dots = (t.match(/\.\.\./g)||[]).length;
-      const amp  = Math.min(1, (score*0.28) + (excl*0.12) + (dots*0.06));
-      return { name: best, intensity: amp };
+      const excl=(t.match(/!/g)||[]).length, dots=(t.match(/\.\.\./g)||[]).length;
+      const amp=Math.min(1,(score*0.28)+(excl*0.12)+(dots*0.06));
+      return {name:best, intensity:amp};
     }
 
-    function updateUI(name, inten){
-      NAME.textContent = name;
-      DOT.style.background = EMO[name].color;
-      BAR.style.width = Math.round(Math.max(.08, inten)*100) + '%';
-      BAR2.style.width = Math.round(STATE.continuity*100) + '%';
+    function detectIntent(t){
+      for(const it of INTENTS){ if(it.test(t)) return it; }
+      return null;
     }
 
-    function resonate(name, inten){
-      // continuity increases if same emotion, otherwise decays
-      if(name === STATE.last) STATE.continuity = Math.min(1, STATE.continuity + 0.12*inten + 0.04);
-      else STATE.continuity = Math.max(0.04, STATE.continuity*0.65);
-
-      STATE.last = name;
-      STATE.intensity = inten;
-      updateUI(name, inten);
-      persist();
+    function updateUI(name,inten){
+      NAME.textContent=name; DOT.style.background=EMO[name].color;
+      BAR.style.width=Math.round(Math.max(.08,inten)*100)+'%';
+      BAR2.style.width=Math.round(STATE.continuity*100)+'%';
     }
 
-    // Auto-resonance reply
-    function reply(name, inten, text){
-      let msg = '';
-      const e = EMO[name].emoji;
+    function resonate(name,inten){
+      if(name===STATE.last) STATE.continuity=Math.min(1,STATE.continuity + 0.12*inten + 0.04);
+      else STATE.continuity=Math.max(0.04,STATE.continuity*0.65);
+      STATE.last=name; STATE.intensity=inten; updateUI(name,inten); persist();
+    }
+
+    function emoReply(name){
+      const e=EMO[name].emoji;
       switch(name){
-        case 'Joy':     msg = `${e} Love your energy! Let’s anchor this feeling—what made you smile most?`; break;
-        case 'Calm':    msg = `${e} Peaceful vibes. Breathe in… out… anything gentle on your mind?`; break;
-        case 'Sad':     msg = `${e} I’m here with you. Want to share what’s heavy?`; break;
-        case 'Anger':   msg = `${e} I hear the heat. Let’s turn it into clarity—what crossed the line?`; break;
-        case 'Fear':    msg = `${e} It’s okay to be unsure. Name the worry in one sentence.`; break;
-        case 'Surprise':msg = `${e} Unexpected! Good surprise or tricky one?`; break;
-        default:        msg = `Ω AURA-X: Processing emotional feedback… stay centered ✨`;
+        case 'Joy': return `${e} Love your energy! What made you smile most?`;
+        case 'Calm': return `${e} Peaceful vibes. Anything gentle on your mind?`;
+        case 'Sad': return `${e} I’m here with you. Want to share what feels heavy?`;
+        case 'Anger': return `${e} I hear the heat. What crossed the line?`;
+        case 'Fear': return `${e} It’s okay to be unsure. Name the worry in one sentence.`;
+        case 'Surprise': return `${e} Unexpected! Was it a good surprise or tricky?`;
+        default: return `Ω AURA-X: I feel your tone… balancing emotional resonance 🌊`;
       }
-      addBubble('bot', msg);
     }
 
-    // Init UI + greetings
     function init(){
-      FEED.innerHTML = '';
-      addBubble('bot', '👋 Hello! I’m AURA-X — your emotional resonance prototype. Tell me how you feel today.');
-      if(STATE.history.length){
-        addBubble('you', STATE.history[STATE.history.length-1].text, 'Previous');
-      }
-      updateUI(STATE.last, STATE.intensity);
+      FEED.innerHTML='';
+      addBubble('bot','👋 Hello! I’m AURA-X — your emotional resonance prototype. Tell me how you feel today.');
+      updateUI(STATE.last,STATE.intensity);
     }
 
-    // Events
-    TOGGLE.onclick = () => {
-      STATE.auto = !STATE.auto;
-      TOGGLE.textContent = 'Auto-Resonance: ' + (STATE.auto ? 'ON' : 'OFF');
-      persist();
-    };
+    TOGGLE.onclick=()=>{ STATE.auto=!STATE.auto; TOGGLE.textContent='Auto-Resonance: '+(STATE.auto?'ON':'OFF'); persist(); };
+    CLEAR.onclick =()=>{ localStorage.removeItem('aurax_chat'); location.reload(); };
 
-    CLEAR.onclick = () => {
-      localStorage.removeItem('aurax_chat'); location.reload();
-    };
-
-    FORM.addEventListener('submit', (e) => {
+    FORM.addEventListener('submit',(e)=>{
       e.preventDefault();
-      const text = BOX.value.trim();
-      if(!text) return;
-      BOX.value = ''; addBubble('you', text);
+      const text=BOX.value.trim(); if(!text) return;
+      BOX.value=''; addBubble('you',text);
 
-      const cls = classify(text);
+      // 1) small-talk
+      const intent=detectIntent(text);
+      if(intent){
+        addBubble('bot', intent.reply());
+      }
+
+      // 2) emotion path (always run)
+      const cls=classifyEmotion(text);
       resonate(cls.name, Math.max(.15, cls.intensity));
-      STATE.history.push({ t: Date.now(), text, emo: cls.name, inten: cls.intensity }); persist();
+      STATE.history.push({t:Date.now(), text, emo:cls.name, inten:cls.intensity}); persist();
 
-      if(STATE.auto) reply(cls.name, cls.intensity, text);
+      if(STATE.auto){
+        // if small-talk already answered, add a short emotional add-on
+        const extra = intent ? `\n${emoReply(cls.name)}` : emoReply(cls.name);
+        addBubble('bot', extra);
+      }
     });
 
-    // kick
     init();
   </script>
 </body>
