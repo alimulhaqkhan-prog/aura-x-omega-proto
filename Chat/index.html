@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AURA-X Ω | Emotional Chat</title>
+<link rel="icon" href="../assets/img/aura-x-omega.png">
+<style>
+body {
+  background: radial-gradient(circle at center,#0b1220,#02080f);
+  color: #e6f1ff;
+  font-family: 'Segoe UI',sans-serif;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  height:100vh;margin:0;
+}
+.chat-box {
+  width:90%;max-width:480px;background:#101b2a;border-radius:20px;
+  box-shadow:0 0 20px rgba(0,180,255,0.3);padding:20px;
+}
+.message {
+  background:#14263c;margin:10px 0;padding:12px 16px;border-radius:12px;
+}
+input {
+  width:100%;padding:12px;border-radius:10px;border:none;margin-top:10px;
+  background:#0e1830;color:#fff;
+}
+button {
+  background:#21b0ff;border:none;padding:10px 20px;margin-top:10px;
+  border-radius:8px;color:#fff;cursor:pointer;
+}
+</style>
+</head>
+<body>
+<div class="chat-box" id="chat">
+  <div class="message">👋 Hello! I’m AURA-X — your emotional resonance prototype. Tell me how you feel today.</div>
+</div>
+<input id="userInput" placeholder="Type your emotion or thought..."/>
+<button onclick="send()">Send</button>
+
+<script>
+function send(){
+  const input=document.getElementById("userInput");
+  const msg=input.value.trim();
+  if(!msg)return;
+  const chat=document.getElementById("chat");
+  const userDiv=document.createElement("div");
+  userDiv.className="message";
+  userDiv.textContent="🧠 You: "+msg;
+  chat.appendChild(userDiv);
+  input.value="";
+  const botDiv=document.createElement("div");
+  botDiv.className="message";
+  const responses=[
+    "I feel your tone... balancing emotional resonance 🌊",
+    "Your energy suggests introspection — maintain inner alignment ✨",
+    "Processing emotional feedback... stay centered 💫"
+  ];
+  botDiv.textContent="Ω AURA-X: "+responses[Math.floor(Math.random()*responses.length)];
+  chat.appendChild(botDiv);
+}
+</script>
+</body>
+</html>
