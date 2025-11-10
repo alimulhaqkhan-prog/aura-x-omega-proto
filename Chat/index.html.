@@ -1,217 +1,247 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>AURA-X Ω — Emotion Chat (Prototype)</title>
-  <style>
-    :root{
-      --bg:#07121d; --panel:#0b1826; --ink:#eaf2ff; --muted:#8fb3d8;
-      --accent:#4cc1ff; --green:#42ffb0; --gold:#f7c94d; --violet:#8b7cff; --red:#ff6b7b;
-      --shadow:0 18px 22px rgba(0,0,0,.35);
-    }
-    *{box-sizing:border-box}
-    html,body{margin:0;padding:0;background:radial-gradient(1000px 600px at 10% -10%,#0e1830 0%,#081220 50%),#061120;color:var(--ink);font:16px/1.55 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;overflow-x:hidden}
-    /* SAFE-AREA fix so left side never hides */
-    .page{padding-left:max(12px,env(safe-area-inset-left));padding-right:max(12px,env(safe-area-inset-right));padding-top:max(8px,env(safe-area-inset-top));padding-bottom:max(8px,env(safe-area-inset-bottom))}
-    .wrap{max-width:980px;margin:0 auto;padding:14px clamp(12px,4vw,22px) 22px}
-    a{color:var(--accent);text-decoration:none}
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>AURA-X Ω — Emotion Chat (Prototype)</title>
+<style>
+/* ---------- THEME ---------- */
+:root{
+  --bg:#0b1220; --ink:#e6f1ff;
+  --panel:#0f1a2d; --panel2:#0e1830;
+  --accent:#6ad1ff; --muted:#9fb3d8;
+  --gold:#f7c94d; --violet:#80c7ff;
+  --ok:#2fd97a; --warn:#f7b84f; --bad:#ff6b6b;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0; color:var(--ink); background:radial-gradient(1100px 660px at 30% 10%, #0e1830 0%, #0b1220 55%);
+  font:16px/1.45 system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  overflow-x:hidden;
+}
+a{color:var(--accent); text-decoration:none}
 
-    header{display:flex;align-items:center;gap:14px;margin:8px 0 18px}
-    .logo{width:44px;height:44px;border-radius:12px;background:url("../assets/img/aura-x-omega.png") center/cover no-repeat,linear-gradient(135deg,#122235,#0a1522);box-shadow:inset 0 0 0 1px #1e2c42,0 6px 26px rgba(0,0,0,.45)}
-    h1{margin:0;font-weight:800;letter-spacing:.3px}
-    .badge{background:#081a2b;border-radius:10px;padding:3px 10px;color:var(--muted);font-size:12px;margin-left:6px;border:1px solid #13314d}
+/* page safe-area so left side never clips on phones */
+.page{
+  min-height:100%;
+  padding: 24px max(16px, env(safe-area-inset-right)) 120px max(16px, env(safe-area-inset-left));
+}
 
-    .grid{display:grid;grid-template-columns:1fr 310px;gap:18px}
-    @media (max-width:880px){.grid{grid-template-columns:1fr}}
+/* card / chat bubble */
+.card{
+  background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.03));
+  border:1px solid #1e324f; border-radius:16px; padding:18px 20px; margin:14px 0;
+  box-shadow:0 0 0 4px rgba(33,139,255,0.08), inset 0 0 0 1px rgba(255,255,255,0.02);
+}
+.badge{display:inline-flex; align-items:center; gap:8px; font-weight:600; opacity:.95}
+.badge .dot{width:10px; height:10px; border-radius:50%; background:var(--accent); box-shadow:0 0 10px var(--accent)}
+.bot{background:rgba(100,170,255,0.08)}
+.user{background:rgba(120,160,255,0.05)}
 
-    .panel{background:var(--panel);border:1px solid #14263b;border-radius:14px;padding:14px;box-shadow:var(--shadow)}
+/* header logo line */
+.hero{display:flex; align-items:center; justify-content:center; margin:20px 0 6px}
+.logo{width:44px; height:44px; margin-right:10px; border-radius:12px;
+      background:url('../assets/img/aura-x-omega.png') center/cover no-repeat, #0d1527;}
+h1{margin:0; font-size:28px; letter-spacing:.3px}
+.lead{color:var(--muted); margin:6px 0 16px; text-align:center}
 
-    .feed{display:flex;flex-direction:column;gap:10px;height:55vh;min-height:380px;overflow:auto;scroll-behavior:smooth;padding:6px 4px}
-    .bubble{padding:12px 14px;border-radius:14px;max-width:100%;box-shadow:0 1px 0 rgba(255,255,255,.04) inset;margin:0 2px}
-    .user{align-self:flex-start;background:#0e2136;border:1px solid #14365a}
-    .bot{align-self:flex-end;background:#0f1d2d;border:1px solid #183351}
-    .lead{color:#b9d5ff;font-size:14px;margin-bottom:6px}
+/* board + gauges */
+.board{max-width:880px; margin:0 auto;}
 
-    .composer{display:flex;gap:10px;align-items:center;margin-top:12px}
-    input[type="text"]{
-      width:90%;margin:0 auto;display:block;padding:12px 16px;
-      border-radius:12px;border:1px solid #16304a;background:#0b1220;color:#fff;font-size:16px
-    }
-    button{background:linear-gradient(180deg,#3dc6ff,#1aa0df);border:none;color:#fff;padding:12px 18px;border-radius:12px;font-weight:700;box-shadow:0 10px 24px rgba(40,160,250,.25)}
-    button.ghost{background:transparent;border:1px solid #24486e;color:#b8dafb}
+/* meter bars */
+.meter{height:8px; border-radius:999px; background:#0c294b; overflow:hidden}
+.meter>div{height:100%; background:linear-gradient(90deg, #2d8fff, #6ad1ff); width:0%}
+.row{display:flex; gap:14px; align-items:center; margin-top:10px}
+.row label{min-width:92px; color:#9db0cf; font-size:14px}
 
-    .board .row{display:grid;grid-template-columns:110px 1fr;align-items:center;gap:10px;margin:8px 0}
-    .meter{height:12px;background:#0a1b2b;border-radius:16px;border:1px solid #14314e;overflow:hidden}
-    .bar{height:100%;width:0%;background:linear-gradient(90deg,var(--accent),var(--violet));transition:width .45s ease}
+/* ---------- composer (typing area) ---------- */
+.composer-wrap{
+  position:fixed; left:0; right:0; bottom:0; z-index:40;
+  padding: 10px max(16px, env(safe-area-inset-right)) calc(10px + env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
+  background: linear-gradient(180deg, transparent, rgba(5,10,20,0.85));
+  backdrop-filter: blur(6px);
+}
+.composer{
+  max-width:880px; margin:0 auto; display:flex; gap:10px; align-items:flex-end;
+}
+.composer textarea{
+  flex:1; min-height:46px; max-height:160px; resize:none;
+  padding:14px 14px;
+  border-radius:14px; border:1px solid #1f3453; color:var(--ink);
+  background:#0f1a2d; outline:none;
+}
+.composer button{
+  flex:0 0 auto; height:46px; padding:0 22px;
+  border-radius:12px; border:none; color:#001628; font-weight:700;
+  background:linear-gradient(180deg, #3cc0ff, #2ca5ee); box-shadow:0 6px 18px rgba(44,165,238,.35);
+}
+.composer button:active{transform:translateY(1px)}
+/* ensure left edge never hides */
+.composer, .composer textarea{margin-left:0;}
 
-    .emoDot{width:12px;height:12px;border-radius:50%;margin-right:6px;display:inline-block;vertical-align:-1px}
-    .emo{font-weight:700}
-    .link{display:inline-block;margin-top:8px;font-size:13px}
-  </style>
+/* small screens tweaks */
+@media (max-width:420px){
+  h1{font-size:24px}
+  .card{padding:16px}
+}
+</style>
 </head>
 <body>
   <div class="page">
-    <div class="wrap">
-      <header>
-        <div class="logo" title="AURA-X Ω"></div>
-        <div>
-          <h1>AURA-X Ω <span class="badge">Emotion Chat • Prototype</span></h1>
-          <div class="lead">Local small-talk + emotion resonance (no external LLM).</div>
-        </div>
-      </header>
+    <div class="hero">
+      <div class="logo" aria-hidden="true"></div>
+      <h1>AURA-X Ω</h1>
+    </div>
+    <p class="lead">Tell me how you feel — I map tone → emotion, adjust intensity & continuity locally (offline).</p>
 
-      <div class="grid">
-        <!-- Chat -->
-        <section class="panel">
-          <div id="feed" class="feed" role="log" aria-live="polite"></div>
-          <form id="send" class="composer">
-            <input id="box" type="text" autocomplete="off" placeholder="Type your emotion or question…"/>
-            <button type="submit">Send</button>
-          </form>
-        </section>
+    <div class="board" id="board">
+      <div class="card bot" id="greet">👋 Hello! I’m AURA-X — your emotional resonance prototype. Tell me how you feel today.</div>
 
-        <!-- State -->
-        <aside class="panel board">
-          <div class="row"><div>Emotion</div><div><span id="dot" class="emoDot" style="background:var(--accent)"></span><span id="emoName" class="emo">Neutral</span></div></div>
-          <div class="row"><div>Intensity</div><div class="meter"><div id="bar" class="bar"></div></div></div>
-          <div class="row"><div>Continuity</div><div class="meter"><div id="bar2" class="bar" style="background:linear-gradient(90deg,#42ffb0,#f7c94d)"></div></div></div>
-          <div style="margin-top:10px">
-            <button id="toggle" class="ghost" type="button">Auto-Resonance: ON</button>
-            <button id="clear" class="ghost" type="button">Reset Memory</button>
-            <a class="link" href="../index.html">← Back to Prototype</a>
-          </div>
-        </aside>
+      <div class="card">
+        <div class="row"><label>Emotion</label><span id="emoName">Calm</span></div>
+        <div class="row"><label>Intensity</label><div class="meter"><div id="intensityBar"></div></div></div>
+        <div class="row"><label>Continuity</label><div class="meter"><div id="contBar"></div></div></div>
       </div>
     </div>
   </div>
 
-  <script>
-    /* ========= Local Emotion + Smalltalk Engine (no LLM) ========= */
+  <!-- fixed composer -->
+  <div class="composer-wrap">
+    <form class="composer" id="composer">
+      <textarea id="input" placeholder="Type your emotion or thought..." rows="1"></textarea>
+      <button type="submit">Send</button>
+    </form>
+  </div>
 
-    const FEED = document.getElementById('feed');
-    const BOX  = document.getElementById('box');
-    const FORM = document.getElementById('send');
-    const DOT  = document.getElementById('dot');
-    const NAME = document.getElementById('emoName');
-    const BAR  = document.getElementById('bar');
-    const BAR2 = document.getElementById('bar2');
-    const TOGGLE = document.getElementById('toggle');
-    const CLEAR  = document.getElementById('clear');
+<script>
+/* ---------------- STATE ---------------- */
+const STATE = { last:Date.now(), continuity:0.65, auto:true, history:[], emotion:{name:'Calm', val:0.25} };
+const board = document.getElementById('board');
+const input = document.getElementById('input');
+const iBar  = document.getElementById('intensityBar');
+const cBar  = document.getElementById('contBar');
+const eName = document.getElementById('emoName');
 
-    const EMO = {
-      Joy:     { color:'var(--gold)',  emoji:'😊', keys:['happy','great','awesome','love','khushi','acha','mazay','thanks','shukriya','alhamdulillah','😁','❤️'] },
-      Calm:    { color:'var(--green)', emoji:'🌿', keys:['calm','relax','fine','theek','ok','content','sukoon'] },
-      Sad:     { color:'var(--violet)',emoji:'😔', keys:['sad','down','dukhi','alone','miss','cry','😢'] },
-      Anger:   { color:'var(--red)',   emoji:'😠', keys:['angry','gussa','mad','furious','annoyed','hate','😡'] },
-      Fear:    { color:'var(--accent)',emoji:'😨', keys:['scared','dar','afraid','worry','anxious','tension','panic'] },
-      Surprise:{ color:'#8b7cff',      emoji:'😮', keys:['wow','omg','surprise','shocked','what?!','😲'] },
-      Neutral: { color:'var(--accent)',emoji:'🤖', keys:[] }
-    };
+/* auto-resize textarea */
+function fitTA(el){
+  el.style.height='auto';
+  el.style.height = Math.min(el.scrollHeight, 160) + 'px';
+}
+['input','change'].forEach(ev => input.addEventListener(ev, ()=>fitTA(input)));
+fitTA(input);
 
-    // Very small small-talk intent map
-    const INTENTS = [
-      {name:'greet',  test: t => /\b(hi|hello|as ?salaam|salam|hey)\b/i.test(t),
-        reply: ()=>'👋 Hi! I’m AURA-X. Tell me how you feel or ask anything.'},
-      {name:'name',   test: t => /\b(your name|who are you|what are you)\b/i.test(t),
-        reply: ()=>'I’m AURA-X Ω — an emotional resonance prototype running in your browser.'},
-      {name:'origin', test: t => /\b(where.*from|location|country|live)\b/i.test(t),
-        reply: ()=>'I live locally on your device (GitHub Pages). No cloud brain yet 🙂'},
-      {name:'ability',test: t => /\b(what can you do|abilities|features|help)\b/i.test(t),
-        reply: ()=>'I detect tone, map emotion + intensity, keep continuity memory, and give reflective replies.'},
-      {name:'thanks', test: t => /\b(thanks|shukriya|thank you)\b/i.test(t),
-        reply: ()=>'You’re welcome! How do you feel now?'},
-    ];
+/* ---------------- EMOTION ENGINE (lightweight) ---------------- */
+const EMO = [
+  {name:'Joy',    color:'#2fd97a', kw:/\b(happy|joy|great|awesome|alhumdulillah|shukar)\b/i, base:0.75},
+  {name:'Calm',   color:'#6ad1ff', kw:/\b(calm|ok|fine|sabr|theek)\b/i,  base:0.35},
+  {name:'Sad',    color:'#6a8ad8', kw:/\b(sad|down|depressed|rona|dukhi)\b/i, base:0.65},
+  {name:'Anger',  color:'#ff6b6b', kw:/\b(angry|gussa|mad|furious)\b/i,   base:0.8},
+  {name:'Fear',   color:'#f7b84f', kw:/\b(afraid|dar|worry|anxious|ghabra)\b/i, base:0.7},
+  {name:'Surprise',color:'#f7c94d',kw:/\b(wow|amazed|surprised|hai?)\b/i, base:0.6},
+];
+function senseEmotion(text){
+  let match = EMO.find(e=>e.kw.test(text)) || EMO[1]; // default Calm
+  // crude intensity from punctuation/length
+  let bonus = 0;
+  bonus += Math.min(0.25, (text.match(/!/g)||[]).length * 0.07);
+  bonus += Math.min(0.25, (text.match(/[A-Z]{2,}/g)||[]).length * 0.03);
+  const val = Math.min(1, match.base + bonus);
+  return { name:match.name, val, color:match.color };
+}
+function updateMeters(){
+  iBar.style.width = (STATE.emotion.val*100).toFixed(0)+'%';
+  cBar.style.width = (STATE.continuity*100).toFixed(0)+'%';
+  eName.textContent = STATE.emotion.name;
+}
 
-    const STATE = load() || { last:'Neutral', intensity:.25, continuity:.10, auto:true, history:[] };
+/* ---------------- RULED SMALL-TALK (offline) ---------------- */
+const INTENTS = [
+  { test:t=>/\b(hi|hello|hey|salam|ass?alam)\b/i.test(t),
+    reply:()=> '👋 Wa-alaikum-salam! How do you feel right now?' },
+  { test:t=>/\b(who are you|your name|kya ho tum)\b/i.test(t),
+    reply:()=> 'I’m AURA-X Ω — an offline emotional resonance prototype running in your browser.' },
+  { test:t=>/\b(where.*from|location|country|live)\b/i.test(t),
+    reply:()=> 'I live right here on your device (GitHub Pages). No cloud needed 😊' },
+  { test:t=>/\b(what can you do|features|help|kya kar sakte)\b/i.test(t),
+    reply:()=> 'I map tone→emotion, estimate intensity, keep continuity memory, and can answer from an offline Q&A pack.' },
+  { test:t=>/\b(thanks|shukriya|thank you)\b/i.test(t),
+    reply:()=> 'You’re welcome! Tell me more—what changed your mood?' },
+];
+function detectIntent(t){ return INTENTS.find(i=>i.test(t))||null; }
 
-    function persist(){ localStorage.setItem('aurax_chat', JSON.stringify(STATE)); }
-    function load(){ try{ return JSON.parse(localStorage.getItem('aurax_chat')); }catch(e){ return null; } }
+/* ---------------- OFFLINE Q&A 16K HOOK ---------------- */
+/* It first tries to load big pack `Chat/data/qa-16k.json`.
+   If missing (404), it falls back to a tiny seed `Chat/data/qa-seed.json`. */
+let QA = [];
+async function loadQA(){
+  async function tryFetch(url){
+    const r = await fetch(url); if(!r.ok) throw new Error(r.status);
+    return r.json();
+  }
+  try{
+    QA = await tryFetch('data/qa-16k.json');
+    console.log('Loaded 16k QA');
+  }catch(e){
+    console.warn('16k not found, using seed…');
+    QA = await tryFetch('data/qa-seed.json');
+  }
+}
+loadQA();
 
-    function addBubble(role,text,lead){
-      const b=document.createElement('div');
-      b.className='bubble ' + (role==='you'?'user':'bot');
-      b.innerHTML=(lead?`<span class="lead">${lead}</span><br/>`:'')+text;
-      FEED.appendChild(b); FEED.scrollTop=FEED.scrollHeight;
-    }
+/* super-light scorer (token overlap + length norm) */
+function bestAnswer(q){
+  if(!QA || !QA.length) return null;
+  const qTokens = q.toLowerCase().match(/[a-z\u0600-\u06FF]+/g)||[];
+  let best = {score:0, a:null};
+  for(const item of QA){
+    const t = (item.q||'').toLowerCase();
+    let s=0;
+    for(const tok of qTokens){ if(t.includes(tok)) s+=1; }
+    s = s/Math.max(2, t.split(' ').length);
+    if(s>best.score) best = {score:s, a:item.a};
+  }
+  return best.score>0.08 ? best.a : null;
+}
 
-    function classifyEmotion(t){
-      t=(t||'').toLowerCase(); let best='Neutral', score=0;
-      for(const [name,obj] of Object.entries(EMO)){
-        let s=0; obj.keys.forEach(k=>{ if(t.includes(k)) s+=1; });
-        if(name==='Joy' && /:\)|😊|😁|❤️/.test(t)) s+=1;
-        if(name==='Anger' && /!{2,}|😡/.test(t)) s+=1;
-        if(name==='Sad' && /(sad|cry|😢)/.test(t)) s+=1;
-        if(s>score){ score=s; best=name; }
-      }
-      const excl=(t.match(/!/g)||[]).length, dots=(t.match(/\.\.\./g)||[]).length;
-      const amp=Math.min(1,(score*0.28)+(excl*0.12)+(dots*0.06));
-      return {name:best, intensity:amp};
-    }
+/* ---------------- UI helpers ---------------- */
+function addBubble(role, text){
+  const el = document.createElement('div');
+  el.className = 'card ' + (role==='user'?'user':'bot');
+  el.textContent = text;
+  board.appendChild(el);
+  // scroll near bottom while keeping composer visible
+  window.scrollTo({top: document.body.scrollHeight, behavior:'smooth'});
+}
 
-    function detectIntent(t){
-      for(const it of INTENTS){ if(it.test(t)) return it; }
-      return null;
-    }
+/* ---------------- submit ---------------- */
+document.getElementById('composer').addEventListener('submit', async (e)=>{
+  e.preventDefault();
+  const text = input.value.trim();
+  if(!text) return;
+  addBubble('user', '🧠 You: '+text);
 
-    function updateUI(name,inten){
-      NAME.textContent=name; DOT.style.background=EMO[name].color;
-      BAR.style.width=Math.round(Math.max(.08,inten)*100)+'%';
-      BAR2.style.width=Math.round(STATE.continuity*100)+'%';
-    }
+  // Sense & update meters
+  STATE.emotion = senseEmotion(text);
+  // continuity nudged toward recent activity
+  STATE.continuity = Math.min(1, STATE.continuity*0.92 + 0.12);
+  updateMeters();
 
-    function resonate(name,inten){
-      if(name===STATE.last) STATE.continuity=Math.min(1,STATE.continuity + 0.12*inten + 0.04);
-      else STATE.continuity=Math.max(0.04,STATE.continuity*0.65);
-      STATE.last=name; STATE.intensity=inten; updateUI(name,inten); persist();
-    }
+  // intent → reply
+  const intent = detectIntent(text);
+  if(intent){ addBubble('bot', intent.reply()); input.value=''; fitTA(input); return; }
 
-    function emoReply(name){
-      const e=EMO[name].emoji;
-      switch(name){
-        case 'Joy': return `${e} Love your energy! What made you smile most?`;
-        case 'Calm': return `${e} Peaceful vibes. Anything gentle on your mind?`;
-        case 'Sad': return `${e} I’m here with you. Want to share what feels heavy?`;
-        case 'Anger': return `${e} I hear the heat. What crossed the line?`;
-        case 'Fear': return `${e} It’s okay to be unsure. Name the worry in one sentence.`;
-        case 'Surprise': return `${e} Unexpected! Was it a good surprise or tricky?`;
-        default: return `Ω AURA-X: I feel your tone… balancing emotional resonance 🌊`;
-      }
-    }
+  // try offline QA
+  const ans = bestAnswer(text);
+  if(ans){ addBubble('bot', 'Ω AURA-X: '+ans); input.value=''; fitTA(input); return; }
 
-    function init(){
-      FEED.innerHTML='';
-      addBubble('bot','👋 Hello! I’m AURA-X — your emotional resonance prototype. Tell me how you feel today.');
-      updateUI(STATE.last,STATE.intensity);
-    }
+  // fallback reflective reply
+  addBubble('bot', 'Ω AURA-X: I feel your tone… balancing emotional resonance 🌊');
+  input.value=''; fitTA(input);
+});
 
-    TOGGLE.onclick=()=>{ STATE.auto=!STATE.auto; TOGGLE.textContent='Auto-Resonance: '+(STATE.auto?'ON':'OFF'); persist(); };
-    CLEAR.onclick =()=>{ localStorage.removeItem('aurax_chat'); location.reload(); };
-
-    FORM.addEventListener('submit',(e)=>{
-      e.preventDefault();
-      const text=BOX.value.trim(); if(!text) return;
-      BOX.value=''; addBubble('you',text);
-
-      // 1) small-talk
-      const intent=detectIntent(text);
-      if(intent){
-        addBubble('bot', intent.reply());
-      }
-
-      // 2) emotion path (always run)
-      const cls=classifyEmotion(text);
-      resonate(cls.name, Math.max(.15, cls.intensity));
-      STATE.history.push({t:Date.now(), text, emo:cls.name, inten:cls.intensity}); persist();
-
-      if(STATE.auto){
-        // if small-talk already answered, add a short emotional add-on
-        const extra = intent ? `\n${emoReply(cls.name)}` : emoReply(cls.name);
-        addBubble('bot', extra);
-      }
-    });
-
-    init();
-  </script>
+/* initial meters */
+updateMeters();
+</script>
 </body>
 </html>
