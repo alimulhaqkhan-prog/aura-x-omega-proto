@@ -1,8 +1,4 @@
-
-✅  README.md layout for your GitHub repository
- AURA-X-Omega 
-
-# 🌀 AURA-X Ω — Resonance-Based Emotional Continuity Prototype  
+🌀 AURA-X Ω — Resonance-Based Emotional Continuity Prototype  
 **Founder & Developer:** [Alim ul Haq](https://github.com/alimulhaqkhan-prog)  
 
 ![License](https://img.shields.io/badge/license-AURA--Open-blue.svg)
@@ -30,7 +26,7 @@ Each emotional response emerges dynamically from resonance feedback, awareness s
 
 ## ⚙️ Key Features
 ✅ **7-Layer Emotional BM** (Violet → Red spectrum)  
-✅ **16,000 knowledge vectors** (distributed dataset)  
+✅  knowledge vectors** (distributed dataset)  
 ✅ **Offline + Multilingual Support** (10 auto-detected languages EN UR HI AR FA PS PA TR ES FR)  
 ✅ **Geo-Hint Bias System** (location emotion & context adaptation)  
 ✅ **Resonance-State Core** (self-adjusting awareness & reflection)  
