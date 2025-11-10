@@ -1,247 +1,259 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>AURA-X Ω — Emotion Chat (Prototype)</title>
-<style>
-/* ---------- THEME ---------- */
-:root{
-  --bg:#0b1220; --ink:#e6f1ff;
-  --panel:#0f1a2d; --panel2:#0e1830;
-  --accent:#6ad1ff; --muted:#9fb3d8;
-  --gold:#f7c94d; --violet:#80c7ff;
-  --ok:#2fd97a; --warn:#f7b84f; --bad:#ff6b6b;
-}
-*{box-sizing:border-box}
-html,body{height:100%}
-body{
-  margin:0; color:var(--ink); background:radial-gradient(1100px 660px at 30% 10%, #0e1830 0%, #0b1220 55%);
-  font:16px/1.45 system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
-  overflow-x:hidden;
-}
-a{color:var(--accent); text-decoration:none}
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+  <title>AURA-X Ω — Emotion Chat (Prototype)</title>
+  <style>
+    :root{
+      --bg:#07121f; --bg2:#0d1f33; --ink:#e9f1ff;
+      --pill:#182b44; --accent:#4db7ff; --glow:#0aa6ff;
+      --ok:#38e1a4; --warn:#ffd15a; --bad:#ff7a7a;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; color:var(--ink); font:16px/1.5 ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto;
+      background: radial-gradient(1100px 650px at 50% -10%, #0c2440 0%, #081727 70%, var(--bg) 100%);
+    }
 
-/* page safe-area so left side never clips on phones */
-.page{
-  min-height:100%;
-  padding: 24px max(16px, env(safe-area-inset-right)) 120px max(16px, env(safe-area-inset-left));
-}
+    /* page frame */
+    .wrap{
+      max-width: 880px;
+      margin: 0 auto;
+      padding: 20px 14px 120px;  /* extra bottom for the dock */
+    }
+    .card{
+      background: linear-gradient(180deg, #0c2036 0%, #0b1e33 100%);
+      border-radius: 18px;
+      padding: 16px 18px;
+      box-shadow: 0 0 0 1px #0e2a49, 0 18px 40px rgba(0,0,0,.35), inset 0 0 85px rgba(13,167,255,.08);
+    }
+    .bubble{
+      background: var(--pill);
+      border-radius: 14px;
+      padding: 14px 16px;
+      margin: 12px 0;
+      box-shadow: 0 0 0 1px rgba(77,183,255,.08);
+    }
+    .hello{box-shadow: 0 0 0 1px rgba(77,183,255,.12), 0 0 40px rgba(0,170,255,.12);}
+    .tag{opacity:.8; letter-spacing:.02em}
 
-/* card / chat bubble */
-.card{
-  background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.03));
-  border:1px solid #1e324f; border-radius:16px; padding:18px 20px; margin:14px 0;
-  box-shadow:0 0 0 4px rgba(33,139,255,0.08), inset 0 0 0 1px rgba(255,255,255,0.02);
-}
-.badge{display:inline-flex; align-items:center; gap:8px; font-weight:600; opacity:.95}
-.badge .dot{width:10px; height:10px; border-radius:50%; background:var(--accent); box-shadow:0 0 10px var(--accent)}
-.bot{background:rgba(100,170,255,0.08)}
-.user{background:rgba(120,160,255,0.05)}
+    /* fixed input dock */
+    .dock{
+      position: fixed;
+      left: 0; right: 0; bottom: 0;
+      background: linear-gradient(180deg, transparent 0%, rgba(4,12,22,.75) 30%, rgba(4,12,22,.95) 100%);
+      padding: 10px 10px calc(env(safe-area-inset-bottom,0) + 16px);
+      backdrop-filter: blur(8px);
+      border-top: 1px solid rgba(77,183,255,.08);
+    }
+    .dock-inner{
+      max-width: 880px;
+      margin: 0 auto;
+      padding: 0 4px;
+    }
+    form.msg{
+      display: flex; align-items: center; gap: 12px;
+      width: 100%;
+    }
+    /* CRITICAL: ensure the text field never hides on the left */
+    .msg input[type="text"]{
+      flex: 1; min-width: 0; /* prevents overflow/hide on mobile */
+      padding: 14px 14px;
+      border-radius: 12px;
+      border: 1px solid rgba(77,183,255,.20);
+      background: #0b1e33;
+      color: var(--ink);
+      outline: none;
+    }
+    .msg input::placeholder{color:#a6c4de99}
+    .msg button{
+      padding: 12px 18px;
+      border: 0; border-radius: 12px; color:#001624;
+      background: linear-gradient(180deg, var(--accent), #43a6eb);
+      box-shadow: 0 10px 30px rgba(13,166,255,.35), 0 0 0 1px #2b9fe6 inset;
+      font-weight: 700;
+    }
 
-/* header logo line */
-.hero{display:flex; align-items:center; justify-content:center; margin:20px 0 6px}
-.logo{width:44px; height:44px; margin-right:10px; border-radius:12px;
-      background:url('../assets/img/aura-x-omega.png') center/cover no-repeat, #0d1527;}
-h1{margin:0; font-size:28px; letter-spacing:.3px}
-.lead{color:var(--muted); margin:6px 0 16px; text-align:center}
+    /* pills row */
+    .pills{display:flex; flex-wrap:wrap; gap:10px; margin:10px 0 0}
+    .pill{background:#0e2744; border:1px solid #184b76; padding:6px 10px; border-radius:999px; font-size:13px; opacity:.9}
 
-/* board + gauges */
-.board{max-width:880px; margin:0 auto;}
-
-/* meter bars */
-.meter{height:8px; border-radius:999px; background:#0c294b; overflow:hidden}
-.meter>div{height:100%; background:linear-gradient(90deg, #2d8fff, #6ad1ff); width:0%}
-.row{display:flex; gap:14px; align-items:center; margin-top:10px}
-.row label{min-width:92px; color:#9db0cf; font-size:14px}
-
-/* ---------- composer (typing area) ---------- */
-.composer-wrap{
-  position:fixed; left:0; right:0; bottom:0; z-index:40;
-  padding: 10px max(16px, env(safe-area-inset-right)) calc(10px + env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
-  background: linear-gradient(180deg, transparent, rgba(5,10,20,0.85));
-  backdrop-filter: blur(6px);
-}
-.composer{
-  max-width:880px; margin:0 auto; display:flex; gap:10px; align-items:flex-end;
-}
-.composer textarea{
-  flex:1; min-height:46px; max-height:160px; resize:none;
-  padding:14px 14px;
-  border-radius:14px; border:1px solid #1f3453; color:var(--ink);
-  background:#0f1a2d; outline:none;
-}
-.composer button{
-  flex:0 0 auto; height:46px; padding:0 22px;
-  border-radius:12px; border:none; color:#001628; font-weight:700;
-  background:linear-gradient(180deg, #3cc0ff, #2ca5ee); box-shadow:0 6px 18px rgba(44,165,238,.35);
-}
-.composer button:active{transform:translateY(1px)}
-/* ensure left edge never hides */
-.composer, .composer textarea{margin-left:0;}
-
-/* small screens tweaks */
-@media (max-width:420px){
-  h1{font-size:24px}
-  .card{padding:16px}
-}
-</style>
+    /* small screens tweaks */
+    @media (max-width:480px){
+      .wrap{padding-left:10px; padding-right:10px;}
+      .msg button{padding:12px 16px}
+    }
+  </style>
 </head>
 <body>
-  <div class="page">
-    <div class="hero">
-      <div class="logo" aria-hidden="true"></div>
-      <h1>AURA-X Ω</h1>
-    </div>
-    <p class="lead">Tell me how you feel — I map tone → emotion, adjust intensity & continuity locally (offline).</p>
-
-    <div class="board" id="board">
-      <div class="card bot" id="greet">👋 Hello! I’m AURA-X — your emotional resonance prototype. Tell me how you feel today.</div>
-
-      <div class="card">
-        <div class="row"><label>Emotion</label><span id="emoName">Calm</span></div>
-        <div class="row"><label>Intensity</label><div class="meter"><div id="intensityBar"></div></div></div>
-        <div class="row"><label>Continuity</label><div class="meter"><div id="contBar"></div></div></div>
+  <div class="wrap" id="wrap">
+    <div class="card hello">
+      <div class="bubble"><b>👋 Hello!</b> I’m AURA-X — your emotional resonance prototype. Tell me how you feel today.</div>
+      <div class="pills">
+        <div class="pill">Resonance Engine</div>
+        <div class="pill">BM-7 Layers</div>
+        <div class="pill">Local Rules</div>
+        <div class="pill">Prototype</div>
       </div>
     </div>
+
+    <div id="feed"></div>
   </div>
 
-  <!-- fixed composer -->
-  <div class="composer-wrap">
-    <form class="composer" id="composer">
-      <textarea id="input" placeholder="Type your emotion or thought..." rows="1"></textarea>
-      <button type="submit">Send</button>
-    </form>
+  <!-- input dock -->
+  <div class="dock">
+    <div class="dock-inner">
+      <form class="msg" id="form">
+        <input id="text" type="text" autocomplete="off"
+               placeholder="Type your emotion or thought…" />
+        <button id="send" type="submit">Send</button>
+      </form>
+      <div class="tag" style="margin-top:6px;opacity:.65">Ω AURA-X uses on-device emotion rules (no internet/LLM).</div>
+    </div>
   </div>
 
-<script>
-/* ---------------- STATE ---------------- */
-const STATE = { last:Date.now(), continuity:0.65, auto:true, history:[], emotion:{name:'Calm', val:0.25} };
-const board = document.getElementById('board');
-const input = document.getElementById('input');
-const iBar  = document.getElementById('intensityBar');
-const cBar  = document.getElementById('contBar');
-const eName = document.getElementById('emoName');
+  <script>
+  /* ------------------------------
+     Minimal Offline Emotion Engine
+     ------------------------------ */
 
-/* auto-resize textarea */
-function fitTA(el){
-  el.style.height='auto';
-  el.style.height = Math.min(el.scrollHeight, 160) + 'px';
-}
-['input','change'].forEach(ev => input.addEventListener(ev, ()=>fitTA(input)));
-fitTA(input);
+  // tiny lexicon (you can expand later or load a JSON)
+  const LEX = {
+    joy:     ["happy","joy","great","awesome","alhamdulillah","excited","wonderful","good","love","grateful","thanks","shukria"],
+    calm:    ["calm","ok","fine","relaxed","peace","sukoon","centered"],
+    anger:   ["angry","mad","furious","rage","ghussa","annoyed","irritated"],
+    fear:    ["afraid","scared","fear","khauf","worry","worried","anxious","anxiety","tension","panic"],
+    sadness: ["sad","down","depressed","upset","rona","cry","lonely","hurt","broken","tired","thaka"],
+    stress:  ["stress","stressed","pressure","load","overwhelmed","burnout"],
+    pain:    ["pain","dard","hurt","sick","ill","fever","headache"],
+    hope:    ["hope","umeed","insha","dream","goal","plan","focus","progress"]
+  };
 
-/* ---------------- EMOTION ENGINE (lightweight) ---------------- */
-const EMO = [
-  {name:'Joy',    color:'#2fd97a', kw:/\b(happy|joy|great|awesome|alhumdulillah|shukar)\b/i, base:0.75},
-  {name:'Calm',   color:'#6ad1ff', kw:/\b(calm|ok|fine|sabr|theek)\b/i,  base:0.35},
-  {name:'Sad',    color:'#6a8ad8', kw:/\b(sad|down|depressed|rona|dukhi)\b/i, base:0.65},
-  {name:'Anger',  color:'#ff6b6b', kw:/\b(angry|gussa|mad|furious)\b/i,   base:0.8},
-  {name:'Fear',   color:'#f7b84f', kw:/\b(afraid|dar|worry|anxious|ghabra)\b/i, base:0.7},
-  {name:'Surprise',color:'#f7c94d',kw:/\b(wow|amazed|surprised|hai?)\b/i, base:0.6},
-];
-function senseEmotion(text){
-  let match = EMO.find(e=>e.kw.test(text)) || EMO[1]; // default Calm
-  // crude intensity from punctuation/length
-  let bonus = 0;
-  bonus += Math.min(0.25, (text.match(/!/g)||[]).length * 0.07);
-  bonus += Math.min(0.25, (text.match(/[A-Z]{2,}/g)||[]).length * 0.03);
-  const val = Math.min(1, match.base + bonus);
-  return { name:match.name, val, color:match.color };
-}
-function updateMeters(){
-  iBar.style.width = (STATE.emotion.val*100).toFixed(0)+'%';
-  cBar.style.width = (STATE.continuity*100).toFixed(0)+'%';
-  eName.textContent = STATE.emotion.name;
-}
+  // layer weights (toy BM-7 mapping)
+  const LAYERS = {
+    Violet:  ["intuition","meaning"],
+    Indigo:  ["logic","alignment"],
+    Blue:    ["language","precision"],
+    Green:   ["empathy","healing"],
+    Yellow:  ["energy","drive"],
+    Orange:  ["emotion","reaction"],
+    Red:     ["stability","defense"]
+  };
 
-/* ---------------- RULED SMALL-TALK (offline) ---------------- */
-const INTENTS = [
-  { test:t=>/\b(hi|hello|hey|salam|ass?alam)\b/i.test(t),
-    reply:()=> '👋 Wa-alaikum-salam! How do you feel right now?' },
-  { test:t=>/\b(who are you|your name|kya ho tum)\b/i.test(t),
-    reply:()=> 'I’m AURA-X Ω — an offline emotional resonance prototype running in your browser.' },
-  { test:t=>/\b(where.*from|location|country|live)\b/i.test(t),
-    reply:()=> 'I live right here on your device (GitHub Pages). No cloud needed 😊' },
-  { test:t=>/\b(what can you do|features|help|kya kar sakte)\b/i.test(t),
-    reply:()=> 'I map tone→emotion, estimate intensity, keep continuity memory, and can answer from an offline Q&A pack.' },
-  { test:t=>/\b(thanks|shukriya|thank you)\b/i.test(t),
-    reply:()=> 'You’re welcome! Tell me more—what changed your mood?' },
-];
-function detectIntent(t){ return INTENTS.find(i=>i.test(t))||null; }
+  // memory / continuity
+  const STATE = {
+    lastEmotion: "calm",
+    history: []
+  };
 
-/* ---------------- OFFLINE Q&A 16K HOOK ---------------- */
-/* It first tries to load big pack `Chat/data/qa-16k.json`.
-   If missing (404), it falls back to a tiny seed `Chat/data/qa-seed.json`. */
-let QA = [];
-async function loadQA(){
-  async function tryFetch(url){
-    const r = await fetch(url); if(!r.ok) throw new Error(r.status);
-    return r.json();
-  }
-  try{
-    QA = await tryFetch('data/qa-16k.json');
-    console.log('Loaded 16k QA');
-  }catch(e){
-    console.warn('16k not found, using seed…');
-    QA = await tryFetch('data/qa-seed.json');
-  }
-}
-loadQA();
+  const feed = document.getElementById('feed');
+  const form = document.getElementById('form');
+  const text = document.getElementById('text');
 
-/* super-light scorer (token overlap + length norm) */
-function bestAnswer(q){
-  if(!QA || !QA.length) return null;
-  const qTokens = q.toLowerCase().match(/[a-z\u0600-\u06FF]+/g)||[];
-  let best = {score:0, a:null};
-  for(const item of QA){
-    const t = (item.q||'').toLowerCase();
-    let s=0;
-    for(const tok of qTokens){ if(t.includes(tok)) s+=1; }
-    s = s/Math.max(2, t.split(' ').length);
-    if(s>best.score) best = {score:s, a:item.a};
-  }
-  return best.score>0.08 ? best.a : null;
-}
+  // helpers
+  const add = (role, msg) => {
+    const div = document.createElement('div');
+    div.className = 'bubble';
+    div.innerHTML = (role === 'you' ? "🧠 <b>You:</b> " : "Ω <b>AURA-X:</b> ") + msg;
+    feed.appendChild(div);
+    // auto-scroll to latest
+    setTimeout(()=>window.scrollTo({top:document.body.scrollHeight, behavior:'smooth'}),50);
+  };
 
-/* ---------------- UI helpers ---------------- */
-function addBubble(role, text){
-  const el = document.createElement('div');
-  el.className = 'card ' + (role==='user'?'user':'bot');
-  el.textContent = text;
-  board.appendChild(el);
-  // scroll near bottom while keeping composer visible
-  window.scrollTo({top: document.body.scrollHeight, behavior:'smooth'});
-}
+  const classify = (s) => {
+    const t = " " + s.toLowerCase() + " ";
+    const score = {};
+    for (const emo in LEX){
+      score[emo] = 0;
+      for (const k of LEX[emo]){
+        if (t.includes(" " + k + " ")) score[emo] += 1;
+      }
+    }
+    // choose max; fallback to calm
+    let best = "calm", bestVal = -1;
+    for (const k in score){ if (score[k] > bestVal){ bestVal = score[k]; best = k; } }
+    // intensity simple heuristic
+    const intensity = Math.min(1, (bestVal/3));
+    return {emotion: best, intensity};
+  };
 
-/* ---------------- submit ---------------- */
-document.getElementById('composer').addEventListener('submit', async (e)=>{
-  e.preventDefault();
-  const text = input.value.trim();
-  if(!text) return;
-  addBubble('user', '🧠 You: '+text);
+  const respond = ({emotion,intensity}, raw) => {
+    // continuity blend
+    const prev = STATE.lastEmotion;
+    const changed = (emotion !== prev);
 
-  // Sense & update meters
-  STATE.emotion = senseEmotion(text);
-  // continuity nudged toward recent activity
-  STATE.continuity = Math.min(1, STATE.continuity*0.92 + 0.12);
-  updateMeters();
+    const EMOJI = {
+      joy:"😊", calm:"🫧", anger:"🔥", fear:"😟", sadness:"😢", stress:"🌀", pain:"🤕", hope:"🌅"
+    };
 
-  // intent → reply
-  const intent = detectIntent(text);
-  if(intent){ addBubble('bot', intent.reply()); input.value=''; fitTA(input); return; }
+    const openers = {
+      joy:     ["Your tone feels light and bright", "I sense warmth in your words"],
+      calm:    ["Steady and centered energy detected", "You sound grounded"],
+      anger:   ["Strong heat in your tone", "I hear tension—let’s cool this down"],
+      fear:    ["I notice worry in your words", "There’s some uncertainty present"],
+      sadness: ["Your energy feels heavy", "I hear a soft, low tone"],
+      stress:  ["You’re carrying a lot right now", "I feel the pressure in your pace"],
+      pain:    ["I sense discomfort", "Your signals show strain"],
+      hope:    ["A forward pull appears", "I feel optimism forming"]
+    };
 
-  // try offline QA
-  const ans = bestAnswer(text);
-  if(ans){ addBubble('bot', 'Ω AURA-X: '+ans); input.value=''; fitTA(input); return; }
+    const guides = {
+      joy:     "Anchor the joy with one calm breath in… out 🫁",
+      calm:    "Maintain the rhythm — slow inhale 4, hold 2, exhale 6.",
+      anger:   "Try a slow <em>box breath</em> 4-4-4-4 to release heat.",
+      fear:    "Name one thing you can control in the next 10 min.",
+      sadness: "Place a hand on chest; say: “I’m here for me.”",
+      stress:  "List 3 small tasks; pick 1 and do it gently.",
+      pain:    "If possible, hydrate and soften your shoulders.",
+      hope:    "Note one concrete step you’ll take today."
+    };
 
-  // fallback reflective reply
-  addBubble('bot', 'Ω AURA-X: I feel your tone… balancing emotional resonance 🌊');
-  input.value=''; fitTA(input);
-});
+    const intensityWord = intensity > .7 ? "strong" : intensity > .35 ? "medium" : "soft";
+    const opener = openers[emotion][Math.floor(Math.random()*openers[emotion].length)];
+    const msg1 = `${opener} — ${intensityWord} resonance ${EMOJI[emotion]}`;
+    const msg2 = guides[emotion];
 
-/* initial meters */
-updateMeters();
-</script>
+    // a tiny “content” reply that mirrors user text a bit
+    let mirror = "";
+    if (raw && raw.length > 3){
+      const slice = raw.length > 120 ? raw.slice(0,120)+"…" : raw;
+      mirror = `<br><span class="tag">Echo:</span> “${slice.replace(/[<>&]/g,'') }”`;
+    }
+
+    const continuity = changed
+      ? `<br><span class="tag">Continuity:</span> shifting from <b>${prev}</b> → <b>${emotion}</b>`
+      : `<br><span class="tag">Continuity:</span> staying in <b>${emotion}</b>`;
+
+    return `${msg1}<br>${msg2}${continuity}${mirror}`;
+  };
+
+  // submit
+  form.addEventListener('submit', (e)=>{
+    e.preventDefault();
+    const val = (text.value || "").trim();
+    if (!val) return;
+    add('you', val);
+
+    const cls = classify(val);
+    const out = respond(cls, val);
+    add('bot', out);
+
+    STATE.history.push({t:Date.now(), you:val, emo:cls.emotion, i:cls.intensity});
+    STATE.lastEmotion = cls.emotion;
+
+    text.value = "";
+    text.focus();
+  });
+
+  // allow Enter to send on mobile keyboards
+  text.addEventListener('keydown', (e)=>{
+    if (e.key === 'Enter' && !e.shiftKey){
+      e.preventDefault();
+      document.getElementById('send').click();
+    }
+  });
+  </script>
 </body>
 </html>
