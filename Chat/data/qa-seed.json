@@ -1,0 +1,6 @@
+[
+  {"q":"what is aura x", "a":"AURA-X Ω is an offline emotional resonance prototype that maps tone→emotion and can answer from a local Q&A pack."},
+  {"q":"who made aura x", "a":"It was developed by Alim ul Haq as a research prototype."},
+  {"q":"how to use", "a":"Type how you feel or ask a question. The system senses emotion, shows intensity, and replies from rules or the offline Q&A."},
+  {"q":"features", "a":"Resonance tone mapping, intensity meter, continuity memory, small-talk intents, and optional offline 16k Q&A pack."}
+]
