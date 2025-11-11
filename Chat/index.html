@@ -1,3 +1,157 @@
+<script>
+/* ===== AURA-X Local Q&A (No server needed)  ===========================
+   Paste right before </body>. It auto-hooks the "Send" button and shows
+   answers inside the chat when LLM is OFF or endpoint is missing.
+====================================================================== */
+
+// ---- 1) Config ------------------------------------------------------
+const AURA_CFG = {
+  useLocalWhenNoEndpoint: true,   // اگر endpoint نہیں ہے تو لوکل Q&A استعمال ہو
+  llmEnabledSelector: '#toggle-llm, [data-llm-toggle], input[type=checkbox][name*=llm], .llm-toggle',
+  endpointSelector: 'input[type=text][placeholder*="YOUR-WORKER"], input[placeholder*="Endpoint"], #api-endpoint',
+  sendButtonText: 'send',         // بٹن کے ٹیکسٹ سے بٹن تلاش کیا جائے گا
+};
+
+// ---- 2) Mini Q&A base (آپ اپنے 200+ سوالات یہاں بڑھا سکتے ہیں) -----
+const QA_DATA = [
+  { q: "what's your name", a: "I’m Alimai — your AURA-X guide. May I know your name?" },
+  { q: "who are you", a: "I’m Alimai, an emotional-continuity assistant built on AURA-X Ω prototype." },
+  { q: "how are you", a: "I’m resonating well. How are you feeling right now — calm, joy, or a bit tense?" },
+  { q: "may i help you", a: "Yes, please. Tell me what you’re working on; I can explain features, recall notes, or suggest a calm anchor." },
+  { q: "what is aura", a: "AURA-X Ω models emotional continuity (emotion ≠ reaction) with TM×BM resonance and optional faith/ethics filters." },
+  { q: "emotion not equal to reaction", a: "Correct. In AURA-X, emotion is a self-sustaining resonance that can persist without a fresh stimulus." },
+  { q: "who created you", a: "Alim ul Haq Khan — InvestorPoint research cell." },
+  { q: "help", a: "Type your question or feeling. I’ll respond and show a simple anchor: 1 calm breath in… out." },
+  // آپ اپنے Q/A جو پہلے میں نے دیے تھے انہیں بھی یہاں شامل کر دیں
+];
+
+// ---- 3) Helpers ------------------------------------------------------
+function norm(t){ return (t||"").toLowerCase().replace(/[^\p{L}\p{N}\s]/gu,' ').trim(); }
+function scoreMatch(u, q){ // چھوٹا سا میچ اسکور
+  u = norm(u); q = norm(q);
+  if (!q) return 0;
+  if (u === q) return 3;
+  if (u.startsWith(q)) return 2;
+  if (u.includes(q)) return 1;
+  return 0;
+}
+function findLocalAnswer(user){
+  const u = norm(user);
+  let best = {a:null, s:0};
+  for (const item of QA_DATA){
+    const s = scoreMatch(u, item.q);
+    if (s > best.s){ best = {a:item.a, s}; if (s===3) break; }
+  }
+  if (best.a) return best.a;
+
+  // Fallbacks by keyword
+  if (/\b(name|who are you)\b/i.test(u)) return "I’m Alimai — your AURA-X guide. May I know your name?";
+  if (/\b(how are you|kese ho|kesy ho)\b/i.test(u)) return "I’m resonating well. How are you feeling now?";
+  if (/\bhelp|madad|guide\b/i.test(u)) return "Tell me what you need. I can explain, recall, or suggest a calm anchor.";
+  return "Let me reflect on that. Can you rephrase in one short line?";
+}
+
+function getLLMState(){
+  // آیا LLM ٹوگل آن ہے اور endpoint دیا ہوا ہے؟
+  const toggle = document.querySelector(AURA_CFG.llmEnabledSelector);
+  const ep = document.querySelector(AURA_CFG.endpointSelector);
+  const llmOn = toggle ? !!toggle.checked : false;
+  const hasEndpoint = ep ? !!ep.value.trim() : false;
+  return { llmOn, hasEndpoint };
+}
+
+// ---- 4) Render bubble (AURA-X style, minimally themed) --------------
+function renderLocalBubble(text){
+  // چیٹ کنٹینر ڈھونڈنے کی کوشش، نہ ملے تو ان پٹ کے اوپر لگا دیں
+  const possibleContainers = [
+    document.querySelector('.messages'),
+    document.querySelector('#messages'),
+    document.querySelector('[data-chat]'),
+    document.querySelector('main')
+  ];
+  const host = possibleContainers.find(Boolean) || document.body;
+
+  const card = document.createElement('div');
+  card.setAttribute('data-local-qa','');
+  card.style.background = 'rgba(20,28,34,0.85)';
+  card.style.border = '1px solid rgba(255,255,255,0.06)';
+  card.style.borderRadius = '14px';
+  card.style.padding = '14px 16px';
+  card.style.margin = '12px 8px';
+  card.style.color = '#e8f0f6';
+  card.style.boxShadow = '0 4px 12px rgba(0,0,0,.25)';
+
+  const h = document.createElement('div');
+  h.textContent = 'Ω AURA-X (local Q&A)';
+  h.style.fontWeight = '700';
+  h.style.marginBottom = '6px';
+  h.style.opacity = '.9';
+
+  const p = document.createElement('div');
+  p.textContent = text;
+
+  const anchor = document.createElement('div');
+  anchor.style.marginTop = '8px';
+  anchor.style.opacity = '.8';
+  anchor.textContent = 'Anchor: one calm breath in… out 🫁';
+
+  card.appendChild(h);
+  card.appendChild(p);
+  card.appendChild(anchor);
+  host.appendChild(card);
+  // تھوڑا اسکرول نیچے
+  try { card.scrollIntoView({behavior:'smooth', block:'end'}); } catch(e){}
+}
+
+// ---- 5) Hook “Send” button ------------------------------------------
+function findInput(){
+  // سب سے نیچے والا textarea/ input
+  const tx = [...document.querySelectorAll('textarea,input[type=text]')].pop();
+  return tx;
+}
+function findSendButton(){
+  const allBtns = [...document.querySelectorAll('button')];
+  const sendBtn = allBtns.find(b => (b.textContent||'').trim().toLowerCase()===AURA_CFG.sendButtonText)
+               || allBtns.find(b => b.textContent?.match(/send/i));
+  return sendBtn;
+}
+
+function attachLocalQA(){
+  const btn = findSendButton();
+  const input = findInput();
+  if(!btn || !input) return; // UI ابھی لوڈ ہو رہا ہے
+
+  // بار بار نہ لگے
+  if (btn.dataset.auraLocalHooked) return;
+  btn.dataset.auraLocalHooked = '1';
+
+  btn.addEventListener('click', (ev)=>{
+    const { llmOn, hasEndpoint } = getLLMState();
+
+    // اگر LLM بند ہے یا endpoint نہیں ہے اور ہم نے لوکل فعال رکھا ہے تو لوکل جواب دکھائیں
+    if (AURA_CFG.useLocalWhenNoEndpoint && (!llmOn || !hasEndpoint)){
+      // تھوڑا سا وقفہ تاکہ آپ کا اصل UI یوزر میسج رینڈر کر دے
+      setTimeout(()=>{
+        const user = input.value || input.dataset.value || '';
+        if (user && user.trim()){
+          const ans = findLocalAnswer(user);
+          renderLocalBubble(ans);
+        }
+      }, 60);
+    }
+    // ورنہ کچھ نہ کریں، اصل LLM والا فلو چلے گا
+  });
+}
+
+// DOM تیار ہوتے ہی ہُک لگا دیں
+document.addEventListener('DOMContentLoaded', ()=>{
+  attachLocalQA();
+  // اگر UI لیٹ لوڈ ہو تو کچھ بار پھر کوشش
+  setTimeout(attachLocalQA, 500);
+  setTimeout(attachLocalQA, 1500);
+});
+</script>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
