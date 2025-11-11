@@ -8,6 +8,7 @@
   :root{
     --bg:#0f1216; --card:#171c22; --muted:#9bb0c0; --text:#eaf2f8; --accent:#86e1ff;
     --border:rgba(255,255,255,.07); --soft:rgba(255,255,255,.04);
+    --glow:#79eaff;
   }
   *{box-sizing:border-box}
   html,body{height:100%}
@@ -33,6 +34,15 @@
   .rx{margin-top:10px;padding-top:10px;border-top:1px dashed var(--soft);color:#cde7f5}
   a{color:#9ae6ff}
   .tag{display:inline-block;padding:2px 8px;border:1px solid var(--border);border-radius:999px;color:var(--muted);font-size:12px;margin-right:6px}
+  /* Glowing emoji for high intensity */
+  .glow{
+    filter: drop-shadow(0 0 6px var(--glow)) drop-shadow(0 0 14px rgba(121,234,255,.55));
+    animation:pulse 1.8s ease-in-out infinite;
+  }
+  @keyframes pulse{
+    0%,100%{transform:translateZ(0) scale(1)}
+    50%{transform:translateZ(0) scale(1.06)}
+  }
 </style>
 </head>
 <body>
@@ -74,78 +84,110 @@
 </footer>
 
 <script>
-/* ========== Local Engine ========== */
+/* ===== Helpers ===== */
 const Memory = { userName:null, learned:[] };
 const norm = s => (s||'').toLowerCase().replace(/[^\p{L}\p{N}\s]/gu,' ').replace(/\s+/g,' ').trim();
 const pick = (arr,i) => arr[(Math.abs(i)||0)%arr.length];
 
+/* ===== Chat DOM ===== */
+const chat = document.getElementById('chat');
+const input = document.getElementById('input');
+const sendBtn = document.getElementById('send');
+const spacer = document.getElementById('spacer');
+const foot = document.getElementById('foot');
+
+function sizeFooterSpacer(){
+  const h = foot.getBoundingClientRect().height;
+  spacer.style.height = (h + 24) + 'px';
+}
+function scrollToBottom(){
+  // scroll the last message fully into view then lock to page bottom
+  const last = chat.lastElementChild;
+  if(last) last.scrollIntoView({behavior:'smooth', block:'end'});
+  setTimeout(()=>window.scrollTo({top: document.body.scrollHeight, behavior:'smooth'}), 40);
+}
+sizeFooterSpacer();
+window.addEventListener('resize', ()=>{ sizeFooterSpacer(); scrollToBottom(); });
+input.addEventListener('focus', ()=>{ sizeFooterSpacer(); scrollToBottom(); });
+
+/* Keep observing new nodes to auto-scroll */
+const mo = new MutationObserver(scrollToBottom);
+mo.observe(chat, {childList:true});
+
+/* ===== Name capture ===== */
 function tryCaptureName(text){
   const m = text.match(/\b(my\s+name\s+is|i\s*am|i'm)\s+([A-Za-z][A-Za-z\-.'\s]{1,30})$/i);
   if(m){ const name=m[2].trim().replace(/\s+/g,' '); Memory.userName=name; return `Nice to meet you, ${name}. I’ll remember your name for this session.` }
   return null;
 }
 
-/* ---------- BM-7 replies (49/layer, half appreciation, half caution) ---------- */
+/* ===== BM-7 emotional notes with emojis (glow if intensity≥5) ===== */
 const LAYERS=[
-  {name:'Violet',theme:['calm','quiet focus','still mind','soft breath','presence','lightness','ease']},
-  {name:'Indigo',theme:['insight','inner seeing','pattern sense','reflection','discernment','intuition','overview']},
-  {name:'Blue',theme:['clarity','clean wording','precision','truthfulness','clear sky','voice','definition']},
-  {name:'Green',theme:['balance','care','kind tempo','steadiness','repair','cooperation','harmony']},
-  {name:'Yellow',theme:['growth','learning','curiosity','spark','structure','steps','practice']},
-  {name:'Orange',theme:['courage','creative push','bold try','momentum','risk with care','drive','energy']},
-  {name:'Red',theme:['resolve','ground','now action','priority','protect','commit','finish']},
+ {name:'Violet',emotion:'calm',emoji:'🟣'},
+ {name:'Indigo',emotion:'insight',emoji:'🔮'},
+ {name:'Blue',emotion:'clarity',emoji:'💧'},
+ {name:'Green',emotion:'balance',emoji:'💚'},
+ {name:'Yellow',emotion:'growth',emoji:'⚡'},
+ {name:'Orange',emotion:'courage',emoji:'🧡'},
+ {name:'Red',emotion:'resolve',emoji:'❤️'}
 ];
-
-function layerReply(layerIdx,intensity,variantSeed){
-  const L=LAYERS[layerIdx], t=L.theme; const v=Math.abs(variantSeed)%7;
+function layerReply(layerIdx,intensity,seed){
+  const L = LAYERS[layerIdx];
+  const v = Math.abs(seed)%7;
   const appreciate=[
-   '— good direction, keep it steady.',
-   '— small progress counts; nice work.',
-   '— you’re aligning well.',
-   '— note the ease you gain.',
-   '— clear and simple is strong.',
-   '— keep momentum; you’ve got this.',
-   '— grounded and on track.'
+    'good direction—stay steady.',
+    'small progress counts; nice work.',
+    'you are aligning with what matters.',
+    'notice the ease you gain.',
+    'clear and simple is strong.',
+    'keep momentum; you’ve got this.',
+    'grounded and on track.'
   ];
   const caution=[
-   '— avoid rushing; guard clarity.',
-   '— check assumptions before acting.',
-   '— reduce one risk first.',
-   '— keep words precise; no guesswork.',
-   '— pause if tension spikes.',
-   '— set a boundary; then continue.',
-   '— finish one thing before the next.'
+    'avoid rushing; guard clarity.',
+    'check assumptions before acting.',
+    'reduce one risk first.',
+    'keep words precise; no guesswork.',
+    'pause if tension spikes.',
+    'set a boundary; then continue.',
+    'finish one thing before the next.'
   ];
-  const openers=['Keep','Try','Hold','Return to','Lean into','Stay with','Anchor in'];
-  const bodies=[`one ${t[v]} cue`,`a short ${t[v]} pause`,`your ${t[v]} while you type`,
-                `${t[v]} for two breaths`,`${t[v]} as you decide`,`a ${t[v]} step now`,`${t[v]} for one minute`];
-  const tones=['gently','softly','evenly','steadily','with clear intention','with strong intention','with firm resolve'];
-  const tail=(intensity>=5)? caution[v]: (intensity<=3? appreciate[v]: (v%2?appreciate[v]:caution[v]));
-  return `${pick(openers,v)} ${pick(bodies,v)} ${tones[intensity-1]} ${tail}`;
+  const tails = (intensity>=5)? caution : (intensity<=3? appreciate : (v%2? appreciate:caution));
+  const body = [
+    `breathe for two beats of ${L.emotion}`,
+    `hold one ${L.emotion} cue`,
+    `write with ${L.emotion} in one short sentence`,
+    `take a ${L.emotion} step now`,
+    `keep ${L.emotion} while you decide`,
+    `return to ${L.emotion} before the next line`,
+    `anchor in ${L.emotion} for one minute`
+  ][v];
+  const tone = ['gently','softly','evenly','steadily','with clear intention','with strong intention','with firm resolve'][intensity-1];
+  const glow = (intensity>=5)? 'glow':'';
+  return `<span class="${glow}">${L.emoji}</span> ${body} ${tone} — ${tails[v]}`;
 }
 
-/* ---------- Knowledge Base (100+ via expansion) ---------- */
+/* ===== Knowledge Base (100+ base + teach) ===== */
 const KB=[]; const addQA=(patterns,answer)=>KB.push({patterns,answer});
-
 addQA([/^(hi|hello|hey)\b/i,/\bassalam|salam\b/i],()=>`Hello${Memory.userName? ' '+Memory.userName:''}! How can I help today?`);
 addQA([/\bhow\s+are\s+you\b/i],()=>`I’m doing well${Memory.userName? ', '+Memory.userName:''}. How are you feeling and what are you working on?`);
 addQA([/\bwhat'?s?\s+your\s+name\b/i,/\bwho\s+are\s+you\b/i],()=>`I’m <b>Alimai</b>, your AURA-X assistant.`);
-addQA([/\bwho\s+created\s+you\b/i],()=>`Created by <b>Alim ul Haq Khan</b> (InvestorPoint research cell) as part of AURA-X Ω.`);
+addQA([/\bwho\s+created\s+you\b/i],()=>`Created by <b>Alim ul Haq Khan</b> as part of AURA-X Ω.`);
 addQA([/\bwhat\s+can\s+you\s+do\b/i,/\bhelp\b/i],()=>`I answer with brief reasoning, remember your name this session, learn via <i>teach:</i>, and add BM-7 guidance.`);
-addQA([/\bemotion(s)?\s+not\s+equal\s+to\s+reaction\b/i,/\bemotion\s*≠\s*reaction\b/i],()=>`In AURA-X, emotion is a resonance that can persist without fresh stimulus—so it isn’t merely reaction.`);
+addQA([/\bemotion(s)?\s+not\s+equal\s+to\s+reaction\b/i,/\bemotion\s*≠\s*reaction\b/i],()=>`Emotion = resonance that can persist without fresh stimulus — not merely reaction.`);
 addQA([/\bpatent\b/i,/\buk\s*ipo\b/i,/\bgb2518804\.6\b/i],()=>`Priority secured with UK IPO filing ref <b>GB2518804.6</b>.`);
-addQA([/\binstallment|plot|society|gulshan\b/i],()=>`Give plot type, down payment date, and paid months/amount; I’ll outline due/arrears logic.`);
 addQA([/\bdate\s+today\b/i,/\bwhat\s+time\b/i],()=>`Local device time: ${new Date().toLocaleString()}.`);
 
-const variations=[
+/* quick variations to reach 100+ */
+const groups = [
  ["what is your purpose","why are you here","what do you do"],
  ["may i know your name","tell me your name","identify yourself"],
  ["can you help me","i need help","assist me"],
- ["where are you from","your origin","who built you"],
+ ["where are you from","origin","who built you"],
  ["explain aura x","aura model","emotional continuity"],
  ["teach me","learn with me","how to learn"],
  ["save my name","remember me","store my identity"],
- ["clear mind tip","calm me","reduce stress"],
+ ["calm me","reduce stress","clear mind tip"],
  ["set goals","next step","what should i do next"],
  ["explain emotion","what is emotion","feeling vs reaction"],
  ["tell a quote","motivate me","inspire me"],
@@ -156,11 +198,11 @@ const variations=[
  ["version","about this app","credits"],
  ["ok","fine","hmm"]
 ];
-const varAnswers=[
+const answers = [
  ()=>`I provide clear answers with short reasoning and a BM-7 note.`,
  ()=>`I’m Alimai. Share your name and I’ll remember it this session.`,
  ()=>`Tell me the task; I’ll reason it into small steps.`,
- ()=>`Built in AURA-X prototype within InvestorPoint research cell.`,
+ ()=>`Built inside the AURA-X prototype.`,
  ()=>`AURA-X bridges logic and memory resonance (emotion ≠ reaction).`,
  ()=>`We learn by: ask → try → reflect → improve.`,
  ()=>`Say: <code>My name is …</code>`,
@@ -169,18 +211,17 @@ const varAnswers=[
  ()=>`Emotion = resonance across memory; reaction = one output.`,
  ()=>`“Small steps done steadily beat big plans undone.”`,
  ()=>`Session-only memory in your browser; clear anytime.`,
- ()=>`Later you may add an API endpoint; for now everything is local.`,
+ ()=>`Later you can add an API endpoint; for now it’s local.`,
  ()=>`Format: <code>teach: question =&gt; answer</code>`,
  ()=>`I learn only what you explicitly teach with the teach command.`,
- ()=>`This is a single-file local app.`,
+ ()=>`Single-file local app; credits: Alim ul Haq Khan.`,
  ()=>`Noted. What shall we do next?`
 ];
-for(let i=0;i<variations.length;i++){
-  const group=variations[i];
-  addQA(group.map(v=>new RegExp(v,'i')),varAnswers[i]);
+for(let i=0;i<groups.length;i++){
+  addQA(groups[i].map(v=>new RegExp(v,'i')),answers[i]);
 }
 
-/* ---------- 40 Socratic prompts when answer unknown ---------- */
+/* 40 Socratic prompts — used if no match (never says “I don’t know”) */
 const SOCRATIC = [
  "What outcome do you want in one sentence?",
  "What is the smallest next step that moves you closer?",
@@ -224,10 +265,10 @@ const SOCRATIC = [
  "What will you complete in the next hour?"
 ];
 
-/* ---------- Reasoner / Matcher ---------- */
+/* ===== Reasoner / Matcher ===== */
 function findAnswer(userText){
-  const nameSaved = tryCaptureName(userText);
-  if(nameSaved) return {answer:nameSaved, why:'Captured name from your sentence.'};
+  const captured = tryCaptureName(userText);
+  if(captured) return {answer:captured, why:'Captured name from your sentence.'};
 
   const u = norm(userText);
   for(const pair of Memory.learned){ if(u===norm(pair.q)) return {answer:pair.a, why:'Matched your taught Q&A.'}; }
@@ -238,13 +279,11 @@ function findAnswer(userText){
       return {answer:ans, why:'Matched a known pattern.'};
     }
   }
-
-  // Socratic fallback (no “I don’t have answer”)
   const probe = pick(SOCRATIC, [...userText].reduce((a,c)=>a+c.charCodeAt(0),0));
   return {answer: probe, why:'Using Socratic prompt to refine the question.'};
 }
 
-/* ---------- Teaching ---------- */
+/* ===== Teach ===== */
 function handleTeach(text){
   const m = text.match(/^teach\s*:\s*(.+?)\s*=>\s*(.+)$/i);
   if(!m) return null;
@@ -253,29 +292,16 @@ function handleTeach(text){
   return `Learned.<br><b>Q:</b> ${q}<br><b>A:</b> ${a}`;
 }
 
-/* ---------- Chat plumbing + autoscroll fix ---------- */
-const chat=document.getElementById('chat');
-const input=document.getElementById('input');
-const sendBtn=document.getElementById('send');
-const spacer=document.getElementById('spacer');
-const foot=document.getElementById('foot');
-
-function sizeFooterSpacer(){
-  const h = foot.getBoundingClientRect().height;
-  spacer.style.height = (h+24)+'px';
-}
-sizeFooterSpacer();
-window.addEventListener('resize', sizeFooterSpacer);
-
+/* ===== UI helper ===== */
 function addMsg(who,html,cls=''){
   const div=document.createElement('div');
   div.className=`msg ${cls}`;
   div.innerHTML=`<div class="who">${who}</div><div>${html}</div>`;
   chat.appendChild(div);
-  // ensure full visibility even with mobile keyboard
-  setTimeout(()=>div.scrollIntoView({behavior:'smooth', block:'end'}), 10);
+  scrollToBottom();
 }
 
+/* ===== Compose emotional layer note ===== */
 function encouragement(userText){
   const layerIdx=+document.getElementById('layer').value;
   const intensity=+document.getElementById('intensity').value;
@@ -283,21 +309,19 @@ function encouragement(userText){
   return layerReply(layerIdx,intensity,seed);
 }
 
-sendBtn.addEventListener('click', ()=>{
+/* ===== Send handler ===== */
+document.getElementById('send').addEventListener('click', ()=>{
   const text=input.value.trim(); if(!text) return;
   addMsg(Memory.userName||'You', text, 'user');
   input.value='';
-
   const taught=handleTeach(text);
   if(taught){ addMsg('Alimai', taught + `<div class="rx hint">Reasoning: stored as new Q&A for this session.</div>`); return; }
-
   const {answer, why}=findAnswer(text);
   const layerNote=encouragement(text);
   addMsg('Alimai', `${answer}<div class="rx hint">Reasoning: ${why}. Layer note: ${layerNote}</div>`);
 });
+input.addEventListener('keydown',(e)=>{ if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();document.getElementById('send').click();} });
 
-// Enter to send
-input.addEventListener('keydown',(e)=>{ if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendBtn.click();} });
 </script>
 </body>
 </html>
