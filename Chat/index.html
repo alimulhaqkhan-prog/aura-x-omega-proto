@@ -398,3 +398,60 @@ auraTo('calm'); setBackdrop('calm');
 
 BM_MESSAGES = { L1:[...70 msgs...], L2:[...70 msgs...], …, L7:[...70 msgs...] };
 
+
+<script>
+// ----- Basic local Q&A switch (no server needed) -----
+AURA_DATA = window.AURA_DATA || {};
+AURA_DATA.llm_enabled = false;        // LLM بند
+AURA_DATA.endpoint   = "";            // خالی چھوڑ دیں
+
+// اگر آپ نے qa_basic کو کسی ویری ایبل میں رکھا ہے:
+const QA_DATA = (window.QA_DATA || []);  // [{q:"what's your name", a:"I'm Alimai..."}, ...]
+
+function normalize(t){ return (t||"").toLowerCase().replace(/[^\p{L}\p{N}\s]/gu," ").trim(); }
+
+function localAnswer(user){
+  const u = normalize(user);
+  // 1) exact / startsWith / includes میچ
+  let best = QA_DATA.find(x => normalize(x.q) === u)
+          ||  QA_DATA.find(x => u.startsWith(normalize(x.q)))
+          ||  QA_DATA.find(x => u.includes(normalize(x.q)));
+  // 2) بہت عام سوالات نہ ملیں تو soft fallback
+  if(!best){
+    // چند کی ورڈز کی بنیاد پر fallback
+    if(/\b(name|who are you)\b/i.test(u)) best = {a:"I’m Alimai — your AURA-X guide. May I know your name?"};
+    else if(/\b(how are you|kese ho|kesy ho)\b/i.test(u)) best = {a:"I’m resonating well. How are you feeling right now?"};
+    else if(/\bhelp|madad|guide\b/i.test(u)) best = {a:"Tell me what you need. I can explain features, recall notes, or suggest a calm anchor."};
+  }
+  return best ? best.a : "Let me reflect on that. Can you rephrase in 1 short line?";
+}
+
+// UI انضمام: جب “LLM” بند ہو تو اسی سے جواب بنائیں
+async function getAnswer(userText){
+  // اگر کہیں اور یہ فنکشن موجود ہے تو اس میں یہ چیک رکھ دیں
+  if (AURA_DATA.llm_enabled && AURA_DATA.endpoint){
+    // ...آپ کا موجودہ fetch LLM کوڈ یہاں رہے گا...
+  } else {
+    return localAnswer(userText);
+  }
+}
+
+// مثال: send بٹن ہینڈلر میں
+window.handleUserSubmit = async function(userText){
+  const reply = await getAnswer(userText);
+  renderAnswerBubble(reply); // آپ کے UI میں جواب دکھانے کا فنکشن
+};
+</script>
+
+<script>
+function initLLMToggle(){
+  const hasEndpoint = !!AURA_DATA.endpoint;
+  const llmSwitch = document.querySelector('#toggle-llm'); // آپ کے HTML میں چیک باکس کا id
+  if (llmSwitch){
+    llmSwitch.checked = hasEndpoint; // endpoint نہ ہو تو بند
+  }
+  const tip = document.querySelector('#endpoint-tip');
+  if (tip) tip.textContent = hasEndpoint ? "" : "No endpoint set — using local Q&A.";
+}
+window.addEventListener('DOMContentLoaded', initLLMToggle);
+</script>
