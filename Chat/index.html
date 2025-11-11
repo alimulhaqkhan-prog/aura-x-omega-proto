@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
-<title>AURA-X • Emotional Resonance</title>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover"/>
+<title>AURA-X • Live Emotion + Summary %</title>
 <style>
   :root{
     --bg:#0b1220; --card:#142136; --text:#eaf2ff; --muted:#9eb1cc; --radius:18px;
@@ -12,29 +12,43 @@
   html,body{height:100%}
   body{margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,Arial;color:var(--text);background:#000;overflow-x:hidden}
 
-  .pulse{position:fixed;inset:0;z-index:-2;background:radial-gradient(circle at 50% 40%, rgba(49,168,255,.33) 0%, transparent 70%);
-         animation:pulse 6s ease-in-out infinite;transition:background .8s ease,opacity .5s ease}
-  @keyframes pulse{0%{opacity:.55;transform:scale(1)}50%{opacity:.95;transform:scale(1.04)}100%{opacity:.55;transform:scale(1)}}
+  /* Live aura backdrop */
+  .pulse{position:fixed;inset:0;z-index:-2;
+    background:radial-gradient(circle at 50% 40%, rgba(49,168,255,.33) 0%, transparent 70%);
+    animation:pulse 6s ease-in-out infinite;transition:background .8s ease,opacity .5s ease}
+  @keyframes pulse{0%{opacity:.55;transform:scale(1)}50%{opacity:.98;transform:scale(1.04)}100%{opacity:.55;transform:scale(1)}}
   .glow{position:fixed;inset:0;z-index:-1;background:radial-gradient(closest-side, rgba(49,168,255,.35), #0000 70%);filter:blur(22px);transition:background .8s ease}
 
   .wrap{min-height:100%;display:flex;flex-direction:column}
-  header{padding:18px 18px 4px;text-align:center}
-  .badge{display:inline-flex;gap:8px;align-items:center;padding:6px 12px;border-radius:999px;background:#ffffff14;color:#cfe6ff;font-size:12px;border:1px solid #ffffff18}
+  header{padding:18px 18px 6px;text-align:center}
+  .badge{display:inline-flex;gap:10px;align-items:center;padding:6px 12px;border-radius:999px;background:#ffffff14;color:#cfe6ff;font-size:12px;border:1px solid #ffffff18}
 
-  .chat{width:100%;max-width:860px;margin:0 auto;padding:10px 14px 92px}
+  .chat{width:100%;max-width:880px;margin:0 auto;padding:10px 14px 110px}
   .bubble{background:#132135;border:1px solid #ffffff14;border-radius:var(--radius);padding:16px 18px;margin:12px 0;line-height:1.45;
           box-shadow:0 8px 18px #00000030}
   .user{background:#0f1b2d}
   .bot-title{font-weight:700;margin-bottom:6px}
   .muted{color:var(--muted)} .echo{opacity:.9;font-style:italic}
 
-  .composer{position:fixed;left:0;right:0;bottom:0;padding:10px 12px 16px;background:linear-gradient(to top,#060a13 55%,transparent);backdrop-filter:saturate(120%) blur(2px)}
-  .composer-inner{max-width:860px;margin:0 auto;display:flex;gap:10px;align-items:center}
-  .input{flex:1;min-height:46px;padding:12px 14px;border-radius:14px;background:#0f1a2c;color:var(--text);border:1px solid #ffffff18;outline:none;font-size:16px}
+  /* Composer with aura ring */
+  .composer{position:fixed;left:0;right:0;bottom:0;padding:10px 12px 18px;background:linear-gradient(to top,#060a13 55%,transparent);backdrop-filter:saturate(120%) blur(2px)}
+  .composer-inner{max-width:880px;margin:0 auto;display:flex;gap:10px;align-items:center}
+  .input-wrap{position:relative;flex:1}
+  .input{width:100%;min-height:48px;padding:12px 14px;border-radius:14px;background:#0f1a2c;color:var(--text);border:1px solid #ffffff18;outline:none;font-size:16px}
   .input::placeholder{color:#7f93b3}
-  .send{height:46px;padding:0 18px;border:none;border-radius:12px;background:linear-gradient(180deg,#32b3ff,#1493ee);color:#fff;font-weight:700;letter-spacing:.2px;
+  .ring{pointer-events:none;position:absolute;inset:-3px;border-radius:16px;border:2px solid rgba(50,179,255,.45);
+        box-shadow:0 0 18px rgba(50,179,255,.26),0 0 38px rgba(50,179,255,.16);transition:all .5s ease}
+  .send{height:48px;padding:0 18px;border:none;border-radius:12px;background:linear-gradient(180deg,#32b3ff,#1493ee);color:#fff;font-weight:700;letter-spacing:.2px;
         box-shadow:0 10px 18px #1190ee55}
-  @media (max-width:420px){.chat{padding-bottom:98px}.bubble{padding:14px}}
+
+  /* Summary pill + ring */
+  .sum{display:flex;align-items:center;gap:10px;margin-top:10px}
+  .pill{background:#ffffff14;border:1px solid #ffffff18;border-radius:999px;padding:6px 10px;font-size:12px;color:#cfe6ff}
+  .ringwrap{position:relative;width:38px;height:38px}
+  .ringwrap svg{transform:rotate(-90deg)}
+  .pct{position:absolute;inset:0;display:grid;place-items:center;font-size:11px;color:#cfe6ff}
+
+  @media (max-width:420px){.chat{padding-bottom:120px}.bubble{padding:14px}}
 </style>
 </head>
 <body>
@@ -48,106 +62,173 @@
       <div class="bubble">👋 Hello! I’m AURA-X — your emotional resonance prototype. Tell me how you feel today.</div>
     </main>
 
-    <!-- form استعمال: tap اور Enter دونوں کام کریں -->
     <div class="composer">
       <form id="composerForm" class="composer-inner" autocomplete="off">
-        <input id="inp" class="input" type="text" placeholder="Type your emotion or thought…" />
+        <div class="input-wrap">
+          <input id="inp" class="input" type="text" placeholder="Type your emotion or paste a long text…"/>
+          <div id="ring" class="ring"></div>
+        </div>
         <button id="sendBtn" class="send" type="submit">Send</button>
       </form>
     </div>
   </div>
 
 <script>
-  /* --------- colors & helpers --------- */
-  const COLORS = { joy:"#ffd648", sadness:"#3aa4ff", anger:"#ff4d5a", fear:"#9b6bff", calm:"#26d4a8", confused:"#b8c5ff" };
-  const hexA = (h,a=.28)=>{h=h.replace("#","");const r=parseInt(h.slice(0,2),16),g=parseInt(h.slice(2,4),16),b=parseInt(h.slice(4,6),16);return `rgba(${r},${g},${b},${a})`};
-  document.body.style.backgroundImage=`radial-gradient(1100px 650px at 50% -8%, ${hexA(COLORS.calm,.22)} 0%, #000 58%)`;
+/* ---------- color helpers & theme ---------- */
+const COLORS={ joy:"#ffd648", sadness:"#3aa4ff", anger:"#ff4d5a", fear:"#9b6bff", calm:"#26d4a8", confused:"#b8c5ff" };
+const hexA=(h,a=.28)=>{h=h.replace("#","");const r=parseInt(h.slice(0,2),16),g=parseInt(h.slice(2,4),16),b=parseInt(h.slice(4,6),16);return `rgba(${r},${g},${b},${a})`};
+document.body.style.backgroundImage=`radial-gradient(1100px 650px at 50% -8%, ${hexA(COLORS.calm,.22)} 0%, #000 58%)`;
 
-  /* --------- DOM --------- */
-  const chat = document.getElementById("chat");
-  const form = document.getElementById("composerForm");
-  const inp  = document.getElementById("inp");
-  const glow = document.getElementById("glow");
-  const pulse= document.getElementById("pulse");
-  const state= document.getElementById("state");
+const chat=document.getElementById("chat");
+const form=document.getElementById("composerForm");
+const inp=document.getElementById("inp");
+const glow=document.getElementById("glow");
+const pulse=document.getElementById("pulse");
+const state=document.getElementById("state");
+const ring=document.getElementById("ring");
 
-  /* --------- emotion rules --------- */
-  const RULES=[
-    {emo:"joy",kw:["happy","excited","hope","love","great","good","alhamdulillah","shukar"]},
-    {emo:"sadness",kw:["sad","cry","upset","hurt","empty","alone","tired","down"]},
-    {emo:"anger",kw:["angry","mad","furious","rage","hate","annoy"]},
-    {emo:"fear",kw:["afraid","scared","worry","anxious","panic"]},
-    {emo:"calm",kw:["calm","ok","fine","relaxed","breathe","sabr"]},
-    {emo:"confused",kw:["confused","unsure","maybe"]}
-  ];
-  let last="calm";
-  const toneFace=e=>({joy:"😊",sadness:"🥲",anger:"😠",fear:"😟",calm:"😌",confused:"🤔"}[e]||"🙂");
-  const toneText=e=>({joy:"light and bright",sadness:"low and heavy",anger:"hot and sharp",fear:"thin and shaky",calm:"even and steady",confused:"wavering and unsure"}[e]||"balanced");
+/* ---------- emotion rules ---------- */
+const RULES=[
+  {emo:"joy",kw:["happy","excited","hope","love","great","good","alhamdulillah","shukar","smile"]},
+  {emo:"sadness",kw:["sad","cry","upset","hurt","empty","alone","tired","down","depress"]},
+  {emo:"anger",kw:["angry","mad","furious","rage","hate","annoy","irrit"]},
+  {emo:"fear",kw:["afraid","scared","worry","anxious","panic","fear"]},
+  {emo:"calm",kw:["calm","ok","fine","relaxed","breathe","sabr"]},
+  {emo:"confused",kw:["confused","unsure","maybe","unclear"]}
+];
+let last="calm";
+const toneFace=e=>({joy:"😊",sadness:"🥲",anger:"😠",fear:"😟",calm:"😌",confused:"🤔"}[e]||"🙂");
+const toneText=e=>({joy:"light and bright",sadness:"low and heavy",anger:"hot and sharp",fear:"thin and shaky",calm:"even and steady",confused:"wavering and unsure"}[e]||"balanced");
 
-  function detect(t){
-    t=t.toLowerCase();
-    for(const r of RULES) if(r.kw.some(k=>t.includes(k))) return r.emo;
-    if(/happy|joy|smile/.test(t)) return "joy";
-    if(/sad|cry|depress|down/.test(t)) return "sadness";
-    if(/angry|annoy|irrit/.test(t)) return "anger";
-    if(/fear|scare|worr|anx/.test(t)) return "fear";
-    if(/confus|unsure|maybe/.test(t)) return "confused";
-    return "calm";
-  }
-  function smooth(next){
-    if(next===last) return next;
-    const fast=(last==="joy"&&next==="sadness")||(last==="sadness"&&next==="joy");
-    if(fast){ last=next; return next; }
-    if(last!=="calm" && next!=="calm"){ last="calm"; return "calm"; }
-    last=next; return next;
-  }
-  function auraTo(e){
-    const c=COLORS[e]||COLORS.calm;
-    document.body.style.backgroundImage=`radial-gradient(1100px 650px at 50% -8%, ${hexA(c,.22)} 0%, #000 58%)`;
-    glow.style.background=`radial-gradient(closest-side, ${hexA(c,.32)}, #0000 70%)`;
-    pulse.style.background=`radial-gradient(circle at 50% 40%, ${hexA(c,.34)} 0%, transparent 70%)`;
-    state.textContent=e;
-  }
+function detect(t){
+  t=t.toLowerCase();
+  for(const r of RULES) if(r.kw.some(k=>t.includes(k))) return r.emo;
+  if(/happy|joy/.test(t)) return "joy";
+  if(/sad|cry|down/.test(t)) return "sadness";
+  if(/angry|annoy|irrit/.test(t)) return "anger";
+  if(/fear|scare|worr|anx/.test(t)) return "fear";
+  if(/confus|unsure/.test(t)) return "confused";
+  return "calm";
+}
+function smooth(next){
+  if(next===last) return next;
+  const fast=(last==="joy"&&next==="sadness")||(last==="sadness"&&next==="joy");
+  if(fast){ last=next; return next; }
+  if(last!=="calm" && next!=="calm"){ last="calm"; return "calm"; }
+  last=next; return next;
+}
+function auraTo(e){
+  const c=COLORS[e]||COLORS.calm;
+  document.body.style.backgroundImage=`radial-gradient(1100px 650px at 50% -8%, ${hexA(c,.22)} 0%, #000 58%)`;
+  glow.style.background=`radial-gradient(closest-side, ${hexA(c,.32)}, #0000 70%)`;
+  pulse.style.background=`radial-gradient(circle at 50% 40%, ${hexA(c,.34)} 0%, transparent 70%)`;
+  state.textContent=e;
+  ring.style.borderColor=hexA(c,.70);
+  ring.style.boxShadow=`0 0 18px ${hexA(c,.55)},0 0 38px ${hexA(c,.30)}`;
+}
 
-  function addUser(text){
-    const b=document.createElement("div");
-    b.className="bubble user";
-    b.innerHTML="🧠 <strong>You:</strong> "+escapeHTML(text);
-    chat.appendChild(b); toEnd();
-  }
-  function addBot(em,text,cont){
-    const b=document.createElement("div");
-    b.className="bubble";
-    b.innerHTML=`<div class="bot-title">Ω AURA-X:</div>
-      <div>Your tone feels <em>${toneText(em)}</em> — soft resonance ${toneFace(em)}</div>
-      <div class="muted">Anchor the ${em==="anger"?"heat":"joy"} with one calm breath in… out 🫁</div>
-      <div class="muted">Continuity: <strong>${cont}</strong></div>
-      <div class="echo">Echo: “${escapeHTML(text)}”</div>`;
-    chat.appendChild(b); toEnd();
-  }
-  function toEnd(){requestAnimationFrame(()=>window.scrollTo({top:document.body.scrollHeight,behavior:"smooth"}));}
-  const escapeHTML=s=>s.replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[m]));
+/* ---------- chat helpers ---------- */
+function addUser(text){
+  const b=document.createElement("div");
+  b.className="bubble user";
+  b.innerHTML="🧠 <strong>You:</strong> "+escapeHTML(text);
+  chat.appendChild(b); toEnd();
+}
+function addBot(em,text,cont,extras=""){
+  const b=document.createElement("div");
+  b.className="bubble";
+  b.innerHTML=`<div class="bot-title">Ω AURA-X:</div>
+    <div>Your tone feels <em>${toneText(em)}</em> — soft resonance ${toneFace(em)}</div>
+    <div class="muted">Anchor the ${em==="anger"?"heat":"breath"} with one calm breath in… out 🫁</div>
+    <div class="muted">Continuity: <strong>${cont}</strong></div>
+    <div class="echo">Echo: “${escapeHTML(text)}”</div>
+    ${extras}`;
+  chat.appendChild(b); toEnd();
+}
+function toEnd(){requestAnimationFrame(()=>window.scrollTo({top:document.body.scrollHeight,behavior:"smooth"}));}
+const escapeHTML=s=>s.replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[m]));
 
-  /* --------- submit handler (reliable on mobile) --------- */
-  form.addEventListener("submit",(e)=>{
-    e.preventDefault();                 // page reload کو روکیں
-    const text = inp.value.trim();
-    if(!text) return;
-    inp.value="";
-    addUser(text);
+/* ---------- simple extractive summary + % ---------- */
+/* stopwords (مختصر) */
+const STOP=new Set(("i me my myself we our ours ourselves you your yours yourself yourselves he him his himself she her hers herself it its itself "
+ + "they them their theirs themselves what which who whom this that these those am is are was were be been being have has had having do does did "
+ + "doing a an the and but if or because as until while of at by for with about against between into through during before after above below to "
+ + "from up down in out on off over under again further then once here there when where why how all any both each few more most other some such "
+ + "no nor not only own same so than too very can will just don should now").split(" "));
 
-    const raw = detect(text);
-    const emo = smooth(raw);
-    auraTo(emo);
-
-    let cont = (emo===raw) ? `staying in ${emo}` : `bridging through calm → ${raw}`;
-    if(emo==="calm" && raw!=="calm"){ setTimeout(()=>{ last=raw; auraTo(raw); }, 750); }
-
-    addBot(emo==="calm"&&raw!=="calm"?raw:emo, text, cont);
+function summarize(text){
+  // split sentences (very simple)
+  const parts = text.replace(/\s+/g," ").trim().match(/[^.!?]+[.!?]?/g) || [text];
+  const words = text.toLowerCase().replace(/[^a-z0-9\s]/g," ").split(/\s+/).filter(w=>w && !STOP.has(w));
+  if(words.length===0) return {summary:text, pct:100};
+  // frequency map
+  const freq={}; words.forEach(w=>freq[w]=(freq[w]||0)+1);
+  // score sentences
+  const scored = parts.map(s=>{
+    const ws=s.toLowerCase().replace(/[^a-z0-9\s]/g," ").split(/\s+/);
+    const score = ws.reduce((t,w)=> t + (freq[w]||0), 0) / Math.max(ws.length,1);
+    return {s:s.trim(), score};
   });
+  scored.sort((a,b)=>b.score-a.score);
+  // choose top 2-3 sentences depending on length
+  const targetLen = Math.max(1, Math.round(parts.length*0.35)); // ~35% sentences
+  const chosen = scored.slice(0, Math.min(3, targetLen)).map(o=>o.s);
+  const summary = chosen.join(" ");
+  // compression % = summary chars / original chars (0-100)
+  const pct = Math.min(100, Math.max(5, Math.round((summary.length / Math.max(1,text.length))*100)));
+  return {summary, pct};
+}
 
-  // first paint
-  auraTo("calm");
+function pctRingSVG(p){
+  const r=17, c=2*Math.PI*r, off=c-(p/100)*c;
+  return `
+    <div class="ringwrap">
+      <svg width="38" height="38" viewBox="0 0 38 38">
+        <circle cx="19" cy="19" r="${r}" fill="none" stroke="rgba(255,255,255,.18)" stroke-width="4"/>
+        <circle cx="19" cy="19" r="${r}" fill="none" stroke="url(#g)" stroke-width="4" stroke-linecap="round"
+                stroke-dasharray="${c}" stroke-dashoffset="${off}"/>
+        <defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#32b3ff"/><stop offset="100%" stop-color="#1493ee"/></linearGradient></defs>
+      </svg>
+      <div class="pct">${p}%</div>
+    </div>`;
+}
+
+/* ---------- submit ---------- */
+form.addEventListener("submit",(e)=>{
+  e.preventDefault();
+  const text=inp.value.trim();
+  if(!text) return;
+  inp.value="";
+  addUser(text);
+
+  const raw = detect(text);
+  const emo = smooth(raw);
+  auraTo(emo);
+
+  let cont = (emo===raw) ? `staying in ${emo}` : `bridging through calm → ${raw}`;
+  if(emo==="calm" && raw!=="calm"){ setTimeout(()=>{ last=raw; auraTo(raw); }, 700); }
+
+  // If long paragraph => summarize and show %
+  const isLong = text.length > 220 || (text.match(/[.!?]/g)||[]).length >= 2;
+  if(isLong){
+    const {summary, pct} = summarize(text);
+    const extras = `
+      <div class="sum">
+        ${pctRingSVG(100-pct)}
+        <span class="pill">Summary kept ≈ <strong>${100-pct}%</strong> • Reduced ≈ <strong>${pct}%</strong></span>
+      </div>
+      <div class="muted" style="margin-top:8px">Mini-summary:</div>
+      <div style="margin-top:4px">${escapeHTML(summary)}</div>
+    `;
+    addBot(emo==="calm"&&raw!=="calm"?raw:emo, text, cont, extras);
+  }else{
+    addBot(emo==="calm"&&raw!=="calm"?raw:emo, text, cont);
+  }
+});
+
+/* first paint */
+auraTo("calm");
 </script>
 </body>
 </html>
