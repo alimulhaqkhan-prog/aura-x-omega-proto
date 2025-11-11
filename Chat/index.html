@@ -1,8 +1,8 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>AURA-X Ω — Alimai (Local Chat)</title>
 <style>
   :root{
@@ -10,24 +10,27 @@
     --border:rgba(255,255,255,.07); --soft:rgba(255,255,255,.04);
   }
   *{box-sizing:border-box}
-  body{margin:0; font:16px/1.45 system-ui,Segoe UI,Roboto,Helvetica,Arial; color:var(--text); background:linear-gradient(180deg,#0e141a,#0c1116 35%,#0a0f14)}
+  html,body{height:100%}
+  body{margin:0; font:16px/1.45 system-ui,Segoe UI,Roboto,Helvetica,Arial; color:var(--text);
+       background:linear-gradient(180deg,#0e141a,#0c1116 35%,#0a0f14)}
   header{position:sticky;top:0;z-index:5;background:rgba(8,12,16,.65);backdrop-filter:saturate(140%) blur(8px);border-bottom:1px solid var(--border)}
-  .wrap{max-width:900px; margin:0 auto; padding:14px 16px}
+  .wrap{max-width:900px;margin:0 auto;padding:14px 16px}
   h1{font-size:18px;margin:0;letter-spacing:.3px}
-  main{max-width:900px; margin:0 auto; padding:18px 12px 120px}
-  .panel{display:flex; gap:10px; flex-wrap:wrap; align-items:center; color:var(--muted)}
-  .panel select,.panel input[type=range]{background:var(--card); border:1px solid var(--border); color:var(--text); border-radius:10px; padding:8px 10px}
-  .chat{display:flex; flex-direction:column; gap:10px; margin-top:14px}
-  .msg{background:var(--card); border:1px solid var(--soft); border-radius:14px; padding:12px 14px; box-shadow:0 8px 18px rgba(0,0,0,.18)}
-  .msg.user{background:#0f1720; border-color:var(--border)}
-  .msg .who{font-weight:700; opacity:.9; margin-bottom:6px}
-  .foot{position:fixed; left:0; right:0; bottom:0; background:rgba(10,14,18,.85); backdrop-filter: blur(8px); border-top:1px solid var(--border)}
-  .inputbar{max-width:900px; margin:0 auto; display:flex; gap:8px; padding:12px}
-  textarea{flex:1; resize:none; min-height:48px; max-height:180px; padding:12px 13px; border-radius:14px; background:#0f1620; color:var(--text);
-           border:1px solid var(--border); outline:none}
-  button.send{background:var(--accent); color:#001018; border:0; border-radius:12px; padding:0 18px; font-weight:800; letter-spacing:.3px; min-width:92px}
-  .hint{font-size:13px; color:var(--muted)}
-  .rx{margin-top:10px; padding-top:10px; border-top:1px dashed var(--soft); color:#cde7f5}
+  main{max-width:900px;margin:0 auto;padding:18px 12px 0}
+  .panel{display:flex;gap:10px;flex-wrap:wrap;align-items:center;color:var(--muted)}
+  .panel select,.panel input[type=range]{background:var(--card);border:1px solid var(--border);color:var(--text);border-radius:10px;padding:8px 10px}
+  .chat{display:flex;flex-direction:column;gap:10px;margin-top:14px}
+  .msg{background:var(--card);border:1px solid var(--soft);border-radius:14px;padding:12px 14px;box-shadow:0 8px 18px rgba(0,0,0,.18)}
+  .msg.user{background:#0f1720;border-color:var(--border)}
+  .msg .who{font-weight:700;opacity:.9;margin-bottom:6px}
+  .spacer{height:120px} /* dynamic via JS */
+  .foot{position:fixed;left:0;right:0;bottom:0;background:rgba(10,14,18,.92);backdrop-filter:blur(8px);border-top:1px solid var(--border)}
+  .inputbar{max-width:900px;margin:0 auto;display:flex;gap:8px;padding:12px}
+  textarea{flex:1;resize:none;min-height:48px;max-height:180px;padding:12px 13px;border-radius:14px;background:#0f1620;color:var(--text);
+           border:1px solid var(--border);outline:none}
+  button.send{background:var(--accent);color:#001018;border:0;border-radius:12px;padding:0 18px;font-weight:800;letter-spacing:.3px;min-width:92px}
+  .hint{font-size:13px;color:var(--muted)}
+  .rx{margin-top:10px;padding-top:10px;border-top:1px dashed var(--soft);color:#cde7f5}
   a{color:#9ae6ff}
   .tag{display:inline-block;padding:2px 8px;border:1px solid var(--border);border-radius:999px;color:var(--muted);font-size:12px;margin-right:6px}
 </style>
@@ -37,7 +40,7 @@
   <h1>Ω AURA-X — <span class="tag">Local</span><span class="tag">Emotion ≠ Reaction</span><span class="tag">BM-7</span></h1>
 </div></header>
 
-<main>
+<main id="main">
   <div class="panel wrap" id="controls">
     <label>Layer:
       <select id="layer">
@@ -50,8 +53,8 @@
         <option value="6">BM-7 • Red (Resolve)</option>
       </select>
     </label>
-    <label>Intensity: <input id="intensity" type="range" min="1" max="7" value="3" /></label>
-    <span class="hint">Each layer has 49 unique replies (7 intensities × 7 variants).</span>
+    <label>Intensity: <input id="intensity" type="range" min="1" max="7" value="3"/></label>
+    <span class="hint">49 replies per layer (7 intensity × 7 variants • half appreciate / half caution).</span>
   </div>
 
   <div class="wrap chat" id="chat">
@@ -60,9 +63,10 @@
       <div>Hello! I’m <b>Alimai</b>, your AURA-X assistant. Emotion is a continuity, not just a reaction. How can I help?</div>
     </div>
   </div>
+  <div class="spacer" id="spacer"></div>
 </main>
 
-<footer class="foot">
+<footer class="foot" id="foot">
   <div class="inputbar">
     <textarea id="input" placeholder="Type your question… (tip: 'teach: question => answer' to add knowledge)"></textarea>
     <button class="send" id="send">Send</button>
@@ -70,260 +74,230 @@
 </footer>
 
 <script>
-/* ==========================================================
-   AURA-X LOCAL ENGINE — no server required
-   • Basic identity memory
-   • 100+ question patterns (expanded programmatically)
-   • Reasoning line for transparency
-   • BM-7 layer encouragement: 49 replies per layer
-========================================================== */
-
-// ---------------- Memory (very small, per session) -------------------
-const Memory = {
-  userName: null,
-  facts: [], // e.g., {k:'favorite color', v:'blue'}
-  learned: [] // {q:'...', a:'...'}
-};
-
-// -------------- Utilities --------------------------------------------
+/* ========== Local Engine ========== */
+const Memory = { userName:null, learned:[] };
 const norm = s => (s||'').toLowerCase().replace(/[^\p{L}\p{N}\s]/gu,' ').replace(/\s+/g,' ').trim();
-const pick = (arr, i) => arr[(Math.abs(i)||0)%arr.length];
+const pick = (arr,i) => arr[(Math.abs(i)||0)%arr.length];
 
-// -------------- Detect and store name --------------------------------
 function tryCaptureName(text){
-  // Simple patterns: "my name is X", "I'm X", "I am X"
   const m = text.match(/\b(my\s+name\s+is|i\s*am|i'm)\s+([A-Za-z][A-Za-z\-.'\s]{1,30})$/i);
-  if(m){
-    const name = m[2].trim().replace(/\s+/g,' ');
-    Memory.userName = name;
-    return `Nice to meet you, ${name}. I’ll remember your name for this session.`;
-  }
+  if(m){ const name=m[2].trim().replace(/\s+/g,' '); Memory.userName=name; return `Nice to meet you, ${name}. I’ll remember your name for this session.` }
   return null;
 }
 
-// -------------- BM-7 Layer Encouragement (49 / layer) ----------------
-const LAYERS = [
-  {name:'Violet', theme:['calm','quiet focus','still mind','soft breath','presence','lightness','ease']},
-  {name:'Indigo', theme:['insight','inner seeing','pattern sense','reflection','discernment','intuition','overview']},
-  {name:'Blue',   theme:['clarity','clean wording','precision','truthfulness','clear sky','voice','definition']},
-  {name:'Green',  theme:['balance','care','kind tempo','steadiness','repair','cooperation','harmony']},
-  {name:'Yellow', theme:['growth','learning','curiosity','spark','structure','steps','practice']},
-  {name:'Orange', theme:['courage','creative push','bold try','momentum','risk with care','drive','energy']},
-  {name:'Red',    theme:['resolve','ground','now action','priority','protect','commit','finish']},
+/* ---------- BM-7 replies (49/layer, half appreciation, half caution) ---------- */
+const LAYERS=[
+  {name:'Violet',theme:['calm','quiet focus','still mind','soft breath','presence','lightness','ease']},
+  {name:'Indigo',theme:['insight','inner seeing','pattern sense','reflection','discernment','intuition','overview']},
+  {name:'Blue',theme:['clarity','clean wording','precision','truthfulness','clear sky','voice','definition']},
+  {name:'Green',theme:['balance','care','kind tempo','steadiness','repair','cooperation','harmony']},
+  {name:'Yellow',theme:['growth','learning','curiosity','spark','structure','steps','practice']},
+  {name:'Orange',theme:['courage','creative push','bold try','momentum','risk with care','drive','energy']},
+  {name:'Red',theme:['resolve','ground','now action','priority','protect','commit','finish']},
 ];
 
-function layerReply(layerIdx, intensity, variantSeed){
-  // intensity 1..7 ; variant 0..6 -> 7×7 = 49 unique replies per layer
-  const L = LAYERS[layerIdx]; const t = L.theme;
-  const v = Math.abs(variantSeed)%7; // 0..6
-  const tone = [
-    'gently', 'softly', 'evenly', 'steadily',
-    'with clear intention', 'with strong intention', 'with firm resolve'
-  ][intensity-1];
-
-  const openers = [
-    'Keep', 'Try', 'Hold', 'Return to', 'Lean into', 'Stay with', 'Anchor in'
+function layerReply(layerIdx,intensity,variantSeed){
+  const L=LAYERS[layerIdx], t=L.theme; const v=Math.abs(variantSeed)%7;
+  const appreciate=[
+   '— good direction, keep it steady.',
+   '— small progress counts; nice work.',
+   '— you’re aligning well.',
+   '— note the ease you gain.',
+   '— clear and simple is strong.',
+   '— keep momentum; you’ve got this.',
+   '— grounded and on track.'
   ];
-  const bodies = [
-    `one ${t[v]} cue`,
-    `${t[v]} for two breaths`,
-    `${t[v]} as you think`,
-    `${t[v]} while you type`,
-    `a short ${t[v]} pause`,
-    `${t[v]} and one small step`,
-    `${t[v]} in the next minute`
+  const caution=[
+   '— avoid rushing; guard clarity.',
+   '— check assumptions before acting.',
+   '— reduce one risk first.',
+   '— keep words precise; no guesswork.',
+   '— pause if tension spikes.',
+   '— set a boundary; then continue.',
+   '— finish one thing before the next.'
   ];
-  const enders = [
-    '— small but real.',
-    '— let it guide one next move.',
-    '— keep it simple and concrete.',
-    '— note the difference you feel.',
-    '— then act on the clearest part.',
-    '— that is enough for now.',
-    '— you’ve got this.'
-  ];
-
-  return `${pick(openers,v)} ${pick(bodies,v)} ${tone} ${pick(enders,v)}`;
+  const openers=['Keep','Try','Hold','Return to','Lean into','Stay with','Anchor in'];
+  const bodies=[`one ${t[v]} cue`,`a short ${t[v]} pause`,`your ${t[v]} while you type`,
+                `${t[v]} for two breaths`,`${t[v]} as you decide`,`a ${t[v]} step now`,`${t[v]} for one minute`];
+  const tones=['gently','softly','evenly','steadily','with clear intention','with strong intention','with firm resolve'];
+  const tail=(intensity>=5)? caution[v]: (intensity<=3? appreciate[v]: (v%2?appreciate[v]:caution[v]));
+  return `${pick(openers,v)} ${pick(bodies,v)} ${tones[intensity-1]} ${tail}`;
 }
 
-// -------------- Knowledge Base (100+ patterns programmatic) ----------
-const KB = [];
+/* ---------- Knowledge Base (100+ via expansion) ---------- */
+const KB=[]; const addQA=(patterns,answer)=>KB.push({patterns,answer});
 
-// helpers to add patterns quickly
-function addQA(patterns, answer){ KB.push({patterns, answer}); }
+addQA([/^(hi|hello|hey)\b/i,/\bassalam|salam\b/i],()=>`Hello${Memory.userName? ' '+Memory.userName:''}! How can I help today?`);
+addQA([/\bhow\s+are\s+you\b/i],()=>`I’m doing well${Memory.userName? ', '+Memory.userName:''}. How are you feeling and what are you working on?`);
+addQA([/\bwhat'?s?\s+your\s+name\b/i,/\bwho\s+are\s+you\b/i],()=>`I’m <b>Alimai</b>, your AURA-X assistant.`);
+addQA([/\bwho\s+created\s+you\b/i],()=>`Created by <b>Alim ul Haq Khan</b> (InvestorPoint research cell) as part of AURA-X Ω.`);
+addQA([/\bwhat\s+can\s+you\s+do\b/i,/\bhelp\b/i],()=>`I answer with brief reasoning, remember your name this session, learn via <i>teach:</i>, and add BM-7 guidance.`);
+addQA([/\bemotion(s)?\s+not\s+equal\s+to\s+reaction\b/i,/\bemotion\s*≠\s*reaction\b/i],()=>`In AURA-X, emotion is a resonance that can persist without fresh stimulus—so it isn’t merely reaction.`);
+addQA([/\bpatent\b/i,/\buk\s*ipo\b/i,/\bgb2518804\.6\b/i],()=>`Priority secured with UK IPO filing ref <b>GB2518804.6</b>.`);
+addQA([/\binstallment|plot|society|gulshan\b/i],()=>`Give plot type, down payment date, and paid months/amount; I’ll outline due/arrears logic.`);
+addQA([/\bdate\s+today\b/i,/\bwhat\s+time\b/i],()=>`Local device time: ${new Date().toLocaleString()}.`);
 
-// Greetings / small talk
-addQA([/^(hi|hello|hey)\b/i, /\bassalam|salam\b/i], () =>
-  `Hello${Memory.userName? ' '+Memory.userName:''}! How can I help today?`);
-
-addQA([/\bhow\s+are\s+you\b/i], () =>
-  `I’m doing well${Memory.userName? ', '+Memory.userName:''}. How are you feeling and what are you working on?`);
-
-// Identity
-addQA([/\bwhat'?s?\s+your\s+name\b/i, /\bwho\s+are\s+you\b/i], () =>
-  `I’m <b>Alimai</b>, your AURA-X assistant. Emotion ≠ reaction; I help with reasoning, notes, and calm next steps.`);
-
-addQA([/\bwho\s+created\s+you\b/i], () =>
-  `I was created by <b>Alim ul Haq Khan</b> (InvestorPoint research cell) as part of the AURA-X Ω prototype.`);
-
-// Capabilities
-addQA([/\bwhat\s+can\s+you\s+do\b/i, /\bhelp\b/i], () =>
-  `I can answer questions, reason step-by-step, remember your name this session, add new Q&A via <i>teach:</i>, and give BM-7 layer guidance.`);
-
-// Emotion ≠ Reaction
-addQA([/\bemotion(s)?\s+not\s+equal\s+to\s+reaction\b/i, /\bemotion\s*≠\s*reaction\b/i], () =>
-  `In AURA-X, emotion is a self-sustaining resonance across memory layers; it can persist without a fresh stimulus, so it’s not just a reaction.`);
-
-// AURA-X info
-addQA([/\bwhat\s+is\s+aura\b/i, /\baura-?x\b/i], () =>
-  `AURA-X Ω is an emotional-continuity engine: TM×BM resonance + optional faith/ethics filters. It aims for clear, ethical guidance.`);
-
-// Patent / proof
-addQA([/\bpatent\b/i, /\buk\s*ipo\b/i, /\bgb2518804\.6\b/i], () =>
-  `The model is documented and timestamped; UK IPO filing ref <b>GB2518804.6</b> secures the priority.`);
-
-// Thank you / bye
-addQA([/\bthanks|shukriya\b/i], () => `You’re welcome! If there’s more, I’m here.` );
-addQA([/\bbye|khuda hafiz|good night|goodbye\b/i], () => `Take care. I’ll be here when you return.` );
-
-// Real-estate (your domain)
-addQA([/\binstallment|plot|society|gulshan\b/i], () =>
-  `I can outline installment logic and summaries. Tell me plot type, down payment date, and paid months/amount.`);
-
-// Dates / time (no internet—generic)
-addQA([/\bwhat\s+time\b/i, /\bdate\s+today\b/i], () => {
-  const d = new Date(); return `Local device time shows ${d.toLocaleString()}.`;
-});
-
-// Knowledge expansion: generate many variants for 100+
-const variations = [
-  ["what is your purpose","why are you here","what do you do"],
-  ["may i know your name","tell me your name","identify yourself"],
-  ["can you help me","i need help","assist me"],
-  ["where are you from","your origin","who built you"],
-  ["explain aura x","aura model","emotional continuity"],
-  ["teach me","learn with me","how to learn"],
-  ["save my name","remember me","store my identity"],
-  ["clear mind tip","calm me","reduce stress"],
-  ["set goals","next step","what should i do next"],
-  ["explain emotion","what is emotion","feeling vs reaction"],
-  ["tell a quote","motivate me","inspire me"],
-  ["privacy","store data","what do you remember"],
-  ["upgrade","connect llm","api endpoint"],
-  ["how to use teach","add question","learn new answer"],
-  ["who is alim","creator info","developer"],
-  ["self learning","auto learn","improve yourself"],
-  ["version","about this app","credits"],
-  ["ok","fine","hmm"]
+const variations=[
+ ["what is your purpose","why are you here","what do you do"],
+ ["may i know your name","tell me your name","identify yourself"],
+ ["can you help me","i need help","assist me"],
+ ["where are you from","your origin","who built you"],
+ ["explain aura x","aura model","emotional continuity"],
+ ["teach me","learn with me","how to learn"],
+ ["save my name","remember me","store my identity"],
+ ["clear mind tip","calm me","reduce stress"],
+ ["set goals","next step","what should i do next"],
+ ["explain emotion","what is emotion","feeling vs reaction"],
+ ["tell a quote","motivate me","inspire me"],
+ ["privacy","store data","what do you remember"],
+ ["upgrade","connect llm","api endpoint"],
+ ["how to use teach","add question","learn new answer"],
+ ["self learning","auto learn","improve yourself"],
+ ["version","about this app","credits"],
+ ["ok","fine","hmm"]
 ];
-
-const varAnswers = [
-  ()=>`I provide clear answers with short reasoning and add BM-7 guidance at the end.`,
-  ()=>`I’m Alimai. If you share your name, I’ll remember it for this session.`,
-  ()=>`Tell me the task; I will reason, break into steps, and suggest a next move.`,
-  ()=>`I was built within InvestorPoint research cell as an AURA-X prototype.`,
-  ()=>`AURA-X bridges logic and memory resonance; emotion is continuity, not only reaction.`,
-  ()=>`We’ll learn by short cycles: ask → try → reflect → improve.`,
-  ()=>`Say: <code>My name is …</code>. I’ll store it for this session only.`,
-  ()=>`Breathe low and slow for two cycles; write the smallest useful next step.`,
-  ()=>`Describe your target and constraints; I’ll produce a 3-step plan.`,
-  ()=>`Emotion = resonance across memory; reaction = one external output.`,
-  ()=>`“Small steps, done steadily, beat big plans undone.”`,
-  ()=>`I keep only session memory in the browser; you can clear it anytime.`,
-  ()=>`When you add an API endpoint later, external LLM can be used; for now I’m local.`,
-  ()=>`Format: <code>teach: question =&gt; answer</code> to store a new pair.`,
-  ()=>`Alim ul Haq Khan initiated and documented the project and filing.`,
-  ()=>`I learn only what you explicitly teach with the teach command.`,
-  ()=>`This is a local single-file app (no server).`,
-  ()=>`Noted. What shall we do next?`
+const varAnswers=[
+ ()=>`I provide clear answers with short reasoning and a BM-7 note.`,
+ ()=>`I’m Alimai. Share your name and I’ll remember it this session.`,
+ ()=>`Tell me the task; I’ll reason it into small steps.`,
+ ()=>`Built in AURA-X prototype within InvestorPoint research cell.`,
+ ()=>`AURA-X bridges logic and memory resonance (emotion ≠ reaction).`,
+ ()=>`We learn by: ask → try → reflect → improve.`,
+ ()=>`Say: <code>My name is …</code>`,
+ ()=>`Two slow breaths; then write one smallest useful step.`,
+ ()=>`Describe goal + constraints; I’ll propose a 3-step plan.`,
+ ()=>`Emotion = resonance across memory; reaction = one output.`,
+ ()=>`“Small steps done steadily beat big plans undone.”`,
+ ()=>`Session-only memory in your browser; clear anytime.`,
+ ()=>`Later you may add an API endpoint; for now everything is local.`,
+ ()=>`Format: <code>teach: question =&gt; answer</code>`,
+ ()=>`I learn only what you explicitly teach with the teach command.`,
+ ()=>`This is a single-file local app.`,
+ ()=>`Noted. What shall we do next?`
 ];
-
-// Expand to many QAs
 for(let i=0;i<variations.length;i++){
-  const group = variations[i];
-  addQA(group.map(v=>new RegExp(v,'i')), varAnswers[i]);
+  const group=variations[i];
+  addQA(group.map(v=>new RegExp(v,'i')),varAnswers[i]);
 }
 
-// -------------- Reasoner / Matcher -----------------------------------
+/* ---------- 40 Socratic prompts when answer unknown ---------- */
+const SOCRATIC = [
+ "What outcome do you want in one sentence?",
+ "What is the smallest next step that moves you closer?",
+ "What matters most here: speed, quality, or cost?",
+ "What is the blocking constraint right now?",
+ "If you had to decide in 2 minutes, what would you do?",
+ "What evidence do you already have?",
+ "What evidence is missing—and how can we get it quickly?",
+ "Who is affected by this and what do they need?",
+ "What would ‘good enough’ look like today?",
+ "What can you safely ignore for now?",
+ "What has worked for you in a similar case?",
+ "What is the riskiest assumption we can test first?",
+ "Can you write the problem as a single question?",
+ "What resources/time do you actually have?",
+ "What would you advise a friend to do?",
+ "What is the obvious baseline solution?",
+ "What would make this 10× simpler?",
+ "What could you automate or template?",
+ "What is the failure mode you fear most?",
+ "How will you measure success this week?",
+ "What is the next 10-minute task?",
+ "Who can approve or block this?",
+ "What’s the user’s real pain point?",
+ "What can be deferred without harm?",
+ "What must be true for your plan to work?",
+ "If you do nothing, what happens?",
+ "What constraint can you relax temporarily?",
+ "Write one sentence that defines ‘done’.",
+ "Which part is under your control?",
+ "What skill/tool do you need to borrow?",
+ "What is the cheapest experiment?",
+ "What assumption could be split into two?",
+ "What are three options ranked by clarity?",
+ "What trade-off are you willing to make?",
+ "What would ‘no’ look like—and is it OK?",
+ "Where is the ambiguity—terms or data?",
+ "What exact question should I answer first?",
+ "What is the user journey in three steps?",
+ "What should we stop doing immediately?",
+ "What will you complete in the next hour?"
+];
+
+/* ---------- Reasoner / Matcher ---------- */
 function findAnswer(userText){
-  // (1) try capture name
   const nameSaved = tryCaptureName(userText);
-  if (nameSaved) return {answer:nameSaved, why:'Captured name from your sentence.'};
+  if(nameSaved) return {answer:nameSaved, why:'Captured name from your sentence.'};
 
-  // (2) learned pairs first
   const u = norm(userText);
-  for(const pair of Memory.learned){
-    if(u === norm(pair.q)) return {answer:pair.a, why:'Matched your taught Q&A.'};
-  }
+  for(const pair of Memory.learned){ if(u===norm(pair.q)) return {answer:pair.a, why:'Matched your taught Q&A.'}; }
 
-  // (3) KB patterns
   for(const item of KB){
-    if(item.patterns.some(rx => rx.test(userText))) {
-      const ans = (typeof item.answer==='function') ? item.answer() : item.answer;
+    if(item.patterns.some(rx=>rx.test(userText))){
+      const ans = (typeof item.answer==='function')? item.answer() : item.answer;
       return {answer:ans, why:'Matched a known pattern.'};
     }
   }
 
-  // (4) unknown but can be taught
-  return {answer:
-    `I don’t have a direct answer yet. You can teach me:\n`+
-    `<code>teach: your question =&gt; your answer</code>`, why:'No pattern matched.'};
+  // Socratic fallback (no “I don’t have answer”)
+  const probe = pick(SOCRATIC, [...userText].reduce((a,c)=>a+c.charCodeAt(0),0));
+  return {answer: probe, why:'Using Socratic prompt to refine the question.'};
 }
 
-// -------------- Teaching ---------------------------------------------
+/* ---------- Teaching ---------- */
 function handleTeach(text){
-  // teach: question => answer
   const m = text.match(/^teach\s*:\s*(.+?)\s*=>\s*(.+)$/i);
   if(!m) return null;
-  const q = m[1].trim(), a = m[2].trim();
+  const q=m[1].trim(), a=m[2].trim();
   Memory.learned.push({q,a});
-  return `Learned.\n<b>Q:</b> ${q}\n<b>A:</b> ${a}`;
+  return `Learned.<br><b>Q:</b> ${q}<br><b>A:</b> ${a}`;
 }
 
-// -------------- Chat plumbing ----------------------------------------
-const chat = document.getElementById('chat');
-const input = document.getElementById('input');
-const sendBtn = document.getElementById('send');
-function addMsg(who, html, cls=''){
-  const div = document.createElement('div');
-  div.className = `msg ${cls}`;
-  const head = `<div class="who">${who}</div>`;
-  div.innerHTML = head + `<div>${html}</div>`;
+/* ---------- Chat plumbing + autoscroll fix ---------- */
+const chat=document.getElementById('chat');
+const input=document.getElementById('input');
+const sendBtn=document.getElementById('send');
+const spacer=document.getElementById('spacer');
+const foot=document.getElementById('foot');
+
+function sizeFooterSpacer(){
+  const h = foot.getBoundingClientRect().height;
+  spacer.style.height = (h+24)+'px';
+}
+sizeFooterSpacer();
+window.addEventListener('resize', sizeFooterSpacer);
+
+function addMsg(who,html,cls=''){
+  const div=document.createElement('div');
+  div.className=`msg ${cls}`;
+  div.innerHTML=`<div class="who">${who}</div><div>${html}</div>`;
   chat.appendChild(div);
-  div.scrollIntoView({behavior:'smooth', block:'end'});
+  // ensure full visibility even with mobile keyboard
+  setTimeout(()=>div.scrollIntoView({behavior:'smooth', block:'end'}), 10);
 }
 
-// layer encouragement
 function encouragement(userText){
-  const layerIdx = +document.getElementById('layer').value;
-  const intensity = +document.getElementById('intensity').value;
-  const seed = [...userText].reduce((a,c)=>a+c.charCodeAt(0),0);
-  return layerReply(layerIdx, intensity, seed);
+  const layerIdx=+document.getElementById('layer').value;
+  const intensity=+document.getElementById('intensity').value;
+  const seed=[...userText].reduce((a,c)=>a+c.charCodeAt(0),0);
+  return layerReply(layerIdx,intensity,seed);
 }
 
 sendBtn.addEventListener('click', ()=>{
-  const text = input.value.trim();
-  if(!text) return;
+  const text=input.value.trim(); if(!text) return;
+  addMsg(Memory.userName||'You', text, 'user');
+  input.value='';
 
-  addMsg(Memory.userName || 'You', text, 'user');
-  input.value = '';
+  const taught=handleTeach(text);
+  if(taught){ addMsg('Alimai', taught + `<div class="rx hint">Reasoning: stored as new Q&A for this session.</div>`); return; }
 
-  // teaching?
-  const taught = handleTeach(text);
-  if(taught){
-    addMsg('Alimai', taught + `<div class="rx hint">Reasoning: stored as new Q&A for this session.</div>`);
-    return;
-  }
-
-  const {answer, why} = findAnswer(text);
-  const layerNote = encouragement(text);
+  const {answer, why}=findAnswer(text);
+  const layerNote=encouragement(text);
   addMsg('Alimai', `${answer}<div class="rx hint">Reasoning: ${why}. Layer note: ${layerNote}</div>`);
 });
 
-// allow Enter to send
-input.addEventListener('keydown', (e)=>{
-  if(e.key==='Enter' && !e.shiftKey){ e.preventDefault(); sendBtn.click(); }
-});
+// Enter to send
+input.addEventListener('keydown',(e)=>{ if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendBtn.click();} });
 </script>
 </body>
 </html>
