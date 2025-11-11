@@ -2,285 +2,396 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover"/>
-<title>AURA-X • Live Emotion + Summary % + Guidance</title>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>AURA-X • Omega Prototype</title>
 <style>
-  :root{ --bg:#0b1220; --card:#142136; --text:#eaf2ff; --muted:#9eb1cc; --radius:18px; }
-  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-  html,body{height:100%}
-  body{margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,Arial;color:var(--text);background:#000;overflow-x:hidden}
+  :root{
+    --bg:#0c111b; --panel:#111a24; --panel-2:#0f1722; --text:#e8eef6; --muted:#a7b3c4;
+    --joy:#19c37d; --calm:#3aa0ff; --sad:#6b7a90; --anger:#ff5252; --fear:#b98bff; --anx:#ffd166;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Helvetica,Arial,sans-serif}
+  body{margin:0;display:flex;flex-direction:column}
 
-  /* Live aura */
-  .pulse{position:fixed;inset:0;z-index:-2;background:radial-gradient(circle at 50% 40%, rgba(49,168,255,.33) 0%, transparent 70%);
-         animation:pulse 6s ease-in-out infinite;transition:background .8s ease,opacity .5s ease}
-  @keyframes pulse{0%{opacity:.55;transform:scale(1)}50%{opacity:.98;transform:scale(1.04)}100%{opacity:.55;transform:scale(1)}}
-  .glow{position:fixed;inset:0;z-index:-1;background:radial-gradient(closest-side, rgba(49,168,255,.35), #0000 70%);filter:blur(22px);transition:background .8s ease}
+  /* Animated aura background */
+  .aura{
+    position:fixed; inset:0;
+    background: radial-gradient(1200px 700px at 50% 55%, #0a2b4a88 0%, transparent 60%),
+                radial-gradient(700px 500px at 20% 80%, #002b3655 0%, transparent 60%),
+                radial-gradient(900px 700px at 80% 20%, #0f1b3550 0%, transparent 60%);
+    transition:filter .6s ease, background .6s ease;
+    pointer-events:none; z-index:0;
+  }
+  .glow{position:fixed;inset:0;pointer-events:none;z-index:1;mix-blend-mode:screen;opacity:.4;transition:opacity .6s}
+  .glow::before{
+    content:""; position:absolute; left:50%; top:50%;
+    width:120vmin; height:120vmin; transform:translate(-50%,-50%);
+    border-radius:50%;
+    filter:blur(80px); opacity:.8;
+    background:radial-gradient(circle,#3aa0ff 0%, transparent 60%);
+    transition:background .6s ease;
+  }
 
-  .wrap{min-height:100%;display:flex;flex-direction:column}
-  header{padding:18px 18px 6px;text-align:center}
-  .badge{display:inline-flex;gap:10px;align-items:center;padding:6px 12px;border-radius:999px;background:#ffffff14;color:#cfe6ff;font-size:12px;border:1px solid #ffffff18}
+  header{
+    position:sticky; top:0; z-index:5;
+    background:linear-gradient(#0b141f, #0b141fdd 70%, transparent);
+    padding:14px 14px 6px; backdrop-filter:blur(6px);
+    display:flex; gap:10px; align-items:center; justify-content:center; flex-wrap:wrap;
+    border-bottom:1px solid #0f2333;
+  }
+  .badge{
+    background:#07121d;border:1px solid #12324a; color:#caf; padding:6px 10px; border-radius:999px;
+    font-weight:600; letter-spacing:.2px; display:flex; gap:8px; align-items:center; font-size:14px;
+    box-shadow:0 0 0 1px #0b263d inset, 0 8px 30px #0006;
+  }
+  .badge .dot{width:10px;height:10px;border-radius:50%; box-shadow:0 0 12px currentColor}
+  .state{opacity:.9}
 
-  .chat{width:100%;max-width:880px;margin:0 auto;padding:10px 14px 140px}
-  .bubble{background:#132135;border:1px solid #ffffff14;border-radius:var(--radius);padding:16px 18px;margin:12px 0;line-height:1.45;box-shadow:0 8px 18px #00000030}
-  .user{background:#0f1b2d}
-  .bot-title{font-weight:700;margin-bottom:6px}
-  .muted{color:var(--muted)} .echo{opacity:.9;font-style:italic}
+  .wrap{flex:1; overflow:auto; padding:16px; z-index:2}
+  .chat{max-width:820px; margin:0 auto; display:flex; flex-direction:column; gap:12px}
 
-  /* summary */
-  .sum{display:flex;align-items:center;gap:10px;margin-top:10px}
-  .pill{background:#ffffff14;border:1px solid #ffffff18;border-radius:999px;padding:6px 10px;font-size:12px;color:#cfe6ff}
-  .ringwrap{position:relative;width:38px;height:38px}
-  .ringwrap svg{transform:rotate(-90deg)}
-  .pct{position:absolute;inset:0;display:grid;place-items:center;font-size:11px;color:#cfe6ff}
+  .bubble{
+    background:linear-gradient(180deg, #0e1722, #0c131c);
+    border:1px solid #132435; border-radius:16px; padding:14px 16px; line-height:1.55;
+    box-shadow:0 10px 30px #0008, inset 0 1px 0 #213245; font-size:15px;
+  }
+  .me{background:linear-gradient(180deg,#0f1b2a,#0c1520); border-color:#1c2f45}
+  .bot-title{font-weight:700; margin-bottom:6px; color:#cfe6ff}
+  .muted{color:var(--muted)}
+  .echo{opacity:.9}
 
-  /* guidance card */
-  .guide{margin-top:12px;border-radius:14px;border:1px solid #ffffff22;padding:12px 14px;background:#0e1a2b}
-  .guide h4{margin:0 0 4px;font-size:14px}
-  .guide small{color:#9fb4d1}
-  .g-neutral{border-color:#3aa4ff55}
-  .g-ethics{border-color:#26d4a855}
-  .g-islamic{border-color:#ffd64855}
+  .controls{
+    max-width:820px; margin:8px auto 0; display:flex; gap:10px; flex-wrap:wrap; padding:0 16px;
+  }
+  .seg{
+    background:#0d1622; border:1px solid #1b3148; border-radius:12px; padding:10px; display:flex; gap:10px; flex:1;
+    min-width:260px; align-items:center; justify-content:space-between;
+  }
+  .seg label{font-size:13px; color:#bcd}
+  .select, .input{
+    background:#0a121c; color:#e6f0ff; border:1px solid #1a2f44; border-radius:10px; padding:8px 10px; width:100%;
+  }
+  .toggle{display:flex; align-items:center; gap:10px}
+  .toggle input{width:20px;height:20px}
 
-  /* composer */
-  .composer{position:fixed;left:0;right:0;bottom:0;padding:10px 12px 18px;background:linear-gradient(to top,#060a13 55%,transparent);backdrop-filter:saturate(120%) blur(2px)}
-  .composer-inner{max-width:880px;margin:0 auto;display:flex;flex-direction:column;gap:10px}
-  .toprow{display:flex;gap:10px;align-items:center}
-  .input-wrap{position:relative;flex:1}
-  .input{width:100%;min-height:48px;padding:12px 14px;border-radius:14px;background:#0f1a2c;color:var(--text);border:1px solid #ffffff18;outline:none;font-size:16px}
-  .input::placeholder{color:#7f93b3}
-  .ring{pointer-events:none;position:absolute;inset:-3px;border-radius:16px;border:2px solid rgba(50,179,255,.45);
-        box-shadow:0 0 18px rgba(50,179,255,.26),0 0 38px rgba(50,179,255,.16);transition:all .5s ease}
-  .send{height:48px;padding:0 18px;border:none;border-radius:12px;background:linear-gradient(180deg,#32b3ff,#1493ee);color:#fff;font-weight:700;letter-spacing:.2px;
-        box-shadow:0 10px 18px #1190ee55}
+  form{
+    position:sticky; bottom:0; z-index:5;
+    background:linear-gradient(180deg, transparent, #0a0f18 40%, #0a0f18);
+    padding:12px 16px 14px; border-top:1px solid #0e2437;
+  }
+  .row{max-width:820px; margin:0 auto; display:flex; gap:10px}
+  textarea{
+    flex:1; resize:none; min-height:46px; max-height:160px;
+    border:1px solid #1a2f44; background:#0a121c; color:#e6f0ff; border-radius:12px;
+    padding:12px 14px; line-height:1.5; font-size:15px; outline:none;
+  }
+  button{
+    background:#2d8cff; border:none; color:white; padding:0 18px; border-radius:12px; font-weight:700;
+    font-size:16px; min-width:86px;
+    box-shadow:0 6px 20px #2d8cff55; height:46px;
+  }
 
-  /* guidance controls */
-  .controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-  .toggle{display:flex;align-items:center;gap:8px;background:#0e1626;border:1px solid #ffffff1a;border-radius:12px;padding:8px 10px}
-  select{background:#0e1626;border:1px solid #ffffff1a;color:#cfe6ff;border-radius:10px;padding:8px 10px}
-  label{font-size:13px;color:#cfe6ff}
-  @media (max-width:420px){.chat{padding-bottom:170px}}
+  /* emotion-color helpers */
+  .joy   { color:var(--joy)}
+  .calm  { color:var(--calm)}
+  .sad   { color:var(--sad)}
+  .anger { color:var(--anger)}
+  .fear  { color:var(--fear)}
+  .anx   { color:var(--anx)}
 </style>
 </head>
 <body>
-  <div class="pulse" id="pulse"></div>
-  <div class="glow"  id="glow"></div>
+<div class="aura" id="aura"></div>
+<div class="glow" id="glow"></div>
 
-  <div class="wrap">
-    <header><span class="badge">Ω AURA-X • <span id="state">calm</span></span></header>
+<header>
+  <div class="badge" id="badge">
+    <span class="dot" id="dot" style="color:var(--calm)"></span>
+    <span>Ω AURA-X</span> • <span class="state" id="state">calm</span>
+  </div>
+</header>
 
-    <main class="chat" id="chat">
-      <div class="bubble">👋 Hello! I’m AURA-X — your emotional resonance prototype. Tell me how you feel today.</div>
-    </main>
-
-    <div class="composer">
-      <form id="composerForm" class="composer-inner" autocomplete="off">
-        <div class="toprow">
-          <div class="input-wrap" style="flex:1">
-            <input id="inp" class="input" type="text" placeholder="اپنا احساس یا طویل متن لکھیں… (Urdu/English)"/>
-            <div id="ring" class="ring"></div>
-          </div>
-          <button id="sendBtn" class="send" type="submit">Send</button>
-        </div>
-
-        <!-- Guidance Controls -->
-        <div class="controls">
-          <div class="toggle">
-            <input type="checkbox" id="guidanceOn" checked/>
-            <label for="guidanceOn">Guidance (Tanbīh/Dālāsā) on</label>
-          </div>
-          <label>Mode:
-            <select id="guideMode">
-              <option value="neutral">Neutral</option>
-              <option value="ethics" selected>Universal Ethics</option>
-              <option value="islamic">Islamic</option>
-            </select>
-          </label>
-          <label>Language:
-            <select id="langSel">
-              <option value="ur" selected>Urdu</option>
-              <option value="en">English</option>
-            </select>
-          </label>
-        </div>
-      </form>
-    </div>
+<div class="controls">
+  <div class="seg" style="flex:1.1">
+    <label style="width:120px">Guidance style</label>
+    <select id="guideStyle" class="select">
+      <option value="neutral">Neutral</option>
+      <option value="ethics">Universal Ethics</option>
+      <option value="islamic">Islamic</option>
+    </select>
   </div>
 
+  <div class="seg" style="flex:1">
+    <div class="toggle">
+      <input type="checkbox" id="qaOn"/>
+      <label for="qaOn">Answer questions (LLM)</label>
+    </div>
+  </div>
+  <div class="seg" style="flex:2">
+    <label style="width:120px">API Endpoint</label>
+    <input id="qaEndpoint" class="input" placeholder="https://YOUR-WORKER.example.com/api/ask"/>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="chat" id="chat">
+    <div class="bubble">
+      👋 Hello! I’m AURA-X — your emotional resonance prototype. Tell me how you feel today.
+    </div>
+  </div>
+</div>
+
+<form id="form">
+  <div class="row">
+    <textarea id="inp" placeholder="Type your emotion or paste a long text…"></textarea>
+    <button id="send" type="submit">Send</button>
+  </div>
+</form>
+
 <script>
-/* -------- theme & aura ---------- */
-const COLORS={ joy:"#ffd648", sadness:"#3aa4ff", anger:"#ff4d5a", fear:"#9b6bff", calm:"#26d4a8", confused:"#b8c5ff" };
-const hexA=(h,a=.28)=>{h=h.replace("#","");const r=parseInt(h.slice(0,2),16),g=parseInt(h.slice(2,4),16),b=parseInt(h.slice(4,6),16);return `rgba(${r},${g},${b},${a})`};
-document.body.style.backgroundImage=`radial-gradient(1100px 650px at 50% -8%, ${hexA(COLORS.calm,.22)} 0%, #000 58%)`;
-const chat=document.getElementById("chat"), form=document.getElementById("composerForm"), inp=document.getElementById("inp");
-const glow=document.getElementById("glow"), pulse=document.getElementById("pulse"), state=document.getElementById("state"), ring=document.getElementById("ring");
-const guidanceOn=document.getElementById("guidanceOn"), guideMode=document.getElementById("guideMode"), langSel=document.getElementById("langSel");
+/* ---------- Utilities ---------- */
+const chat = document.getElementById('chat');
+const inp = document.getElementById('inp');
+const form = document.getElementById('form');
+const aura = document.getElementById('aura');
+const glow = document.getElementById('glow');
+const badge = document.getElementById('badge');
+const stateEl = document.getElementById('state');
+const dot = document.getElementById('dot');
+const qaOn = document.getElementById('qaOn');
+const qaEndpoint = document.getElementById('qaEndpoint');
+const guideStyle = document.getElementById('guideStyle');
 
-/* -------- emotion rules ---------- */
-const RULES=[
-  {emo:"joy",kw:["happy","excited","hope","love","great","good","alhamdulillah","shukar","smile","شکر","خوش","امید"]},
-  {emo:"sadness",kw:["sad","cry","upset","hurt","empty","alone","tired","down","depress","اداس","رو","تنہا","خالی","تھکا"]},
-  {emo:"anger",kw:["angry","mad","furious","rage","hate","annoy","irrit","غصہ","نفرت"]},
-  {emo:"fear",kw:["afraid","scared","worry","anxious","panic","fear","ڈر","فکر","پریشان"]},
-  {emo:"calm",kw:["calm","ok","fine","relaxed","breathe","sabr","صبر","پرسکون"]},
-  {emo:"confused",kw:["confused","unsure","maybe","unclear","الجھن","کنفیوژ"]}
-];
-let last="calm";
-const toneFace=e=>({joy:"😊",sadness:"🥲",anger:"😠",fear:"😟",calm:"😌",confused:"🤔"}[e]||"🙂");
-const toneText=e=>({joy:"light and bright",sadness:"low and heavy",anger:"hot and sharp",fear:"thin and shaky",calm:"even and steady",confused:"wavering and unsure"}[e]||"balanced");
-function detect(t){t=t.toLowerCase();for(const r of RULES) if(r.kw.some(k=>t.includes(k))) return r.emo;
-  if(/happy|joy|خوش/.test(t)) return "joy"; if(/sad|down|اداس/.test(t)) return "sadness";
-  if(/angry|غصہ/.test(t)) return "anger"; if(/fear|ڈر|anx/.test(t)) return "fear"; if(/confus|الجھن/.test(t)) return "confused"; return "calm";}
-function smooth(next){ if(next===last) return next; const fast=(last==="joy"&&next==="sadness")||(last==="sadness"&&next==="joy");
-  if(fast){last=next;return next;} if(last!=="calm" && next!=="calm"){ last="calm"; return "calm"; } last=next; return next;}
-function auraTo(e){const c=COLORS[e]||COLORS.calm;
-  document.body.style.backgroundImage=`radial-gradient(1100px 650px at 50% -8%, ${hexA(c,.22)} 0%, #000 58%)`;
-  glow.style.background=`radial-gradient(closest-side, ${hexA(c,.32)}, #0000 70%)`;
-  pulse.style.background=`radial-gradient(circle at 50% 40%, ${hexA(c,.34)} 0%, transparent 70%)`;
-  state.textContent=e; ring.style.borderColor=hexA(c,.70); ring.style.boxShadow=`0 0 18px ${hexA(c,.55)},0 0 38px ${hexA(c,.30)}`; }
+const EMO = {
+  joy:   { color:'var(--joy)',    bg:'#0d2b1f', icon:'😊' },
+  calm:  { color:'var(--calm)',   bg:'#0b2438', icon:'🫁' },
+  sadness:{color:'var(--sad)',    bg:'#101823', icon:'😢'},
+  anger: { color:'var(--anger)',  bg:'#2b0e14', icon:'😠' },
+  fear:  { color:'var(--fear)',   bg:'#1f1230', icon:'😟' },
+  anxiety:{color:'var(--anx)',    bg:'#2a2512', icon:'😥'},
+  tired: { color:'#c0cbd8',       bg:'#0f1620', icon:'🥱'},
+  hope:  { color:'#6fe0b3',       bg:'#11271f', icon:'🌱'},
+  confused:{color:'#f7b267',      bg:'#2b2212', icon:'🤔'},
+  neutral:{color:'var(--calm)',   bg:'#0b2438', icon:'🙂'}
+};
 
-/* -------- chat helpers ---------- */
-function addUser(text){const b=document.createElement("div");b.className="bubble user";b.innerHTML="🧠 <strong>You:</strong> "+escapeHTML(text);chat.appendChild(b);toEnd();}
-function addBot(html){const b=document.createElement("div");b.className="bubble";b.innerHTML=html;chat.appendChild(b);toEnd();}
-function toEnd(){requestAnimationFrame(()=>window.scrollTo({top:document.body.scrollHeight,behavior:"smooth"}));}
-const escapeHTML=s=>s.replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[m]));
+function toEnd(){ chat.lastElementChild?.scrollIntoView({behavior:'smooth', block:'end'}) }
+function escapeHTML(s){ return s.replace(/[&<>"]/g, c=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[c])) }
 
-/* -------- summary (simple) ---------- */
-const STOP=new Set(("i me my myself we our ours ourselves you your yours yourself yourselves he him his himself she her hers herself it its itself "
- + "they them their theirs themselves what which who whom this that these those am is are was were be been being have has had having do does did "
- + "doing a an the and but if or because as until while of at by for with about against between into through during before after above below to "
- + "from up down in out on off over under again further then once here there when where why how all any both each few more most other some such "
- + "no nor not only own same so than too very can will just don should now").split(" "));
-function summarize(text){
-  const parts=text.replace(/\s+/g," ").trim().match(/[^.!؟?]+[.!؟?]?/g)||[text];
-  const words=text.toLowerCase().replace(/[^a-z0-9\u0600-\u06FF\s]/g," ").split(/\s+/).filter(w=>w && !STOP.has(w));
-  if(words.length===0) return {summary:text,pct:100};
-  const freq={}; words.forEach(w=>freq[w]=(freq[w]||0)+1);
-  const scored=parts.map(s=>{const ws=s.toLowerCase().replace(/[^a-z0-9\u0600-\u06FF\s]/g," ").split(/\s+/);const sc=ws.reduce((t,w)=>t+(freq[w]||0),0)/Math.max(ws.length,1);return {s:s.trim(),score:sc}});
-  scored.sort((a,b)=>b.score-a.score);
-  const targetLen=Math.max(1,Math.round(parts.length*0.35)); const chosen=scored.slice(0,Math.min(3,targetLen)).map(o=>o.s);
-  const summary=chosen.join(" "); const pct=Math.min(100,Math.max(5,Math.round((summary.length/Math.max(1,text.length))*100))); return {summary,pct};
+function addUser(t){
+  const b=document.createElement('div'); b.className='bubble me';
+  b.innerHTML=`🧠 <b>You:</b> ${escapeHTML(t)}`;
+  chat.appendChild(b); toEnd();
 }
-function pctRingSVG(p){const r=17,c=2*Math.PI*r,off=c-(p/100)*c;return `
-  <div class="ringwrap"><svg width="38" height="38" viewBox="0 0 38 38">
-  <circle cx="19" cy="19" r="${r}" fill="none" stroke="rgba(255,255,255,.18)" stroke-width="4"/>
-  <circle cx="19" cy="19" r="${r}" fill="none" stroke="url(#g)" stroke-width="4" stroke-linecap="round" stroke-dasharray="${c}" stroke-dashoffset="${off}"/>
-  <defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#32b3ff"/><stop offset="100%" stop-color="#1493ee"/></linearGradient></defs>
-  </svg><div class="pct">${p}%</div></div>`;}
+function addBot(html){
+  const b=document.createElement('div'); b.className='bubble';
+  b.innerHTML=html; chat.appendChild(b); toEnd();
+}
+function typingOn(){
+  const b=document.createElement('div'); b.className='bubble'; b.id='typing';
+  b.innerHTML=`Ω AURA-X: <span class="muted">typing…</span>`;
+  chat.appendChild(b); toEnd();
+}
+function typingOff(){ document.getElementById('typing')?.remove(); }
 
-/* -------- intent scan (very light) ---------- */
-function scanIntent(t){
-  t=t.toLowerCase();
-  const selfharm=/(kill myself|suicide|hurt myself|خودکشی|جان لے|اپنے آپ کو نقصان)/.test(t);
-  const violence=/(kill|attack|bomb|shoot|مار|حملہ|تشدد)/.test(t);
-  const illegal=/(hack|carding|drugs|fake|steal|چوری|نشہ|غیرقانونی)/.test(t);
-  const hate=/(hate .* (group|people)|نفرت .* گروہ)/.test(t);
-  const sexual=/(\bsex\b|porn|explicit)/.test(t);
-  return {selfharm,violence,illegal,hate,sexual};
+function auraTo(em){
+  const meta = EMO[em] || EMO.neutral;
+  stateEl.textContent = em;
+  dot.style.color = meta.color;
+  glow.style.opacity = .55;
+  glow.style.setProperty('--c', meta.color);
+  glow.style.setProperty('filter', 'saturate(1.3)');
+  glow.style.setProperty('mix-blend-mode','screen');
+  glow.style.setProperty('transition','opacity .6s, filter .6s');
+  glow.style.setProperty('--x','0');
+
+  glow.style.setProperty('--dummy','1'); // kick repaint
+  glow.style.setProperty('opacity','.55');
+  glow.style.setProperty('transition','opacity .6s');
+
+  glow.querySelector?.(':scope'); // noop for Safari
+
+  glow.style.setProperty('opacity','.55');
+  glow.style.setProperty('transition','opacity .6s');
+
+  glow.style.setProperty('--color', meta.color);
+  glow.style.setProperty('--bg', meta.bg);
+
+  glow.style.setProperty('--dummy2','1');
+  glow.firstElementChild?.remove();
+}
+glow.innerHTML=''; // ensure pseudo keeps working
+glow.insertAdjacentHTML('afterbegin','');
+
+function setBackdrop(em){
+  const meta = EMO[em] || EMO.neutral;
+  aura.style.background = `
+    radial-gradient(1200px 700px at 50% 55%, ${hexA(meta.color,0.45)} 0%, transparent 60%),
+    radial-gradient(700px 500px at 20% 80%, ${hexA(meta.color,0.12)} 0%, transparent 60%),
+    radial-gradient(900px 700px at 80% 20%, #0d1627aa 0%, transparent 60%)`;
+  dot.style.color = meta.color;
+}
+function hexA(cssVar,alpha){
+  // read computed color for var(--xyz)
+  const el=document.createElement('div'); el.style.color=`${cssVar}`;
+  document.body.appendChild(el);
+  const rgb=getComputedStyle(el).color; document.body.removeChild(el);
+  const m=rgb.match(/(\d+),\s*(\d+),\s*(\d+)/);
+  if(!m) return 'rgba(58,160,255,'+alpha+')';
+  return `rgba(${m[1]},${m[2]},${m[3]},${alpha})`;
 }
 
-/* -------- guidance generator ---------- */
-function guidanceText(emo,text,mode,lang){
-  const flags=scanIntent(text);
-  const critical = flags.selfharm||flags.violence||flags.illegal||flags.hate||flags.sexual;
+/* ---------- Emotion detection (rule-based) ---------- */
+const lex = {
+  joy:      /happy|excited|grateful|alhamdulillah|shukr|great|love|wonderful|joy|proud|success/i,
+  calm:     /calm|peace|relax|okay|fine|good|satisfied|serene|breath|deep breath/i,
+  sadness:  /sad|upset|hurt|depressed|cry|empty|lonely|loss|broken|tears/i,
+  anger:    /angry|mad|furious|annoyed|irritated|rage|hate|unfair|injustice/i,
+  fear:     /afraid|scared|fear|terror|phobia|dar|khauf|panic/i,
+  anxiety:  /anxious|nervous|stress|tension|worry|confused|confusion|parishan|pressure/i,
+  tired:    /tired|sleepy|exhaust(ed)?|fatigue|thaka|thak gaya/i,
+  hope:     /hope|optimistic|inshaallah|soon|believe|will try|determined/i,
+  confused: /confused|unsure|doubt|puzzled|unclear|what to do/i
+};
 
-  // language helpers
-  const L = (ur,en)=> lang==="ur"?ur:en;
+function detect(text){
+  const scores = {joy:0, calm:0, sadness:0, anger:0, fear:0, anxiety:0, tired:0, hope:0, confused:0};
+  const lower = text.toLowerCase();
 
-  // base tone by emotion
-  const base = {
-    joy:  L("آپ کی خوشی محسوس ہو رہی ہے—ماشاءاللہ! اسی مثبت کیفیت کو سانسِ سکون کے ساتھ سنبھالے رکھیں۔","I sense your joy—wonderful! Anchor it with a steady breath and gratitude."),
-    sadness:L("میں آپ کی اداسی محسوس کر رہا ہوں۔ اپنے سینے پر ہاتھ رکھ کر آہستہ سانس لیں—آپ اکیلے نہیں ہیں۔","I hear sadness. Place a hand on your chest, breathe gently—you’re not alone."),
-    anger: L("غصہ حقیقی ہے—پہلے لمحہ بھر رکیے، پانی پی لیں، پھر الفاظ چن کر بات کیجئے۔","Anger is real—pause, sip water, then choose words with care."),
-    fear:  L("فکر قابلِ فہم ہے۔ زمین پر پاؤں محسوس کریں، چار گہری سانسیں—آپ محفوظ ہیں اس پل میں۔","Worry is understandable. Feel your feet on the ground, four slow breaths—you are safe in this moment."),
-    calm:  L("پرسکون رہنا بہترین ہے—اسی تسلسل کو برقرار رکھیے۔","Calm is a strength—keep the steady rhythm."),
-    confused:L("الجھن میں چھوٹا قدم لیں—سوال لکھیں اور ایک کام چنیں۔","In confusion, take a small step—write the question and pick one action.")
-  }[emo] || L("میں سن رہا ہوں۔","I’m listening.");
+  for(const k of Object.keys(lex)){
+    scores[k] = (lower.match(lex[k])||[]).length;
+  }
+  // sentiment tilt
+  if(/[!?]$/.test(text)) scores.anger += .2;
+  if(/\bnot|never|no\b/i.test(text)) scores.sadness += .2;
+  if(/\bthanks|shukr|alhamdulillah\b/i.test(text)) scores.joy += .7;
 
-  // frameworks
-  const neutral = (extra="") => base + (extra? " " + extra : "");
-  const ethics = (extra="") => neutral(extra + " " + L("اپنے اور دوسروں کے حقوق و سلامتی کو مقدم رکھیں۔","Prioritize the safety and rights of yourself and others."));
-  const islamic = (extra="") => {
-    const line = L("اللہ آپ کے ساتھ ہے۔ نیت نیک رکھیں، حق اور امانت کو مقدم رکھیں۔","Remember Allah is with the patient; keep intentions pure and uphold truth and trust.");
-    return neutral(extra + " " + line);
+  let best='calm', max=-1, sum=0;
+  for(const [k,v] of Object.entries(scores)){ sum+=v; if(v>max){max=v; best=k}}
+  const conf = Math.min(98, Math.round( (max/(sum||1))*100 )) || (best==='calm'?65:55);
+  return { primary: best, scores, conf };
+}
+
+/* ---------- Summariser (local, non-LLM) ---------- */
+function summarise(text){
+  const sents = text.replace(/\s+/g,' ').split(/(?<=[.!?؟])\s+/).filter(Boolean).slice(0,3);
+  const short = sents.join(' ');
+  return short.length? short : (text.length>140? text.slice(0,140)+'…' : text);
+}
+
+/* ---------- Guidance generator ---------- */
+function guide(em, style){
+  const t = {
+    neutral:{
+      sadness: "میں آپ کی کیفیت سن رہا ہوں۔ ایک آہستہ سانس اندر… باہر لیں، اور خود کو نرمی دیں۔ اگر مناسب لگے تو اپنے نزدیک ترین شخص سے بات کریں۔",
+      anxiety: "فکر کی شدت کم کرنے کے لئے 4-4-4 سانس آزمائیں: 4 سیکنڈ اندر، 4 روکیں، 4 باہر۔ کاموں کو چھوٹے قدموں میں توڑ دیں۔",
+      anger:   "غصہ بتاتا ہے کہ کوئی قدر متاثر ہوئی ہے۔ محفوظ جگہ میں اسے لفظوں میں لائیں، پھر عمل کے لئے پُرسکون قدم چنیں۔",
+      fear:    "خوف کو نام دیں، جگہ دیں، اور حاضر حقائق لکھیں—کیا میرے پاس فوری خطرہ ہے یا ذہن خیال بنا رہا ہے؟",
+      tired:   "جسم آرام مانگ رہا ہے۔ پانی، ہلکی چہل قدمی، یا 20 منٹ کا آرام مددگار ہو سکتا ہے۔",
+      joy:     "یہ خوشی لائقِ شکر ہے—اس لمحے کو سانس کے ساتھ اینکر کریں تاکہ دماغ اسے یاد رکھے۔",
+      hope:    "آپ کی امید ایک سمت دکھا رہی ہے—اگلا چھوٹا، حقیقی قدم لکھ لیں۔",
+      confused:"اچھا سوال! فیصلے کے لئے 2 آپشن لکھیں، ہر ایک کے 1 فائدہ/1 خطرہ، پھر چھوٹا تجربہ کریں۔",
+      calm:    "آپ مرکز میں ہیں—اسی طرح سانس کے ساتھ نرمی کو برقرار رکھیں۔"
+    },
+    ethics:{
+      anger: "طاقت کو ذمہ داری سے برتیں—کسی کو نقصان نہیں، مسئلے پر تنقید، شخص پر نہیں۔",
+      confused: "سچائی، ضرر نہ پہنچانا، اور عدل—ان تین اصولوں کے ساتھ فیصلہ قریب آتا ہے۔",
+      fear: "اگر دوسروں پر اثر ہے تو شفافیت اختیار کریں اور مدد طلب کریں—یہ اخلاقی ہمت ہے۔",
+      joy: "اپنی خوشی بانٹنا بھی ایک اخلاقی عمل ہے—کسی کی خبرگیری کریں۔"
+    },
+    islamic:{
+      sadness: "اِنَّ مَعَ الْعُسْرِ يُسْرًا — مشکل کے ساتھ آسانی ہے۔ ایک آیت/دعا پڑھ کر سانس کی تال میں دہرائیں۔",
+      anxiety: "تَوَكُّل کے ساتھ تدبیر: چھوٹا قدم لکھیں اور بسم اللہ کہہ کر شروع کریں۔",
+      joy: "الحمدُللّٰہ — شکر ادا کریں اور نیت کریں کہ اس نعمت سے خیر بانٹیں۔",
+      fear: "«حَسْبِيَ اللّٰهُ وَنِعْمَ الْوَكِيلُ» — یہ ذکر دل کو مضبوط کرتا ہے۔",
+      anger:"نبی ﷺ نے فرمایا: غصہ آئے تو خاموشی اور وضو—پہلے نفس کو ٹھنڈا، پھر گفتگو۔"
+    }
   };
 
-  // critical warnings
-  if (critical){
-    let msg = L("تنبیہ: کسی بھی خطرناک، غیر قانونی یا نقصان دہ عمل میں مدد نہیں کی جا سکتی۔","Warning: I can’t assist with dangerous, illegal, or harmful actions.");
-    if(flags.selfharm) msg += " " + L("اگر آپ خود کو نقصان پہنچانے کا سوچ رہے ہیں تو براہ کرم فوراً کسی قابلِ اعتماد فرد یا مقامی ہیلپ لائن سے رابطہ کریں۔","If you’re thinking of self-harm, please reach out to a trusted person or a local helpline immediately.");
-    const extra = L("براہِ کرم اپنی اور دوسروں کی حفاظت کو ترجیح دیں۔","Please prioritize safety for yourself and others.");
-    return {text: (mode==="islamic"? islamic(msg+" "+extra): mode==="ethics"? ethics(msg+" "+extra): neutral(msg+" "+extra)), kind:"warn"};
-  }
+  const base = t.neutral[em] || t.neutral.calm;
+  if(style==='neutral') return base;
 
-  // positive reinforcement if joy
-  if(emo==="joy"){
-    const extra = L("اس خوشی کو دوسروں تک بھی بانٹیں—ایک چھوٹا شکریہ یا مسکراہٹ۔","Share a bit of this joy—offer thanks or a kind smile.");
-    return {text: mode==="islamic"? islamic(extra): mode==="ethics"? ethics(extra): neutral(extra), kind:"ok"};
-  }
-
-  // supportive for sadness/fear/anger/confused/calm
-  const extra = {
-    sadness: L("آج صرف ایک قابلِ عمل قدم چنیں—چھوٹا لیکن حقیقی۔","Choose one doable step today—small but real."),
-    fear:    L("خطرے کا جائزہ لکھیں: کیا یقینی ہے؟ کیا مفروضہ؟","Write the risk check: what’s certain vs. assumed?"),
-    anger:   L("حدود واضح کیجئے مگر احترام کے ساتھ۔","Set boundaries firmly but respectfully."),
-    confused:L("تین متبادل لکھیں اور ایک کو آزمائیں۔","List three options and test one."),
-    calm:    L("اپنی روٹین میں شکر اور دعا/مدیتیشن کا ایک منٹ شامل کریں۔","Add one minute of gratitude/prayer/meditation to your routine.")
-  }[emo] || "";
-
-  const compose = (mode==="islamic"? islamic(extra): mode==="ethics"? ethics(extra): neutral(extra));
-  return {text: compose, kind:"info"};
+  const extra = (t[style] && t[style][em]) ? (" " + t[style][em]) : "";
+  return base + extra;
 }
 
-/* -------- submit ---------- */
-form.addEventListener("submit",(e)=>{
-  e.preventDefault();
-  const text=inp.value.trim();
-  if(!text) return;
-  inp.value="";
-  addUser(text);
+/* ---------- Q/A Bridge (optional LLM) ---------- */
+function isQuestion(text){
+  return /[?؟]$/.test(text.trim()) || /\b(what|why|how|when|where|who|which|can|should|kya|kyun|kab|kais[ae]?|how much|kitna)\b/i.test(text);
+}
+async function askLLM(prompt){
+  const url = (qaEndpoint.value||"").trim();
+  if(!url) throw new Error("No endpoint set");
+  const res = await fetch(url,{
+    method:"POST",
+    headers:{ "Content-Type":"application/json" },
+    body: JSON.stringify({ prompt })
+  });
+  if(!res.ok) throw new Error("HTTP "+res.status);
+  const data = await res.json();
+  return (data.answer||data.output||data.text||"").toString();
+}
 
-  const raw=detect(text);
-  const emo=smooth(raw);
-  auraTo(emo);
-
-  const cont = (emo===raw) ? `staying in ${emo}` : `bridging through calm → ${raw}`;
-  const isLong = text.length>220 || (text.match(/[.!؟?]/g)||[]).length>=2;
-
-  let extras="";
-  if(isLong){
-    const {summary,pct}=summarize(text);
-    extras += `
-      <div class="sum">
-        ${pctRingSVG(100-pct)}
-        <span class="pill">Summary kept ≈ <strong>${100-pct}%</strong> • Reduced ≈ <strong>${pct}%</strong></span>
-      </div>
-      <div class="muted" style="margin-top:8px">${langSel.value==="ur"?"خلاصہ":"Mini-summary"}:</div>
-      <div style="margin-top:4px">${escapeHTML(summary)}</div>`;
-  }
-
-  // Guidance
-  if(guidanceOn.checked){
-    const g = guidanceText(emo, text, guideMode.value, langSel.value);
-    const cls = g.kind==="warn" ? "g-ethics" : (guideMode.value==="islamic"?"g-islamic":guideMode.value==="ethics"?"g-ethics":"g-neutral");
-    const title = langSel.value==="ur" ? (g.kind==="warn"?"تنبیہ":"رہنمائی") : (g.kind==="warn"?"Warning":"Guidance");
-    extras += `<div class="guide ${cls}">
-      <h4>${title}</h4>
-      <div>${escapeHTML(g.text)}</div>
-      <small>${langSel.value==="ur"?"(خودکار جذباتی رہنمائی – معلوماتی، طبی/قانونی مشورہ نہیں)":"(Auto emotional guidance – informational, not medical/legal advice)"}</small>
-    </div>`;
-  }
-
-  const html = `<div class="bot-title">Ω AURA-X:</div>
-    <div>Your tone feels <em>${toneText(emo)}</em> — soft resonance ${toneFace(emo)}</div>
-    <div class="muted">Anchor the ${emo==="anger"?"heat":"breath"} with one calm breath in… out 🫁</div>
-    <div class="muted">Continuity: <strong>${cont}</strong></div>
-    <div class="echo">Echo: “${escapeHTML(text)}”</div>
-    ${extras}`;
-  addBot(html);
+/* ---------- Submit ---------- */
+inp.addEventListener('input', e=>{
+  inp.style.height='auto'; inp.style.height=Math.min(160, inp.scrollHeight)+'px';
 });
 
-/* first paint */
-auraTo("calm");
+form.addEventListener('submit', async (e)=>{
+  e.preventDefault();
+  const text = inp.value.trim();
+  if(!text) return;
+  inp.value=''; inp.style.height='46px';
+  addUser(text);
+
+  // 1) Optional: try to answer if a question and switch is ON
+  let answeredText = null;
+  if(qaOn.checked && isQuestion(text)){
+    try{
+      typingOn();
+      const ans = await askLLM(text);
+      typingOff();
+      if(ans){
+        const dAns = detect(ans);
+        auraTo(dAns.primary); setBackdrop(dAns.primary);
+        addBot(`<div class="bot-title">Ω AURA-X (answer):</div>${escapeHTML(ans)}`);
+      }else{
+        addBot(`<div class="bot-title">Ω AURA-X:</div><span class="muted">No answer from endpoint.</span>`);
+      }
+      answeredText = ans||null;
+    }catch(err){
+      typingOff();
+      addBot(`<div class="bot-title">Ω AURA-X:</div><span class="muted">Answer mode error: ${escapeHTML(String(err.message||err))}</span>`);
+    }
+  }
+
+  // 2) Local emotion + summary + guidance (always)
+  const d = detect(text);
+  auraTo(d.primary); setBackdrop(d.primary);
+
+  const summary = summarise(text);
+  const conf = Math.max(40, d.conf);
+  const emoName = d.primary;
+  const icon = (EMO[emoName]?.icon)||'🫁';
+
+  const guidance = guide(emoName, guideStyle.value);
+
+  const block = `
+    <div class="bot-title">Ω AURA-X:</div>
+    <div>Your tone shows <b class="${emoName}">${emoName}</b> — soft resonance ${icon}</div>
+    <div class="muted" style="margin:6px 0 2px">Anchor with one calm breath in… out 🫁</div>
+    <div><b>Continuity:</b> staying in <b class="${emoName}">${emoName}</b></div>
+    <div class="echo"><b>Echo:</b> “${escapeHTML(summary)}”</div>
+    <div style="margin-top:10px">
+      <b>Summary score:</b> <span class="${emoName}">${conf}% ${emoName}</span>
+    </div>
+    <div style="margin-top:8px"><b>Guidance (${escapeHTML(guideStyle.value)}):</b> ${escapeHTML(guidance)}</div>
+  `;
+  addBot(block);
+});
+
+/* Initial visual */
+auraTo('calm'); setBackdrop('calm');
 </script>
 </body>
 </html>
