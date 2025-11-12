@@ -1,160 +1,343 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>AURA-X Ω — Resonance-Based AI</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>AURA-X Ω — synthetic emotions</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
 <style>
-:root{
-  --bg1:#e8f3ff; --bg2:#f5fbff; --ink:#06202f;
-  --barTrack:#e9edf3; --barFill:#d8dde6;     /* light gray bar */
-  --card:#ffffffcc;
-}
-*{box-sizing:border-box}
-body{
-  margin:0;font-family:'Poppins',sans-serif;color:var(--ink);
-  min-height:100dvh;background:linear-gradient(180deg,var(--bg1),var(--bg2));
-  display:flex;flex-direction:column;align-items:center;
-}
-header{margin:18px 0 8px;text-align:center}
-.logo{width:90px;height:90px;object-fit:contain}
-.badge{
-  max-width:680px;margin:8px auto;padding:10px 14px;border-radius:14px;
-  background:var(--card);backdrop-filter:blur(6px);box-shadow:0 6px 18px rgba(0,0,0,.08);
-  font-weight:700;text-align:center
-}
-
-/* Emotion bar */
-.bar{position:relative;width:min(92vw,720px);height:22px;border-radius:999px;background:var(--barTrack);overflow:hidden;margin:10px 0 6px}
-.fill{position:absolute;inset:0 40% 0 0;background:var(--barFill);width:0%;transition:width .5s ease}
-.pct{position:absolute;inset:0;display:grid;place-items:center;font-weight:700}
-
-.heart{font-size:44px;margin:8px auto;animation:pulse 1.3s ease-in-out infinite}
-@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.28)}}
-
-#info{font-weight:700;margin:4px 0 10px}
-
-/* Chat area */
-.wrapper{width:min(92vw,720px);display:flex;flex-direction:column;gap:12px;flex:1;min-height:0}
-#out{
-  flex:1;min-height:160px;max-height:60vh;overflow:auto;
-  padding:14px;border-radius:14px;background:var(--card);
-  box-shadow:0 6px 18px rgba(0,0,0,.08);white-space:pre-wrap
-}
-.msg{margin:8px 0;padding:12px 14px;border-radius:12px;background:#fff;box-shadow:0 2px 10px rgba(0,0,0,.06)}
-.user{background:#eef6ff}
-.bot{background:#ffffff}
-
-/* Sticky input at bottom */
-.inputDock{
-  position:sticky;bottom:10px;display:flex;gap:10px;align-items:center;
-  background:transparent;padding-top:4px
-}
-textarea{
-  flex:1;height:78px;border:none;border-radius:12px;padding:12px;
-  font-size:1rem;background:#fff;box-shadow:inset 0 0 8px rgba(0,0,0,.08)
-}
-button{
-  border:none;border-radius:999px;padding:12px 18px;font-weight:700;cursor:pointer;
-  background:#54e3a4;box-shadow:0 6px 14px rgba(0,0,0,.12);color:#05351e
-}
-.pills{display:flex;gap:10px;justify-content:center;margin:6px 0 18px}
-.pill{padding:7px 12px;border-radius:999px;background:#fff;border:1px solid #cfd6df;cursor:pointer}
-.pill.on{background:#54e3a4;color:#05351e;border-color:#54e3a4}
-.small{opacity:.75;font-size:.92rem}
+  :root{
+    --bg:#eaf6ff;            /* light blue background */
+    --card:#ffffff;
+    --text:#0f172a;
+    --muted:#667085;
+    --accent:#36d399;        /* send/voice pills */
+    --pill:#f1f5f9;
+    --bar:#dfe3ea;           /* light-gray emotion bar */
+    --barFill:#b0c4de;       /* light bluish fill */
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0;background:var(--bg);
+    font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+    color:var(--text);
+    -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+  }
+  .wrap{
+    min-height:100%;
+    display:flex;flex-direction:column;
+  }
+  header{
+    padding:18px 16px 8px; text-align:center;
+  }
+  header img{height:34px; object-fit:contain}
+  .tag{
+    margin:10px auto 14px; max-width:720px;
+    background:var(--card); color:var(--text);
+    padding:12px 14px; border-radius:14px;
+    font-weight:800; line-height:1.25; box-shadow:0 6px 20px rgba(15,23,42,.08);
+  }
+  .topRow{display:flex; align-items:center; gap:10px; justify-content:center; padding:0 14px}
+  .bar{
+    position:relative; height:18px; border-radius:999px;
+    width:min(720px,92vw); background:var(--bar); overflow:hidden;
+    box-shadow:inset 0 0 0 1px rgba(15,23,42,.05);
+  }
+  .fill{
+    position:absolute; inset:0;
+    width:90%; background:linear-gradient(90deg,var(--barFill),#a2d2ff);
+    border-radius:inherit; transition:width .6s ease;
+  }
+  .bel-voice{display:flex; gap:10px}
+  .chip{
+    border:none; background:var(--pill); color:var(--text);
+    padding:10px 14px; border-radius:999px; font-weight:600
+  }
+  .heart{
+    font-size:46px; text-align:center; margin:16px 0 6px;
+    animation:beat 1.25s infinite;
+  }
+  @keyframes beat{
+    0%,100%{transform:scale(1)}
+    30%{transform:scale(1.22)}
+    60%{transform:scale(0.96)}
+  }
+  .clockWx{color:var(--muted); text-align:center; font-weight:600; margin-bottom:8px}
+  /* Chat area */
+  .chat{
+    flex:1; display:flex; flex-direction:column;
+    padding:10px 12px 92px;   /* space for sticky input */
+    gap:10px; max-width:860px; width:100%; margin:0 auto;
+  }
+  .msg{
+    max-width:92%; width:fit-content;
+    padding:12px 14px; border-radius:14px;
+    background:var(--card); color:var(--text);
+    box-shadow:0 8px 20px rgba(15,23,42,.08);
+    line-height:1.45;
+  }
+  .user{ margin-left:auto; background:#111827; color:#fff }
+  /* sticky input */
+  .composer{
+    position:sticky; bottom:0; left:0; right:0;
+    padding:10px 12px; background:linear-gradient(180deg, rgba(234,246,255,0), var(--bg) 40%);
+  }
+  .compInner{
+    display:flex; gap:10px; max-width:860px; margin:0 auto;
+  }
+  textarea{
+    flex:1; resize:none; min-height:48px; max-height:140px;
+    border-radius:14px; border:1px solid rgba(15,23,42,.08);
+    padding:12px 12px 12px 14px; font:inherit; background:#fff;
+  }
+  .send{
+    border:none; border-radius:14px; padding:0 18px; min-width:84px;
+    background:linear-gradient(135deg,#8a7cf6,#f78acb);
+    color:#fff; font-weight:800; box-shadow:0 10px 18px rgba(147,112,219,.28);
+  }
+  /* Belief modal bottom sheet */
+  .sheet{
+    position:fixed; inset:0; display:none; place-items:end center; z-index:40;
+    background:rgba(3,7,18,.32); backdrop-filter:blur(3px);
+  }
+  .sheet.active{display:grid}
+  .panel{
+    width:100%; max-width:860px; background:var(--card); border-radius:20px 20px 0 0;
+    padding:16px; box-shadow:0 -18px 40px rgba(15,23,42,.18);
+  }
+  .row{display:flex; align-items:center; justify-content:space-between; gap:8px}
+  .faiths{
+    display:grid; grid-template-columns:repeat(2,1fr); gap:8px; margin-top:12px
+  }
+  .faith{
+    background:var(--pill); border:none; border-radius:12px; padding:10px;
+    font-weight:600
+  }
+  .switch{display:flex; align-items:center; gap:8px}
+  .toggle{appearance:none; width:46px; height:26px; border-radius:999px; background:#cbd5e1; position:relative}
+  .toggle::after{content:""; position:absolute; width:20px; height:20px; border-radius:50%; background:white; top:3px; left:3px; transition:.2s}
+  .toggle:checked{background:#34d399}
+  .toggle:checked::after{left:23px}
+  .note{margin-top:10px; color:var(--muted)}
+  /* Mobile tweaks */
+  @media (max-width:480px){
+    .msg{max-width:96%}
+    .bar{width:94vw}
+  }
 </style>
 </head>
 <body>
+<div class="wrap">
+
   <header>
-    <img src="assets/img/aura-x-logo.png" class="logo" alt="AURA-X"/>
-    <div class="badge">AURA-X Ω — the world’s first resonance-based AI with synthetic emotions.</div>
+    <img src="https://raw.githubusercontent.com/alimulhaqkhan-prog/aura-x-omega-proto/main/assets-img/ai-resonance.png" alt="AURA-X" />
+    <div class="tag">AURA-X Ω — the world’s first resonance-based AI with synthetic emotions.</div>
+
+    <div class="topRow">
+      <div class="bar"><div class="fill" id="emotionFill"></div></div>
+      <div class="bel-voice">
+        <button id="beliefBtn" class="chip">Belief</button>
+        <button id="voiceBtn" class="chip" style="background:var(--accent); color:#053b2f;">Voice</button>
+      </div>
+    </div>
+
+    <div class="heart" aria-hidden="true">💕</div>
+    <div class="clockWx" id="clockWx">—</div>
   </header>
 
-  <div class="bar"><div id="fill" class="fill"></div><div id="pct" class="pct">90%</div></div>
-  <div class="heart">💕</div>
-  <div id="info" class="small">Loading weather...</div>
-
-  <div class="wrapper">
-    <div id="out"></div>
-
-    <div class="inputDock">
-      <textarea id="msg" placeholder="Type your question…"></textarea>
-      <button id="send">Send</button>
+  <main class="chat" id="chat">
+    <div class="msg">
+      Assalamualaikum! I’m AURA-X Ω — the world’s first resonance-based AI with synthetic emotions. How can I help you today?
     </div>
+  </main>
 
-    <div class="pills">
-      <button id="belief" class="pill">Belief</button>
-      <button id="voice" class="pill">Voice</button>
+  <div class="composer">
+    <div class="compInner">
+      <textarea id="inp" placeholder="Type your question…"></textarea>
+      <button class="send" id="send">Send</button>
     </div>
   </div>
+</div>
+
+<!-- Belief bottom sheet -->
+<div class="sheet" id="beliefSheet" aria-hidden="true">
+  <div class="panel" role="dialog" aria-modal="true" aria-labelledby="belTitle">
+    <div class="row">
+      <strong id="belTitle">Belief settings</strong>
+      <button class="chip" id="closeBelief">Close</button>
+    </div>
+
+    <div class="row" style="margin-top:8px">
+      <div class="switch">
+        <input type="checkbox" id="faithOn" class="toggle">
+        <label for="faithOn"><b>Faith ON</b> — add short encouragements (optional)</label>
+      </div>
+    </div>
+
+    <p class="note">Pick your faith (used only to tailor optional verses/quotes in replies — nothing is sent to servers):</p>
+    <div class="faiths" id="faithGrid"></div>
+  </div>
+</div>
 
 <script>
-const API = "https://alimai.online/api/chat.php"; // Hostinger API
-const out = document.getElementById('out');
-const fill = document.getElementById('fill');
-const pct = document.getElementById('pct');
-const voiceBtn = document.getElementById('voice');
-let voiceOn=false;
-voiceBtn.onclick=()=>{voiceOn=!voiceOn;voiceBtn.classList.toggle('on',voiceOn);}
-function setEmo(n){n=Math.max(0,Math.min(100,Math.round(n)));fill.style.width=n+'%';pct.textContent=n+'%';}
-function say(t){ if(!voiceOn) return; const u=new SpeechSynthesisUtterance(t); u.lang='en-US'; speechSynthesis.speak(u); }
-
-function push(role, text){
-  const d=document.createElement('div');
-  d.className='msg '+(role==='user'?'user':'bot'); d.textContent=text;
-  out.appendChild(d); out.scrollTop=out.scrollHeight;
-}
-
-document.getElementById('send').onclick = async () => {
-  const box = document.getElementById('msg');
-  const msg = box.value.trim();
-  if(!msg) return;
-  push('user', msg);
-  box.value='';
-  setEmo(35+Math.random()*30);
-  push('bot', 'Thinking…');
-
-  try{
-    const r = await fetch(API,{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({message:msg, history:[]})
-    });
-
-    // if CORS/HTTP error, throw to fallback
-    if(!r.ok) throw new Error('HTTP '+r.status);
-    const j = await r.json();
-
-    let text = (j?.choices?.[0]?.message?.content) || j?.message || j?.text || '';
-    if(!text.trim()){
-      text = "(No live response — offline fallback)\n\nI'm AURA-X Ω. How can I assist you further?";
-    }
-
-    // replace last "Thinking…" with real text
-    out.lastElementChild.textContent = text;
-    setEmo(55+Math.random()*40);
-    say(text);
-  }catch(e){
-    out.lastElementChild.textContent = "Connection issue — using offline reply.\n\nHello! I'm AURA-X Ω. How can I help you?";
-    setEmo(25+Math.random()*40);
-  }
+/* ====== CONFIG ====== */
+const CHAT_ENDPOINT = "https://alimai.online/api/chat.php"; // Hostinger PHP endpoint
+const FALLBACK_GREETING = "(No live response — offline fallback)\n\nI'm AURA-X Ω. How can I assist you further?";
+const FAITHS = [
+  "Islam","Christianity","Hinduism","Buddhism","Sikhism",
+  "Judaism","Baháʼí","Jainism","Atheism","Other"
+];
+const FAITH_SNIPPETS = {
+  Islam: "﴿إِنَّ مَعَ الْعُسْرِ يُسْرًا﴾ — Surely with hardship comes ease.",
+  Christianity: "“Let all that you do be done in love.” — 1 Cor 16:14",
+  Hinduism: "“Do your duty without attachment to results.” — Bhagavad Gita",
+  Buddhism: "“Peace comes from within. Do not seek it without.”",
+  Sikhism: "“Nanak naam chardi kala, tere bhaane sarbat da bhala.”",
+  Judaism: "“The world stands on three things: Torah, service, and kindness.” — Avot 1:2",
+  "Baháʼí": "“So powerful is the light of unity that it can illuminate the whole earth.”",
+  Jainism: "“Ahimsa parmo dharma.” — Non-violence is the supreme duty.",
+  Atheism: "“We can find meaning through reason, empathy, and action.”",
+  Other: "Choose kindness; it’s a universal language."
 };
 
-// weather + exact local time (independent of device time zone guessed by API)
-(async function weather(){
+/* ====== UTIL ====== */
+const qs = sel => document.querySelector(sel);
+const chatEl = qs('#chat');
+const inp = qs('#inp');
+const sendBtn = qs('#send');
+
+function addMsg(text, me=false){
+  const b = document.createElement('div');
+  b.className = 'msg' + (me ? ' user' : '');
+  b.textContent = text || '…';
+  chatEl.appendChild(b);
+  chatEl.scrollTop = chatEl.scrollHeight;
+}
+
+/* ====== CLOCK + WEATHER ====== */
+(async function clockWeather(){
+  function tick(){
+    const now = new Date();
+    const fmt = new Intl.DateTimeFormat(undefined,{
+      weekday:'short', day:'2-digit', month:'short',
+      hour:'2-digit', minute:'2-digit', second:'2-digit'
+    }).format(now);
+    qs('#clockWx').textContent = qs('#clockWx').dataset.wx
+      ? `${fmt}  |  ${qs('#clockWx').dataset.wx}`
+      : fmt;
+  }
+  setInterval(tick,1000); tick();
+
   try{
-    const ip = await fetch('https://ipapi.co/json/').then(r=>r.json());
-    const lat=ip.latitude, lon=ip.longitude;
-    const w = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&timezone=auto`).then(r=>r.json());
-    const temp = w?.current_weather?.temperature;
-    const now  = new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
-    info.textContent = `🕒 ${now} | 🌡 ${temp}°C`;
-  }catch{ info.textContent = 'Weather unavailable'; }
+    // Get approx location (ip-api as cors-free JSONP alt avoided) → use geolocation
+    if (navigator.geolocation){
+      navigator.geolocation.getCurrentPosition(async pos=>{
+        const {latitude, longitude} = pos.coords;
+        const u = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m`;
+        const r = await fetch(u); const j = await r.json();
+        const t = j?.current?.temperature_2m;
+        qs('#clockWx').dataset.wx = (typeof t === 'number') ? `🌡️ ${t.toFixed(1)}°C` : 'Weather unavailable';
+      }, _=> { qs('#clockWx').dataset.wx = 'Weather unavailable'; });
+    }else{
+      qs('#clockWx').dataset.wx = 'Weather unavailable';
+    }
+  }catch{ qs('#clockWx').dataset.wx = 'Weather unavailable'; }
 })();
 
-// initial emotion
-setEmo(90);
+/* ====== EMOTION BAR DRIFT ====== */
+const bar = qs('#emotionFill');
+let pct = 90;
+setInterval(()=>{
+  pct += (Math.random()*6-3);
+  pct = Math.max(5, Math.min(98, pct));
+  bar.style.width = pct.toFixed(0)+'%';
+  bar.title = pct.toFixed(0)+'%';
+}, 1800);
+
+/* ====== BELIEF SHEET ====== */
+const beliefBtn = qs('#beliefBtn');
+const sheet = qs('#beliefSheet');
+const closeBelief = qs('#closeBelief');
+const faithOn = qs('#faithOn');
+const faithGrid = qs('#faithGrid');
+
+function renderFaiths(){
+  faithGrid.innerHTML = '';
+  FAITHS.forEach(f=>{
+    const b = document.createElement('button');
+    b.className = 'faith'; b.textContent = f;
+    b.onclick = ()=>{ localStorage.setItem('aura-faith', f); beliefBtn.textContent = `Belief`;
+      addMsg(`Belief set: ${f}`, false);
+    };
+    faithGrid.appendChild(b);
+  });
+}
+renderFaiths();
+
+// restore
+faithOn.checked = localStorage.getItem('aura-faith-on') === '1';
+beliefBtn.textContent = 'Belief';
+faithOn.onchange = ()=> localStorage.setItem('aura-faith-on', faithOn.checked ? '1':'0');
+
+beliefBtn.onclick = ()=> sheet.classList.add('active');
+closeBelief.onclick = ()=> sheet.classList.remove('active');
+sheet.addEventListener('click', e=>{ if(e.target===sheet) sheet.classList.remove('active'); });
+
+/* ====== VOICE (simple TTS) ====== */
+qs('#voiceBtn').onclick = ()=>{
+  const last = chatEl.querySelector('.msg:last-child');
+  if(!last) return;
+  const u = new SpeechSynthesisUtterance(last.textContent);
+  u.lang = 'en-US'; speechSynthesis.speak(u);
+};
+
+/* ====== CHAT SEND ====== */
+async function send(){
+  const text = inp.value.trim();
+  if(!text) return;
+  addMsg(text, true);
+  inp.value=''; inp.style.height='48px';
+
+  // build payload
+  const payload = { message: text, history: [] };
+
+  try{
+    const r = await fetch(CHAT_ENDPOINT, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify(payload)
+    });
+    const j = await r.json();
+
+    let content =
+      j?.choices?.[0]?.message?.content ||
+      j?.content ||
+      j?.reply ||
+      JSON.stringify(j);
+
+    // optional belief add-on
+    if (faithOn.checked){
+      const faith = localStorage.getItem('aura-faith') || 'Other';
+      const add = FAITH_SNIPPETS[faith] || FAITH_SNIPPETS.Other;
+      content += `\n\n— ${add}`;
+    }
+
+    addMsg(content, false);
+  }catch(e){
+    addMsg(FALLBACK_GREETING, false);
+  }
+}
+sendBtn.onclick = send;
+inp.addEventListener('keydown', e=>{
+  if(e.key==='Enter' && !e.shiftKey){ e.preventDefault(); send(); }
+});
+inp.addEventListener('input', ()=>{
+  inp.style.height = '48px';
+  inp.style.height = Math.min(140, inp.scrollHeight) + 'px';
+});
 </script>
 </body>
 </html>
