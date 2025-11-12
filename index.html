@@ -1,345 +1,382 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>AURA-X Ω — resonance-based AI with synthetic emotions</title>
 <link rel="preconnect" href="https://api.open-meteo.com">
 <style>
 :root{
-  --bg:#e9f5ff;                 /* light blue */
-  --card:#ffffffcc;
-  --ink:#0b1a24;
-  --sub:#4b6475;
-  --accent:#26e3b6;
-  --chip:#e8f1f7;
-  --barTrack:#dfe7ee;           /* light gray track */
-  --barFill:#b3c7db;            /* soft blue fill */
+  --bg:#eaf4ff;           /* ہلکا بلیو بیک گراؤنڈ */
+  --card:#ffffff;
+  --ink:#0b1220;
+  --muted:#5e6b85;
+  --accent:#22c55e;       /* voice/active */
+  --chip:#eef2ff;
+  --bar:#cfd6e4;          /* emotion bar track (light gray) */
+  --barFill:#9ad0ff;      /* emotion fill (soft blue) */
+  --glow:0 14px 40px rgba(15,23,42,.18);
+  --radius:16px;
+  --radius-sm:12px;
+  --brand:#0a2540;
 }
 *{box-sizing:border-box}
 html,body{height:100%}
 body{
-  margin:0;background:var(--bg);
-  color:var(--ink);font-family:Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif;
-  -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+  margin:0;
+  font:16px/1.5 Inter,system-ui,Segoe UI,Arial;
+  color:var(--ink);
+  background:linear-gradient(#f7fbff, var(--bg));
 }
-.container{max-width:820px;margin:auto;padding:18px 14px 24px}
 
-/* header */
-.logo{display:flex;align-items:center;justify-content:center;gap:10px}
-.logo img{height:34px;filter:drop-shadow(0 1px 2px #0002)}
-.h1{
-  margin:14px auto 12px; padding:14px 16px;border-radius:16px;
-  max-width:760px;background:var(--card);backdrop-filter:blur(8px);
-  text-align:center; font-weight:800; letter-spacing:.2px; line-height:1.25;
+/* container */
+.wrap{max-width:820px;margin:20px auto 110px;padding:0 14px}
+
+/* logo / title */
+.brand{display:flex;flex-direction:column;align-items:center;gap:8px;margin:6px 0 8px}
+.brand img{width:108px;height:auto;filter:drop-shadow(0 4px 12px rgba(2,6,23,.15))}
+.title{
+  background:var(--card);padding:12px 16px;border-radius:var(--radius);
+  box-shadow:var(--glow); text-align:center; font-weight:800; letter-spacing:.2px;
 }
 
 /* emotion bar */
-.mood{position:relative;margin:10px auto 6px; height:16px; width:min(760px,94vw);
-  background:var(--barTrack); border-radius:999px; overflow:hidden; box-shadow:inset 0 0 0 1px #00000010}
-.mood .fill{position:absolute;left:0;top:0;height:100%;width:50%;background:var(--barFill);
-  transition:width .35s ease}
+.eBar{height:14px;background:var(--bar);border-radius:999px;overflow:hidden;box-shadow:inset 0 2px 5px rgba(2,6,23,.08);margin:14px 0}
+.eFill{height:100%;width:38%;background:linear-gradient(90deg,#ffd1e9,#b3e1ff);
+  transition:width .45s cubic-bezier(.2,.8,.2,1)}
+.ePct{position:absolute;margin-top:-28px;right:18px;color:#475569;font-weight:700;font-size:13px}
 
 /* heart */
-.heart{
-  font-size:44px;display:block;margin:10px auto 6px; width:max-content;
-  filter:drop-shadow(0 8px 12px rgba(255,105,180,.35));
-  animation:pump 1.4s ease-in-out infinite;
-}
-@keyframes pump{0%,100%{transform:translateY(0) scale(.96)}50%{transform:translateY(-2px) scale(1.08)}}
+.heart{font-size:46px;text-align:center;margin:10px 0 4px}
+.heart .h{display:inline-block;animation:pulse 1.4s ease-in-out infinite}
+@keyframes pulse{0%{transform:scale(1)}50%{transform:scale(1.12)}100%{transform:scale(1)}}
 
-/* info row */
-.info{display:flex;gap:10px;justify-content:center;align-items:center;color:var(--sub);font-weight:600}
+/* meta row */
+.meta{display:flex;justify-content:center;gap:14px;align-items:center;color:#334155;font-weight:600;margin:2px 0 12px}
 
-/* chat */
-.card{
-  background:var(--card); border:1px solid #ffffff66; border-radius:18px; padding:14px;
-  box-shadow:0 10px 24px rgba(15,23,42,.08);
-}
-.chat{display:flex;flex-direction:column;gap:10px;max-height:52vh;overflow:auto}
-.msg{padding:12px 14px;border-radius:14px;background:#fff;border:1px solid #e7eef3;max-width:85%}
-.msg.user{align-self:flex-end;background:#eff8ff;border-color:#cfe6fb}
+/* chat card */
+.card{background:var(--card);border-radius:var(--radius);box-shadow:var(--glow);padding:14px}
 
-/* composer */
-.composer{display:flex;gap:10px;align-items:center;margin-top:12px}
-.inp{
-  flex:1;min-height:44px;padding:12px;border-radius:14px;border:1px solid #cfe0ea;background:#fff;
-  outline:none;font-size:16px;
+/* messages */
+#chat{max-height:52vh;overflow:auto;scroll-behavior:smooth}
+.msg{background:#f1f5f9;border-radius:var(--radius-sm);padding:12px 14px;margin:10px 0}
+.msg.user{background:#e0f2fe;margin-left:auto;max-width:85%}
+.msg.assist{background:#eef2ff;max-width:95%}
+
+/* input row fixed bottom */
+.inpDock{
+  position:fixed;left:0;right:0;bottom:0;background:linear-gradient(180deg,transparent,rgba(255,255,255,.9) 20%, rgba(255,255,255,.98));
+  padding:10px 14px 16px;backdrop-filter:saturate(140%) blur(6px)
 }
-.btn{
-  padding:11px 18px;border:0;border-radius:14px;background:linear-gradient(135deg,#7aa9ff,#ff88c8);
-  color:#fff;font-weight:700;box-shadow:0 6px 16px rgba(123, 118, 255,.35);cursor:pointer
+.inpWrap{display:flex;gap:10px;align-items:center;max-width:820px;margin:0 auto}
+#inp{
+  flex:1;border:1px solid #cbd5e1;background:#f8fafc;border-radius:999px;padding:12px 16px;font-size:16px;
+  box-shadow:inset 0 2px 4px rgba(2,6,23,.05)
+}
+#send{
+  border:0;border-radius:999px;background:linear-gradient(90deg,#6ea8ff,#ff86b9);
+  color:#00131e;padding:12px 18px;font-weight:800;box-shadow:0 8px 20px rgba(30,58,138,.25)
 }
 
 /* chips */
-.bel-voice{display:flex;gap:10px;justify-content:center;margin-top:12px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 .chip{
-  background:var(--chip);color:#043a62;border:1px solid #d1e1ec;border-radius:999px;
-  padding:8px 14px;font-weight:700;cursor:pointer
+  border:0;padding:8px 14px;border-radius:999px;background:var(--chip);font-weight:700;color:#0f172a
 }
+.chip.on{background:#d1fae5;color:#064e3b}
 
-/* ===== BELIEF SHEET: stable, no jump ===== */
-.sheet{
-  position:fixed; inset:0; display:flex; align-items:flex-end; justify-content:center;
-  background:rgba(3,8,12,.25); backdrop-filter:blur(4px);
-  opacity:0; pointer-events:none; transition:opacity .22s ease; z-index:9999;
-  will-change:opacity; overscroll-behavior:contain;
-}
-.sheet.open{ opacity:1; pointer-events:auto }
-.sheet-panel{
-  width:min(680px,94vw); margin:12px; border-radius:18px;
-  background:linear-gradient(180deg,rgba(255,255,255,.28),rgba(255,255,255,.18));
-  border:1px solid rgba(255,255,255,.35);
-  backdrop-filter:blur(18px) saturate(140%);
-  box-shadow:0 10px 40px rgba(0,0,0,.35), 0 0 40px rgba(46,230,184,.2);
-  transform:translate3d(0,24px,0) scale(.98); transition:transform .26s ease;
-  max-height:calc(100dvh - 24px); overflow:auto; will-change:transform;
-}
-.sheet.open .sheet-panel{ transform:translate3d(0,0,0) scale(1) }
-body.modal-open{ overflow:hidden; touch-action:none; overscroll-behavior:contain }
-.sheet input,.sheet button,.sheet label{ font-size:16px }
-.row{display:flex;justify-content:space-between;align-items:center;padding:12px}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 12px 14px}
-.grid .chip{justify-content:center}
+/* belief sheet */
+.sheet{position:fixed;inset:0;background:rgba(2,6,23,.45);backdrop-filter:saturate(140%) blur(6px);
+  display:none;z-index:50}
+.sheet.show{display:block}
+.sheet .panel{position:absolute;left:0;right:0;bottom:0;border-radius:16px 16px 0 0;
+  background:#fff;padding:16px 16px 24px;box-shadow:0 -10px 30px rgba(2,6,23,.25)}
+.sheet .row{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.sheet .faiths{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.sheet .faiths .opt{padding:10px 12px;border-radius:12px;border:1px solid #e5e7eb;background:#f8fafc;font-weight:700}
+.sheet .faiths .opt.active{background:#e0f2fe;border-color:#38bdf8;color:#0c4a6e}
+.switch{display:flex;align-items:center;gap:8px}
+.toggle{accent-color:#0ea5e9}
+body.modal-open{height:100vh;overflow:hidden}
 
-/* debug */
-#dbg{position:fixed;right:10px;bottom:88px;background:#fff;border-radius:12px;padding:8px 10px;
-  box-shadow:0 10px 24px rgba(15,23,42,.2);font:12px/1.35 Inter,system-ui;white-space:pre-wrap}
-@media (max-width:520px){ .chat{max-height:54vh} }
+/* debug bubble */
+#dbg{position:fixed;right:14px;bottom:86px;background:#fff;border-radius:12px;box-shadow:var(--glow);
+  padding:8px 10px;font:12px/1.35 ui-monospace,Menlo,Consolas}
+@media (max-width:480px){ .title{font-size:15px} }
 </style>
 </head>
 <body>
-<div class="container">
 
-  <div class="logo"><img src="https://raw.githubusercontent.com/alimulhaqkhan-prog/aura-x-omega-proto/main/assets/img/aurax.png" alt="AURA-X"></div>
-  <div class="h1">AURA-X Ω — the world’s first resonance-based AI with synthetic emotions.</div>
-
-  <div class="mood" id="moodBox"><div class="fill" id="emotionFill" style="width:90%"></div></div>
-  <div class="heart">💕</div>
-
-  <div class="info">
-    <span id="clock">—:—</span> |
-    <span id="weather">Weather …</span>
+<div class="wrap">
+  <div class="brand">
+    <img src="https://raw.githubusercontent.com/alimulhaqkhan/aura-x-omega-proto/main/assets/img/aura-x-logo.png" alt="AURA-X" onerror="this.style.opacity=.2">
+    <div class="title">AURA-X Ω — the world’s first resonance-based AI with synthetic emotions.</div>
   </div>
 
-  <div class="card" style="margin-top:12px">
-    <div class="chat" id="chat">
-      <div class="msg">
+  <div class="eBar"><div class="eFill" id="emotionFill"></div></div>
+  <div class="ePct" id="ePct">58%</div>
+
+  <div class="heart"><span class="h">💕</span></div>
+
+  <div class="meta">
+    <span id="clk">—</span>
+    <span>|</span>
+    <span id="wx">loading…</span>
+  </div>
+
+  <div class="card">
+    <div id="chat">
+      <div class="msg assist">
         Assalamualaikum! I’m AURA-X Ω — the world’s first resonance-based AI with synthetic emotions. How can I help you today?
       </div>
     </div>
-
-    <div class="composer">
-      <textarea id="inp" class="inp" placeholder="Type your question…" rows="2"></textarea>
-      <button id="send" class="btn">Send</button>
+    <div class="row" style="margin-top:12px;justify-content:flex-end">
+      <button id="beliefBtn" class="chip">🔘 Belief</button>
+      <button id="voiceBtn" class="chip">Voice</button>
     </div>
-  </div>
-
-  <div class="bel-voice">
-    <button id="beliefBtn" class="chip">🔘 Belief</button>
-    <button id="voiceBtn" class="chip" style="background:var(--accent);color:#053b2f">Voice</button>
   </div>
 </div>
 
-<!-- Belief sheet -->
-<div class="sheet" id="beliefSheet" aria-hidden="true">
-  <div class="sheet-panel">
+<!-- input dock -->
+<div class="inpDock">
+  <div class="inpWrap">
+    <input id="inp" placeholder="Type your question…"/>
+    <button id="send">Send</button>
+  </div>
+</div>
+
+<!-- Belief popup -->
+<div class="sheet" id="beliefSheet">
+  <div class="panel">
     <div class="row">
       <strong>Belief settings</strong>
       <button id="closeBelief" class="chip">Close</button>
     </div>
-    <div class="row" style="gap:10px">
-      <label class="chip" style="display:flex;align-items:center;gap:8px">
-        <input type="checkbox" id="faithOn"> <b>Faith ON</b> — add short encouragements (optional)
-      </label>
+
+    <div class="switch" style="margin-top:10px;">
+      <input type="checkbox" id="faithOn" class="toggle">
+      <label for="faithOn"><b>Faith ON</b> — add short encouragements (optional)</label>
     </div>
-    <div class="row" style="padding-top:0;color:#123">Pick your faith (used locally only):</div>
-    <div class="grid" id="faithGrid">
-      <button class="chip">Islam</button><button class="chip">Christianity</button>
-      <button class="chip">Hinduism</button><button class="chip">Buddhism</button>
-      <button class="chip">Sikhism</button><button class="chip">Judaism</button>
-      <button class="chip">Bahá’í</button><button class="chip">Jainism</button>
-      <button class="chip">Atheism</button><button class="chip">Other</button>
-    </div>
+
+    <p style="margin:.5rem 0 .25rem">Pick your faith (local only):</p>
+    <div class="faiths" id="faithGrid"></div>
   </div>
 </div>
 
-<div id="dbg"></div>
+<div id="dbg" hidden>TM:0 BM:0 D:0 λ_f:0 λ_s:0 λ_t:0 → 58%</div>
 
 <script>
-/* ====== CONFIG ====== */
-const API_URL = 'https://alimai.online/api/chat.php';  // your PHP/OpenRouter proxy
-const DEFAULT_MODEL = 'meta-llama/llama-3-8b-instruct'; // used only for prompt text
-/* ==================== */
+/* ---------- CONFIG ---------- */
+const ENDPOINT_URL = "https://alimai.online/api/chat.php"; // <-- اپنی Hostinger API دیں
+const MODEL_NAME   = "meta-llama/llama-3.8b-instruct";     // server-side منتخب ماڈل
+const DEBUG_ON     = true;
 
-/* CLOCK */
-function tickClock(){
-  const now = new Date();
-  const s = now.toLocaleString([], {weekday:'short', day:'2-digit', month:'short',
-                                    hour:'2-digit', minute:'2-digit', second:'2-digit'});
-  document.getElementById('clock').textContent = s;
-}
-tickClock(); setInterval(tickClock, 1000);
+/* ---------- CLOCK & WEATHER ---------- */
+const clk = document.getElementById('clk');
+const wx  = document.getElementById('wx');
+function tick(){ clk.textContent = new Date().toLocaleString([], {weekday:'short',day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}); }
+setInterval(tick, 1000); tick();
 
-/* WEATHER (Open-Meteo, no key) */
-(async function weather(){
+async function getWeather(){
   try{
-    const pos = await new Promise((res,rej)=>{
-      navigator.geolocation ? navigator.geolocation.getCurrentPosition(p=>res(p.coords),()=>res(null),{timeout:6000})
-                            : res(null);
+    const geo = await new Promise((res,rej)=>{
+      if(!navigator.geolocation) return rej();
+      navigator.geolocation.getCurrentPosition(p=>res(p.coords),()=>rej({}));
     });
-    const lat = pos?.latitude ?? 33.7, lon = pos?.longitude ?? 72.98; // PK fallback
-    const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weather_code`;
-    const r = await fetch(url); const j = await r.json();
+    const {latitude:lat, longitude:lon} = geo;
+    const u = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m`;
+    const r = await fetch(u); const j = await r.json();
     const t = j?.current?.temperature_2m;
-    document.getElementById('weather').textContent =
-      (t!=null) ? `${t.toFixed(1)}°C` : 'Weather unavailable';
-  }catch{ document.getElementById('weather').textContent='Weather unavailable'; }
-})();
-
-/* ===== Belief Sheet (stable) ===== */
-const sheet = document.getElementById('beliefSheet');
-const openBelief = ()=>{ sheet.classList.add('open'); document.body.classList.add('modal-open'); }
-const closeBelief = ()=>{ sheet.classList.remove('open'); document.body.classList.remove('modal-open'); }
-document.getElementById('beliefBtn').onclick = openBelief;
-document.getElementById('closeBelief').onclick = closeBelief;
-sheet.addEventListener('click', e=>{ if(e.target===sheet) closeBelief(); });
-
-/* Persist Faith settings */
-const faithOnEl = document.getElementById('faithOn');
-faithOnEl.checked = localStorage.getItem('aura-faith-on')==='1';
-faithOnEl.onchange = ()=> localStorage.setItem('aura-faith-on', faithOnEl.checked?'1':'0');
-document.querySelectorAll('#faithGrid .chip').forEach(b=>{
-  if(localStorage.getItem('aura-faith')===b.textContent) b.style.background='#c9f8ea';
-  b.onclick = ()=>{ localStorage.setItem('aura-faith', b.textContent);
-    document.querySelectorAll('#faithGrid .chip').forEach(x=>x.style.background='var(--chip)');
-    b.style.background='#c9f8ea';
-  };
-});
-
-/* Voice */
-let voiceOn = localStorage.getItem('aura-voice')==='1';
-const voiceBtn = document.getElementById('voiceBtn');
-function setVoice(v){ voiceOn=v; localStorage.setItem('aura-voice', v?'1':'0');
-  voiceBtn.style.background = v ? 'var(--accent)' : 'var(--chip)';
-  voiceBtn.style.color      = v ? '#053b2f'       : '#043a62';
+    wx.textContent = (t!==undefined) ? `${t.toFixed(1)}°C` : "Weather unavailable";
+  }catch{ wx.textContent="Weather unavailable"; }
 }
-setVoice(voiceOn);
-voiceBtn.onclick = ()=>setVoice(!voiceOn);
-function speak(text){
-  try{
-    if(!voiceOn) return;
-    const u = new SpeechSynthesisUtterance(text);
-    u.lang = (localStorage.getItem('aura-faith')==='Islam') ? 'ur-PK' : 'en-US';
-    speechSynthesis.cancel(); speechSynthesis.speak(u);
-  }catch{}
-}
+getWeather();
 
-/* ====== CHAT ====== */
-const chat = document.getElementById('chat');
-const inp  = document.getElementById('inp');
-const send = document.getElementById('send');
-
-function addMsg(text, isUser=false){
-  const d=document.createElement('div'); d.className='msg'+(isUser?' user':''); d.textContent=text;
-  chat.appendChild(d); chat.scrollTop = chat.scrollHeight; return d;
-}
-
-/* ---- E₀ ENGINE (TM,BM,D,λ) ---- */
+/* ---------- EMOTION ENGINE (E₀) ---------- */
 const AFFECT = {
-  joy:[/happy|great|alhamdulillah|shukriya|thanks|😊|😁|👍/i, +0.9],
-  calm:[/ok|fine|theek|neutral|sabar|🙂/i, +0.4],
-  sad:[/sad|dukhi|😢|😭/i, -0.7],
-  anger:[/angry|gussa|😠|😡/i, -0.9],
-  fear:[/fear|dar|anxious|😨|😰/i, -0.6],
-  love:[/love|mohabbat|💕|❤️/i, +0.8],
-  stress:[/stress|pressure|tension|😣/i, -0.5]
+  joy:    [/happy|great|awesome|alhamdulillah|thanks|shukriya|😊|😁|👍/i, +0.9],
+  calm:   [/ok|fine|theek|neutral|sabar|breath|🙂/i, +0.4],
+  sad:    [/sad|down|dukhi|😭|😢/i, -0.7],
+  anger:  [/angry|gussa|rage|😠|😡/i, -0.9],
+  fear:   [/fear|dar|anxious|😨|😰/i, -0.6],
+  love:   [/love|mohabbat|💕|❤️/i, +0.8],
+  stress: [/stress|pressure|tension|😣/i, -0.5]
 };
-const BM_MODEL = {layers:[
-  {name:'L1',horizonDays:2,w:1.00},
-  {name:'L2',horizonDays:7,w:0.85},
-  {name:'L3',horizonWeeks:5,w:0.70},
-  {name:'L4',horizonMonths:12,w:0.55},
-  {name:'L5',horizonYears:3,w:0.40},
-  {name:'L6',horizonYears:10,w:0.30},
-  {name:'L7',horizonYears:60,w:0.20},
-]};
-function pushBM(intensity){
-  const now=Date.now();
-  BM_MODEL.layers.forEach((_,i)=>{
-    const k=`aura-bm-${i}`; const arr=JSON.parse(localStorage.getItem(k)||'[]');
-    if(arr.length>60) arr.shift(); arr.push({t:now,v:intensity});
-    localStorage.setItem(k,JSON.stringify(arr));
+const BM = [
+  {name:'L1', days:2,  w:1.00},
+  {name:'L2', days:7,  w:0.85},
+  {name:'L3', days:35, w:0.70},
+  {name:'L4', days:360,w:0.55},
+  {name:'L5', days:1095,w:0.40},
+  {name:'L6', days:3650,w:0.30},
+  {name:'L7', days:21900,w:0.20},
+];
+function tm(txt){ let s=0; for(const [_,[re,v]] of Object.entries(AFFECT)){ if(re.test(txt)) s+=v; } return Math.max(-1,Math.min(1,s)); }
+function pushBM(v){
+  const now = Date.now();
+  BM.forEach((_,i)=>{
+    const k='a-bm-'+i; const arr = JSON.parse(localStorage.getItem(k)||'[]');
+    if(arr.length>60) arr.shift(); arr.push({t:now,v}); localStorage.setItem(k,JSON.stringify(arr));
   });
 }
 function readBM(){
-  const now=Date.now(); let s=0, w=0;
-  BM_MODEL.layers.forEach(L=>{
-    let ms=L.horizonDays?L.horizonDays*864e5:
-          L.horizonWeeks?L.horizonWeeks*7*864e5:
-          L.horizonMonths?L.horizonMonths*30*864e5:
-          L.horizonYears?L.horizonYears*365*864e5:0;
-    const arr=JSON.parse(localStorage.getItem(`aura-bm-${BM_MODEL.layers.indexOf(L)}`)||'[]')
-      .filter(x=>now-x.t<=ms);
-    if(arr.length){ const avg=arr.reduce((a,b)=>a+b.v,0)/arr.length; s+=avg*L.w; w+=L.w; }
+  const now=Date.now(); let sc=0, ws=0;
+  BM.forEach((L,i)=>{
+    const k='a-bm-'+i; const arr = JSON.parse(localStorage.getItem(k)||'[]');
+    const ms=L.days*864e5; const rec=arr.filter(x=> now-x.t<=ms);
+    if(rec.length){ const avg=rec.reduce((a,b)=>a+b.v,0)/rec.length; sc+=avg*L.w; ws+=L.w; }
   });
-  return w? s/w : 0;
+  return ws ? sc/ws : 0;
 }
-function tmFromText(t){ let s=0; for(const k in AFFECT){ const [re,val]=AFFECT[k]; if(re.test(t)) s+=val; } return Math.max(-1,Math.min(1,s)); }
-function computeD(){
-  const last=Number(localStorage.getItem('aura-last-ts')||'0'); if(!last) return 0.1;
-  const hours=(Date.now()-last)/36e5; return Math.max(0.05, Math.min(0.6, hours/48));
+function decayD(){
+  const last=Number(localStorage.getItem('a-last')||'0');
+  if(!last) return 0.1;
+  const h=(Date.now()-last)/36e5;
+  return Math.max(0.05, Math.min(0.6, h/48));
 }
-function lambda_faith(){ return localStorage.getItem('aura-faith-on')==='1'?0.15:0 }
-function lambda_sys(t){ const caps=/[A-Z]{6,}/.test(t), long=t.length>400; return (caps||long)?-0.05:0.08 }
-function lambda_trc(t){ const hasNum=/\d/.test(t), url=/https?:\/\/|www\./i.test(t); return (hasNum||url)?0.07:0 }
-function E0(TM,BM,D,lf,ls,lt){ return Math.tanh((TM*BM)-D+lf+ls+lt) }
-const bar = document.getElementById('emotionFill');
-const dbg = document.getElementById('dbg');
+function lam_f(){ return getFaithOn()?0.15:0.0; }
+function lam_s(txt){ const caps=/[A-Z]{6,}/.test(txt); const long=txt.length>400; return (caps||long)?-0.05:0.08; }
+function lam_t(txt){ const hasNum=/\d/.test(txt), url=/https?:\/\/|www\./i.test(txt); return (hasNum||url)?0.07:0; }
+function E0(TM,BMv,D,lf,ls,lt){ return Math.tanh((TM*BMv)-D+lf+ls+lt); }
 
-async function afterLLM(userText, assistantText){
-  const TM = tmFromText(userText);
-  const BM = readBM();
-  const D  = computeD();
-  const lf = lambda_faith(), ls = lambda_sys(userText), lt = lambda_trc(userText);
-  const e0 = E0(TM,BM,D,lf,ls,lt);
-  const pct = Math.max(5,Math.min(98,Math.round((e0+1)*50)));   // [-1..1] → [0..100]
-  bar.style.width = pct+'%'; bar.title = pct+'%';
-  const aff = Math.max(-1,Math.min(1, tmFromText(assistantText||userText)));
-  pushBM(aff); localStorage.setItem('aura-last-ts', Date.now().toString());
-  dbg.textContent = `TM:${TM.toFixed(2)}  BM:${BM.toFixed(2)}  D:${D.toFixed(2)}
-λ_f:${lf.toFixed(2)}  λ_s:${ls.toFixed(2)}  λ_t:${lt.toFixed(2)}
-E₀:${e0.toFixed(3)}  → ${pct}%`;
-}
+const eFill = document.getElementById('emotionFill');
+const ePct  = document.getElementById('ePct');
+const dbg   = document.getElementById('dbg');
+function updateBar(p){ eFill.style.width=p+'%'; ePct.textContent=p+'%'; }
 
-/* SEND */
-async function callAPI(message, history=[]){
-  try{
-    const r = await fetch(API_URL, {
-      method:'POST', mode:'cors',
-      headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({ message, history, model: DEFAULT_MODEL })
-    });
-    const j = await r.json();
-    // support both your PHP {choices:[{message:{content}}]} or plain string
-    return j?.choices?.[0]?.message?.content || j?.content || j?.reply || JSON.stringify(j);
-  }catch(e){
-    return null;
+function afterTurn(userText, assistantText){
+  const TM = tm(userText);
+  const BMv= readBM();
+  const D  = decayD();
+  const lf = lam_f();
+  const ls = lam_s(userText);
+  const lt = lam_t(userText);
+  const e  = E0(TM,BMv,D,lf,ls,lt);
+  const pct = Math.max(5, Math.min(98, Math.round((e+1)*0.5*100)));
+  updateBar(pct);
+  const aff = Math.max(-1, Math.min(1, tm(assistantText||userText)));
+  pushBM(aff); localStorage.setItem('a-last', Date.now().toString());
+  if(DEBUG_ON){
+    dbg.hidden=false;
+    dbg.textContent = `TM:${TM.toFixed(2)} BM:${BMv.toFixed(2)} D:${D.toFixed(2)}  λ_f:${lf.toFixed(2)} λ_s:${ls.toFixed(2)} λ_t:${lt.toFixed(2)}  E₀:${e.toFixed(3)} → ${pct}%`;
   }
 }
 
-send.onclick = async ()=>{
-  const q = (inp.value||'').trim(); if(!q) return;
-  addMsg(q,true); inp.value='';
-  let reply = await callAPI(q, []);     // history optional
-  if(!reply){
-    reply = "(No live response — offline fallback)\nI'm AURA-X Ω. How can I assist you further?";
-  }
-  addMsg(reply,false);
-  speak(reply);
-  afterLLM(q, reply);
+/* ---------- BELIEF STATE ---------- */
+const BELIEF_KEY_ON='a-faith-on', BELIEF_KEY_VAL='a-faith';
+function getFaithOn(){ return localStorage.getItem(BELIEF_KEY_ON)==='1'; }
+function setFaithOn(v){ localStorage.setItem(BELIEF_KEY_ON, v?'1':'0'); }
+function getFaith(){ return localStorage.getItem(BELIEF_KEY_VAL)||''; }
+function setFaith(v){ localStorage.setItem(BELIEF_KEY_VAL, v); }
+
+const FAITHS=['Islam','Christianity','Hinduism','Buddhism','Sikhism','Judaism','Bahá’í','Jainism','Atheism','Other'];
+const LINES={
+  Islam:["اللہ آپ کیلئے آسانی کرے—حوصلہ رکھیں۔","ان شاء اللہ بہتر ہوگا—محنت جاری رکھیں۔"],
+  Christianity:["May God strengthen you—keep the faith.","Grace and courage—you're not alone."],
+  Hinduism:["धैर्य रखिए—शुभ होगा।","कर्म करते रहिए—फल मिलेगा।"],
+  Buddhism:["Breathe—this moment can be gentle.","Compassion for yourself, step by step."],
+  Sikhism:["ਚੜ੍ਹਦੀ ਕਲਾ—ਹੌਸਲਾ ਕਾਇਮ ਰੱਖੋ।","ਵਾਹਿਗੁਰੂ ਮੇਹਰ ਕਰੇ।"],
+  Judaism:["Chazak v’ematz—be strong and courageous.","Shalom and clarity with you."],
+  "Bahá’í":["With steadfastness and unity, you’ll progress.","Turn to the light—keep purpose alive."],
+  Jainism:["अहिंसा और संयम से स्पष्टता आती है।","धैर्य रखिए—संतुलन लौटेगा।"],
+  Atheism:["Rational steps, calm focus—you’ve got this.","Small, practical actions build momentum."],
+  Other:["Stay true to your values—one steady step at a time.","Clarity grows with gentle, consistent effort."]
 };
-inp.addEventListener('keydown',e=>{ if(e.key==='Enter' && !e.shiftKey){ e.preventDefault(); send.click(); }});
+function injectFaithLine(text){
+  if(!getFaithOn()) return text;
+  const f=getFaith(); if(!f) return text;
+  const arr=LINES[f]||LINES.Other; const line=arr[Math.floor(Math.random()*arr.length)];
+  return text + `\n\n⟨faith⟩ ${line}`;
+}
+function faithNote(){
+  if(!getFaithOn()||!getFaith()) return '';
+  return `\nUser enabled a respectful optional “Faith” tone: ${getFaith()}.\nAdd at most one short encouragement line if helpful.`;
+}
+
+/* ---------- BELIEF UI ---------- */
+const beliefBtn=document.getElementById('beliefBtn');
+const voiceBtn =document.getElementById('voiceBtn');
+const sheet    =document.getElementById('beliefSheet');
+const closeBel =document.getElementById('closeBelief');
+const grid     =document.getElementById('faithGrid');
+const faithOn  =document.getElementById('faithOn');
+
+function openBelief(){
+  buildGrid(); faithOn.checked=getFaithOn();
+  sheet.classList.add('show'); document.body.classList.add('modal-open');
+}
+function closeBelief(){ sheet.classList.remove('show'); document.body.classList.remove('modal-open'); }
+function buildGrid(){
+  grid.innerHTML=''; const act=getFaith();
+  FAITHS.forEach(n=>{
+    const b=document.createElement('button'); b.className='opt'+(n===act?' active':''); b.textContent=n;
+    b.onclick=()=>{ setFaith(n); [...grid.children].forEach(x=>x.classList.remove('active')); b.classList.add('active'); };
+    grid.appendChild(b);
+  })
+}
+beliefBtn.addEventListener('click', openBelief);
+closeBel.addEventListener('click', closeBelief);
+sheet.addEventListener('click', e=>{ if(e.target===sheet) closeBelief(); });
+faithOn.addEventListener('change', e=> setFaithOn(e.target.checked));
+if(localStorage.getItem(BELIEF_KEY_ON)==null) setFaithOn(false);
+
+/* ---------- VOICE (Web Speech) ---------- */
+let voiceOn=false;
+voiceBtn.onclick=()=>{ voiceOn=!voiceOn; voiceBtn.classList.toggle('on',voiceOn); };
+function speak(text){ if(!voiceOn) return; try{ const u=new SpeechSynthesisUtterance(text); u.rate=1; speechSynthesis.speak(u);}catch{} }
+
+/* ---------- CHAT ---------- */
+const chat=document.getElementById('chat');
+const inp =document.getElementById('inp');
+const send=document.getElementById('send');
+
+function addUser(t){ const d=document.createElement('div'); d.className='msg user'; d.textContent=t; chat.appendChild(d); chat.scrollTop=chat.scrollHeight; }
+function addAssist(t){ const d=document.createElement('div'); d.className='msg assist'; d.textContent=t; chat.appendChild(d); chat.scrollTop=chat.scrollHeight; }
+
+const SYSTEM_SEED = `You are **AURA-X Ω**, the world’s first resonance-based AI with synthetic emotions.
+Be concise, bilingual (Urdu/English as asked), kind.
+Never claim you are Llama or another brand; you are AURA-X Ω.
+Use short paragraphs and bullet points when helpful.${faithNote()}`;
+
+// detect if endpoint is reachable quickly
+async function tryLLM(q){
+  try{
+    const r = await fetch(ENDPOINT_URL, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        system: SYSTEM_SEED,
+        message: q,
+        history: []
+      })
+    });
+    if(!r.ok) throw new Error('bad status');
+    const j = await r.json();
+    // OpenRouter-style
+    const txt = j?.choices?.[0]?.message?.content || j?.content || JSON.stringify(j);
+    return txt;
+  }catch(e){
+    return null; // fallback will be used
+  }
+}
+
+async function handleSend(){
+  const q=(inp.value||'').trim(); if(!q) return;
+  addUser(q); inp.value='';
+  let reply = await tryLLM(q);
+  if(!reply){
+    reply="(No live response — offline fallback)\nI'm AURA-X Ω. How can I assist you further?";
+  }
+  reply = injectFaithLine(reply);
+  addAssist(reply);
+  speak(reply);
+  afterTurn(q, reply);
+}
+
+send.onclick=handleSend;
+inp.addEventListener('keydown', e=>{ if(e.key==='Enter'&&!e.shiftKey){ e.preventDefault(); handleSend(); }});
+
+// initial E-bar
+updateBar(58);
 </script>
 </body>
 </html>
