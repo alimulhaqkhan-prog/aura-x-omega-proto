@@ -1,102 +1,160 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>AURA-X Ω — Resonance-Based AI</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
-  --green1:#b9ffb0; --green2:#79ffca;
-  --bluebg:#e6f2ff; --text:#041422;
+  --bg1:#e8f3ff; --bg2:#f5fbff; --ink:#06202f;
+  --barTrack:#e9edf3; --barFill:#d8dde6;     /* light gray bar */
+  --card:#ffffffcc;
 }
+*{box-sizing:border-box}
 body{
-  margin:0; font-family:'Poppins',sans-serif; background:linear-gradient(180deg,#d8ebff,#f0faff);
-  color:var(--text); min-height:100vh; display:flex; flex-direction:column; align-items:center;
+  margin:0;font-family:'Poppins',sans-serif;color:var(--ink);
+  min-height:100dvh;background:linear-gradient(180deg,var(--bg1),var(--bg2));
+  display:flex;flex-direction:column;align-items:center;
 }
-header{margin-top:24px;text-align:center}
-.logo{width:100px}
-.intro{margin:10px auto;padding:8px 14px;border-radius:12px;background:#ffffffb5;box-shadow:0 0 15px rgba(0,0,0,.1);max-width:400px}
-
-.bar{
-  position:relative;width:88%;max-width:480px;height:22px;border-radius:999px;
-  background:rgba(0,0,0,.08);margin-top:14px;overflow:hidden
+header{margin:18px 0 8px;text-align:center}
+.logo{width:90px;height:90px;object-fit:contain}
+.badge{
+  max-width:680px;margin:8px auto;padding:10px 14px;border-radius:14px;
+  background:var(--card);backdrop-filter:blur(6px);box-shadow:0 6px 18px rgba(0,0,0,.08);
+  font-weight:700;text-align:center
 }
-.fill{
-  position:absolute;left:0;top:0;bottom:0;width:0%;
-  background:linear-gradient(90deg,var(--green1),var(--green2));
-  box-shadow:0 0 20px rgba(121,255,202,.5);
-  transition:width .5s ease
+
+/* Emotion bar */
+.bar{position:relative;width:min(92vw,720px);height:22px;border-radius:999px;background:var(--barTrack);overflow:hidden;margin:10px 0 6px}
+.fill{position:absolute;inset:0 40% 0 0;background:var(--barFill);width:0%;transition:width .5s ease}
+.pct{position:absolute;inset:0;display:grid;place-items:center;font-weight:700}
+
+.heart{font-size:44px;margin:8px auto;animation:pulse 1.3s ease-in-out infinite}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.28)}}
+
+#info{font-weight:700;margin:4px 0 10px}
+
+/* Chat area */
+.wrapper{width:min(92vw,720px);display:flex;flex-direction:column;gap:12px;flex:1;min-height:0}
+#out{
+  flex:1;min-height:160px;max-height:60vh;overflow:auto;
+  padding:14px;border-radius:14px;background:var(--card);
+  box-shadow:0 6px 18px rgba(0,0,0,.08);white-space:pre-wrap
 }
-.percent{position:absolute;inset:0;display:grid;place-items:center;font-weight:700}
+.msg{margin:8px 0;padding:12px 14px;border-radius:12px;background:#fff;box-shadow:0 2px 10px rgba(0,0,0,.06)}
+.user{background:#eef6ff}
+.bot{background:#ffffff}
 
-.heart{font-size:40px;margin:10px auto;animation:pump 1.3s ease-in-out infinite}
-@keyframes pump{0%,100%{transform:scale(1)}50%{transform:scale(1.3)}}
-
-#info{margin-bottom:10px;font-weight:600}
-
-textarea{width:88%;max-width:480px;height:70px;border:none;border-radius:10px;padding:10px;font-size:1rem;background:#fff;box-shadow:inset 0 0 8px rgba(0,0,0,.1)}
-button{margin-top:8px;padding:10px 18px;border:none;border-radius:999px;cursor:pointer;font-weight:600;background:linear-gradient(90deg,#5effa0,#60ffdb);box-shadow:0 0 10px rgba(0,0,0,.15)}
-#out{width:88%;max-width:480px;margin:14px 0;padding:12px;border-radius:12px;background:#ffffffd8;min-height:120px;white-space:pre-wrap;box-shadow:0 0 10px rgba(0,0,0,.1)}
-
-.pill{margin-left:6px;padding:6px 10px;border-radius:999px;background:#fff;border:1px solid #ccc;cursor:pointer}
-.pill.on{background:linear-gradient(90deg,#5effa0,#60ffdb);color:#003322}
+/* Sticky input at bottom */
+.inputDock{
+  position:sticky;bottom:10px;display:flex;gap:10px;align-items:center;
+  background:transparent;padding-top:4px
+}
+textarea{
+  flex:1;height:78px;border:none;border-radius:12px;padding:12px;
+  font-size:1rem;background:#fff;box-shadow:inset 0 0 8px rgba(0,0,0,.08)
+}
+button{
+  border:none;border-radius:999px;padding:12px 18px;font-weight:700;cursor:pointer;
+  background:#54e3a4;box-shadow:0 6px 14px rgba(0,0,0,.12);color:#05351e
+}
+.pills{display:flex;gap:10px;justify-content:center;margin:6px 0 18px}
+.pill{padding:7px 12px;border-radius:999px;background:#fff;border:1px solid #cfd6df;cursor:pointer}
+.pill.on{background:#54e3a4;color:#05351e;border-color:#54e3a4}
+.small{opacity:.75;font-size:.92rem}
 </style>
 </head>
 <body>
-<header>
-  <img src="assets/img/aura-x-logo.png" class="logo" alt="AURA-X">
-  <div class="intro"><b>AURA-X Ω</b> — the world’s first resonance-based AI with synthetic emotions.</div>
-</header>
+  <header>
+    <img src="assets/img/aura-x-logo.png" class="logo" alt="AURA-X"/>
+    <div class="badge">AURA-X Ω — the world’s first resonance-based AI with synthetic emotions.</div>
+  </header>
 
-<div class="bar"><div class="fill" id="fill"></div><div class="percent" id="pct">0%</div></div>
-<div class="heart">💕</div>
-<div id="info">Loading weather...</div>
+  <div class="bar"><div id="fill" class="fill"></div><div id="pct" class="pct">90%</div></div>
+  <div class="heart">💕</div>
+  <div id="info" class="small">Loading weather...</div>
 
-<textarea id="msg" placeholder="Type your question..."></textarea>
-<button id="send">Send</button>
-<div id="out"></div>
+  <div class="wrapper">
+    <div id="out"></div>
 
-<div style="display:flex;gap:10px;margin-bottom:20px">
-  <button id="belief" class="pill">Belief</button>
-  <button id="voice" class="pill">Voice</button>
-</div>
+    <div class="inputDock">
+      <textarea id="msg" placeholder="Type your question…"></textarea>
+      <button id="send">Send</button>
+    </div>
+
+    <div class="pills">
+      <button id="belief" class="pill">Belief</button>
+      <button id="voice" class="pill">Voice</button>
+    </div>
+  </div>
 
 <script>
-const API='https://alimai.online/api/chat.php';
-const f=document.getElementById('fill'),p=document.getElementById('pct'),out=document.getElementById('out');
-const vbtn=document.getElementById('voice');let voiceOn=false;vbtn.onclick=()=>{voiceOn=!voiceOn;vbtn.classList.toggle('on',voiceOn);}
-function setEmo(x){const n=Math.round(x);f.style.width=n+'%';p.textContent=n+'%';}
-function speak(t){if(!voiceOn)return;const u=new SpeechSynthesisUtterance(t);u.lang='en-US';speechSynthesis.speak(u);}
+const API = "https://alimai.online/api/chat.php"; // Hostinger API
+const out = document.getElementById('out');
+const fill = document.getElementById('fill');
+const pct = document.getElementById('pct');
+const voiceBtn = document.getElementById('voice');
+let voiceOn=false;
+voiceBtn.onclick=()=>{voiceOn=!voiceOn;voiceBtn.classList.toggle('on',voiceOn);}
+function setEmo(n){n=Math.max(0,Math.min(100,Math.round(n)));fill.style.width=n+'%';pct.textContent=n+'%';}
+function say(t){ if(!voiceOn) return; const u=new SpeechSynthesisUtterance(t); u.lang='en-US'; speechSynthesis.speak(u); }
 
-async function weather(){
- try{
-  const w=await fetch('https://ipapi.co/json/').then(r=>r.json());
-  const lat=w.latitude,lon=w.longitude;
-  const d=await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&timezone=auto`).then(r=>r.json());
-  const t=d.current_weather?.temperature;
-  const time=new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
-  info.textContent=`🕒 ${time} | 🌡 ${t}°C`;
- }catch{info.textContent='Weather unavailable';}
+function push(role, text){
+  const d=document.createElement('div');
+  d.className='msg '+(role==='user'?'user':'bot'); d.textContent=text;
+  out.appendChild(d); out.scrollTop=out.scrollHeight;
 }
-weather();
 
-document.getElementById('send').onclick=async()=>{
- const m=document.getElementById('msg').value.trim();
- if(!m)return;
- out.textContent='Thinking...'; setEmo(30+Math.random()*50);
- try{
-  const r=await fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:m,history:[]})});
-  const j=await r.json();
-  let text=j?.choices?.[0]?.message?.content||j?.message||j?.text;
-  if(!text||text.trim()==='') text="(No live response — offline fallback)\n\nI'm AURA-X Ω. How can I assist you further?";
-  out.textContent=text; speak(text);
-  setEmo(40+Math.random()*60);
- }catch(e){
-  out.textContent="Connection issue — using offline reply.\n\nHello! I'm AURA-X Ω. How can I help you?";
-  setEmo(25+Math.random()*50);
- }
+document.getElementById('send').onclick = async () => {
+  const box = document.getElementById('msg');
+  const msg = box.value.trim();
+  if(!msg) return;
+  push('user', msg);
+  box.value='';
+  setEmo(35+Math.random()*30);
+  push('bot', 'Thinking…');
+
+  try{
+    const r = await fetch(API,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({message:msg, history:[]})
+    });
+
+    // if CORS/HTTP error, throw to fallback
+    if(!r.ok) throw new Error('HTTP '+r.status);
+    const j = await r.json();
+
+    let text = (j?.choices?.[0]?.message?.content) || j?.message || j?.text || '';
+    if(!text.trim()){
+      text = "(No live response — offline fallback)\n\nI'm AURA-X Ω. How can I assist you further?";
+    }
+
+    // replace last "Thinking…" with real text
+    out.lastElementChild.textContent = text;
+    setEmo(55+Math.random()*40);
+    say(text);
+  }catch(e){
+    out.lastElementChild.textContent = "Connection issue — using offline reply.\n\nHello! I'm AURA-X Ω. How can I help you?";
+    setEmo(25+Math.random()*40);
+  }
 };
+
+// weather + exact local time (independent of device time zone guessed by API)
+(async function weather(){
+  try{
+    const ip = await fetch('https://ipapi.co/json/').then(r=>r.json());
+    const lat=ip.latitude, lon=ip.longitude;
+    const w = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&timezone=auto`).then(r=>r.json());
+    const temp = w?.current_weather?.temperature;
+    const now  = new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+    info.textContent = `🕒 ${now} | 🌡 ${temp}°C`;
+  }catch{ info.textContent = 'Weather unavailable'; }
+})();
+
+// initial emotion
+setEmo(90);
 </script>
 </body>
 </html>
