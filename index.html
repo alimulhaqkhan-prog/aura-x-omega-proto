@@ -2,174 +2,207 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1.0" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>AURA-X Ω — Resonance-Based AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
 :root{
-  --pink:#ff5ec3; --blue:#7aa7ff; --bg:#0a0a12;
+  --pink:#ff69b4; --blue:#7aa7ff; --bg:#0a0a12;
+  --glass: rgba(255,255,255,.06);
 }
 *{box-sizing:border-box}
+html,body{height:100%}
 body{
-  margin:0;background:radial-gradient(circle at 20% -10%,#0b1222 0%, var(--bg) 55%);
-  font-family:'Poppins',sans-serif;color:#fff;min-height:100vh;
-  display:flex;flex-direction:column;align-items:center;
+  margin:0; font-family:'Poppins',sans-serif; color:#fff;
+  background: radial-gradient(1300px 700px at 20% -10%, #0c1530 0%, var(--bg) 60%);
+  display:flex; flex-direction:column; align-items:center;
 }
-header{margin-top:36px;text-align:center}
-.logo{width:110px;animation:float 4s ease-in-out infinite}
-@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
-.intro{
-  margin:14px auto 10px;max-width:420px;padding:12px 16px;border-radius:14px;
-  background:rgba(255,255,255,.05);backdrop-filter:blur(6px);
-  box-shadow:0 0 25px rgba(0,150,255,.22), inset 0 0 8px rgba(255,255,255,.08);
-  font-weight:600;letter-spacing:.3px;text-align:center;
+header{margin:20px 12px 8px; text-align:center; max-width:640px}
+.logo{width:110px; filter:drop-shadow(0 0 18px rgba(122,167,255,.5))}
+.tag{
+  margin:10px auto 0; padding:10px 14px; border-radius:14px; max-width:520px;
+  background:var(--glass); backdrop-filter:blur(6px);
+  box-shadow:0 0 20px rgba(122,167,255,.25), inset 0 0 8px rgba(255,255,255,.05);
+  font-weight:600; letter-spacing:.2px
 }
 
-/* emotion bar */
-.emo{display:flex;gap:10px;align-items:center;width:88%;max-width:460px;margin-top:14px}
-.emo-track{position:relative;flex:1;height:22px;border-radius:999px;background:rgba(255,255,255,.07);overflow:hidden;box-shadow:inset 0 2px 8px rgba(0,0,0,.4)}
-.emo-fill{position:absolute;inset:0 auto 0 0;width:0%;
+/* emotion strip */
+.wrap{width:92%; max-width:720px}
+.emo{
+  display:flex; gap:10px; align-items:center; margin:12px auto 0; width:100%;
+}
+.bar{
+  position:relative; flex:1; height:22px; border-radius:999px; overflow:hidden;
+  background:rgba(255,255,255,.08); box-shadow:inset 0 2px 8px rgba(0,0,0,.45)
+}
+.fill{
+  position:absolute; left:0; top:0; bottom:0; width:0%;
   background:linear-gradient(90deg,var(--pink),var(--blue));
-  box-shadow:0 0 18px rgba(255,94,195,.55),0 0 30px rgba(122,167,255,.45);
+  box-shadow:0 0 18px rgba(255,105,180,.55), 0 0 26px rgba(122,167,255,.45);
   transition:width .5s ease;
 }
-.emo-text{position:absolute;inset:0;display:grid;place-items:center;font-weight:700;text-shadow:0 1px 3px #000}
+.percent{position:absolute; inset:0; display:grid; place-items:center; font-weight:700; text-shadow:0 1px 3px #000}
 .pill{
-  border:none;cursor:pointer;padding:6px 14px;border-radius:999px;font-weight:600;
-  background:linear-gradient(90deg,#242733,#2f3444);color:#eaf2ff;opacity:.95;transition:.15s;
+  border:none; cursor:pointer; padding:8px 14px; border-radius:999px; font-weight:600;
+  background:linear-gradient(90deg,#242733,#313748); color:#eaf2ff; opacity:.95; transition:.15s;
   box-shadow:0 6px 18px rgba(0,0,0,.25)
 }
-.pill:hover{opacity:1;transform:translateY(-1px)}
+.pill:hover{opacity:1; transform:translateY(-1px)}
 .pill[aria-pressed="true"]{
-  background:linear-gradient(90deg,var(--pink),var(--blue));color:#0b0b14;
-  box-shadow:0 0 18px rgba(255,94,195,.5),0 0 26px rgba(122,167,255,.45)
+  background:linear-gradient(90deg,var(--pink),var(--blue)); color:#0b0b14;
+  box-shadow:0 0 18px rgba(255,105,180,.5),0 0 26px rgba(122,167,255,.45)
 }
 
-/* heart */
+/* 💕 heart emoji pumping */
+.heartBox{display:flex; align-items:center; justify-content:center; margin:10px 0 6px}
 .heart{
-  width:32px;height:32px;margin:18px auto 0;transform-origin:center;
-  background:radial-gradient(circle at 30% 30%,var(--pink),var(--blue) 70%);
-  clip-path:polygon(50% 0%,100% 35%,80% 100%,50% 80%,20% 100%,0 35%);
-  box-shadow:0 0 25px rgba(255,94,195,.6),0 0 40px rgba(122,167,255,.5);
-  animation:beat 1.4s ease-in-out infinite;
+  font-size:42px; line-height:1; filter:drop-shadow(0 0 18px rgba(255,105,180,.55));
+  animation:pump 1.4s ease-in-out infinite;
 }
-@keyframes beat{
-  0%,100%{transform:scale(1);opacity:.95}
-  25%{transform:scale(1.15);opacity:1}
-  50%{transform:scale(1.3);opacity:.86}
-  75%{transform:scale(1.15);opacity:1}
+@keyframes pump{
+  0%,100%{transform:scale(1)}
+  25%{transform:scale(1.18)}
+  50%{transform:scale(1.33)}
+  75%{transform:scale(1.18)}
 }
 
 /* info line */
-#info{margin-top:10px;text-align:center;font-size:.92rem;color:#aad2ff;opacity:.95}
+#info{margin:6px 0 14px; text-align:center; font-size:.95rem; color:#bfe0ff}
 
-/* chat UI */
-textarea{
-  width:88%;max-width:460px;margin-top:18px;background:rgba(255,255,255,.05);
-  color:#fff;border:none;outline:none;padding:12px;border-radius:12px;font-size:1rem
+/* chat area */
+.main{
+  width:92%; max-width:720px; margin:0 auto 24px; display:flex; flex-direction:column; gap:10px;
 }
-button#send{
-  margin-top:10px;padding:10px 22px;border:none;border-radius:999px;
-  background:linear-gradient(90deg,var(--blue),var(--pink));color:#fff;font-weight:700;
-  box-shadow:0 0 15px rgba(255,94,195,.35);cursor:pointer;transition:.2s
-}
-button#send:hover{transform:scale(1.04)}
 #out{
-  width:88%;max-width:460px;margin:16px 0 36px;white-space:pre-wrap;line-height:1.5;
-  background:rgba(255,255,255,.03);padding:12px;border-radius:12px;
-  box-shadow:inset 0 0 10px rgba(255,255,255,.08)
+  min-height:140px; max-height:48vh; overflow:auto;
+  background:var(--glass); border-radius:12px; padding:12px;
+  box-shadow: inset 0 0 10px rgba(255,255,255,.06);
+  white-space:pre-wrap; line-height:1.55
 }
+.msg{margin:8px 0; padding:10px 12px; border-radius:12px; width:fit-content; max-width:85%}
+.msg.user{background:rgba(255,255,255,.08); margin-left:auto}
+.msg.bot{background:rgba(122,167,255,.12); border-left:3px solid rgba(122,167,255,.6)}
+.row{display:flex; gap:8px; align-items:flex-end}
+#inp{
+  flex:1; background:rgba(255,255,255,.07); color:#fff; border:none; outline:none;
+  padding:12px 12px; border-radius:12px; font-size:1rem; min-height:46px;
+}
+#send{
+  padding:10px 18px; border:none; border-radius:999px;
+  background:linear-gradient(90deg,var(--blue),var(--pink)); color:#fff; font-weight:700;
+  box-shadow:0 0 15px rgba(255,105,180,.35); cursor:pointer; transition:.2s; white-space:nowrap
+}
+#send:hover{transform:scale(1.04)}
+small#debug{opacity:.65}
 
-/* belief modal */
-.modal{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;padding:16px}
-.modal .card{width:92%;max-width:520px;background:#121625;border-radius:16px;padding:16px;
-  box-shadow:0 12px 40px rgba(0,0,0,.5)}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+/* modal */
+.modal{position:fixed; inset:0; background:rgba(0,0,0,.45); display:none; align-items:center; justify-content:center; padding:16px; z-index:99}
+.card{width:92%; max-width:520px; background:#111729; border-radius:16px; padding:16px; box-shadow:0 12px 40px rgba(0,0,0,.5)}
+.grid{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:10px}
 .opt{
-  background:#1a2033;border:1px solid rgba(255,255,255,.08);padding:10px;border-radius:12px;
-  text-align:center;cursor:pointer;transition:.15s
+  background:#18223a; border:1px solid rgba(255,255,255,.08); padding:10px; border-radius:12px;
+  text-align:center; cursor:pointer; transition:.15s
 }
-.opt:hover{transform:translateY(-1px);border-color:rgba(255,255,255,.25)}
-.badge{margin-left:8px;padding:4px 10px;border-radius:999px;background:rgba(255,255,255,.1);font-size:.78rem}
+.opt:hover{transform:translateY(-1px); border-color:rgba(255,255,255,.25)}
+.badge{margin-left:8px; padding:4px 10px; border-radius:999px; background:rgba(255,255,255,.12); font-size:.78rem}
+.toggle{
+  margin-left:8px; padding:6px 10px; border-radius:999px; border:1px solid rgba(255,255,255,.18); background:#18223a; color:#fff; cursor:pointer
+}
+.toggle.on{background:linear-gradient(90deg,var(--pink),var(--blue)); color:#0b0b14; border:none}
 </style>
 </head>
 <body>
-<header>
-  <img src="assets/img/aura-x-logo.png" alt="AURA-X Logo" class="logo">
-  <div class="intro">AURA-X Ω — the world’s first resonance-based AI with synthetic emotions.</div>
-</header>
+  <header>
+    <img src="assets/img/aura-x-logo.png" class="logo" alt="AURA-X">
+    <div class="tag">AURA-X Ω — the world’s first resonance-based AI with synthetic emotions.</div>
+  </header>
 
-<div class="emo">
-  <div class="emo-track"><div class="emo-fill" id="emoFill"></div><div class="emo-text" id="emoPct">0%</div></div>
-  <button id="beliefBtn" class="pill" aria-pressed="false">Belief</button>
-</div>
-<div class="heart" id="emoHeart"></div>
-<div id="info">Loading weather & time…</div>
-
-<textarea id="inp" rows="3" placeholder="Type your question..."></textarea>
-<button id="send">Send</button>
-<div id="out"></div>
-
-<!-- Belief modal -->
-<div class="modal" id="beliefModal" role="dialog" aria-modal="true" aria-labelledby="beliefTitle">
-  <div class="card">
-    <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
-      <h3 id="beliefTitle" style="margin:0">Choose your faith tone (optional)</h3>
-      <button id="closeModal" class="pill">Close</button>
+  <div class="wrap">
+    <div class="emo">
+      <div class="bar"><div class="fill" id="emoFill"></div><div class="percent" id="emoPct">0%</div></div>
+      <button id="beliefBtn" class="pill" aria-pressed="false">Belief</button>
+      <button id="voiceBtn" class="pill" aria-pressed="false" title="Toggle voice">Voice</button>
     </div>
-    <p style="opacity:.8;margin:8px 0 0">A gentle encouragement style will be added to replies.</p>
-    <div class="grid" id="faithGrid"></div>
+    <div class="heartBox"><div class="heart" id="heart">💕</div></div>
+    <div id="info">Loading weather & time…</div>
   </div>
-</div>
+
+  <div class="main">
+    <div id="out"></div>
+    <div class="row">
+      <textarea id="inp" rows="2" placeholder="Type your question…"></textarea>
+      <button id="send">Send</button>
+    </div>
+    <small id="debug"></small>
+  </div>
+
+  <!-- Belief modal -->
+  <div class="modal" id="beliefModal" role="dialog" aria-modal="true" aria-labelledby="beliefTitle">
+    <div class="card">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
+        <h3 id="beliefTitle" style="margin:0">Choose your faith tone (optional)</h3>
+        <button id="closeModal" class="pill">Close</button>
+      </div>
+      <p style="opacity:.8;margin:8px 0 0">A gentle encouragement style will be added to replies.</p>
+      <div class="grid" id="faithGrid"></div>
+    </div>
+  </div>
 
 <script>
-// =========== Setup =============
-const API_CHAT = (location.hostname.includes('github.io') || location.hostname.includes('githubusercontent'))
-  ? 'https://alimai.online/api/chat.php'
-  : '/api/chat.php';
+// ---------- CONFIG ----------
+// Hard-code primary API to HTTPS to avoid mixed-content on GitHub Pages:
+const API_PRIMARY = 'https://alimai.online/api/chat.php';
+// If you deploy same folder on Hostinger, this relative path also works:
+const API_FALLBACK = '/api/chat.php';
 
-// ===== Weather + Time =====
-async function getCoords(){
-  return new Promise((resolve)=>{
-    if (navigator.geolocation){
-      navigator.geolocation.getCurrentPosition(
-        pos=>resolve({lat:pos.coords.latitude, lon:pos.coords.longitude}),
-        async ()=>{
-          try{
-            const j = await fetch('https://ipapi.co/json/').then(r=>r.json());
-            resolve({lat:j.latitude, lon:j.longitude});
-          }catch{ resolve(null); }
-        }, {timeout:6000}
-      );
-    }else resolve(null);
-  });
+// ---------- UTILS ----------
+const $ = s => document.querySelector(s);
+const out = $('#out');
+const inp = $('#inp');
+const sendBtn = $('#send');
+const heart = $('#heart');
+const emoFill = $('#emoFill');
+const emoPct = $('#emoPct');
+const debugEl = $('#debug');
+
+function appendMsg(text, who='bot'){
+  const div = document.createElement('div');
+  div.className = `msg ${who}`;
+  div.textContent = text;
+  out.appendChild(div);
+  out.scrollTop = out.scrollHeight + 1000;
 }
 
-async function loadInfo(){
-  try{
-    const c = await getCoords();
-    if(!c) throw new Error('no coords');
-    const url = `https://api.open-meteo.com/v1/forecast?latitude=${c.lat}&longitude=${c.lon}&current_weather=true&timezone=auto`;
-    const w = await fetch(url).then(r=>r.json());
-    const tz = w.timezone || 'UTC';
-    const temp = w.current_weather?.temperature;
-    const time = new Date().toLocaleString([], {hour:'2-digit',minute:'2-digit',second:'2-digit',weekday:'short',day:'2-digit',month:'short', timeZone:tz});
-    document.getElementById('info').textContent = `🕒 ${time} | 🌡 ${temp}°C`;
-  }catch(e){
-    document.getElementById('info').textContent = 'Weather/Time unavailable';
-  }
-}
-loadInfo();
-
-// ===== Emotion visuals =====
 function setEmotion(pct){
   const p = Math.max(0, Math.min(100, Math.round(pct)));
   emoFill.style.width = p + '%';
   emoPct.textContent = p + '%';
-  emoHeart.style.animationDuration = Math.max(0.6, 1.8 - (p/120)) + 's';
+  // speed up 💕 pumping with intensity
+  const dur = Math.max(0.55, 1.8 - (p/110));
+  heart.style.animationDuration = dur + 's';
 }
 
-// ===== Belief tone =====
+// Voice (Web Speech API)
+let voiceOn = false;
+$('#voiceBtn').onclick = () => {
+  voiceOn = !voiceOn;
+  $('#voiceBtn').setAttribute('aria-pressed', voiceOn?'true':'false');
+  $('#voiceBtn').classList.toggle('on', voiceOn);
+};
+function speak(txt){
+  try{
+    if(!voiceOn) return;
+    if(!('speechSynthesis' in window)) return;
+    const u = new SpeechSynthesisUtterance(txt);
+    u.rate = 1.02; u.pitch = 1.0; u.lang = 'en-US';
+    window.speechSynthesis.cancel(); // avoid overlap
+    window.speechSynthesis.speak(u);
+  }catch{}
+}
+
+// Belief modal
 const FAITHS = [
   {k:'islam',label:'Islam',tone:['InshaAllah, stay steadfast.','May your efforts bring ease.']},
   {k:'christian',label:'Christianity',tone:['God bless you.','Grace and wisdom be with you.']},
@@ -183,19 +216,16 @@ const FAITHS = [
   {k:'zoro',label:'Zoroastrianism',tone:['Good thoughts, words, deeds.','Walk in truth and light.']}
 ];
 let faithOn=false,faithKey=null;
-const beliefBtn=document.getElementById('beliefBtn');
-const modal=document.getElementById('beliefModal');
-const grid=document.getElementById('faithGrid');
-const closeModal=document.getElementById('closeModal');
-beliefBtn.onclick=()=>{modal.style.display='flex';renderFaiths();};
-closeModal.onclick=()=>{modal.style.display='none';};
+const beliefBtn = $('#beliefBtn'), modal = $('#beliefModal'), grid = $('#faithGrid');
+beliefBtn.onclick = () => { modal.style.display='flex'; renderFaiths(); };
+$('#closeModal').onclick = () => { modal.style.display='none'; };
 function renderFaiths(){
   grid.innerHTML='';
   FAITHS.forEach(f=>{
     const d=document.createElement('div');
-    d.className='opt';d.textContent=f.label;
+    d.className='opt'; d.textContent=f.label;
     d.onclick=()=>{
-      faithOn=true;faithKey=f.k;
+      faithOn=true; faithKey=f.k;
       beliefBtn.setAttribute('aria-pressed','true');
       beliefBtn.innerHTML='Belief <span class="badge">'+f.label+'</span>';
       modal.style.display='none';
@@ -204,57 +234,112 @@ function renderFaiths(){
   });
 }
 
-// ===== Chat send (safe) =====
-const inp=document.getElementById('inp');
-const out=document.getElementById('out');
-const sendBtn=document.getElementById('send');
-const emoFill=document.getElementById('emoFill');
-const emoPct=document.getElementById('emoPct');
-const emoHeart=document.getElementById('emoHeart');
-
-function localResponder(q){
-  const s=q.toLowerCase();
-  if(/hello|hi|salam/.test(s)) return "Hello! I’m AURA-X Ω. How can I help?";
-  if(/who|name/.test(s)) return "I’m AURA-X Ω — resonance-based AI.";
-  if(/weather/.test(s)) return "Weather info is above, please allow location.";
-  return "Offline reply — connection lost. Try again later.";
+// Weather + Time (best effort)
+async function getCoords(){
+  return new Promise((resolve)=>{
+    if(navigator.geolocation){
+      navigator.geolocation.getCurrentPosition(
+        p=>resolve({lat:p.coords.latitude,lon:p.coords.longitude}),
+        async()=>{
+          try{const j=await fetch('https://ipapi.co/json/').then(r=>r.json());
+               resolve({lat:j.latitude,lon:j.longitude});}
+          catch{resolve(null);}
+        }, {timeout:6000}
+      );
+    }else resolve(null);
+  });
 }
-
-function fetchWithTimeout(url,opt={},ms=10000){
-  return Promise.race([
-    fetch(url,opt),
-    new Promise((_,rej)=>setTimeout(()=>rej(new Error('Request timed out')),ms))
-  ]);
-}
-
-async function sendMsg(){
-  const msg=inp.value.trim();
-  if(!msg){alert('Type something!');return;}
-  sendBtn.disabled=true;sendBtn.textContent='Sending…';
-  out.textContent='Thinking…';
+async function loadInfo(){
   try{
-    const r=await fetchWithTimeout(API_CHAT,{
-      method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({message:msg,history:[]})
-    },10000);
-    if(!r.ok)throw new Error('HTTP '+r.status);
-    const j=await r.json();
-    let content=j?.choices?.[0]?.message?.content||j?.message||'No content.';
-    if(faithOn&&faithKey){
-      const pack=FAITHS.find(x=>x.k===faithKey)?.tone||[];
-      if(pack.length)content+=`\n\n— ${pack[Math.floor(Math.random()*pack.length)]}`;
-    }
-    out.textContent=content;
-    setEmotion(30+Math.random()*70);
-  }catch(e){
-    out.textContent=localResponder(msg);
-    setEmotion(25+Math.random()*40);
-  }finally{
-    sendBtn.disabled=false;sendBtn.textContent='Send';
+    const c = await getCoords(); if(!c) throw 0;
+    const url=`https://api.open-meteo.com/v1/forecast?latitude=${c.lat}&longitude=${c.lon}&current_weather=true&timezone=auto`;
+    const w=await fetch(url).then(r=>r.json());
+    const tz=w.timezone||'UTC', temp=w.current_weather?.temperature;
+    const time=new Date().toLocaleString([], {hour:'2-digit',minute:'2-digit',second:'2-digit',weekday:'short',day:'2-digit',month:'short', timeZone:tz});
+    $('#info').textContent=`🕒 ${time} | 🌡 ${temp}°C`;
+  }catch{
+    $('#info').textContent='Weather/Time unavailable';
   }
 }
-document.getElementById('send').onclick=sendMsg;
+loadInfo(); setInterval(loadInfo, 60_000);
+
+// Safe fetch (timeout) + dual endpoint
+function fetchWithTimeout(url,opt={},ms=12000){
+  return Promise.race([
+    fetch(url,opt), new Promise((_,rej)=>setTimeout(()=>rej(new Error('timeout')),ms))
+  ]);
+}
+async function callAPI(message){
+  const body = JSON.stringify({message, history:[]});
+  const headers = {'Content-Type':'application/json'};
+  try{
+    // Try primary (HTTPS) first
+    const r = await fetchWithTimeout(API_PRIMARY,{method:'POST',headers,body},12000);
+    if(!r.ok) throw new Error('HTTP '+r.status);
+    return await r.json();
+  }catch(e1){
+    debugEl.textContent = 'Primary failed: '+(e1?.message||e1);
+    try{
+      // Try fallback (relative)
+      const r2 = await fetchWithTimeout(API_FALLBACK,{method:'POST',headers,body},10000);
+      if(!r2.ok) throw new Error('HTTP '+r2.status);
+      return await r2.json();
+    }catch(e2){
+      debugEl.textContent += ' | Fallback failed: '+(e2?.message||e2);
+      throw e2;
+    }
+  }
+}
+
+// Offline brain (for no-network cases)
+function localResponder(q){
+  const s=q.toLowerCase();
+  if(/assalam|salam|hello|hi/.test(s)) return "Wa Alaikum Assalam — I’m AURA-X Ω. How can I help you today?";
+  if(/who are you|name/.test(s)) return "I’m AURA-X Ω — a resonance-based AI with synthetic emotions.";
+  if(/time|date/.test(s)) return "Your local time is shown above. Ask me anything else.";
+  if(/weather|mosam|temp/.test(s)) return "Weather shown above. If blank, allow location permission.";
+  if(/help|options|guide/.test(s)) return "Ask general knowledge, guidance, or daily tasks. I’ll answer with empathy and clarity.";
+  return "Offline reply — server unreachable. Please try again in a moment.";
+}
+
+// SEND handler
+async function sendMsg(){
+  const msg = inp.value.trim();
+  if(!msg){ inp.focus(); return; }
+  appendMsg(msg,'user');
+  inp.value=''; sendBtn.disabled=true; sendBtn.textContent='Sending…';
+  appendMsg('Thinking…','bot');
+
+  try{
+    const j = await callAPI(msg);
+    let content = j?.choices?.[0]?.message?.content || j?.message || j?.text || 'No content.';
+    if(faithOn && faithKey){
+      const pack = FAITHS.find(x=>x.k===faithKey)?.tone || [];
+      if(pack.length) content += `\n\n— ${pack[Math.floor(Math.random()*pack.length)]}`;
+    }
+    // replace last bot placeholder
+    out.lastChild.textContent = content;
+    speak(content);
+    setEmotion(35 + Math.random()*60);
+  }catch(e){
+    const fallback = localResponder(msg);
+    out.lastChild.textContent = fallback + "\n\n(Using offline mode)";
+    speak(fallback);
+    setEmotion(20 + Math.random()*40);
+  }finally{
+    sendBtn.disabled=false; sendBtn.textContent='Send';
+  }
+}
+
+sendBtn.onclick = sendMsg;
+// Send on Enter (desktop)
+inp.addEventListener('keydown', e=>{
+  if(e.key==='Enter' && !e.shiftKey){ e.preventDefault(); sendMsg(); }
+});
+
+// Initial emotion
 setEmotion(12);
+appendMsg("Assalamualaikum! I’m AURA-X Ω — the world’s first resonance-based AI with synthetic emotions. How can I help you today?","bot");
 </script>
 </body>
 </html>
