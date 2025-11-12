@@ -22,7 +22,7 @@ header{margin-top:36px;text-align:center}
   margin:14px auto 10px;max-width:420px;padding:12px 16px;border-radius:14px;
   background:rgba(255,255,255,.05);backdrop-filter:blur(6px);
   box-shadow:0 0 25px rgba(0,150,255,.22), inset 0 0 8px rgba(255,255,255,.08);
-  font-weight:600;letter-spacing:.3px
+  font-weight:600;letter-spacing:.3px;text-align:center;
 }
 
 /* emotion bar */
@@ -123,18 +123,18 @@ button#send:hover{transform:scale(1.04)}
 </div>
 
 <script>
-/* ---------- API base (GitHub/other vs Hostinger) ---------- */
+// =========== Setup =============
 const API_CHAT = (location.hostname.includes('github.io') || location.hostname.includes('githubusercontent'))
   ? 'https://alimai.online/api/chat.php'
   : '/api/chat.php';
 
-/* ---------- Weather + Time ---------- */
+// ===== Weather + Time =====
 async function getCoords(){
   return new Promise((resolve)=>{
     if (navigator.geolocation){
       navigator.geolocation.getCurrentPosition(
         pos=>resolve({lat:pos.coords.latitude, lon:pos.coords.longitude}),
-        async ()=>{ // fallback to ipapi
+        async ()=>{
           try{
             const j = await fetch('https://ipapi.co/json/').then(r=>r.json());
             resolve({lat:j.latitude, lon:j.longitude});
@@ -161,89 +161,99 @@ async function loadInfo(){
 }
 loadInfo();
 
-/* ---------- Emotion visuals ---------- */
+// ===== Emotion visuals =====
 function setEmotion(pct){
   const p = Math.max(0, Math.min(100, Math.round(pct)));
-  document.getElementById('emoFill').style.width = p + '%';
-  document.getElementById('emoPct').textContent = p + '%';
-  // heart rate sync
-  const dur = Math.max(0.6, 1.8 - (p/120));
-  document.getElementById('emoHeart').style.animationDuration = dur + 's';
+  emoFill.style.width = p + '%';
+  emoPct.textContent = p + '%';
+  emoHeart.style.animationDuration = Math.max(0.6, 1.8 - (p/120)) + 's';
 }
 
-/* ---------- Belief tone system ---------- */
+// ===== Belief tone =====
 const FAITHS = [
-  {k:'islam', label:'Islam', tone:['InshaAllah, stay steadfast.','May your efforts bring ease.','With gratitude and sincerity.']},
-  {k:'christian', label:'Christianity', tone:['God bless you.','Grace and wisdom be with you.','In hope and kindness.']},
-  {k:'hindu', label:'Hinduism', tone:['May your actions be sattvic.','With compassion and balance.','Peace in thought and deed.']},
-  {k:'buddhist', label:'Buddhism', tone:['Breathe—move with mindful calm.','May you be free from suffering.','With gentle awareness.']},
-  {k:'sikh', label:'Sikhism', tone:['Waheguru ji kirpa kare.','Chardi kala—stay in high spirits.','Serve with humility.']},
-  {k:'judaism', label:'Judaism', tone:['Shalom and strength to you.','May wisdom guide your steps.','With kindness and courage.']},
-  {k:'bahai', label:'Baháʼí', tone:['Unity in diversity.','Walk the path of service.','Let your heart be a light.']},
-  {k:'jain', label:'Jainism', tone:['Ahimsa in every choice.','Clarity through restraint.','Compassionate resolve.']},
-  {k:'shinto', label:'Shinto', tone:['Respect for nature and harmony.','Purify thought and action.','Walk with sincerity.']},
-  {k:'zoro', label:'Zoroastrianism', tone:['Good thoughts, words, deeds.','Walk in truth and light.','May your path be righteous.']}
+  {k:'islam',label:'Islam',tone:['InshaAllah, stay steadfast.','May your efforts bring ease.']},
+  {k:'christian',label:'Christianity',tone:['God bless you.','Grace and wisdom be with you.']},
+  {k:'hindu',label:'Hinduism',tone:['May your actions be sattvic.','Peace in thought and deed.']},
+  {k:'buddhist',label:'Buddhism',tone:['Breathe calmly.','May you be free from suffering.']},
+  {k:'sikh',label:'Sikhism',tone:['Waheguru ji kirpa kare.','Stay in high spirits.']},
+  {k:'judaism',label:'Judaism',tone:['Shalom and strength to you.','May wisdom guide you.']},
+  {k:'bahai',label:'Baháʼí',tone:['Unity in diversity.','Walk the path of service.']},
+  {k:'jain',label:'Jainism',tone:['Ahimsa in every choice.','Compassionate resolve.']},
+  {k:'shinto',label:'Shinto',tone:['Respect for nature.','Walk with sincerity.']},
+  {k:'zoro',label:'Zoroastrianism',tone:['Good thoughts, words, deeds.','Walk in truth and light.']}
 ];
-let faithOn = false, faithKey = null;
-
-const beliefBtn = document.getElementById('beliefBtn');
-const modal = document.getElementById('beliefModal');
-const grid = document.getElementById('faithGrid');
-const closeModal = document.getElementById('closeModal');
-
-beliefBtn.onclick = ()=>{ modal.style.display='flex'; renderFaiths(); }
-closeModal.onclick = ()=>{ modal.style.display='none'; }
-
+let faithOn=false,faithKey=null;
+const beliefBtn=document.getElementById('beliefBtn');
+const modal=document.getElementById('beliefModal');
+const grid=document.getElementById('faithGrid');
+const closeModal=document.getElementById('closeModal');
+beliefBtn.onclick=()=>{modal.style.display='flex';renderFaiths();};
+closeModal.onclick=()=>{modal.style.display='none';};
 function renderFaiths(){
   grid.innerHTML='';
   FAITHS.forEach(f=>{
     const d=document.createElement('div');
-    d.className='opt';
-    d.textContent=f.label;
+    d.className='opt';d.textContent=f.label;
     d.onclick=()=>{
-      faithOn = true; faithKey = f.k;
+      faithOn=true;faithKey=f.k;
       beliefBtn.setAttribute('aria-pressed','true');
-      beliefBtn.innerHTML = 'Belief <span class="badge">'+f.label+'</span>';
+      beliefBtn.innerHTML='Belief <span class="badge">'+f.label+'</span>';
       modal.style.display='none';
     };
     grid.appendChild(d);
   });
 }
 
-/* ---------- Chat ---------- */
-const out = document.getElementById('out');
-document.getElementById('send').onclick = async ()=>{
-  const inp = document.getElementById('inp');
-  const msg = inp.value.trim();
-  if(!msg) return alert('Type something!');
-  out.textContent = 'Thinking…';
+// ===== Chat send (safe) =====
+const inp=document.getElementById('inp');
+const out=document.getElementById('out');
+const sendBtn=document.getElementById('send');
+const emoFill=document.getElementById('emoFill');
+const emoPct=document.getElementById('emoPct');
+const emoHeart=document.getElementById('emoHeart');
+
+function localResponder(q){
+  const s=q.toLowerCase();
+  if(/hello|hi|salam/.test(s)) return "Hello! I’m AURA-X Ω. How can I help?";
+  if(/who|name/.test(s)) return "I’m AURA-X Ω — resonance-based AI.";
+  if(/weather/.test(s)) return "Weather info is above, please allow location.";
+  return "Offline reply — connection lost. Try again later.";
+}
+
+function fetchWithTimeout(url,opt={},ms=10000){
+  return Promise.race([
+    fetch(url,opt),
+    new Promise((_,rej)=>setTimeout(()=>rej(new Error('Request timed out')),ms))
+  ]);
+}
+
+async function sendMsg(){
+  const msg=inp.value.trim();
+  if(!msg){alert('Type something!');return;}
+  sendBtn.disabled=true;sendBtn.textContent='Sending…';
+  out.textContent='Thinking…';
   try{
-    const r = await fetch(API_CHAT,{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
+    const r=await fetchWithTimeout(API_CHAT,{
+      method:'POST',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({message:msg,history:[]})
-    });
-    const j = await r.json();
-    let content = j?.choices?.[0]?.message?.content || JSON.stringify(j,null,2);
-
-    // add gentle belief tone (no scripture quotes; respectful generic lines)
-    if(faithOn && faithKey){
-      const pack = FAITHS.find(x=>x.k===faithKey)?.tone || [];
-      if(pack.length){
-        const line = pack[Math.floor(Math.random()*pack.length)];
-        content = content + `\n\n— ${line}`;
-      }
+    },10000);
+    if(!r.ok)throw new Error('HTTP '+r.status);
+    const j=await r.json();
+    let content=j?.choices?.[0]?.message?.content||j?.message||'No content.';
+    if(faithOn&&faithKey){
+      const pack=FAITHS.find(x=>x.k===faithKey)?.tone||[];
+      if(pack.length)content+=`\n\n— ${pack[Math.floor(Math.random()*pack.length)]}`;
     }
-    out.textContent = content;
-
-    // demo: vary emotion level each send
-    setEmotion(30 + Math.random()*70);
+    out.textContent=content;
+    setEmotion(30+Math.random()*70);
   }catch(e){
-    out.textContent = 'Error sending message. Please try again.';
+    out.textContent=localResponder(msg);
+    setEmotion(25+Math.random()*40);
+  }finally{
+    sendBtn.disabled=false;sendBtn.textContent='Send';
   }
-};
-
-// initial calm
+}
+document.getElementById('send').onclick=sendMsg;
 setEmotion(12);
 </script>
 </body>
