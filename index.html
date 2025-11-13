@@ -18,7 +18,7 @@
     }
     *{box-sizing:border-box;margin:0;padding:0;}
     body{
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-family: system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
       background: radial-gradient(circle at top,#fdfbff,#e7f3ff);
       color:var(--text-main);
       display:flex;
@@ -168,10 +168,28 @@
       color:#854d0e;
       border-radius:10px;
     }
+    .msg.faith::before{
+      content:"FAITH SUGGESTION";
+      display:block;
+      font-size:10px;
+      letter-spacing:.11em;
+      text-transform:uppercase;
+      color:#92400e;
+      margin-bottom:2px;
+    }
     .msg.react{
       background:#fee2e2;
       color:#7f1d1d;
       font-size:13px;
+    }
+    .msg.react::before{
+      content:"EMOTION REACTION";
+      display:block;
+      font-size:10px;
+      letter-spacing:.10em;
+      text-transform:uppercase;
+      color:#b91c1c;
+      margin-bottom:2px;
     }
     .input-row{
       margin-top:4px;
@@ -225,9 +243,104 @@
     .chip-toggle input{
       accent-color:var(--accent);
     }
+    .chip-btn{
+      border:none;
+      background:var(--chip);
+      border-radius:999px;
+      padding:5px 10px;
+      font-size:11px;
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      color:var(--text-soft);
+    }
+    .chip-btn span{
+      font-weight:500;
+    }
+    .chip-btn.on{
+      background:#4f46e5;
+      color:#eef2ff;
+    }
+    .chip-btn.on span{
+      font-weight:600;
+    }
     .e0{
       font-size:11px;
       color:var(--text-soft);
+    }
+
+    /* belief sheet */
+    .sheet{
+      position:fixed;
+      inset:0;
+      background:rgba(15,23,42,0.28);
+      backdrop-filter:blur(6px);
+      display:flex;
+      justify-content:center;
+      align-items:flex-end;
+      z-index:40;
+    }
+    .sheet.hidden{display:none;}
+    .sheet-panel{
+      width:100%;
+      max-width:480px;
+      background:var(--card);
+      border-radius:18px 18px 0 0;
+      padding:14px 16px 16px;
+      box-shadow:0 -10px 30px rgba(15,23,42,0.25);
+    }
+    .sheet-header{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin-bottom:8px;
+    }
+    .sheet-title{
+      font-weight:600;
+      font-size:14px;
+    }
+    .sheet-close{
+      border:none;
+      background:#e5e7eb;
+      border-radius:999px;
+      padding:4px 10px;
+      font-size:11px;
+    }
+    .sheet-note{
+      font-size:11px;
+      color:var(--text-soft);
+      margin-top:4px;
+      margin-bottom:6px;
+    }
+    .switch-row{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      margin:6px 0 8px;
+      font-size:12px;
+    }
+    .switch-row input{
+      accent-color:var(--accent);
+      width:18px;height:18px;
+    }
+    .faith-grid{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:6px;
+      margin-top:4px;
+    }
+    .faith-btn{
+      padding:6px 8px;
+      border-radius:999px;
+      border:none;
+      font-size:12px;
+      background:#f3f4ff;
+      color:var(--text-soft);
+    }
+    .faith-btn.on{
+      background:#4f46e5;
+      color:#eef2ff;
+      font-weight:500;
     }
 
     @media (max-width:480px){
@@ -287,16 +400,42 @@ I will try to reply with logic, kindness and emotional balance.
 
       <div class="bottom-row">
         <div class="toggles">
-          <label class="chip-toggle">
-            <input type="checkbox" id="faithToggle" />
-            <span>Belief</span>
-          </label>
+          <button id="beliefBtn" class="chip-btn">
+            🔘 <span>Belief</span>
+          </button>
           <label class="chip-toggle">
             <input type="checkbox" id="voiceToggle" />
             <span>Voice reaction</span>
           </label>
         </div>
         <div class="e0">E₀: <span id="e0Val">0%</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BELIEF SHEET -->
+  <div id="beliefSheet" class="sheet hidden">
+    <div class="sheet-panel">
+      <div class="sheet-header">
+        <div class="sheet-title">Belief settings</div>
+        <button id="beliefClose" class="sheet-close">Close</button>
+      </div>
+      <div class="switch-row">
+        <input type="checkbox" id="faithOnToggle" />
+        <div><b>Faith ON</b> — add gentle spiritual suggestions (optional)</div>
+      </div>
+      <div class="sheet-note">
+        Pick your faith / philosophy (you can select more than one — nothing is sent to any server):
+      </div>
+      <div class="faith-grid">
+        <button class="faith-btn" data-faith="islam">Islam</button>
+        <button class="faith-btn" data-faith="christian">Christianity</button>
+        <button class="faith-btn" data-faith="hindu">Hinduism</button>
+        <button class="faith-btn" data-faith="buddhist">Buddhism</button>
+        <button class="faith-btn" data-faith="sikh">Sikhism</button>
+        <button class="faith-btn" data-faith="jewish">Judaism</button>
+        <button class="faith-btn" data-faith="atheist">Atheism / Humanist</button>
+        <button class="faith-btn" data-faith="other">Other</button>
       </div>
     </div>
   </div>
@@ -324,15 +463,15 @@ I will try to reply with logic, kindness and emotional balance.
       fear:   [/fear|dar|ghabrahat|😨|😰/i, -0.6],
       stress: [/stress|pressure|tension|pareshan|😣/i, -0.5],
       love:   [/love|mohabbat|pyar|💕|❤️/i, +0.8],
-      rude:   [/fuck|lanat|harami|bhosri|kutti|chu*t|gaali|gali/i, -1.0]
+      rude:   [/fuck|lanat|harami|bhosri|kutti|chu?t|gaali|gali|bc|mc/i, -1.0]
     };
 
     function tmFromText(txt){
       let s = 0;
-      for(const [_, [re, val]] of Object.entries(AFFECT)){
+      for(const [_, [re,val]] of Object.entries(AFFECT)){
         if(re.test(txt)) s += val;
       }
-      return Math.max(-1, Math.min(1, s));
+      return Math.max(-1, Math.min(1,s));
     }
 
     /* ----------------- BM-7 MODEL ----------------- */
@@ -410,25 +549,25 @@ I will try to reply with logic, kindness and emotional balance.
     }
 
     /* ----------------- REACTION ENGINE ----------------- */
-    function getReaction(E0, userText){
+    function getReaction(E0,userText){
       if(AFFECT.rude[0].test(userText)){
-        return "⚠️ ایسی زبان آپ کی اصل شخصیت نہیں، ذرا وقار کے ساتھ بات کریں۔ میں پھر بھی آپ کی بات سن رہا ہوں۔";
+        return "⚠️ ایسی زبان آپ کی اصل شخصیت نہیں، تھوڑا وقار کے ساتھ بات کریں۔ میں پھر بھی آپ کی بات سن رہا ہوں۔";
       }
       if(E0>0.78){
-        return "🌟 آپ کی سوچ بہت مضبوط اور روشن ہے، خود پر یقین رکھیں — آپ واقعی کچھ بڑا کر سکتے ہیں!";
+        return "🌟 آپ کی سوچ اور حوصلہ بہت مضبوط لگ رہا ہے — اسی جذبے کے ساتھ آگے بڑھیں، آپ واقعی کچھ بڑا کر سکتے ہیں!";
       }
       if(E0<-0.5){
         return "⚠️ میں محسوس کر رہا ہوں کہ آپ پر دباؤ ہے۔ گہری سانس لیں، آہستہ آہستہ بات کریں، میں آپ کے ساتھ ہوں۔";
       }
       if(/dua|pray|prayer|دعا/i.test(userText)){
-        return "🤍 آپ کی دعا قیمتی ہے — کبھی کمزور نہیں ہوتی، بس وقت لیتے ہوئے راستے بناتی ہے۔";
+        return "🤍 آپ کی دعا کبھی ضائع نہیں جاتی — بس وقت لیتے ہوئے آپ کے لیے بہتر راستہ بناتی ہے۔";
       }
       return "";
     }
 
     /* ----------------- FAITH SUGGESTION ----------------- */
-
     let lastTopic = "";
+
     const FAITH_QUOTES = {
       islam:{
         sabr:[
@@ -436,50 +575,159 @@ I will try to reply with logic, kindness and emotional balance.
           "فَإِنَّ مَعَ الْعُسْرِ يُسْرًا — یقیناً تنگی کے ساتھ آسانی ہے۔ (قرآن)"
         ],
         hope:[
-          "اللہ دلوں کے حال جانتا ہے، اس لیے دعا کبھی ضائع نہیں جاتی۔",
-          "مایوسی مومن کی صفت نہیں — امید رکھیں، دروازہ کھلے گا۔"
+          "مایوسی مومن کی صفت نہیں — اللہ پر بھروسہ رکھیں، دروازہ ضرور کھلے گا۔",
+          "جب دل ٹوٹے تو دعا مزيد قیمتی ہو جاتی ہے، ہار نہیں بلکہ لوٹ آنے کا وقت ہوتا ہے۔"
+        ]
+      },
+      christian:{
+        sabr:[
+          "“Be still, and know that I am with you.”",
+          "Patience is not passive; it is trusting that the right door will open."
+        ],
+        hope:[
+          "Even in the darkest valley, light is already on its way.",
+          "Grace often arrives quietly, one small step at a time."
+        ]
+      },
+      hindu:{
+        sabr:[
+          "Karma apna kaam zaroor karta hai — aaj ka dhairaj kal ka phal ban sakta hai.",
+          "Jo niyat saaf ho, uski raah dheemi sahi magar mazboot hoti hai."
+        ],
+        hope:[
+          "Har mushkil ek nayi shuruaat ka sanket bhi ho sakti hai.",
+          "Jab tak saans hai, tab tak nayi kahani likhne ka mauqa hai."
+        ]
+      },
+      buddhist:{
+        sabr:[
+          "Breathe. This moment will pass, like every other wave before it.",
+          "Patience is the art of sitting with your pain without becoming it."
+        ],
+        hope:[
+          "Every breath is a new chance to begin again.",
+          "Even a small step in awareness changes the whole path."
+        ]
+      },
+      sikh:{
+        sabr:[
+          "Jo vaheguru te bharosa rakhe, uske raste waqt ke saath khulte hain.",
+          "Naam simran se dil halka hota hai, bojh kam ho jata hai."
+        ],
+        hope:[
+          "Jithe vishwas hai, othe rasta jaroor mil da hai.",
+          "Har subah ik nava vardaan hai — hausla rakh."
+        ]
+      },
+      jewish:{
+        sabr:[
+          "Sometimes waiting is itself a kind of prayer.",
+          "Holding on a little longer can reveal the blessing hidden in the delay."
+        ],
+        hope:[
+          "Hope is a candle that even a small wind cannot fully erase.",
+          "Your story is not finished; another chapter is being written."
+        ]
+      },
+      atheist:{
+        sabr:[
+          "Patience here means giving yourself time to heal and think clearly.",
+          "Slow progress is still progress — you don’t need to be perfect today."
+        ],
+        hope:[
+          "Even small, realistic steps can turn a hard situation around.",
+          "You’ve survived 100% of your hardest days so far — that strength is still inside you."
+        ]
+      },
+      other:{
+        sabr:[
+          "Take this time as space to breathe and realign with your deepest values.",
+          "You are allowed to move slowly; wisdom rarely rushes."
+        ],
+        hope:[
+          "Meaning often appears after the storm, not during it.",
+          "You are not alone — someone, somewhere, would be grateful to hear your story."
         ]
       }
     };
 
     function detectTopic(txt){
-      if(/sabr|صبر|patience|wait|intezar/i.test(txt)) return "sabr";
-      if(/ummeed|hope|مایوسی|mayusi|loss|problem|issue/i.test(txt)) return "hope";
+      if(/sabr|صبر|patience|wait|intezar|تکلیف|problem|issue|mushkil/i.test(txt)) return "sabr";
+      if(/ummeed|hope|مایوسی|mayusi|future|job|work|khair/i.test(txt)) return "hope";
       return "";
     }
 
-    function getFaithSuggestion(userText, faithKey){
+    function getSelectedFaiths(){
+      try{
+        const raw = localStorage.getItem("aura-faith-list") || "[]";
+        const arr = JSON.parse(raw);
+        return Array.isArray(arr) ? arr : [];
+      }catch(e){
+        return [];
+      }
+    }
+
+    function getFaithSuggestion(userText){
       if(localStorage.getItem("aura-faith-on")!=="1") return "";
       const topic = detectTopic(userText);
       if(!topic) return "";
-      if(topic===lastTopic) return "";
+      if(topic===lastTopic) return ""; // same topic, keep same suggestion
+      const selected = getSelectedFaiths();
+      if(!selected.length) return "";
       lastTopic = topic;
-      const pool = FAITH_QUOTES[faithKey]?.[topic];
-      if(!pool) return "";
-      const pick = pool[Math.floor(Math.random()*pool.length)];
-      return pick;
+
+      const pieces = [];
+      for(const f of selected){
+        const pool = FAITH_QUOTES[f]?.[topic];
+        if(pool && pool.length){
+          const pick = pool[Math.floor(Math.random()*pool.length)];
+          pieces.push(pick);
+        }
+        if(pieces.length>=3) break; // زیادہ لمبا نہ ہو
+      }
+      return pieces.join("  •  ");
     }
 
     /* ----------------- VOICE ----------------- */
+    let cachedVoice = null;
+
+    function pickVoice(){
+      if(cachedVoice) return cachedVoice;
+      try{
+        const voices = speechSynthesis.getVoices();
+        if(!voices || !voices.length) return null;
+        // Urdu male if available
+        let v = voices.find(v=>/ur/i.test(v.lang) && /male|راشد|عثمان/i.test(v.name));
+        if(!v) v = voices.find(v=>/ur/i.test(v.lang));
+        if(!v) v = voices.find(v=>/male/i.test(v.name));
+        if(!v) v = voices[0];
+        cachedVoice = v;
+        return v;
+      }catch(e){
+        return null;
+      }
+    }
+
     function speak(text){
       try{
-        if(!text) return;
+        if(!text || !("speechSynthesis" in window)) return;
         const u = new SpeechSynthesisUtterance(text);
-        u.lang = "ur-PK";
-        u.pitch = 0.85;
+        const v = pickVoice();
+        if(v) u.voice = v;
+        u.lang = v?.lang || "ur-PK";
+        u.pitch = 0.8;   // تھوڑا heavy / male tone
         u.rate  = 1;
         speechSynthesis.speak(u);
       }catch(e){}
     }
 
     /* ----------------- LLM PLACEHOLDER ----------------- */
-
     const MODEL_BACKEND_URL = "";  // بعد میں Cloudflare / Hostinger proxy یہاں دیں
 
     async function callLLM(message){
       if(!MODEL_BACKEND_URL){
-        // pure front-end demo
-        return "میں فی الحال آف لائن ڈیمو موڈ میں ہوں، لیکن آپ کی بات پوری توجہ سے سن رہا ہوں۔";
+        // pure front-end demo (Urdu)
+        return "میں فی الحال آن لائن ماڈل کے بغیر ڈیمو موڈ میں ہوں، لیکن آپ کی بات پوری توجہ سے سن رہا ہوں۔";
       }
       try{
         const r = await fetch(MODEL_BACKEND_URL,{
@@ -495,24 +743,61 @@ I will try to reply with logic, kindness and emotional balance.
     }
 
     /* ----------------- UI WIRING ----------------- */
-
     const chatEl   = document.getElementById("chat");
     const inpEl    = document.getElementById("inp");
     const sendBtn  = document.getElementById("sendBtn");
     const barFill  = document.getElementById("emotionFill");
     const pctEl    = document.getElementById("emotionPct");
     const e0El     = document.getElementById("e0Val");
-    const faithTgl = document.getElementById("faithToggle");
     const voiceTgl = document.getElementById("voiceToggle");
+    const beliefBtn   = document.getElementById("beliefBtn");
+    const beliefSheet = document.getElementById("beliefSheet");
+    const beliefClose = document.getElementById("beliefClose");
+    const faithOnToggle = document.getElementById("faithOnToggle");
+    const faithBtns = Array.from(document.querySelectorAll(".faith-btn"));
 
-    // restore Faith toggle
+    // restore faith settings
     if(localStorage.getItem("aura-faith-on")==="1"){
-      faithTgl.checked = true;
+      faithOnToggle.checked = true;
+      beliefBtn.classList.add("on");
     }
+    (function restoreFaithList(){
+      const selected = getSelectedFaiths();
+      faithBtns.forEach(b=>{
+        if(selected.includes(b.dataset.faith)) b.classList.add("on");
+      });
+    })();
 
-    faithTgl.addEventListener("change",()=>{
-      localStorage.setItem("aura-faith-on", faithTgl.checked ? "1" : "0");
+    faithOnToggle.addEventListener("change",()=>{
+      const on = faithOnToggle.checked;
+      localStorage.setItem("aura-faith-on", on ? "1" : "0");
       lastTopic = "";
+      beliefBtn.classList.toggle("on", on);
+    });
+
+    faithBtns.forEach(btn=>{
+      btn.addEventListener("click",()=>{
+        const key = btn.dataset.faith;
+        let arr = getSelectedFaiths();
+        if(arr.includes(key)){
+          arr = arr.filter(x=>x!==key);
+          btn.classList.remove("on");
+        }else{
+          arr.push(key);
+          btn.classList.add("on");
+        }
+        localStorage.setItem("aura-faith-list", JSON.stringify(arr));
+      });
+    });
+
+    beliefBtn.addEventListener("click",()=>{
+      beliefSheet.classList.remove("hidden");
+    });
+    beliefClose.addEventListener("click",()=>{
+      beliefSheet.classList.add("hidden");
+    });
+    beliefSheet.addEventListener("click",e=>{
+      if(e.target===beliefSheet) beliefSheet.classList.add("hidden");
     });
 
     function addMsg(text, cls){
@@ -528,7 +813,7 @@ I will try to reply with logic, kindness and emotional balance.
       const user = (inpEl.value || "").trim();
       if(!user) return;
 
-      addMsg(user, "user");
+      addMsg(user,"user");
       inpEl.value = "";
       chatEl.scrollTop = chatEl.scrollHeight;
 
@@ -548,29 +833,38 @@ I will try to reply with logic, kindness and emotional balance.
       e0El.textContent    = pct+"%";
 
       const react = getReaction(E0,user);
-      const faith = getFaithSuggestion(user,"islam");
+      const faith = getFaithSuggestion(user);
 
       addMsg(llmReply,"");
 
+      let spoken = "";
       if(react){
         addMsg(react,"react");
+        spoken = react;
       }
       if(faith){
         addMsg(faith,"faith");
+        if(!spoken) spoken = faith;
       }
 
-      if(voiceTgl.checked){
-        speak(react || faith || "");
+      if(voiceTgl.checked && spoken){
+        // تھوڑا delay تاکہ bubble پہلے نظر آئے
+        setTimeout(()=>speak(spoken),150);
       }
 
       pushBM(TM);
-      localStorage.setItem("aura-last-ts", Date.now().toString());
+      localStorage.setItem("aura-last-ts",Date.now().toString());
     }
 
     sendBtn.addEventListener("click", handleSend);
     inpEl.addEventListener("keydown", e=>{
       if(e.key==="Enter") handleSend();
     });
+
+    // load voices for some browsers
+    if("speechSynthesis" in window){
+      speechSynthesis.onvoiceschanged = ()=>pickVoice();
+    }
   </script>
 </body>
 </html>
