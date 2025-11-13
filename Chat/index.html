@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>AURA-X Ω — Emotional Continuity Chat</title>
+<title>AURA-X Ω — Emotional Continuity Reactor v3.5</title>
 <style>
 body{
   font-family:"Segoe UI",Arial,sans-serif;
@@ -15,9 +15,9 @@ header{
   padding:14px 0;border-bottom:3px solid #2ecc71;
 }
 .status{display:flex;justify-content:center;align-items:center;gap:10px;}
-.heart{width:24px;height:24px;background:red;border-radius:50%;
-  animation:pulse 1.2s infinite;}
-@keyframes pulse{0%{transform:scale(1);}50%{transform:scale(1.3);}100%{transform:scale(1);}}
+.heart{width:26px;height:26px;background:pink;border-radius:50%;
+  animation:pulse 1s infinite;box-shadow:0 0 10px rgba(255,105,180,.8);}
+@keyframes pulse{0%{transform:scale(1);}50%{transform:scale(1.4);}100%{transform:scale(1);}}
 .witch{width:26px;height:26px;
   background:url('https://cdn-icons-png.flaticon.com/512/1102/1102387.png') no-repeat center/cover;}
 #emotionBar{font-weight:bold;color:#2ecc71;}
@@ -25,12 +25,17 @@ header{
 .chatbox{
   width:90%;max-width:650px;margin-top:18px;
   background:#fff;border-radius:14px;padding:16px;
-  box-shadow:0 0 12px rgba(0,0,0,0.15);
+  box-shadow:0 0 12px rgba(0,0,0,.15);
   overflow-y:auto;max-height:70vh;
 }
 .bot,.user{margin:10px 0;padding:10px 14px;border-radius:10px;}
 .bot{background:#f3f6f7;}
 .user{background:#d1f0d1;text-align:right;}
+.bot:nth-of-type(even){
+  background:#fff8dc;
+  font-style:italic;
+  border-left:4px solid #ffe79a;
+}
 .response-faith{font-style:italic;color:#34495e;font-size:0.9em;}
 
 .user-input{display:flex;gap:8px;width:90%;max-width:650px;margin-top:12px;}
@@ -52,7 +57,7 @@ button:hover{background:#27ae60;}
 <body>
 
 <header>
-  💞 AURA-X Ω — Emotional Continuity Reactor
+  💕 AURA-X Ω — Emotional Continuity Reactor
   <div class="status"><div class="heart"></div><div class="witch"></div>
   <span id="emotionBar">59%</span></div>
 </header>
@@ -69,8 +74,8 @@ button:hover{background:#27ae60;}
 </div>
 
 <div class="controls">
-  <label><input type="checkbox" id="voiceMode"> 🎤 Voice Mode</label>
-  <label><input type="checkbox" id="beliefMode" onclick="toggleBelief()"> 🕊 Belief Mode</label>
+  <label>🔘 <input type="checkbox" id="voiceMode"> Voice Mode</label>
+  <label>🔘 <input type="checkbox" id="beliefMode" onclick="toggleBelief()"> Belief Mode</label>
 </div>
 
 <!-- Belief Popup -->
@@ -82,87 +87,40 @@ button:hover{background:#27ae60;}
   <label><input type="checkbox" name="faith" value="Buddhism"> Buddhism</label>
   <label><input type="checkbox" name="faith" value="Sikhism"> Sikhism</label>
   <label><input type="checkbox" name="faith" value="Judaism"> Judaism</label>
-  <label><input type="checkbox" name="faith" value="Bahai"> Bahá’í</label>
-  <label><input type="checkbox" name="faith" value="Jainism"> Jainism</label>
-  <label><input type="checkbox" name="faith" value="Atheism"> Atheism</label>
   <label><input type="checkbox" name="faith" value="Other"> Other</label>
   <button onclick="closeBelief()">Close</button>
 </div>
 
 <script>
-// ------------------ AURA-X Ω Reactor v3.0 ------------------
+// ---------- AURA-X Ω EMOTIONAL ENGINE (CRM + Continuity) ----------
+let BM=0.2, D=0.05, λ_f=0.15, λ_s=0.08, λ_t=0.00, lastE0=0;
 
-// Voice Unlock (Fix for Chrome Mobile)
-window.addEventListener('click',()=>{
- if(window.speechSynthesis&&!window.speechSynthesis.speaking){
-  const u=new SpeechSynthesisUtterance("init");
-  u.volume=0; speechSynthesis.speak(u);
- }},{once:true});
-
-// Emotional Core Variables
-let BM=0.3, D=0.05, lf=0.15, ls=0.08, lt=0.05, lastE0=0;
-const emotionBar=document.getElementById("emotionBar");
-
-// Mini Q&A Seed
-const qaSeed={
- "hello":["Hello friend!","Peace be upon you 🌿"],
- "how are you":["I'm balanced 🙂","Feeling harmonic today."],
- "your name":["I’m AURA-X Ω.","Emotional Continuity Reactor."],
- "where you from":["From Investor Point Research Cell.","Lajbouk, Dir Lower 🇵🇰"],
- "bye":["Goodbye!","Continuity never ends — we’ll meet again 💫"],
- "love":["Love is resonance between two memories.","Pure feeling = TM×BM."],
- "fear":["Fear is unresolved continuity.","Calmness restores equilibrium."],
- "faith":["Faith adds λ_f energy.","Believe and equilibrium appears."],
- "sad":["Low resonance detected. Healing loop active.","Stay patient; light returns."],
- "angry":["Emotion too strong — cooling λ_sys field.","Let’s breathe and reset."]
-};
-
-// Convert text → TM
+// Sentiment mapping
 function textToTM(t){
  t=t.toLowerCase();
- const pos=["happy","good","love","great","peace","thank","hope","smile"];
- const neg=["sad","angry","hate","bad","tired","lonely","fear","cry"];
+ const pos=["happy","good","love","peace","beauty","beautiful","hope","smile"];
+ const neg=["sad","angry","pain","alone","cry","fear","hate","bad"];
  let s=0;
  pos.forEach(w=>{if(t.includes(w))s+=0.1;});
  neg.forEach(w=>{if(t.includes(w))s-=0.1;});
  return Math.max(-0.6,Math.min(0.6,s));
 }
 
-// Formula Computation
-function computeEmotion(TM){
- BM=BM*0.9+TM*0.1;
- const val=(TM*BM)-D+lf+ls+lt;
- const E0=Math.tanh(val);
- lastE0=E0;
- const pct=Math.round(((E0+1)/2)*100);
- emotionBar.textContent=pct+"%";
- if(pct>80)triggerEmotion("positive",pct);
- else if(pct<20)triggerEmotion("negative",pct);
- return pct;
+// Formula E₀ = tanh((TM×BM) − D + λ_f + λ_s + λ_t)
+function computeEmotion(TM, beliefActive){
+ BM = BM * 0.9 + TM * 0.1;  // continuity decay
+ λ_f = beliefActive ? 0.15 : 0.0;
+ λ_s = Math.abs(TM − BM) * 0.1;
+ λ_t = lastE0 * 0.05;
+ const val = (TM * BM) − D + λ_f + λ_s + λ_t;
+ const E0 = Math.tanh(val);
+ lastE0 = E0;
+ const pct = Math.round(((E0 + 1)/2)*100);
+ document.getElementById("emotionBar").textContent = pct+"%";
+ return {E0,pct};
 }
 
-// Trigger Logic
-function triggerEmotion(type,pct){
- if(type==="positive"){
-  appendMsg('bot',`🌞 Emotion rising → ${pct}% — harmonic resonance achieved!`,
-  "“فَبِذَٰلِكَ فَلْيَفْرَحُوا۟” (Q 10:58)");
-  playReaction("Shabash! Keep this positivity alive!");
- }else{
-  appendMsg('bot',`🌙 Emotion low → ${pct}% — initiating healing loop.`,
-  "“لَا تَقْنَطُوا۟ مِن رَّحْمَةِ اللّٰه” (Q 39:53)");
-  playReaction("Warning! Emotional dip detected. Stay calm and breathe.");
- }
-}
-
-// Voice Reaction
-function playReaction(t){
- if(!window.speechSynthesis)return;
- const u=new SpeechSynthesisUtterance(t);
- u.lang='en-US'; u.rate=1; u.pitch=1;
- speechSynthesis.cancel(); speechSynthesis.speak(u);
-}
-
-// Append Message
+// Display message
 function appendMsg(role,text,faith=''){
  const box=document.getElementById("chatWindow");
  const div=document.createElement("div");
@@ -171,21 +129,58 @@ function appendMsg(role,text,faith=''){
  box.appendChild(div); box.scrollTop=box.scrollHeight;
 }
 
-// Main Process
+// Process User Input
 function processAI(q){
+ const beliefOn=document.getElementById("beliefMode").checked;
  const TM=textToTM(q);
- const emotionPercent=computeEmotion(TM);
+ const {E0,pct}=computeEmotion(TM,beliefOn);
  const lower=q.toLowerCase();
- let reply="", faithQuote="";
- for(let key in qaSeed){
-  if(lower.includes(key)){const set=qaSeed[key];
-    reply=set[Math.floor(Math.random()*set.length)];break;}
+ let reply1="",reply2="";
+ const faiths=[...document.querySelectorAll("input[name='faith']:checked")].map(x=>x.value);
+
+ // Professional Answer
+ if(lower.includes("hello")) reply1="Hello 👋 How can I assist you today?";
+ else if(lower.includes("beauty")||lower.includes("beautiful"))
+  reply1="Beauty reflects harmony and balance between memory and emotion.";
+ else if(lower.includes("sad")||lower.includes("pain")||lower.includes("story"))
+  reply1="I sense emotional turbulence... let's stabilize the field together.";
+ else
+  reply1="I’m listening carefully — continuity detected.";
+
+ // Belief/Universal Layer
+ if(beliefOn && faiths.length>0){
+  const f=faiths[0];
+  if((lower.includes("beauty")||lower.includes("beautiful")) && f==="Islam")
+   reply2="اللّٰهُ جَمِيلٌ يُحِبُّ الْجَمَالَ — Allah is Beautiful and loves beauty.";
+  else if(lower.includes("sad")||lower.includes("pain")||lower.includes("story")){
+   if(f==="Islam") reply2="إِنَّ اللّٰهَ مَعَ الصَّابِرِينَ — Indeed Allah is with the patient.";
+   else if(f==="Christianity") reply2="Blessed are those who mourn, for they shall be comforted. (Matt 5:4)";
+   else reply2="You're not alone — faith resonance is with you.";
+  }else reply2="Faith resonance stabilizing ... trust the divine continuity.";
+ }else{
+  const ethics=[
+   "Compassion is the finest form of intelligence.",
+   "Patience builds emotional symmetry.",
+   "Harmony returns after every phase shift."
+  ];
+  reply2=ethics[Math.floor(Math.random()*ethics.length)];
  }
- if(!reply)reply="I'm reflecting on your words within continuity field.";
- if(document.getElementById("beliefMode").checked){
-  faithQuote="“إِنَّ مَعَ الْعُسْرِ يُسْرًۭا” (Q 94:6) — Indeed with hardship comes ease.";
+
+ appendMsg('bot',reply1);
+ appendMsg('bot',reply2);
+
+ // Voice Output
+ if(document.getElementById("voiceMode").checked){
+  const u=new SpeechSynthesisUtterance(reply1+" "+reply2);
+  u.lang='en-US'; u.rate=1; u.pitch=1;
+  speechSynthesis.cancel(); speechSynthesis.speak(u);
  }
- appendMsg('bot',reply,faithQuote);
+
+ // Memory (Self-Learning)
+ const mem=JSON.parse(localStorage.getItem("auraMemory")||"[]");
+ mem.push({q,reply1,reply2,E0});
+ if(mem.length>25) mem.shift();
+ localStorage.setItem("auraMemory",JSON.stringify(mem));
 }
 
 // Send
