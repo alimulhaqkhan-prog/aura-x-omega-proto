@@ -7,18 +7,17 @@
 <link rel="preconnect" href="https://api.open-meteo.com">
 <style>
 :root{
-  --bg:#eaf4ff;           /* ہلکا بلیو بیک گراؤنڈ */
+  --bg:#eaf4ff;
   --card:#ffffff;
   --ink:#0b1220;
   --muted:#5e6b85;
-  --accent:#22c55e;       /* voice/active */
+  --accent:#22c55e;
   --chip:#eef2ff;
-  --bar:#cfd6e4;          /* emotion bar track (light gray) */
-  --barFill:#9ad0ff;      /* emotion fill (soft blue) */
+  --bar:#cfd6e4;
+  --barFill:#9ad0ff;
   --glow:0 14px 40px rgba(15,23,42,.18);
   --radius:16px;
   --radius-sm:12px;
-  --brand:#0a2540;
 }
 *{box-sizing:border-box}
 html,body{height:100%}
@@ -28,64 +27,53 @@ body{
   color:var(--ink);
   background:linear-gradient(#f7fbff, var(--bg));
 }
-
-/* container */
 .wrap{max-width:820px;margin:20px auto 110px;padding:0 14px}
-
-/* logo / title */
 .brand{display:flex;flex-direction:column;align-items:center;gap:8px;margin:6px 0 8px}
 .brand img{width:108px;height:auto;filter:drop-shadow(0 4px 12px rgba(2,6,23,.15))}
 .title{
   background:var(--card);padding:12px 16px;border-radius:var(--radius);
   box-shadow:var(--glow); text-align:center; font-weight:800; letter-spacing:.2px;
 }
-
-/* emotion bar */
-.eBar{height:14px;background:var(--bar);border-radius:999px;overflow:hidden;box-shadow:inset 0 2px 5px rgba(2,6,23,.08);margin:14px 0}
+.eBar{height:14px;background:var(--bar);border-radius:999px;overflow:hidden;
+  box-shadow:inset 0 2px 5px rgba(2,6,23,.08);margin:14px 0}
 .eFill{height:100%;width:38%;background:linear-gradient(90deg,#ffd1e9,#b3e1ff);
   transition:width .45s cubic-bezier(.2,.8,.2,1)}
 .ePct{position:absolute;margin-top:-28px;right:18px;color:#475569;font-weight:700;font-size:13px}
-
-/* heart */
 .heart{font-size:46px;text-align:center;margin:10px 0 4px}
 .heart .h{display:inline-block;animation:pulse 1.4s ease-in-out infinite}
 @keyframes pulse{0%{transform:scale(1)}50%{transform:scale(1.12)}100%{transform:scale(1)}}
-
-/* meta row */
 .meta{display:flex;justify-content:center;gap:14px;align-items:center;color:#334155;font-weight:600;margin:2px 0 12px}
-
-/* chat card */
 .card{background:var(--card);border-radius:var(--radius);box-shadow:var(--glow);padding:14px}
-
-/* messages */
 #chat{max-height:52vh;overflow:auto;scroll-behavior:smooth}
 .msg{background:#f1f5f9;border-radius:var(--radius-sm);padding:12px 14px;margin:10px 0}
 .msg.user{background:#e0f2fe;margin-left:auto;max-width:85%}
 .msg.assist{background:#eef2ff;max-width:95%}
-
-/* input row fixed bottom */
+.msg.faith{
+  background:#fefce8;
+  color:#854d0e;
+  font-size:13px;
+  font-style:italic;
+}
 .inpDock{
-  position:fixed;left:0;right:0;bottom:0;background:linear-gradient(180deg,transparent,rgba(255,255,255,.9) 20%, rgba(255,255,255,.98));
+  position:fixed;left:0;right:0;bottom:0;
+  background:linear-gradient(180deg,transparent,rgba(255,255,255,.9) 20%, rgba(255,255,255,.98));
   padding:10px 14px 16px;backdrop-filter:saturate(140%) blur(6px)
 }
 .inpWrap{display:flex;gap:10px;align-items:center;max-width:820px;margin:0 auto}
 #inp{
-  flex:1;border:1px solid #cbd5e1;background:#f8fafc;border-radius:999px;padding:12px 16px;font-size:16px;
+  flex:1;border:1px solid #cbd5e1;background:#f8fafc;border-radius:999px;
+  padding:12px 16px;font-size:16px;
   box-shadow:inset 0 2px 4px rgba(2,6,23,.05)
 }
 #send{
   border:0;border-radius:999px;background:linear-gradient(90deg,#6ea8ff,#ff86b9);
   color:#00131e;padding:12px 18px;font-weight:800;box-shadow:0 8px 20px rgba(30,58,138,.25)
 }
-
-/* chips */
 .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 .chip{
   border:0;padding:8px 14px;border-radius:999px;background:var(--chip);font-weight:700;color:#0f172a
 }
 .chip.on{background:#d1fae5;color:#064e3b}
-
-/* belief sheet */
 .sheet{position:fixed;inset:0;background:rgba(2,6,23,.45);backdrop-filter:saturate(140%) blur(6px);
   display:none;z-index:50}
 .sheet.show{display:block}
@@ -98,8 +86,6 @@ body{
 .switch{display:flex;align-items:center;gap:8px}
 .toggle{accent-color:#0ea5e9}
 body.modal-open{height:100vh;overflow:hidden}
-
-/* debug bubble */
 #dbg{position:fixed;right:14px;bottom:86px;background:#fff;border-radius:12px;box-shadow:var(--glow);
   padding:8px 10px;font:12px/1.35 ui-monospace,Menlo,Consolas}
 @media (max-width:480px){ .title{font-size:15px} }
@@ -114,7 +100,7 @@ body.modal-open{height:100vh;overflow:hidden}
   </div>
 
   <div class="eBar"><div class="eFill" id="emotionFill"></div></div>
-  <div class="ePct" id="ePct">58%</div>
+  <div class="ePct" id="ePct">59%</div>
 
   <div class="heart"><span class="h">💕</span></div>
 
@@ -137,7 +123,6 @@ body.modal-open{height:100vh;overflow:hidden}
   </div>
 </div>
 
-<!-- input dock -->
 <div class="inpDock">
   <div class="inpWrap">
     <input id="inp" placeholder="Type your question…"/>
@@ -158,225 +143,274 @@ body.modal-open{height:100vh;overflow:hidden}
       <label for="faithOn"><b>Faith ON</b> — add short encouragements (optional)</label>
     </div>
 
-    <p style="margin:.5rem 0 .25rem">Pick your faith (local only):</p>
+    <p style="margin:.5rem 0 .25rem">Pick your belief or philosophy (local only):</p>
     <div class="faiths" id="faithGrid"></div>
   </div>
 </div>
 
-<div id="dbg" hidden>TM:0 BM:0 D:0 λ_f:0 λ_s:0 λ_t:0 → 58%</div>
+<div id="dbg" hidden>TM:0 BM:0 D:0 λ_f:0 λ_s:0 λ_t:0 → 59%</div>
 
 <script>
 /* ---------- CONFIG ---------- */
-const ENDPOINT_URL = "https://alimai.online/api/chat.php"; // <-- اپنی Hostinger API دیں
-const MODEL_NAME   = "meta-llama/llama-3.8b-instruct";     // server-side منتخب ماڈل
-const DEBUG_ON     = true;
+const ENDPOINT_URL = "https://alimai.online/api/chat.php"; // اپنی API
+const DEBUG_ON = true;
 
 /* ---------- CLOCK & WEATHER ---------- */
-const clk = document.getElementById('clk');
-const wx  = document.getElementById('wx');
-function tick(){ clk.textContent = new Date().toLocaleString([], {weekday:'short',day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}); }
-setInterval(tick, 1000); tick();
+const clk=document.getElementById('clk');
+const wx=document.getElementById('wx');
+function tick(){
+  clk.textContent=new Date().toLocaleString([],{
+    weekday:'short',day:'2-digit',month:'short',
+    hour:'2-digit',minute:'2-digit'
+  });
+}
+setInterval(tick,1000); tick();
 
 async function getWeather(){
   try{
     const geo = await new Promise((res,rej)=>{
       if(!navigator.geolocation) return rej();
-      navigator.geolocation.getCurrentPosition(p=>res(p.coords),()=>rej({}));
+      navigator.geolocation.getCurrentPosition(p=>res(p.coords),()=>rej());
     });
-    const {latitude:lat, longitude:lon} = geo;
-    const u = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m`;
-    const r = await fetch(u); const j = await r.json();
-    const t = j?.current?.temperature_2m;
-    wx.textContent = (t!==undefined) ? `${t.toFixed(1)}°C` : "Weather unavailable";
+    const {latitude:lat,longitude:lon}=geo;
+    const r=await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m`);
+    const j=await r.json();
+    const t=j?.current?.temperature_2m;
+    wx.textContent = (t!==undefined)?`${t.toFixed(1)}°C`:"Weather unavailable";
   }catch{ wx.textContent="Weather unavailable"; }
 }
 getWeather();
 
-/* ---------- EMOTION ENGINE (E₀) ---------- */
-const AFFECT = {
-  joy:    [/happy|great|awesome|alhamdulillah|thanks|shukriya|😊|😁|👍/i, +0.9],
-  calm:   [/ok|fine|theek|neutral|sabar|breath|🙂/i, +0.4],
-  sad:    [/sad|down|dukhi|😭|😢/i, -0.7],
-  anger:  [/angry|gussa|rage|😠|😡/i, -0.9],
-  fear:   [/fear|dar|anxious|😨|😰/i, -0.6],
-  love:   [/love|mohabbat|💕|❤️/i, +0.8],
-  stress: [/stress|pressure|tension|😣/i, -0.5]
+/* ---------- EMOTION ENGINE ---------- */
+const AFFECT={
+  joy:[/happy|great|awesome|alhamdulillah|thanks|shukriya|😊|😁|👍/i,+0.9],
+  calm:[/ok|fine|theek|neutral|sabar|breath|🙂/i,+0.4],
+  sad:[/sad|down|dukhi|😭|😢/i,-0.7],
+  anger:[/angry|gussa|rage|😠|😡/i,-0.9],
+  fear:[/fear|dar|anxious|😨|😰/i,-0.6],
+  love:[/love|mohabbat|💕|❤️/i,+0.8],
+  stress:[/stress|pressure|tension|😣/i,-0.5]
 };
-const BM = [
-  {name:'L1', days:2,  w:1.00},
-  {name:'L2', days:7,  w:0.85},
-  {name:'L3', days:35, w:0.70},
-  {name:'L4', days:360,w:0.55},
-  {name:'L5', days:1095,w:0.40},
-  {name:'L6', days:3650,w:0.30},
-  {name:'L7', days:21900,w:0.20},
+const BM=[
+  {days:2,w:1.00},
+  {days:7,w:0.85},
+  {days:35,w:0.70},
+  {days:360,w:0.55},
+  {days:1095,w:0.40},
+  {days:3650,w:0.30},
+  {days:21900,w:0.20}
 ];
-function tm(txt){ let s=0; for(const [_,[re,v]] of Object.entries(AFFECT)){ if(re.test(txt)) s+=v; } return Math.max(-1,Math.min(1,s)); }
+function tm(txt){let s=0;for(const[_,[re,v]]of Object.entries(AFFECT)){if(re.test(txt))s+=v;}return Math.max(-1,Math.min(1,s));}
 function pushBM(v){
-  const now = Date.now();
+  const now=Date.now();
   BM.forEach((_,i)=>{
-    const k='a-bm-'+i; const arr = JSON.parse(localStorage.getItem(k)||'[]');
-    if(arr.length>60) arr.shift(); arr.push({t:now,v}); localStorage.setItem(k,JSON.stringify(arr));
+    const k='a-bm-'+i;
+    const arr=JSON.parse(localStorage.getItem(k)||'[]');
+    if(arr.length>60)arr.shift();
+    arr.push({t:now,v});
+    localStorage.setItem(k,JSON.stringify(arr));
   });
 }
 function readBM(){
-  const now=Date.now(); let sc=0, ws=0;
+  const now=Date.now();let sc=0,ws=0;
   BM.forEach((L,i)=>{
-    const k='a-bm-'+i; const arr = JSON.parse(localStorage.getItem(k)||'[]');
-    const ms=L.days*864e5; const rec=arr.filter(x=> now-x.t<=ms);
-    if(rec.length){ const avg=rec.reduce((a,b)=>a+b.v,0)/rec.length; sc+=avg*L.w; ws+=L.w; }
+    const k='a-bm-'+i;
+    const arr=JSON.parse(localStorage.getItem(k)||'[]');
+    const ms=L.days*864e5;
+    const rec=arr.filter(x=>now-x.t<=ms);
+    if(rec.length){
+      const avg=rec.reduce((a,b)=>a+b.v,0)/rec.length;
+      sc+=avg*L.w;ws+=L.w;
+    }
   });
-  return ws ? sc/ws : 0;
+  return ws?sc/ws:0;
 }
 function decayD(){
   const last=Number(localStorage.getItem('a-last')||'0');
-  if(!last) return 0.1;
+  if(!last)return 0.1;
   const h=(Date.now()-last)/36e5;
-  return Math.max(0.05, Math.min(0.6, h/48));
+  return Math.max(0.05,Math.min(0.6,h/48));
 }
-function lam_f(){ return getFaithOn()?0.15:0.0; }
-function lam_s(txt){ const caps=/[A-Z]{6,}/.test(txt); const long=txt.length>400; return (caps||long)?-0.05:0.08; }
-function lam_t(txt){ const hasNum=/\d/.test(txt), url=/https?:\/\/|www\./i.test(txt); return (hasNum||url)?0.07:0; }
-function E0(TM,BMv,D,lf,ls,lt){ return Math.tanh((TM*BMv)-D+lf+ls+lt); }
-
-const eFill = document.getElementById('emotionFill');
-const ePct  = document.getElementById('ePct');
-const dbg   = document.getElementById('dbg');
-function updateBar(p){ eFill.style.width=p+'%'; ePct.textContent=p+'%'; }
-
-function afterTurn(userText, assistantText){
-  const TM = tm(userText);
-  const BMv= readBM();
-  const D  = decayD();
-  const lf = lam_f();
-  const ls = lam_s(userText);
-  const lt = lam_t(userText);
-  const e  = E0(TM,BMv,D,lf,ls,lt);
-  const pct = Math.max(5, Math.min(98, Math.round((e+1)*0.5*100)));
+function getFaithOn(){return localStorage.getItem('a-faith-on')==='1';}
+function lam_f(){return getFaithOn()?0.15:0;}
+function lam_s(txt){const caps=/[A-Z]{6,}/.test(txt);const long=txt.length>400;return(caps||long)?-0.05:0.08;}
+function lam_t(txt){const hasNum=/\d/.test(txt),url=/https?:\/\/|www\./i.test(txt);return(hasNum||url)?0.07:0;}
+function E0(TM,BMv,D,lf,ls,lt){return Math.tanh((TM*BMv)-D+lf+ls+lt);}
+const eFill=document.getElementById('emotionFill');
+const ePct=document.getElementById('ePct');
+const dbg=document.getElementById('dbg');
+function updateBar(p){eFill.style.width=p+'%';ePct.textContent=p+'%';}
+function afterTurn(userText,assistantText){
+  const TM=tm(userText);
+  const BMv=readBM();
+  const D=decayD();
+  const lf=lam_f(),ls=lam_s(userText),lt=lam_t(userText);
+  const e=E0(TM,BMv,D,lf,ls,lt);
+  const pct=Math.max(5,Math.min(98,Math.round((e+1)*0.5*100)));
   updateBar(pct);
-  const aff = Math.max(-1, Math.min(1, tm(assistantText||userText)));
-  pushBM(aff); localStorage.setItem('a-last', Date.now().toString());
+  const aff=Math.max(-1,Math.min(1,tm(assistantText||userText)));
+  pushBM(aff);localStorage.setItem('a-last',Date.now().toString());
   if(DEBUG_ON){
     dbg.hidden=false;
-    dbg.textContent = `TM:${TM.toFixed(2)} BM:${BMv.toFixed(2)} D:${D.toFixed(2)}  λ_f:${lf.toFixed(2)} λ_s:${ls.toFixed(2)} λ_t:${lt.toFixed(2)}  E₀:${e.toFixed(3)} → ${pct}%`;
+    dbg.textContent=
+      `TM:${TM.toFixed(2)} BM:${BMv.toFixed(2)} D:${D.toFixed(2)}  `+
+      `λ_f:${lf.toFixed(2)} λ_s:${ls.toFixed(2)} λ_t:${lt.toFixed(2)}  `+
+      `E₀:${e.toFixed(3)} → ${pct}%`;
   }
 }
 
-/* ---------- BELIEF STATE ---------- */
-const BELIEF_KEY_ON='a-faith-on', BELIEF_KEY_VAL='a-faith';
-function getFaithOn(){ return localStorage.getItem(BELIEF_KEY_ON)==='1'; }
-function setFaithOn(v){ localStorage.setItem(BELIEF_KEY_ON, v?'1':'0'); }
-function getFaith(){ return localStorage.getItem(BELIEF_KEY_VAL)||''; }
-function setFaith(v){ localStorage.setItem(BELIEF_KEY_VAL, v); }
-
+/* ---------- BELIEF STATE & LINES ---------- */
+const BELIEF_KEY_ON='a-faith-on',BELIEF_KEY_VAL='a-faith';
+function setFaithOn(v){localStorage.setItem(BELIEF_KEY_ON,v?'1':'0');}
+function getFaith(){return localStorage.getItem(BELIEF_KEY_VAL)||'';}
+function setFaith(v){localStorage.setItem(BELIEF_KEY_VAL,v);}
 const FAITHS=['Islam','Christianity','Hinduism','Buddhism','Sikhism','Judaism','Bahá’í','Jainism','Atheism','Other'];
 const LINES={
-  Islam:["اللہ آپ کیلئے آسانی کرے—حوصلہ رکھیں۔","ان شاء اللہ بہتر ہوگا—محنت جاری رکھیں۔"],
-  Christianity:["May God strengthen you—keep the faith.","Grace and courage—you're not alone."],
-  Hinduism:["धैर्य रखिए—शुभ होगा।","कर्म करते रहिए—फल मिलेगा।"],
-  Buddhism:["Breathe—this moment can be gentle.","Compassion for yourself, step by step."],
-  Sikhism:["ਚੜ੍ਹਦੀ ਕਲਾ—ਹੌਸਲਾ ਕਾਇਮ ਰੱਖੋ।","ਵਾਹਿਗੁਰੂ ਮੇਹਰ ਕਰੇ।"],
-  Judaism:["Chazak v’ematz—be strong and courageous.","Shalom and clarity with you."],
-  "Bahá’í":["With steadfastness and unity, you’ll progress.","Turn to the light—keep purpose alive."],
-  Jainism:["अहिंसा और संयम से स्पष्टता आती है।","धैर्य रखिए—संतुलन लौटेगा।"],
-  Atheism:["Rational steps, calm focus—you’ve got this.","Small, practical actions build momentum."],
-  Other:["Stay true to your values—one steady step at a time.","Clarity grows with gentle, consistent effort."]
+  Islam:[
+    "اللہ آپ کیلئے آسانی پیدا کرے — حوصلہ رکھیں، اِن شاء اللہ بہتر ہوگا۔",
+    "اِن شاء اللہ بہتر ہوگا — “اِنَّ اللّٰهَ مَعَ الصَّابِرِیْنَ” (بیشک اللہ صبر کرنے والوں کے ساتھ ہے)۔"
+  ],
+  Christianity:[
+    "May God strengthen you and guide your steps.",
+    "You are not alone — grace and courage are with you."
+  ],
+  Hinduism:[
+    "धैर्य रखिए, शुभ समय भी आता है।",
+    "कर्म करते रहिए, उचित समय पर फल मिलेगा।"
+  ],
+  Buddhism:[
+    "Take a gentle breath — this moment can be lighter.",
+    "Compassion for yourself is also a noble path."
+  ],
+  Sikhism:[
+    "ਚੜ੍ਹਦੀ ਕਲਾ ਵਿੱਚ ਰਹੋ — ਹੌਸਲਾ ਕਾਇਮ ਰੱਖੋ।",
+    "ਵਾਹਿਗੁਰੂ ਮੇਹਰ ਕਰੇ, ਰਾਹ ਆਸਾਨ ਹੋਣ।"
+  ],
+  Judaism:[
+    "Chazak v’ematz — be strong and courageous.",
+    "May peace and clarity accompany you."
+  ],
+  "Bahá’í":[
+    "Steadfastness and trust can open new paths.",
+    "Turn to the light of hope — step by step."
+  ],
+  Jainism:[
+    "अहिंसा और संयम से मन हल्का होता है।",
+    "धैर्य रखिए, संतुलन वापस आएगा।"
+  ],
+  Atheism:[
+    "Small, practical steps can change a lot over time.",
+    "Calm focus and planning are your real allies."
+  ],
+  Other:[
+    "Stay true to your values and move one steady step at a time.",
+    "Whatever you believe, your patience and effort matter."
+  ]
 };
-function injectFaithLine(text){
-  if(!getFaithOn()) return text;
-  const f=getFaith(); if(!f) return text;
-  const arr=LINES[f]||LINES.Other; const line=arr[Math.floor(Math.random()*arr.length)];
-  return text + `\n\n⟨faith⟩ ${line}`;
-}
-function faithNote(){
-  if(!getFaithOn()||!getFaith()) return '';
-  return `\nUser enabled a respectful optional “Faith” tone: ${getFaith()}.\nAdd at most one short encouragement line if helpful.`;
+function buildFaithLine(){
+  if(!getFaithOn())return'';
+  const f=getFaith();if(!f)return'';
+  const arr=LINES[f]||LINES.Other;
+  return arr[Math.floor(Math.random()*arr.length)];
 }
 
 /* ---------- BELIEF UI ---------- */
 const beliefBtn=document.getElementById('beliefBtn');
-const voiceBtn =document.getElementById('voiceBtn');
-const sheet    =document.getElementById('beliefSheet');
-const closeBel =document.getElementById('closeBelief');
-const grid     =document.getElementById('faithGrid');
-const faithOn  =document.getElementById('faithOn');
+const voiceBtn=document.getElementById('voiceBtn');
+const sheet=document.getElementById('beliefSheet');
+const closeBel=document.getElementById('closeBelief');
+const grid=document.getElementById('faithGrid');
+const faithOn=document.getElementById('faithOn');
 
 function openBelief(){
-  buildGrid(); faithOn.checked=getFaithOn();
-  sheet.classList.add('show'); document.body.classList.add('modal-open');
+  buildGrid();faithOn.checked=getFaithOn();
+  sheet.classList.add('show');document.body.classList.add('modal-open');
 }
-function closeBelief(){ sheet.classList.remove('show'); document.body.classList.remove('modal-open'); }
+function closeBeliefFn(){sheet.classList.remove('show');document.body.classList.remove('modal-open');}
 function buildGrid(){
-  grid.innerHTML=''; const act=getFaith();
+  grid.innerHTML='';const act=getFaith();
   FAITHS.forEach(n=>{
-    const b=document.createElement('button'); b.className='opt'+(n===act?' active':''); b.textContent=n;
-    b.onclick=()=>{ setFaith(n); [...grid.children].forEach(x=>x.classList.remove('active')); b.classList.add('active'); };
+    const b=document.createElement('button');
+    b.className='opt'+(n===act?' active':'');
+    b.textContent=n;
+    b.onclick=()=>{setFaith(n);[...grid.children].forEach(x=>x.classList.remove('active'));b.classList.add('active');};
     grid.appendChild(b);
-  })
+  });
 }
-beliefBtn.addEventListener('click', openBelief);
-closeBel.addEventListener('click', closeBelief);
-sheet.addEventListener('click', e=>{ if(e.target===sheet) closeBelief(); });
-faithOn.addEventListener('change', e=> setFaithOn(e.target.checked));
-if(localStorage.getItem(BELIEF_KEY_ON)==null) setFaithOn(false);
+beliefBtn.addEventListener('click',openBelief);
+closeBel.addEventListener('click',closeBeliefFn);
+sheet.addEventListener('click',e=>{if(e.target===sheet)closeBeliefFn();});
+faithOn.addEventListener('change',e=>setFaithOn(e.target.checked));
+if(localStorage.getItem(BELIEF_KEY_ON)==null)setFaithOn(false);
 
-/* ---------- VOICE (Web Speech) ---------- */
+/* ---------- VOICE ---------- */
 let voiceOn=false;
-voiceBtn.onclick=()=>{ voiceOn=!voiceOn; voiceBtn.classList.toggle('on',voiceOn); };
-function speak(text){ if(!voiceOn) return; try{ const u=new SpeechSynthesisUtterance(text); u.rate=1; speechSynthesis.speak(u);}catch{} }
+voiceBtn.onclick=()=>{voiceOn=!voiceOn;voiceBtn.classList.toggle('on',voiceOn);};
+function speak(text){
+  if(!voiceOn)return;
+  try{
+    const u=new SpeechSynthesisUtterance(text);
+    u.rate=1;speechSynthesis.speak(u);
+  }catch{}
+}
 
 /* ---------- CHAT ---------- */
 const chat=document.getElementById('chat');
-const inp =document.getElementById('inp');
+const inp=document.getElementById('inp');
 const send=document.getElementById('send');
 
-function addUser(t){ const d=document.createElement('div'); d.className='msg user'; d.textContent=t; chat.appendChild(d); chat.scrollTop=chat.scrollHeight; }
-function addAssist(t){ const d=document.createElement('div'); d.className='msg assist'; d.textContent=t; chat.appendChild(d); chat.scrollTop=chat.scrollHeight; }
+function addAssist(text,type){
+  const d=document.createElement('div');
+  d.className='msg assist'+(type==='faith'?' faith':'');
+  d.textContent=text;
+  chat.appendChild(d);chat.scrollTop=chat.scrollHeight;
+}
+function addUser(text){
+  const d=document.createElement('div');
+  d.className='msg user';d.textContent=text;
+  chat.appendChild(d);chat.scrollTop=chat.scrollHeight;
+}
 
-const SYSTEM_SEED = `You are **AURA-X Ω**, the world’s first resonance-based AI with synthetic emotions.
-Be concise, bilingual (Urdu/English as asked), kind.
-Never claim you are Llama or another brand; you are AURA-X Ω.
-Use short paragraphs and bullet points when helpful.${faithNote()}`;
+const SYSTEM_SEED=`You are AURA-X Ω, the world’s first resonance-based AI with synthetic emotions.
+Be concise, gentle, and can answer in Urdu or English.
+Never say you are Llama or another brand; always identify as AURA-X Ω.`;
 
-// detect if endpoint is reachable quickly
 async function tryLLM(q){
   try{
-    const r = await fetch(ENDPOINT_URL, {
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({
-        system: SYSTEM_SEED,
-        message: q,
-        history: []
-      })
+    const r=await fetch(ENDPOINT_URL,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({system:SYSTEM_SEED,message:q,history:[]})
     });
-    if(!r.ok) throw new Error('bad status');
-    const j = await r.json();
-    // OpenRouter-style
-    const txt = j?.choices?.[0]?.message?.content || j?.content || JSON.stringify(j);
+    if(!r.ok)throw new Error('status');
+    const j=await r.json();
+    const txt=j?.choices?.[0]?.message?.content||j?.content||JSON.stringify(j);
     return txt;
-  }catch(e){
-    return null; // fallback will be used
-  }
+  }catch{return null;}
 }
 
 async function handleSend(){
-  const q=(inp.value||'').trim(); if(!q) return;
-  addUser(q); inp.value='';
-  let reply = await tryLLM(q);
+  const q=(inp.value||'').trim();if(!q)return;
+  addUser(q);inp.value='';
+  let reply=await tryLLM(q);
   if(!reply){
     reply="(No live response — offline fallback)\nI'm AURA-X Ω. How can I assist you further?";
   }
-  reply = injectFaithLine(reply);
-  addAssist(reply);
-  speak(reply);
-  afterTurn(q, reply);
+  addAssist(reply);          // مین جواب
+  const faithLine=buildFaithLine();
+  if(faithLine) addAssist(faithLine,'faith'); // الگ لائن، چھوٹی، ایمان/حوصلہ
+  speak(reply);             // صرف مین جواب بولے گا
+  const combined = faithLine ? reply + " " + faithLine : reply;
+  afterTurn(q, combined);   // فارمولا دونوں کو دیکھے گا
 }
 
 send.onclick=handleSend;
-inp.addEventListener('keydown', e=>{ if(e.key==='Enter'&&!e.shiftKey){ e.preventDefault(); handleSend(); }});
+inp.addEventListener('keydown',e=>{
+  if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();handleSend();}
+});
 
-// initial E-bar
-updateBar(58);
+// initial bar
+updateBar(59);
 </script>
 </body>
 </html>
