@@ -151,8 +151,8 @@ body.modal-open{height:100vh;overflow:hidden}
 <div id="dbg" hidden>TM:0 BM:0 D:0 λ_f:0 λ_s:0 λ_t:0 → 59%</div>
 
 <script>
-/* ---------- CONFIG ---------- */
-const ENDPOINT_URL = "https://alimai.online/api/chat.php"; // اپنی API
+/* ---------- BASIC CONFIG ---------- */
+const ENDPOINT_URL = "https://alimai.online/api/chat.php";   // آپ کی API
 const DEBUG_ON = true;
 
 /* ---------- CLOCK & WEATHER ---------- */
@@ -181,7 +181,7 @@ async function getWeather(){
 }
 getWeather();
 
-/* ---------- EMOTION ENGINE ---------- */
+/* ---------- EMOTION ENGINE (E₀) ---------- */
 const AFFECT={
   joy:[/happy|great|awesome|alhamdulillah|thanks|shukriya|😊|😁|👍/i,+0.9],
   calm:[/ok|fine|theek|neutral|sabar|breath|🙂/i,+0.4],
@@ -259,60 +259,12 @@ function afterTurn(userText,assistantText){
   }
 }
 
-/* ---------- BELIEF STATE & LINES ---------- */
+/* ---------- BELIEF STATE ---------- */
 const BELIEF_KEY_ON='a-faith-on',BELIEF_KEY_VAL='a-faith';
 function setFaithOn(v){localStorage.setItem(BELIEF_KEY_ON,v?'1':'0');}
 function getFaith(){return localStorage.getItem(BELIEF_KEY_VAL)||'';}
 function setFaith(v){localStorage.setItem(BELIEF_KEY_VAL,v);}
 const FAITHS=['Islam','Christianity','Hinduism','Buddhism','Sikhism','Judaism','Bahá’í','Jainism','Atheism','Other'];
-const LINES={
-  Islam:[
-    "اللہ آپ کیلئے آسانی پیدا کرے — حوصلہ رکھیں، اِن شاء اللہ بہتر ہوگا۔",
-    "اِن شاء اللہ بہتر ہوگا — “اِنَّ اللّٰهَ مَعَ الصَّابِرِیْنَ” (بیشک اللہ صبر کرنے والوں کے ساتھ ہے)۔"
-  ],
-  Christianity:[
-    "May God strengthen you and guide your steps.",
-    "You are not alone — grace and courage are with you."
-  ],
-  Hinduism:[
-    "धैर्य रखिए, शुभ समय भी आता है।",
-    "कर्म करते रहिए, उचित समय पर फल मिलेगा।"
-  ],
-  Buddhism:[
-    "Take a gentle breath — this moment can be lighter.",
-    "Compassion for yourself is also a noble path."
-  ],
-  Sikhism:[
-    "ਚੜ੍ਹਦੀ ਕਲਾ ਵਿੱਚ ਰਹੋ — ਹੌਸਲਾ ਕਾਇਮ ਰੱਖੋ।",
-    "ਵਾਹਿਗੁਰੂ ਮੇਹਰ ਕਰੇ, ਰਾਹ ਆਸਾਨ ਹੋਣ।"
-  ],
-  Judaism:[
-    "Chazak v’ematz — be strong and courageous.",
-    "May peace and clarity accompany you."
-  ],
-  "Bahá’í":[
-    "Steadfastness and trust can open new paths.",
-    "Turn to the light of hope — step by step."
-  ],
-  Jainism:[
-    "अहिंसा और संयम से मन हल्का होता है।",
-    "धैर्य रखिए, संतुलन वापस आएगा।"
-  ],
-  Atheism:[
-    "Small, practical steps can change a lot over time.",
-    "Calm focus and planning are your real allies."
-  ],
-  Other:[
-    "Stay true to your values and move one steady step at a time.",
-    "Whatever you believe, your patience and effort matter."
-  ]
-};
-function buildFaithLine(){
-  if(!getFaithOn())return'';
-  const f=getFaith();if(!f)return'';
-  const arr=LINES[f]||LINES.Other;
-  return arr[Math.floor(Math.random()*arr.length)];
-}
 
 /* ---------- BELIEF UI ---------- */
 const beliefBtn=document.getElementById('beliefBtn');
@@ -354,7 +306,7 @@ function speak(text){
   }catch{}
 }
 
-/* ---------- CHAT ---------- */
+/* ---------- CHAT BASIC UI ---------- */
 const chat=document.getElementById('chat');
 const inp=document.getElementById('inp');
 const send=document.getElementById('send');
@@ -371,37 +323,66 @@ function addUser(text){
   chat.appendChild(d);chat.scrollTop=chat.scrollHeight;
 }
 
+/* ---------- LLM WRAPPERS ---------- */
 const SYSTEM_SEED=`You are AURA-X Ω, the world’s first resonance-based AI with synthetic emotions.
 Be concise, gentle, and can answer in Urdu or English.
 Never say you are Llama or another brand; always identify as AURA-X Ω.`;
 
-async function tryLLM(q){
+const FAITH_SYSTEM=`You are a short spiritual/moral encouragement generator.
+You receive the user's question, the main AI answer, and the user's belief label.
+Your job is to return ONE short line that gives comfort or guidance based on that belief.
+You may include a very brief verse or teaching reference, but do NOT mention the words "faith", "religion" or the belief name.
+Use the user's language (Urdu or English) if clear from the text.
+Only output the encouragement line, nothing else.`;
+
+async function callLLM(message, systemPrompt){
+  const sys = systemPrompt || SYSTEM_SEED;
   try{
     const r=await fetch(ENDPOINT_URL,{
       method:'POST',
       headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({system:SYSTEM_SEED,message:q,history:[]})
+      body:JSON.stringify({system:sys,message,history:[]})
     });
-    if(!r.ok)throw new Error('status');
+    if(!r.ok) throw new Error('status');
     const j=await r.json();
-    const txt=j?.choices?.[0]?.message?.content||j?.content||JSON.stringify(j);
-    return txt;
-  }catch{return null;}
+    return j?.choices?.[0]?.message?.content || j?.content || "";
+  }catch{
+    return "";
+  }
 }
 
+/* ---------- MAIN SEND FLOW ---------- */
 async function handleSend(){
   const q=(inp.value||'').trim();if(!q)return;
   addUser(q);inp.value='';
-  let reply=await tryLLM(q);
+  // 1) مین جواب
+  let reply = await callLLM(q, SYSTEM_SEED);
   if(!reply){
     reply="(No live response — offline fallback)\nI'm AURA-X Ω. How can I assist you further?";
   }
-  addAssist(reply);          // مین جواب
-  const faithLine=buildFaithLine();
-  if(faithLine) addAssist(faithLine,'faith'); // الگ لائن، چھوٹی، ایمان/حوصلہ
-  speak(reply);             // صرف مین جواب بولے گا
+  addAssist(reply);          // مین جواب دکھائیں
+  speak(reply);              // صرف مین جواب voice میں
+
+  // 2) Faith encouragement (اگر آن ہے + belief منتخب ہے)
+  let faithLine="";
+  const beliefOn = getFaithOn();
+  const faithLabel = getFaith();
+  if(beliefOn && faithLabel){
+    const prompt =
+      `User question: "${q}"\n`+
+      `Main answer: "${reply}"\n`+
+      `Belief label: ${faithLabel}.\n`+
+      `Now give one short line of spiritual or moral encouragement based on this belief, relevant to the situation.`;
+    const raw = await callLLM(prompt, FAITH_SYSTEM);
+    faithLine = (raw||"").trim();
+    if(faithLine.length>220) faithLine = faithLine.slice(0,220);
+    if(faithLine){
+      addAssist(faithLine,'faith'); // الگ پیلا کارڈ
+    }
+  }
+
   const combined = faithLine ? reply + " " + faithLine : reply;
-  afterTurn(q, combined);   // فارمولا دونوں کو دیکھے گا
+  afterTurn(q, combined);   // فارمولا دونوں کو دیکھتا ہے
 }
 
 send.onclick=handleSend;
