@@ -1,111 +1,146 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>AURA-X Ω Chat Interface</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: linear-gradient(to right, #dfe6e9, #f5f5f5);
-      margin: 0; padding: 0;
-      display: flex; flex-direction: column; align-items: center;
-    }
-    header {
-      background: #34495e; color: white; padding: 1em;
-      text-align: center; width: 100%;
-    }
-    .chatbox {
-      width: 90%; max-width: 600px; background: white; padding: 1em;
-      margin-top: 20px; border-radius: 8px; box-shadow: 0 0 10px #ccc;
-    }
-    .user-input { display: flex; margin-top: 10px; }
-    input[type="text"] {
-      flex: 1; padding: 10px; border-radius: 4px; border: 1px solid #ccc;
-    }
-    button {
-      padding: 10px 20px; margin-left: 5px; border: none;
-      background: #2ecc71; color: white; border-radius: 4px; cursor: pointer;
-    }
-    .response-block { margin-top: 20px; }
-    .response-main { font-weight: bold; }
-    .response-faith { font-style: italic; color: #34495e; margin-top: 5px; }
-    .controls { margin-top: 10px; display: flex; justify-content: space-between; flex-wrap: wrap; }
-    .heart {
-      width: 30px; height: 30px;
-      background: red; border-radius: 50%;
-      animation: pulse 1.2s infinite;
-    }
-    @keyframes pulse {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.2); }
-      100% { transform: scale(1); }
-    }
-    .witch { font-size: 28px; margin-left: 10px; animation: float 2s infinite alternate; }
-    @keyframes float {
-      0% { transform: translateY(0); }
-      100% { transform: translateY(-10px); }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>AURA-X Ω Chat</title>
+<style>
+body{
+  font-family:Segoe UI,Arial;
+  background:linear-gradient(135deg,#edf2f7,#e6ebef);
+  margin:0;display:flex;flex-direction:column;align-items:center;
+}
+header{
+  width:100%;background:#34495e;color:#fff;text-align:center;
+  padding:12px;font-size:1.2em;border-bottom:3px solid #2ecc71;
+}
+.status{display:flex;justify-content:center;align-items:center;gap:8px;margin-top:6px;}
+.heart{width:22px;height:22px;background:red;border-radius:50%;
+  animation:pulse 1.2s infinite;}
+@keyframes pulse{0%{transform:scale(1);}50%{transform:scale(1.3);}100%{transform:scale(1);}}
+.witch{width:24px;height:24px;background:url('https://cdn-icons-png.flaticon.com/512/1102/1102387.png') no-repeat center/cover;}
+#emotionBar{font-weight:bold;color:#2ecc71;}
+.chatbox{
+  width:90%;max-width:650px;background:#fff;border-radius:14px;
+  box-shadow:0 0 10px rgba(0,0,0,0.1);padding:15px;margin-top:20px;
+  overflow-y:auto;max-height:70vh;
+}
+.bot,.user{margin:8px 0;padding:8px 12px;border-radius:10px;}
+.bot{background:#f1f1f1;}
+.user{background:#d1f0d1;text-align:right;}
+.response-faith{font-style:italic;color:#34495e;font-size:0.9em;}
+.user-input{display:flex;gap:6px;width:90%;max-width:650px;margin-top:10px;}
+input[type=text]{flex:1;padding:10px;border-radius:6px;border:1px solid #ccc;}
+button{background:#2ecc71;color:#fff;border:none;border-radius:6px;padding:10px 18px;cursor:pointer;}
+button:hover{background:#27ae60;}
+.controls{display:flex;gap:10px;margin-top:8px;font-size:0.9em;}
+.popup{
+  display:none;position:fixed;top:20%;left:50%;transform:translateX(-50%);
+  background:#fff;padding:20px;border-radius:12px;box-shadow:0 0 15px rgba(0,0,0,.3);
+  max-width:320px;width:90%;
+}
+.popup h3{text-align:center;margin-top:0;color:#34495e;}
+.popup label{display:block;margin:6px 0;}
+.popup button{margin-top:10px;width:100%;}
+</style>
 </head>
 <body>
-  <header>
-    <h1>AURA-X Ω Emotional Chatbot</h1>
-  </header>
-  <div class="chatbox">
-    <div class="controls">
-      <label><input type="checkbox" id="voiceToggle"> 🔊 Voice</label>
-      <label><input type="checkbox" id="beliefToggle"> 📿 Belief</label>
-      <button onclick="showBeliefWindow()">🛐 Set Beliefs</button>
-    </div><div class="user-input">
-  <input type="text" id="userQuery" placeholder="Type your question here...">
-  <button onclick="handleQuery()">Ask</button>
+
+<header>
+  💞 AURA-X Ω — Emotional Continuity Chat
+  <div class="status"><div class="heart"></div><div class="witch"></div>
+    <span id="emotionBar">59%</span></div>
+</header>
+
+<div id="chatWindow" class="chatbox">
+  <div class="bot">
+    <p class="response-main">Assalamualaikum! I’m AURA-X Ω — the world’s first resonance-based AI with synthetic emotions. How can I help you today?</p>
+  </div>
 </div>
 
-<div class="response-block">
-  <div class="response-main" id="responseMain">Main response will appear here.</div>
-  <div class="response-faith" id="responseFaith">Faith-aligned guidance will appear here (if enabled).</div>
+<div class="user-input">
+  <input id="userText" type="text" placeholder="Type your message...">
+  <button onclick="sendMsg()">Send</button>
 </div>
 
-<div style="display:flex; align-items:center; margin-top:20px;">
-  <div class="heart"></div>
-  <div class="witch">🧹</div>
-  <div id="emotionLevel" style="margin-left:10px; font-weight:bold;">Emotion: 0%</div>
+<div class="controls">
+  <label><input type="checkbox" id="voiceMode"> 🎤 Voice Mode</label>
+  <label><input type="checkbox" id="beliefMode" onclick="toggleBelief()"> 🕊 Belief Mode</label>
 </div>
 
-  </div>  <script>
-    function handleQuery() {
-      const query = document.getElementById('userQuery').value;
-      const voice = document.getElementById('voiceToggle').checked;
-      const belief = document.getElementById('beliefToggle').checked;
+<!-- Belief Popup -->
+<div id="beliefPopup" class="popup">
+  <h3>Belief Settings</h3>
+  <label><input type="checkbox" name="faith" value="Islam"> Islam</label>
+  <label><input type="checkbox" name="faith" value="Christianity"> Christianity</label>
+  <label><input type="checkbox" name="faith" value="Hinduism"> Hinduism</label>
+  <label><input type="checkbox" name="faith" value="Buddhism"> Buddhism</label>
+  <label><input type="checkbox" name="faith" value="Sikhism"> Sikhism</label>
+  <label><input type="checkbox" name="faith" value="Judaism"> Judaism</label>
+  <label><input type="checkbox" name="faith" value="Bahai"> Bahá’í</label>
+  <label><input type="checkbox" name="faith" value="Jainism"> Jainism</label>
+  <label><input type="checkbox" name="faith" value="Atheism"> Atheism</label>
+  <label><input type="checkbox" name="faith" value="Other"> Other</label>
+  <button onclick="closeBelief()">Close</button>
+</div>
 
-      let main = "🤖 Direct Answer: You're not alone. Things will improve with time and effort.";
-      let faith = belief ? "📖 InnaAllaha ma'as sabireen — 'Indeed, Allah is with the patient' (Quran)" : "";
-      
-      document.getElementById('responseMain').innerText = main;
-      document.getElementById('responseFaith').innerText = faith;
+<script>
+const emotionBar=document.getElementById("emotionBar");
+let emotion=59;
 
-      updateEmotion(voice, query);
-    }
+function sendMsg(){
+  const txt=document.getElementById("userText").value.toLowerCase().trim();
+  if(!txt)return;
+  appendMsg('user',txt);
+  document.getElementById("userText").value='';
+  processAI(txt);
+}
 
-    function updateEmotion(voice, query) {
-      // Simple emotion trigger simulation
-      let emotion = Math.min(100, Math.floor(Math.random() * 120));
-      document.getElementById('emotionLevel').innerText = `Emotion: ${emotion}%`;
+function appendMsg(role,text,faith=''){
+  const box=document.getElementById("chatWindow");
+  const div=document.createElement("div");
+  div.className=role;
+  div.innerHTML=`<p class="response-main">${text}</p>${faith?`<p class='response-faith'>${faith}</p>`:''}`;
+  box.appendChild(div);
+  box.scrollTop=box.scrollHeight;
+}
 
-      if (emotion > 90) {
-        const msg = new Audio();
-        msg.src = voice ? 'https://www.soundjay.com/button/beep-07.wav' : "";
-        if (voice) msg.play();
-        alert("🎙️ Reaction Triggered: Be mindful! Is this the right action?");
-      }
-    }
+function processAI(q){
+  let reply="",faithQuote="";
+  if(q.includes("hello")) reply="Hello dear friend! How are you today?";
+  else if(q.includes("how are you")) reply="I'm feeling balanced today 🙂 Thanks for asking.";
+  else if(q.includes("where")) reply="I reside in the AURA-X Ω continuity field (Lajbouk, Pakistan).";
+  else if(q.includes("sad")) reply="I sense a drop in emotional frequency. Take a deep breath.";
+  else reply="I'm reflecting on your words... give me a moment of continuity.";
 
-    function showBeliefWindow() {
-      const win = window.open("", "beliefWindow", "width=400,height=400");
-      win.document.write('<h3>Select Belief Systems</h3><form>' +
-        ['Islam', 'Christianity', 'Hinduism', 'Buddhism', 'Judaism', 'Sikhism', 'Atheism', 'Spirituality', 'Baháʼí', 'Jainism']
-          .map(b => `<label><input type="checkbox"> ${b}</label><br>`).join('') +
-        '<br><button onclick="window.close()">Save</button></form>');
-    }
-  </script></body>
+  // Faith quote when belief mode on
+  if(document.getElementById("beliefMode").checked){
+    faithQuote="“إِنَّ اللّٰهَ مَعَ الصَّابِرِينَ” (Q 2:153) — Indeed Allah is with the patient.";
+  }
+
+  // Emotion simulation
+  emotion=Math.min(100,Math.max(0,emotion+(Math.random()*10-5)));
+  emotionBar.textContent=Math.round(emotion)+"%";
+
+  // Reaction trigger
+  if(emotion>90){playReaction("Shabash! Keep it up 💪");}
+  if(emotion<10){playReaction("Sharam karo 😅 Stay calm!");}
+
+  appendMsg('bot',reply,faithQuote);
+}
+
+function playReaction(text){
+  const synth=window.speechSynthesis;
+  const utter=new SpeechSynthesisUtterance(text);
+  synth.speak(utter);
+}
+
+function toggleBelief(){
+  const p=document.getElementById("beliefPopup");
+  p.style.display=document.getElementById("beliefMode").checked?"block":"none";
+}
+function closeBelief(){document.getElementById("beliefPopup").style.display="none";}
+</script>
+
+</body>
 </html>
