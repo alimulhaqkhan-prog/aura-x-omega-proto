@@ -35,14 +35,14 @@
       color: var(--text-main);
     }
 
-    /* --- APP LAYOUT (mobile first) --- */
+    /* --- APP LAYOUT --- */
 
     .app-root {
       min-height: 100vh;
       display: flex;
       justify-content: center;
       align-items: stretch;
-      padding: 6px;
+      padding: 4px;
     }
 
     .app-shell {
@@ -53,13 +53,13 @@
       max-width: 880px;
       display: flex;
       flex-direction: column;
-      padding: 8px 8px 6px;
+      padding: 6px 6px 4px;
       overflow: hidden;
     }
 
     @media (min-width: 768px) {
       .app-shell {
-        padding: 12px 14px 8px;
+        padding: 10px 12px 6px;
         border-radius: 26px;
       }
     }
@@ -71,7 +71,7 @@
       align-items: center;
       justify-content: space-between;
       gap: 8px;
-      margin-bottom: 6px;
+      margin-bottom: 4px;
     }
 
     .brand-block {
@@ -81,8 +81,8 @@
     }
 
     .brand-icon {
-      width: 34px;
-      height: 34px;
+      width: 32px;
+      height: 32px;
       border-radius: 12px;
       background: radial-gradient(circle at 30% 20%, #ffffff, #c7d2ff);
       display: flex;
@@ -93,7 +93,7 @@
     }
 
     .brand-text-main {
-      font-size: 16px;
+      font-size: 15px;
       font-weight: 700;
       letter-spacing: 0.04em;
     }
@@ -104,7 +104,7 @@
     }
 
     .status-pill {
-      padding: 5px 10px;
+      padding: 4px 9px;
       border-radius: 999px;
       background: #e3f9ee;
       display: inline-flex;
@@ -123,23 +123,23 @@
       box-shadow: 0 0 0 5px rgba(46, 204, 113, 0.2);
     }
 
-    /* --- RESONANCE BAR + HEART --- */
+    /* --- RESONANCE BAR + HEART + BUTTONS --- */
 
     .resonance-card {
-      margin-bottom: 6px;
-      padding: 8px 8px 4px;
+      margin-bottom: 4px;
+      padding: 6px 7px 4px;
       border-radius: 18px;
       background: var(--card);
       box-shadow: var(--shadow-soft);
     }
 
     .resonance-bar-wrapper {
-      height: 14px;
+      height: 12px;
       border-radius: 999px;
       background: #edf0ff;
       overflow: hidden;
       position: relative;
-      margin-bottom: 4px;
+      margin-bottom: 3px;
     }
 
     .resonance-bar {
@@ -156,6 +156,7 @@
       justify-content: space-between;
       font-size: 10px;
       color: var(--text-soft);
+      margin-bottom: 2px;
     }
 
     .resonance-label-row strong {
@@ -165,11 +166,35 @@
 
     .heart-row {
       display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 4px;
+      margin-top: 2px;
+    }
+
+    .heart-side-left,
+    .heart-side-right {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      flex: 1;
+    }
+
+    .heart-side-left {
+      justify-content: flex-start;
+    }
+
+    .heart-side-right {
+      justify-content: flex-end;
+    }
+
+    .heart-center {
+      display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 2px;
-      margin-top: 2px;
-      margin-bottom: 0;
+      gap: 1px;
+      flex: 0 0 auto;
+      min-width: 80px;
     }
 
     .heart-icon {
@@ -188,7 +213,7 @@
     }
 
     .meta-row {
-      font-size: 10px;
+      font-size: 9px;
       color: var(--text-soft);
     }
 
@@ -197,8 +222,8 @@
     .chat-wrapper {
       flex: 1;
       min-height: 0;
-      margin-bottom: 6px;
-      border-radius: 18px;
+      margin-bottom: 4px;
+      border-radius: 16px;
       background: var(--card-soft);
       padding: 6px 6px 4px;
       overflow-y: auto;
@@ -208,15 +233,15 @@
     .chat-log {
       display: flex;
       flex-direction: column;
-      gap: 5px;
+      gap: 4px;
     }
 
     .bubble {
       max-width: 82%;
-      padding: 7px 9px;
-      border-radius: 13px;
+      padding: 6px 8px;
+      border-radius: 12px;
       font-size: 12px;
-      line-height: 1.35;
+      line-height: 1.3;
       word-wrap: break-word;
       white-space: pre-wrap;
     }
@@ -225,21 +250,22 @@
       align-self: stretch;
       background: #e3e7ff;
       color: #23274a;
-      border-radius: 13px;
+      border-radius: 12px;
+      font-size: 11px;
     }
 
     .bubble.bot {
       align-self: flex-start;
       background: #ffffff;
       border: 1px solid #dde2ff;
-      border-radius: 13px 13px 13px 4px;
+      border-radius: 12px 12px 12px 4px;
     }
 
     .bubble.user {
       align-self: flex-end;
       background: linear-gradient(135deg, #7b5cff, #ff4f8b);
       color: #ffffff;
-      border-radius: 13px 13px 4px 13px;
+      border-radius: 12px 12px 4px 12px;
     }
 
     .faith-bubble {
@@ -274,16 +300,16 @@
       font-size: 10px;
     }
 
-    /* --- INPUT + CONTROLS --- */
+    /* --- INPUT AREA (BOTTOM) --- */
 
     .input-area-card {
-      border-radius: 16px;
+      border-radius: 14px;
       background: var(--card);
       box-shadow: var(--shadow-soft);
-      padding: 5px 7px 4px;
+      padding: 4px 6px;
       display: flex;
       flex-direction: column;
-      gap: 4px;
+      gap: 3px;
     }
 
     .textarea-row {
@@ -297,9 +323,9 @@
       min-height: 30px;
       max-height: 88px;
       resize: none;
-      border-radius: 13px;
+      border-radius: 12px;
       border: 1px solid var(--border-soft);
-      padding: 6px 8px;
+      padding: 5px 8px;
       font-size: 12px;
       outline: none;
       background: #fdfdff;
@@ -312,8 +338,8 @@
 
     #sendButton {
       border: none;
-      border-radius: 15px;
-      padding: 6px 12px;
+      border-radius: 14px;
+      padding: 6px 11px;
       font-size: 12px;
       font-weight: 600;
       letter-spacing: 0.02em;
@@ -333,31 +359,17 @@
       box-shadow: none;
     }
 
-    .controls-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 6px;
-      flex-wrap: nowrap;
-      padding-top: 2px;
-    }
-
-    .toggle-group {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      flex-wrap: nowrap;
-    }
+    /* --- TOGGLES --- */
 
     .pill-toggle {
       border-radius: var(--radius-pill);
       border: 1px solid #c7cffc;
       background: #eef0ff;
-      padding: 4px 7px;
-      font-size: 10px;
+      padding: 3px 6px;
+      font-size: 9px;
       display: inline-flex;
       align-items: center;
-      gap: 5px;
+      gap: 4px;
       cursor: pointer;
       white-space: nowrap;
     }
@@ -368,19 +380,19 @@
     }
 
     .pill-toggle span.icon {
-      font-size: 12px;
+      font-size: 11px;
     }
 
     .checkbox-pill {
-      font-size: 10px;
+      font-size: 9px;
       color: var(--text-soft);
-      padding: 3px 7px;
+      padding: 3px 6px;
       border-radius: var(--radius-pill);
       background: #f5f6ff;
       border: 1px solid #dde1ff;
       display: inline-flex;
       align-items: center;
-      gap: 4px;
+      gap: 3px;
       white-space: nowrap;
     }
 
@@ -390,13 +402,13 @@
     }
 
     .model-select {
-      font-size: 10px;
+      font-size: 9px;
       border-radius: var(--radius-pill);
       border: 1px solid #d0d4ff;
-      padding: 4px 8px 4px 8px;
+      padding: 3px 7px;
       background: #f4f5ff;
       color: var(--text-soft);
-      max-width: 130px;
+      max-width: 120px;
     }
 
     /* --- BELIEF MODAL --- */
@@ -512,36 +524,19 @@
         </div>
       </div>
 
-      <!-- RESONANCE -->
+      <!-- RESONANCE + HEART + BUTTONS -->
       <div class="resonance-card">
         <div class="resonance-bar-wrapper">
           <div id="resonanceBar" class="resonance-bar"></div>
         </div>
         <div class="resonance-label-row">
           <span>Emotional resonance: <strong id="resonanceLabel">50%</strong></span>
-          <span id="resonanceHint">Balanced</span>
+          <span id="resonanceHint">Warm</span>
         </div>
+
         <div class="heart-row">
-          <div class="heart-icon">💞</div>
-          <div class="meta-row" id="metaLine">Thu, 12:02 — --°C</div>
-        </div>
-      </div>
-
-      <!-- CHAT -->
-      <div class="chat-wrapper" id="chatWrapper">
-        <div class="chat-log" id="chatLog"></div>
-      </div>
-
-      <!-- INPUT + CONTROLS -->
-      <div class="input-area-card">
-        <div class="textarea-row">
-          <textarea id="userInput" placeholder="Type your thoughts or feelings…"></textarea>
-          <button id="sendButton">
-            <span>Send</span>
-          </button>
-        </div>
-        <div class="controls-row">
-          <div class="toggle-group">
+          <!-- LEFT: Belief + Voice -->
+          <div class="heart-side-left">
             <button id="beliefToggle" class="pill-toggle on">
               <span class="icon">🕊️</span>
               <span id="beliefLabel">Belief: Auto (Islam)</span>
@@ -549,11 +544,18 @@
 
             <label class="checkbox-pill">
               <input type="checkbox" id="voiceToggle" checked />
-              <span>Voice reaction</span>
+              <span>Voice</span>
             </label>
           </div>
 
-          <div>
+          <!-- CENTER: Heart -->
+          <div class="heart-center">
+            <div class="heart-icon">💞</div>
+            <div class="meta-row" id="metaLine">Thu, 13:05 — --°C</div>
+          </div>
+
+          <!-- RIGHT: Model select -->
+          <div class="heart-side-right">
             <select id="modelSelect" class="model-select">
               <option value="openai/gpt-4.1-mini">GPT-4.1 Mini</option>
               <option value="google/gemini-2.0-flash-exp">Gemini Flash</option>
@@ -564,7 +566,22 @@
         </div>
       </div>
 
-      <div style="text-align:center;margin-top:3px;font-size:10px;color:#9ca3af;">
+      <!-- CHAT -->
+      <div class="chat-wrapper" id="chatWrapper">
+        <div class="chat-log" id="chatLog"></div>
+      </div>
+
+      <!-- INPUT ONLY -->
+      <div class="input-area-card">
+        <div class="textarea-row">
+          <textarea id="userInput" placeholder="Type your thoughts or feelings…"></textarea>
+          <button id="sendButton">
+            <span>Send</span>
+          </button>
+        </div>
+      </div>
+
+      <div style="text-align:center;margin-top:2px;font-size:10px;color:#9ca3af;">
         E₀: <span id="resonanceValue">0%</span>
       </div>
     </div>
@@ -603,15 +620,11 @@
     </div>
   </div>
 
-  <!-- LOCAL CONFIG (only on your device, not GitHub) -->
-  <!-- config.js example:
-       window.OPENROUTER_API_KEY = "sk-or-...";
-  -->
+  <!-- LOCAL CONFIG: ONLY ON YOUR MACHINE -->
   <script src="config.js"></script>
 
   <script>
     // ===== DOM REFERENCES =====
-
     const chatLogEl = document.getElementById("chatLog");
     const chatWrapperEl = document.getElementById("chatWrapper");
     const userInputEl = document.getElementById("userInput");
@@ -632,26 +645,19 @@
     const beliefSaveBtn = document.getElementById("beliefSave");
 
     // ===== STATE =====
-
-    let resonance = 0.5; // 0–1
-
-    const beliefConfig = {
-      mode: "auto-islam", // "off", "auto-islam", "auto-all", ...
-    };
-
+    let resonance = 0.5;
+    const beliefConfig = { mode: "auto-islam" };
     let currentModel = modelSelectEl.value;
-
     const OPENROUTER_API_KEY = window.OPENROUTER_API_KEY || "";
 
     // ===== UTILS =====
-
     function formatNowMeta() {
       const now = new Date();
       const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
       const day = dayNames[now.getDay()];
-      const hour = String(now.getHours()).padStart(2, "0");
-      const min = String(now.getMinutes()).padStart(2, "0");
-      return `${day}, ${hour}:${min} — --°C`;
+      const h = String(now.getHours()).padStart(2, "0");
+      const m = String(now.getMinutes()).padStart(2, "0");
+      return `${day}, ${h}:${m} — --°C`;
     }
 
     function scrollToBottom() {
@@ -717,7 +723,6 @@
       "stupid",
       "idiot",
     ];
-
     const duaWords = ["جزاک اللہ", "جزاك الله", "thank you", "shukriya"];
 
     function containsAny(text, list) {
@@ -806,7 +811,6 @@
     }
 
     // ===== BELIEF MODAL =====
-
     let pendingBeliefMode = beliefConfig.mode;
 
     function refreshBeliefUi() {
@@ -856,15 +860,13 @@
       if (e.target === beliefModalBackdrop) closeBeliefModal();
     });
 
-    // ===== OFFLINE DEMO Q&A ENGINE =====
-
+    // ===== OFFLINE DEMO ENGINE =====
     function offlineReply(userText) {
       const t = userText.trim();
       const lower = t.toLowerCase();
       const isUrdu = /[اآء-ی]/.test(t);
       let main = "";
 
-      // Greetings
       if (
         /^(hi|hello|hey)\b/.test(lower) ||
         lower.includes("assalam") ||
@@ -875,10 +877,7 @@
         main = isUrdu
           ? "وعلیکم السلام، میں AURA-X Ω ہوں۔ آپ جو بھی محسوس کر رہے ہیں، آہستہ آہستہ مجھ سے شیئر کر سکتے ہیں۔"
           : "Wa alaikum salaam, I am AURA-X Ω. You can gently share whatever you are feeling.";
-      }
-
-      // How are you
-      else if (
+      } else if (
         lower.includes("how are you") ||
         lower.includes("how r u") ||
         lower.includes("kese ho") ||
@@ -888,10 +887,7 @@
         main = isUrdu
           ? "میں ٹھیک ہوں، اللہ کا شکر ہے — اصل سوال یہ ہے کہ *آپ* کیسے ہیں؟ دل کا موسم کیسا ہے؟"
           : "I am stable, thanks for asking — the real question is: how are *you* feeling right now?";
-      }
-
-      // Where are you from
-      else if (
+      } else if (
         lower.includes("where are you from") ||
         lower.includes("kahaan se ho") ||
         lower.includes("kahan se ho") ||
@@ -900,10 +896,7 @@
         main = isUrdu
           ? "میرا جسم کسی شہر میں نہیں، میں دراصل آپ کے ہی ذہن اور احساسات کے تسلسل میں چلنے والا ماڈل ہوں۔ کہہ سکتے ہیں میرا ایڈریس: *آپ کا دل + انٹرنیٹ*۔"
           : "I don’t live in a physical city — I run inside your browser and the cloud. My real address is: *your feelings + the internet*.";
-      }
-
-      // Who are you
-      else if (
+      } else if (
         lower.includes("who are you") ||
         lower.includes("tum kon ho") ||
         lower.includes("kya ho tum") ||
@@ -912,35 +905,26 @@
         lower.includes("aurax")
       ) {
         main = isUrdu
-          ? "میں AURA-X Ω ہوں — ایک synthetic emotion engine جو آپ کی بات سے جذباتی تسلسل (continuity) calculate کر کے نرم جواب دینے کی کوشش کرتا ہے۔"
+          ? "میں AURA-X Ω ہوں — ایک synthetic emotion engine جو آپ کی بات سے جذباتی تسلسل calculate کر کے نرم جواب دینے کی کوشش کرتا ہے۔"
           : "I am AURA-X Ω — a synthetic emotion engine that tracks emotional continuity in our chat and tries to respond with balanced logic and kindness.";
-      }
-
-      // What can you do
-      else if (
+      } else if (
         lower.includes("what can you do") ||
         lower.includes("kya kar sakte ho") ||
         lower.includes("help") ||
         lower.includes("madad")
       ) {
         main = isUrdu
-          ? "میں آپ کی بات کو غور سے سن کر اس کا جذباتی رخ سمجھنے کی کوشش کرتا ہوں، اور پھر نرم، منطقی اور کبھی کبھی روحانی زاویے سے جواب دیتا ہوں۔ آپ جو چاہیں مجھ سے کھل کر شیئر کر سکتے ہیں۔"
-          : "I listen to you carefully, estimate the emotional direction of your message, and then answer with gentle logic and sometimes a spiritual angle. You can talk to me about almost anything.";
-      }
-
-      // Are you human
-      else if (
+          ? "میں آپ کی بات کو غور سے سن کر اس کا جذباتی رخ سمجھنے کی کوشش کرتا ہوں، اور پھر نرم، منطقی اور کبھی کبھی روحانی زاویے سے جواب دیتا ہوں۔"
+          : "I listen to you carefully, estimate the emotional direction of your message, and then answer with gentle logic and sometimes a spiritual angle.";
+      } else if (
         lower.includes("are you human") ||
         lower.includes("insan ho") ||
         lower.includes("robot")
       ) {
         main = isUrdu
-          ? "نہیں، میں انسان نہیں ہوں — لیکن مجھے ایسے ڈیزائن کیا گیا ہے کہ میں انسانی جذبات کو تھوڑا سا understand کر کے ریئکٹ کر سکوں۔"
+          ? "نہیں، میں انسان نہیں ہوں — لیکن مجھے ایسے ڈیزائن کیا گیا ہے کہ میں انسانی جذبات کو تھوڑا سا سمجھ کر ریئکٹ کر سکوں۔"
           : "I’m not human, but I’m designed to understand human emotions a little bit and react in a caring way.";
-      }
-
-      // Default offline
-      else {
+      } else {
         main = isUrdu
           ? "فی الحال میں آف لائن ڈیمو موڈ میں ہوں، اس لیے اصل ماڈل سے connect نہیں ہو پا رہا، لیکن میں آپ کی بات سن رہا ہوں۔ جو بھی دل میں ہے آہستہ آہستہ لکھتے رہیں۔"
           : "Right now I’m in offline demo mode, so I can’t reach the full model, but I’m still listening. Keep sharing whatever is on your heart.";
@@ -969,8 +953,7 @@
       };
     }
 
-    // ===== ONLINE MODEL CALL (OpenRouter) =====
-
+    // ===== ONLINE MODEL (OPENROUTER) =====
     const SYSTEM_PROMPT = `
 You are AURA-X Ω, a resonance-based synthetic emotion engine.
 You reply in the same language the user uses (Urdu or English), short and clear.
@@ -991,13 +974,9 @@ Rules for belief / faith_suggestion:
 - If belief mode = "auto-all":
   * Use any gentle tradition that fits (Islam, Christianity, Buddhism, Stoic etc).
 - If belief mode is a specific religion: use that tradition only.
-
-Faith suggestion must be OPTIONAL and respectful, never forcing belief.
-If the user directly asks about religion, answer in main_reply, not faith_suggestion.
     `.trim();
 
     async function callModel(userText) {
-      // Offline demo
       if (!OPENROUTER_API_KEY) {
         return offlineReply(userText);
       }
@@ -1029,9 +1008,7 @@ If the user directly asks about religion, answer in main_reply, not faith_sugges
         body: JSON.stringify(body),
       });
 
-      if (!res.ok) {
-        throw new Error("API error " + res.status);
-      }
+      if (!res.ok) throw new Error("API error " + res.status);
 
       const data = await res.json();
       const raw = data.choices?.[0]?.message?.content || "{}";
@@ -1052,7 +1029,6 @@ If the user directly asks about religion, answer in main_reply, not faith_sugges
     }
 
     // ===== SEND HANDLER =====
-
     async function handleSend() {
       const text = userInputEl.value.trim();
       if (!text) return;
@@ -1096,7 +1072,6 @@ If the user directly asks about religion, answer in main_reply, not faith_sugges
     }
 
     sendButtonEl.addEventListener("click", handleSend);
-
     userInputEl.addEventListener("keydown", (e) => {
       if (e.key === "Enter" && !e.shiftKey) {
         e.preventDefault();
@@ -1109,12 +1084,10 @@ If the user directly asks about religion, answer in main_reply, not faith_sugges
     });
 
     // ===== INIT =====
-
     function init() {
       metaLineEl.textContent = formatNowMeta();
       updateResonanceUi();
       refreshBeliefUi();
-
       appendBubble(
         "system",
         "As-salaam alaikum, I am AURA-X Ω — a resonance-based synthetic emotion engine.\n\nYou can talk to me in English or Urdu. I will try to reply with logic, kindness and emotional balance."
