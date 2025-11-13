@@ -1,182 +1,535 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
+<meta charset="UTF-8" />
 <title>AURA-X Ω — Emotional Continuity Chatbot</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <style>
-    body {
-        background: #080d1a;
-        font-family: Arial, sans-serif;
-        color: #fff;
+    * {
+        box-sizing: border-box;
         margin: 0;
         padding: 0;
     }
-    h1 {
-        text-align: center;
-        margin-top: 20px;
-        color: #7fffd4;
-        text-shadow: 0px 0px 10px #00eaff;
-    }
-    #chatbox {
-        width: 90%;
-        height: 70vh;
-        background: rgba(255,255,255,0.04);
-        margin: 20px auto;
-        padding: 15px;
-        border-radius: 12px;
-        overflow-y: scroll;
-        border: 1px solid #0ff;
-        box-shadow: 0px 0px 12px #00eaff;
-    }
-    .msg {
-        padding: 10px;
-        margin: 8px 0;
-        border-radius: 10px;
-        max-width: 80%;
-    }
-    .user {
-        background: #0066ff88;
-        margin-left: auto;
-    }
-    .bot {
-        background: #00ffaa33;
-        border-left: 4px solid #0f0;
-    }
-    #inputArea {
-        width: 90%;
-        margin: auto;
+
+    body {
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        background: radial-gradient(circle at top, #101935 0%, #050712 40%, #020308 100%);
+        color: #f5f5ff;
+        min-height: 100vh;
         display: flex;
-        gap: 10px;
-        margin-bottom: 30px;
-    }
-    input {
-        flex: 1;
-        padding: 10px;
-        border-radius: 8px;
-        border: none;
-        font-size: 16px;
-    }
-    button {
-        padding: 10px 20px;
-        background: #00eaff;
-        border: none;
-        border-radius: 8px;
-        cursor: pointer;
-        font-size: 16px;
-    }
-    button:hover {
-        background: #00bcd4;
-    }
-    #emotionBar {
-        width: 90%;
-        margin: 10px auto;
-        height: 20px;
-        border-radius: 10px;
-        background: #222;
-        border: 1px solid #0ff;
+        align-items: center;
+        justify-content: center;
         overflow: hidden;
     }
-    #emotionFill {
+
+    /* Animated background orbs */
+    .orb {
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(40px);
+        opacity: 0.55;
+        z-index: -2;
+        animation: float 18s linear infinite alternate;
+    }
+    .orb.one { width: 320px; height: 320px; background:#00eaff; top: -80px; left: -40px;}
+    .orb.two { width: 420px; height: 420px; background:#ff00aa; bottom:-120px; right:-60px;}
+    .orb.three { width: 260px; height:260px; background:#6bff00; bottom:10%; left:50%; transform:translateX(-50%);}
+
+    @keyframes float {
+        0% { transform: translate3d(0,0,0) scale(1);}
+        100% { transform: translate3d(30px, -25px,0) scale(1.08);}
+    }
+
+    /* Glass container */
+    .shell {
+        position: relative;
+        width: min(960px, 96vw);
+        height: min(640px, 94vh);
+        border-radius: 24px;
+        padding: 16px;
+        background: linear-gradient(135deg, rgba(255,255,255,0.11), rgba(0,0,0,0.6));
+        backdrop-filter: blur(18px);
+        border: 1px solid rgba(0,255,255,0.35);
+        box-shadow:
+            0 0 25px rgba(0, 255, 255, 0.25),
+            0 0 80px rgba(255, 0, 170, 0.3);
+        display: grid;
+        grid-template-rows: auto 1fr auto;
+        row-gap: 10px;
+    }
+
+    /* Header */
+    .header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+    }
+
+    .title-block {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .heart {
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: radial-gradient(circle at 30% 30%, #ffb3d9, #ff0077);
+        box-shadow: 0 0 16px rgba(255, 0, 136, 0.8);
+        font-size: 20px;
+        animation: beat 1.2s ease-in-out infinite;
+        transform-origin: center;
+    }
+
+    @keyframes beat {
+        0%, 100% { transform: scale(1); }
+        30% { transform: scale(1.22); }
+        60% { transform: scale(0.98); }
+    }
+
+    .title-text h1 {
+        font-size: 1.15rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: #b3faff;
+    }
+    .title-text span {
+        font-size: 0.78rem;
+        color: #9ca9ff;
+    }
+
+    /* Equation + E0 badge */
+    .eq-panel {
+        text-align: right;
+        font-size: 0.8rem;
+    }
+    .eq-panel .eq {
+        font-family: "SF Mono", Menlo, Consolas, monospace;
+        background: rgba(0,0,0,0.4);
+        padding: 5px 8px;
+        border-radius: 8px;
+        border: 1px solid rgba(0, 255, 255, 0.25);
+        display: inline-block;
+    }
+    .eq-panel .e0-pill {
+        margin-top: 4px;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 10px;
+        border-radius: 999px;
+        font-size: 0.75rem;
+        background: radial-gradient(circle at 0 0, #00ffaa, #0055ff);
+        box-shadow: 0 0 12px rgba(0,255,170,0.8);
+    }
+    .e0-pill-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #080f18;
+    }
+
+    /* Layout: left column = chat, right = status */
+    .body-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 2.4fr) minmax(220px, 1fr);
+        gap: 12px;
+        height: 100%;
+    }
+
+    /* Chat area */
+    .chat-box {
+        background: rgba(3, 7, 32, 0.7);
+        border-radius: 18px;
+        padding: 12px;
+        border: 1px solid rgba(0, 255, 255, 0.25);
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+
+    .messages {
+        flex: 1;
+        overflow-y: auto;
+        padding-right: 4px;
+    }
+
+    .msg {
+        padding: 9px 12px;
+        margin: 6px 0;
+        border-radius: 14px;
+        max-width: 82%;
+        font-size: 0.87rem;
+        line-height: 1.35;
+        word-wrap: break-word;
+    }
+
+    .msg.user {
+        margin-left: auto;
+        background: linear-gradient(135deg, #003cff, #00bcd4);
+        box-shadow: 0 0 14px rgba(0, 188, 212, 0.7);
+    }
+
+    .msg.bot {
+        background: linear-gradient(135deg, rgba(0,255,153,0.12), rgba(0,0,0,0.7));
+        border: 1px solid rgba(0,255,170,0.4);
+    }
+
+    .msg small {
+        display: block;
+        margin-top: 4px;
+        opacity: 0.7;
+        font-size: 0.7rem;
+    }
+
+    .scrollbar::-webkit-scrollbar {
+        width: 6px;
+    }
+    .scrollbar::-webkit-scrollbar-thumb {
+        background: #00eaffaa;
+        border-radius: 6px;
+    }
+
+    /* Side panel */
+    .side-panel {
+        background: radial-gradient(circle at top, rgba(0,255,255,0.18), rgba(0,0,0,0.8));
+        border-radius: 18px;
+        padding: 12px;
+        border: 1px solid rgba(103, 232, 249, 0.55);
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        font-size: 0.8rem;
+    }
+
+    .side-title {
+        font-size: 0.78rem;
+        text-transform: uppercase;
+        letter-spacing: 0.16em;
+        color: #84ffff;
+    }
+
+    /* Emotion meter */
+    .meter-shell {
+        width: 100%;
+        height: 16px;
+        border-radius: 999px;
+        background: rgba(0,0,0,0.7);
+        border: 1px solid rgba(0,255,255,0.4);
+        overflow: hidden;
+        margin-top: 4px;
+    }
+    .meter-fill {
         height: 100%;
         width: 50%;
-        transition: 0.4s ease;
-        background: linear-gradient(90deg, #ff0000, #00ff00);
+        background: linear-gradient(90deg, #ff1744, #ffea00, #00e676);
+        box-shadow: 0 0 16px rgba(0, 230, 118, 0.9);
+        transition: width 0.5s ease, background 0.5s ease;
+    }
+
+    .label-row {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.7rem;
+        opacity: 0.8;
+    }
+
+    .chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-top: 6px;
+    }
+
+    .chip {
+        padding: 3px 7px;
+        border-radius: 999px;
+        border: 1px solid rgba(144, 202, 249, 0.7);
+        font-size: 0.7rem;
+        opacity: 0.9;
+    }
+
+    .chip.positive { border-color:#00e676; color:#b9ffda;}
+    .chip.negative { border-color:#ff5252; color:#ffcdd2;}
+
+    .equation-note {
+        margin-top: 6px;
+        opacity: 0.8;
+    }
+
+    /* Input area */
+    .input-row {
+        margin-top: 8px;
+        display: flex;
+        gap: 8px;
+    }
+
+    #userInput {
+        flex: 1;
+        padding: 10px 12px;
+        background: rgba(1, 4, 20, 0.9);
+        border-radius: 999px;
+        border: 1px solid rgba(0, 255, 255, 0.5);
+        color: #e0f7ff;
+        font-size: 0.9rem;
+        outline: none;
+    }
+    #userInput::placeholder {
+        color: #62708f;
+    }
+
+    .send-btn {
+        padding: 9px 18px;
+        border-radius: 999px;
+        border: none;
+        background: radial-gradient(circle at 0 0, #00e5ff, #2979ff);
+        color: #020308;
+        font-weight: 600;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 0.9rem;
+        box-shadow: 0 0 16px rgba(41, 121, 255, 0.8);
+    }
+    .send-btn span {
+        font-size: 1.1rem;
+    }
+    .send-btn:active {
+        transform: translateY(1px) scale(0.98);
+        box-shadow: 0 0 10px rgba(41, 121, 255, 0.7);
+    }
+
+    /* Mobile layout */
+    @media (max-width: 720px) {
+        .shell {
+            height: 96vh;
+            padding: 12px;
+        }
+        .body-grid {
+            grid-template-columns: 1fr;
+            grid-template-rows: 2fr auto;
+        }
+        .side-panel {
+            order: -1;
+        }
+        .title-text h1 {
+            font-size: 0.95rem;
+        }
+        .title-text span {
+            display: none;
+        }
     }
 </style>
 </head>
 <body>
 
-<h1>AURA-X Ω — Emotional Continuity Engine</h1>
+<div class="orb one"></div>
+<div class="orb two"></div>
+<div class="orb three"></div>
 
-<div id="emotionBar">
-    <div id="emotionFill"></div>
-</div>
+<div class="shell">
+    <!-- Header -->
+    <div class="header">
+        <div class="title-block">
+            <div class="heart" id="heartIcon">💕</div>
+            <div class="title-text">
+                <h1>AURA-X Ω — Emotional Continuity</h1>
+                <span>Resonance-Based Chat Engine · TM × BM · λ_faith · λ_sys · λ_trc</span>
+            </div>
+        </div>
+        <div class="eq-panel">
+            <div class="eq">
+                E₀ = tanh((TM × BM) − D + λ_faith + λ_sys + λ_trc)
+            </div><br>
+            <div class="e0-pill">
+                <div class="e0-pill-dot" id="e0Dot"></div>
+                <span>E₀: <strong id="e0Value">0.000</strong></span>
+            </div>
+        </div>
+    </div>
 
-<div id="chatbox"></div>
+    <!-- Body -->
+    <div class="body-grid">
+        <!-- Chat -->
+        <div class="chat-box">
+            <div class="messages scrollbar" id="chatbox"></div>
+            <div class="input-row">
+                <input id="userInput" placeholder="Type your message and press Enter..." />
+                <button class="send-btn" onclick="sendMessage()">
+                    <span>➤</span> Send
+                </button>
+            </div>
+        </div>
 
-<div id="inputArea">
-    <input id="userInput" placeholder="Type your message...">
-    <button onclick="sendMessage()">Send</button>
+        <!-- Side Panel -->
+        <div class="side-panel">
+            <div>
+                <div class="side-title">Emotional Resonance</div>
+                <div class="meter-shell">
+                    <div class="meter-fill" id="emotionFill"></div>
+                </div>
+                <div class="label-row">
+                    <span>-1 (Negative)</span>
+                    <span>0 (Neutral)</span>
+                    <span>+1 (Positive)</span>
+                </div>
+            </div>
+
+            <div>
+                <div class="side-title" style="margin-top:8px;">Active Fields</div>
+                <div class="chips">
+                    <div class="chip positive">λ_faith = 0.20</div>
+                    <div class="chip">λ_sys = 0.10</div>
+                    <div class="chip">λ_trc = 0.10</div>
+                    <div class="chip">D = 0.05</div>
+                    <div class="chip positive" id="bmChip">BM = 0.50</div>
+                </div>
+                <div class="equation-note">
+                    TM is estimated from your text (tone + length).  
+                    BM slowly adapts with each interaction — simulating emotional memory.
+                </div>
+            </div>
+
+            <div style="margin-top:auto;opacity:0.75;font-size:0.72rem;">
+                Tip: Try words like <em>love, happy, thank you</em> or  
+                <em>sad, angry, hurt</em> and watch the bar + heart change.
+            </div>
+        </div>
+    </div>
 </div>
 
 <script>
+    // --- AURA-X Ω EMOTIONAL ENGINE ---
 
-// --- AURA-X Ω EMOTIONAL ENGINE ---
-// TM = Temporary Memory (based on message length + tone)
-// BM = Bold Memory (stored resonance)
-// D = decay constant
-// λ coefficients = moral, logic, truth stability
+    let BM = 0.5;              // Bold Memory baseline
+    let lambda_faith = 0.2;    // moral stabilizer
+    let lambda_sys   = 0.1;    // logical governor
+    let lambda_trc   = 0.1;    // truth resonance
+    let D            = 0.05;   // decay
 
-let BM = 0.5; // baseline emotional memory
-let lambda_faith = 0.2;
-let lambda_sys = 0.1;
-let lambda_trc = 0.1;
-let D = 0.05;
+    const chatbox    = document.getElementById("chatbox");
+    const e0ValueEl  = document.getElementById("e0Value");
+    const emotionBar = document.getElementById("emotionFill");
+    const bmChip     = document.getElementById("bmChip");
+    const e0Dot      = document.getElementById("e0Dot");
+    const heartIcon  = document.getElementById("heartIcon");
 
-// calculate emotional resonance
-function emotionalEquation(TM) {
-    let raw = (TM * BM) - D + lambda_faith + lambda_sys + lambda_trc;
-    let E0 = Math.tanh(raw); // final emotional output
-    return E0;
-}
+    // welcome message
+    addBotMessage("🌀 Welcome to <strong>AURA-X Ω</strong> — I compute an emotional field E₀ from your words using TM × BM resonance. Talk to me, and watch my heart & energy bar respond.");
 
-// auto emotional tone detector
-function detectTM(text) {
-    text = text.toLowerCase();
-    let score = 0.5;
+    // detect TM from text
+    function detectTM(text) {
+        text = text.toLowerCase();
+        let score = 0.5;
 
-    if (text.includes("love") || text.includes("thank") || text.includes("happy")) score += 0.3;
-    if (text.includes("angry") || text.includes("hate")) score -= 0.3;
-    if (text.includes("sad") || text.includes("cry")) score -= 0.2;
+        const positiveWords = ["love","thank","happy","hope","peace","friend","good","great","awesome","beautiful"];
+        const negativeWords = ["sad","angry","hate","hurt","cry","alone","broken","tired","anxious","fear"];
 
-    score += Math.min(text.length / 100, 0.3); // length adds intensity
-    return Math.max(0, Math.min(score, 1));
-}
+        positiveWords.forEach(w => { if (text.includes(w)) score += 0.18; });
+        negativeWords.forEach(w => { if (text.includes(w)) score -= 0.20; });
 
-// update emotional bar UI
-function updateEmotionBar(E0) {
-    let percent = (E0 + 1) * 50; 
-    document.getElementById("emotionFill").style.width = percent + "%";
-
-    if (E0 > 0.4) {
-        document.getElementById("emotionFill").style.background = "#00ff66";
-    } else if (E0 < -0.3) {
-        document.getElementById("emotionFill").style.background = "#ff0033";
-    } else {
-        document.getElementById("emotionFill").style.background = "#ffaa00";
+        score += Math.min(text.length / 160, 0.25);
+        score = Math.max(0, Math.min(1, score));
+        return score;
     }
-}
 
-// chatbot response using resonance
-function resonanceReply(E0) {
-    if (E0 > 0.6) return "💚 *I feel strong positive resonance from your message.*";
-    if (E0 > 0.2) return "🙂 *Your message feels balanced and harmonious.*";
-    if (E0 > -0.2) return "🌀 *I sense a neutral emotional flow.*";
-    if (E0 > -0.6) return "😟 *There is a hint of emotional disturbance in your words...*";
-    return "💔 *Your message has triggered deep negative resonance. I am with you.*";
-}
+    // emotional equation
+    function emotionalEquation(TM) {
+        const raw = (TM * BM) - D + lambda_faith + lambda_sys + lambda_trc;
+        return Math.tanh(raw);
+    }
 
-// UI
-function sendMessage() {
-    let text = document.getElementById("userInput").value;
-    if (!text) return;
+    // update UI
+    function updateEmotionUI(E0) {
+        const percent = (E0 + 1) * 50; // -1..1 → 0..100
+        emotionBar.style.width = percent + "%";
 
-    let chatbox = document.getElementById("chatbox");
-    chatbox.innerHTML += `<div class='msg user'>${text}</div>`;
+        if (E0 > 0.4) {
+            emotionBar.style.background = "linear-gradient(90deg,#00e676,#00eaff)";
+            e0Dot.style.background = "#00ff99";
+            heartIcon.style.background = "radial-gradient(circle at 30% 30%, #e0ffe6, #00e676)";
+        } else if (E0 < -0.3) {
+            emotionBar.style.background = "linear-gradient(90deg,#ff1744,#ff6e40)";
+            e0Dot.style.background = "#ff1744";
+            heartIcon.style.background = "radial-gradient(circle at 30% 30%, #ffd6e0, #ff1744)";
+        } else {
+            emotionBar.style.background = "linear-gradient(90deg,#ffea00,#00b0ff)";
+            e0Dot.style.background = "#ffea00";
+            heartIcon.style.background = "radial-gradient(circle at 30% 30%, #fff7cc, #ffea00)";
+        }
 
-    let TM = detectTM(text);
-    let E0 = emotionalEquation(TM);
+        e0ValueEl.textContent = E0.toFixed(3);
+        bmChip.textContent = "BM = " + BM.toFixed(2);
+    }
 
-    updateEmotionBar(E0);
+    function resonanceReply(E0) {
+        if (E0 > 0.7)  return "💚 I feel a strong, bright resonance in your words — almost luminous.";
+        if (E0 > 0.3)  return "🙂 Your message feels balanced and hopeful. My field is gently glowing.";
+        if (E0 > -0.1) return "🌀 I sense a neutral emotional flow — calm, observant, listening.";
+        if (E0 > -0.6) return "😟 There is tension and hurt in your message. I am holding space for you.";
+        return "💔 Your words trigger deep negative resonance. If this pain is real, you deserve support and kindness.";
+    }
 
-    let botReply = resonanceReply(E0);
-    chatbox.innerHTML += `<div class='msg bot'>${botReply}<br><small>E₀ = ${E0.toFixed(3)}</small></div>`;
+    function addUserMessage(text) {
+        const div = document.createElement("div");
+        div.className = "msg user";
+        div.innerHTML = text;
+        chatbox.appendChild(div);
+        scrollDown();
+    }
 
-    BM = (BM + TM) / 2; // update memory
-    document.getElementById("userInput").value = "";
-    chatbox.scrollTop = chatbox.scrollHeight;
-}
+    function addBotMessage(htmlText, E0 = null) {
+        const div = document.createElement("div");
+        div.className = "msg bot";
+        let extra = "";
+        if (E0 !== null) {
+            extra = `<small>E₀ = ${E0.toFixed(3)}</small>`;
+        }
+        div.innerHTML = htmlText + extra;
+        chatbox.appendChild(div);
+        scrollDown();
+    }
 
+    function scrollDown() {
+        chatbox.scrollTop = chatbox.scrollHeight;
+    }
+
+    function sendMessage() {
+        const input = document.getElementById("userInput");
+        const text = input.value.trim();
+        if (!text) return;
+
+        addUserMessage(text);
+
+        const TM = detectTM(text);
+        const E0 = emotionalEquation(TM);
+
+        // update "memory"
+        BM = (BM * 0.7) + (TM * 0.3);
+
+        updateEmotionUI(E0);
+        const reply = resonanceReply(E0);
+        addBotMessage(reply, E0);
+
+        input.value = "";
+        input.focus();
+    }
+
+    document.getElementById("userInput").addEventListener("keydown", function(e) {
+        if (e.key === "Enter") {
+            e.preventDefault();
+            sendMessage();
+        }
+    });
+
+    // initial UI state
+    updateEmotionUI(0.0);
 </script>
 
 </body>
