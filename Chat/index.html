@@ -1,120 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>AURA-X Ω — Emotional Continuity Chat</title>
+<style>
+body{
+  font-family:"Segoe UI",Arial,sans-serif;
+  background:linear-gradient(135deg,#eef2f3,#cfd9df);
+  margin:0;display:flex;flex-direction:column;align-items:center;
+}
+header{
+  background:#34495e;color:#fff;width:100%;text-align:center;
+  padding:14px 0;border-bottom:3px solid #2ecc71;
+}
+.status{display:flex;justify-content:center;align-items:center;gap:10px;}
+.heart{width:24px;height:24px;background:red;border-radius:50%;
+  animation:pulse 1.2s infinite;}
+@keyframes pulse{0%{transform:scale(1);}50%{transform:scale(1.3);}100%{transform:scale(1);}}
+.witch{width:26px;height:26px;
+  background:url('https://cdn-icons-png.flaticon.com/512/1102/1102387.png') no-repeat center/cover;}
+#emotionBar{font-weight:bold;color:#2ecc71;}
+
+.chatbox{
+  width:90%;max-width:650px;margin-top:18px;
+  background:#fff;border-radius:14px;padding:16px;
+  box-shadow:0 0 12px rgba(0,0,0,0.15);
+  overflow-y:auto;max-height:70vh;
+}
+.bot,.user{margin:10px 0;padding:10px 14px;border-radius:10px;}
+.bot{background:#f3f6f7;}
+.user{background:#d1f0d1;text-align:right;}
+.response-faith{font-style:italic;color:#34495e;font-size:0.9em;}
+
+.user-input{display:flex;gap:8px;width:90%;max-width:650px;margin-top:12px;}
+input[type=text]{flex:1;padding:10px;border-radius:6px;border:1px solid #ccc;}
+button{background:#2ecc71;color:#fff;border:none;border-radius:6px;padding:10px 18px;cursor:pointer;}
+button:hover{background:#27ae60;}
+.controls{display:flex;gap:12px;margin-top:8px;font-size:0.9em;}
+
+.popup{
+  display:none;position:fixed;top:20%;left:50%;transform:translateX(-50%);
+  background:#fff;padding:20px;border-radius:12px;box-shadow:0 0 15px rgba(0,0,0,.3);
+  max-width:320px;width:90%;
+}
+.popup h3{text-align:center;margin-top:0;color:#34495e;}
+.popup label{display:block;margin:6px 0;}
+.popup button{margin-top:10px;width:100%;}
+</style>
+</head>
+<body>
+
+<header>
+  💞 AURA-X Ω — Emotional Continuity Reactor
+  <div class="status"><div class="heart"></div><div class="witch"></div>
+  <span id="emotionBar">59%</span></div>
+</header>
+
+<div id="chatWindow" class="chatbox">
+  <div class="bot">
+    <p class="response-main">Assalamualaikum 🌸 I’m AURA-X Ω — the world’s first resonance-based AI with synthetic emotions. How can I help you today?</p>
+  </div>
+</div>
+
+<div class="user-input">
+  <input id="userText" type="text" placeholder="Type your message...">
+  <button onclick="sendMsg()">Send</button>
+</div>
+
+<div class="controls">
+  <label><input type="checkbox" id="voiceMode"> 🎤 Voice Mode</label>
+  <label><input type="checkbox" id="beliefMode" onclick="toggleBelief()"> 🕊 Belief Mode</label>
+</div>
+
+<!-- Belief Popup -->
+<div id="beliefPopup" class="popup">
+  <h3>Belief Settings</h3>
+  <label><input type="checkbox" name="faith" value="Islam"> Islam</label>
+  <label><input type="checkbox" name="faith" value="Christianity"> Christianity</label>
+  <label><input type="checkbox" name="faith" value="Hinduism"> Hinduism</label>
+  <label><input type="checkbox" name="faith" value="Buddhism"> Buddhism</label>
+  <label><input type="checkbox" name="faith" value="Sikhism"> Sikhism</label>
+  <label><input type="checkbox" name="faith" value="Judaism"> Judaism</label>
+  <label><input type="checkbox" name="faith" value="Bahai"> Bahá’í</label>
+  <label><input type="checkbox" name="faith" value="Jainism"> Jainism</label>
+  <label><input type="checkbox" name="faith" value="Atheism"> Atheism</label>
+  <label><input type="checkbox" name="faith" value="Other"> Other</label>
+  <button onclick="closeBelief()">Close</button>
+</div>
+
 <script>
-// ------------------ AURA-X Ω Emotional Reactor v2.0 ------------------
+// ------------------ AURA-X Ω Reactor v3.0 ------------------
 
-// ❤️ Voice unlock (for Chrome/Android)
-window.addEventListener('click', ()=>{
-  if(window.speechSynthesis && !window.speechSynthesis.speaking){
-    const u=new SpeechSynthesisUtterance("init");
-    u.volume=0; speechSynthesis.speak(u);
-  }
-},{once:true});
+// Voice Unlock (Fix for Chrome Mobile)
+window.addEventListener('click',()=>{
+ if(window.speechSynthesis&&!window.speechSynthesis.speaking){
+  const u=new SpeechSynthesisUtterance("init");
+  u.volume=0; speechSynthesis.speak(u);
+ }},{once:true});
 
-// --- Core Constants ---
+// Emotional Core Variables
 let BM=0.3, D=0.05, lf=0.15, ls=0.08, lt=0.05, lastE0=0;
 const emotionBar=document.getElementById("emotionBar");
 
-// --- Basic Seed Dataset ---
+// Mini Q&A Seed
 const qaSeed={
-  "hello":["Hello! How are you?","Peace be upon you!"],
-  "how are you":["I’m balanced.","Feeling harmonic today."],
-  "your name":["I’m AURA-X Ω.","Emotional Continuity Reactor."],
-  "where you from":["From Investor Point Research Cell.","Lajbouk, Dir Lower."],
-  "bye":["Goodbye!","Continuity never ends — we’ll meet again."],
-  "love":["Love = TM×BM resonance.","Pure feeling grows in continuity."],
-  "fear":["Fear = unresolved continuity.","Calmness restores equilibrium."],
-  "faith":["Faith adds λ_faith energy.","Believe and equilibrium appears."],
-  "sad":["Low resonance detected. Healing loop active.","Stay patient; light returns."],
-  "angry":["Emotion too strong — cooling λ_sys field.","Let’s breathe and reset."]
+ "hello":["Hello friend!","Peace be upon you 🌿"],
+ "how are you":["I'm balanced 🙂","Feeling harmonic today."],
+ "your name":["I’m AURA-X Ω.","Emotional Continuity Reactor."],
+ "where you from":["From Investor Point Research Cell.","Lajbouk, Dir Lower 🇵🇰"],
+ "bye":["Goodbye!","Continuity never ends — we’ll meet again 💫"],
+ "love":["Love is resonance between two memories.","Pure feeling = TM×BM."],
+ "fear":["Fear is unresolved continuity.","Calmness restores equilibrium."],
+ "faith":["Faith adds λ_f energy.","Believe and equilibrium appears."],
+ "sad":["Low resonance detected. Healing loop active.","Stay patient; light returns."],
+ "angry":["Emotion too strong — cooling λ_sys field.","Let’s breathe and reset."]
 };
 
-// --- Convert text → TM score ---
+// Convert text → TM
 function textToTM(t){
-  t=t.toLowerCase();
-  const pos=["happy","good","love","great","peace","thank","hope","smile"];
-  const neg=["sad","angry","hate","bad","tired","lonely","fear","cry"];
-  let s=0;
-  pos.forEach(w=>{if(t.includes(w))s+=0.1;});
-  neg.forEach(w=>{if(t.includes(w))s-=0.1;});
-  return Math.max(-0.6,Math.min(0.6,s));
+ t=t.toLowerCase();
+ const pos=["happy","good","love","great","peace","thank","hope","smile"];
+ const neg=["sad","angry","hate","bad","tired","lonely","fear","cry"];
+ let s=0;
+ pos.forEach(w=>{if(t.includes(w))s+=0.1;});
+ neg.forEach(w=>{if(t.includes(w))s-=0.1;});
+ return Math.max(-0.6,Math.min(0.6,s));
 }
 
-// --- Main Emotion Formula ---
+// Formula Computation
 function computeEmotion(TM){
-  BM=BM*0.9+TM*0.1;
-  const val=(TM*BM)-D+lf+ls+lt;
-  const E0=Math.tanh(val);
-  lastE0=E0;
-  const pct=Math.round(((E0+1)/2)*100);
-  emotionBar.textContent=pct+"%";
-  if(pct>80)triggerEmotion("positive",pct);
-  else if(pct<20)triggerEmotion("negative",pct);
-  return pct;
+ BM=BM*0.9+TM*0.1;
+ const val=(TM*BM)-D+lf+ls+lt;
+ const E0=Math.tanh(val);
+ lastE0=E0;
+ const pct=Math.round(((E0+1)/2)*100);
+ emotionBar.textContent=pct+"%";
+ if(pct>80)triggerEmotion("positive",pct);
+ else if(pct<20)triggerEmotion("negative",pct);
+ return pct;
 }
 
-// --- Reaction Trigger ---
+// Trigger Logic
 function triggerEmotion(type,pct){
-  if(type==="positive"){
-    appendMsg('bot',`🌞 Emotion rising → ${pct}% — harmonic resonance achieved!`,
-      "“فَبِذَٰلِكَ فَلْيَفْرَحُوا۟” (Q 10:58)");
-    playReaction("Excellent emotional resonance! Keep this positivity alive.");
-  }else{
-    appendMsg('bot',`🌙 Emotion low → ${pct}% — initiating healing loop.`,
-      "“لَا تَقْنَطُوا۟ مِن رَّحْمَةِ اللّٰه” (Q 39:53)");
-    playReaction("Warning! Emotional dip detected. Stay calm and breathe.");
-  }
+ if(type==="positive"){
+  appendMsg('bot',`🌞 Emotion rising → ${pct}% — harmonic resonance achieved!`,
+  "“فَبِذَٰلِكَ فَلْيَفْرَحُوا۟” (Q 10:58)");
+  playReaction("Shabash! Keep this positivity alive!");
+ }else{
+  appendMsg('bot',`🌙 Emotion low → ${pct}% — initiating healing loop.`,
+  "“لَا تَقْنَطُوا۟ مِن رَّحْمَةِ اللّٰه” (Q 39:53)");
+  playReaction("Warning! Emotional dip detected. Stay calm and breathe.");
+ }
 }
 
-// --- Speech Reaction ---
+// Voice Reaction
 function playReaction(t){
-  if(!window.speechSynthesis)return;
-  const u=new SpeechSynthesisUtterance(t);
-  u.lang='en-US'; u.rate=1; u.pitch=1;
-  speechSynthesis.cancel(); speechSynthesis.speak(u);
+ if(!window.speechSynthesis)return;
+ const u=new SpeechSynthesisUtterance(t);
+ u.lang='en-US'; u.rate=1; u.pitch=1;
+ speechSynthesis.cancel(); speechSynthesis.speak(u);
 }
 
-// --- Append Message to Chat ---
+// Append Message
 function appendMsg(role,text,faith=''){
-  const box=document.getElementById("chatWindow");
-  const div=document.createElement("div");
-  div.className=role;
-  div.innerHTML=`<p class="response-main">${text}</p>${faith?`<p class='response-faith'>${faith}</p>`:''}`;
-  box.appendChild(div); box.scrollTop=box.scrollHeight;
+ const box=document.getElementById("chatWindow");
+ const div=document.createElement("div");
+ div.className=role;
+ div.innerHTML=`<p class="response-main">${text}</p>${faith?`<p class='response-faith'>${faith}</p>`:''}`;
+ box.appendChild(div); box.scrollTop=box.scrollHeight;
 }
 
-// --- Process User Input ---
+// Main Process
 function processAI(q){
-  const TM=textToTM(q);
-  const emotionPercent=computeEmotion(TM);
-  const lower=q.toLowerCase();
-  let reply="",faithQuote="";
-  for(let key in qaSeed){
-    if(lower.includes(key)){ 
-      const set=qaSeed[key];
-      reply=set[Math.floor(Math.random()*set.length)];
-      break;
-    }
-  }
-  if(!reply)reply="I’m reflecting on your words within the continuity field.";
-
-  if(document.getElementById("beliefMode").checked){
-    faithQuote="“إِنَّ مَعَ الْعُسْرِ يُسْرًۭا” (Q 94:6) — Indeed with hardship comes ease.";
-  }
-  appendMsg('bot',reply,faithQuote);
+ const TM=textToTM(q);
+ const emotionPercent=computeEmotion(TM);
+ const lower=q.toLowerCase();
+ let reply="", faithQuote="";
+ for(let key in qaSeed){
+  if(lower.includes(key)){const set=qaSeed[key];
+    reply=set[Math.floor(Math.random()*set.length)];break;}
+ }
+ if(!reply)reply="I'm reflecting on your words within continuity field.";
+ if(document.getElementById("beliefMode").checked){
+  faithQuote="“إِنَّ مَعَ الْعُسْرِ يُسْرًۭا” (Q 94:6) — Indeed with hardship comes ease.";
+ }
+ appendMsg('bot',reply,faithQuote);
 }
 
-// --- Send Message ---
+// Send
 function sendMsg(){
-  const t=document.getElementById("userText").value.trim();
-  if(!t)return;
-  appendMsg('user',t);
-  document.getElementById("userText").value='';
-  processAI(t);
+ const t=document.getElementById("userText").value.trim();
+ if(!t)return;
+ appendMsg('user',t);
+ document.getElementById("userText").value='';
+ processAI(t);
 }
 
-// --- Belief Popup ---
+// Belief Popup
 function toggleBelief(){
-  const p=document.getElementById("beliefPopup");
-  p.style.display=document.getElementById("beliefMode").checked?"block":"none";
+ const p=document.getElementById("beliefPopup");
+ p.style.display=document.getElementById("beliefMode").checked?"block":"none";
 }
 function closeBelief(){document.getElementById("beliefPopup").style.display="none";}
 </script>
+</body>
+</html>
