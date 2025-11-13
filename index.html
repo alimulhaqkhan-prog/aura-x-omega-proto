@@ -2,869 +2,974 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>AURA-X Ω — Resonance-Based Synthetic Emotions</title>
+  <title>AURA-X Ω – Resonance-Based Synthetic Emotions</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
-    :root{
-      --bg: #e7f3ff;
+    :root {
+      --bg: #f7f8ff;
       --card: #ffffff;
-      --accent: #4f46e5;
-      --accent-soft: #c7d2fe;
-      --text-main:#111827;
-      --text-soft:#4b5563;
-      --chip:#f3f4ff;
-      --danger:#ef4444;
-      --good:#16a34a;
-    }
-    *{box-sizing:border-box;margin:0;padding:0;}
-    body{
-      font-family: system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-      background: radial-gradient(circle at top,#fdfbff,#e7f3ff);
-      color:var(--text-main);
-      display:flex;
-      justify-content:center;
-      padding:12px;
-    }
-    .app{
-      width:100%;
-      max-width:480px;
-      min-height:100vh;
-      display:flex;
-      flex-direction:column;
-      gap:10px;
-    }
-    .top-card{
-      background:var(--card);
-      border-radius:18px;
-      padding:14px 16px;
-      box-shadow:0 12px 30px rgba(15,23,42,0.08);
-    }
-    .logo-row{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      margin-bottom:8px;
-    }
-    .logo-dot{
-      width:34px;
-      height:34px;
-      border-radius:12px;
-      background:linear-gradient(135deg,#111827,#4b5563);
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      color:#f9fafb;
-      font-weight:700;
-      font-size:20px;
-    }
-    .title-main{
-      font-weight:700;
-      font-size:17px;
-      letter-spacing:.04em;
-    }
-    .title-sub{
-      font-size:11px;
-      color:var(--text-soft);
-    }
-    .status-row{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      margin-top:4px;
-      font-size:11px;
-      color:var(--text-soft);
-    }
-    .pill{
-      padding:2px 8px;
-      border-radius:999px;
-      background:#e5f5ff;
-      display:inline-flex;
-      align-items:center;
-      gap:5px;
-    }
-    .pill-dot{
-      width:8px;height:8px;border-radius:50%;background:#22c55e;
+      --accent: #7b5cff;
+      --accent-soft: #efe9ff;
+      --accent-strong: #ff4b8b;
+      --text-main: #222;
+      --text-soft: #555;
+      --border-soft: #e2e4f0;
+      --chip-bg: #eef0ff;
+      --chip-active: #7b5cff;
+      --chip-active-text: #fff;
+      --danger: #ff4b4b;
+      --good: #15c47e;
     }
 
-    .emotion-card{
-      background:var(--card);
-      border-radius:18px;
-      padding:10px 14px 12px;
-      box-shadow:0 12px 30px rgba(15,23,42,0.06);
-      text-align:center;
-      display:flex;
-      flex-direction:column;
-      gap:10px;
-    }
-    .emotion-bar{
-      position:relative;
-      width:100%;
-      height:14px;
-      border-radius:999px;
-      background:#e5e7eb;
-      overflow:hidden;
-    }
-    .emotion-fill{
-      height:100%;
-      width:50%;
-      background:linear-gradient(90deg,#22c55e,#facc15,#ef4444);
-      transition:width .35s ease;
-    }
-    .emotion-label{
-      font-size:11px;
-      color:var(--text-soft);
-      margin-top:2px;
-    }
-    .heart{
-      font-size:32px;
-      animation:pulse 1.6s infinite;
-    }
-    @keyframes pulse{
-      0%{transform:scale(1);}
-      40%{transform:scale(1.14);}
-      100%{transform:scale(1);}
-    }
-    .time-row{
-      font-size:11px;
-      color:var(--text-soft);
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
 
-    .chat-card{
-      flex:1;
-      background:var(--card);
-      border-radius:18px;
-      padding:10px 10px 6px;
-      box-shadow:0 12px 30px rgba(15,23,42,0.06);
-      display:flex;
-      flex-direction:column;
-      min-height:260px;
-    }
-    #chat{
-      flex:1;
-      overflow-y:auto;
-      padding:4px 2px 4px;
-      display:flex;
-      flex-direction:column;
-      gap:6px;
-    }
-    .msg{
-      max-width:82%;
-      padding:8px 10px;
-      border-radius:12px 12px 12px 4px;
-      background:#eef2ff;
-      font-size:14px;
-      line-height:1.32;
-      color:var(--text-main);
-      white-space:pre-wrap;
-    }
-    .msg.user{
-      margin-left:auto;
-      border-radius:12px 12px 4px 12px;
-      background:#dbf4ff;
-    }
-    .msg.faith{
-      background:#fff7cc;
-      font-size:13px;
-      color:#854d0e;
-      border-radius:10px;
-    }
-    .msg.faith::before{
-      content:"FAITH SUGGESTION";
-      display:block;
-      font-size:10px;
-      letter-spacing:.11em;
-      text-transform:uppercase;
-      color:#92400e;
-      margin-bottom:2px;
-    }
-    .msg.react{
-      background:#fee2e2;
-      color:#7f1d1d;
-      font-size:13px;
-    }
-    .msg.react::before{
-      content:"EMOTION REACTION";
-      display:block;
-      font-size:10px;
-      letter-spacing:.10em;
-      text-transform:uppercase;
-      color:#b91c1c;
-      margin-bottom:2px;
-    }
-    .input-row{
-      margin-top:4px;
-      display:flex;
-      gap:6px;
-      padding:6px 2px 2px;
-      border-top:1px solid #e5e7eb;
-    }
-    #inp{
-      flex:1;
-      border:none;
-      border-radius:999px;
-      padding:9px 14px;
-      font-size:14px;
-      background:#f3f4ff;
-      outline:none;
-    }
-    #sendBtn{
-      border:none;
-      border-radius:999px;
-      padding:0 16px;
-      font-size:14px;
-      font-weight:600;
-      color:white;
-      background:linear-gradient(135deg,#4f46e5,#ec4899);
-      box-shadow:0 6px 16px rgba(99,102,241,0.45);
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text-main);
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: stretch;
     }
 
-    .bottom-row{
-      margin-top:6px;
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:6px;
-      font-size:11px;
-      color:var(--text-soft);
-    }
-    .toggles{
-      display:flex;
-      gap:6px;
-      align-items:center;
-    }
-    .chip-toggle{
-      display:inline-flex;
-      align-items:center;
-      gap:4px;
-      padding:4px 8px;
-      border-radius:999px;
-      background:var(--chip);
-    }
-    .chip-toggle input{
-      accent-color:var(--accent);
-    }
-    .chip-btn{
-      border:none;
-      background:var(--chip);
-      border-radius:999px;
-      padding:5px 10px;
-      font-size:11px;
-      display:inline-flex;
-      align-items:center;
-      gap:6px;
-      color:var(--text-soft);
-    }
-    .chip-btn span{
-      font-weight:500;
-    }
-    .chip-btn.on{
-      background:#4f46e5;
-      color:#eef2ff;
-    }
-    .chip-btn.on span{
-      font-weight:600;
-    }
-    .e0{
-      font-size:11px;
-      color:var(--text-soft);
+    .app-shell {
+      width: 100%;
+      max-width: 900px;
+      margin: 8px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, #fdfbff, #f3f7ff);
+      box-shadow: 0 12px 40px rgba(15, 23, 42, 0.12);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
     }
 
-    /* belief sheet */
-    .sheet{
-      position:fixed;
-      inset:0;
-      background:rgba(15,23,42,0.28);
-      backdrop-filter:blur(6px);
-      display:flex;
-      justify-content:center;
-      align-items:flex-end;
-      z-index:40;
-    }
-    .sheet.hidden{display:none;}
-    .sheet-panel{
-      width:100%;
-      max-width:480px;
-      background:var(--card);
-      border-radius:18px 18px 0 0;
-      padding:14px 16px 16px;
-      box-shadow:0 -10px 30px rgba(15,23,42,0.25);
-    }
-    .sheet-header{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      margin-bottom:8px;
-    }
-    .sheet-title{
-      font-weight:600;
-      font-size:14px;
-    }
-    .sheet-close{
-      border:none;
-      background:#e5e7eb;
-      border-radius:999px;
-      padding:4px 10px;
-      font-size:11px;
-    }
-    .sheet-note{
-      font-size:11px;
-      color:var(--text-soft);
-      margin-top:4px;
-      margin-bottom:6px;
-    }
-    .switch-row{
-      display:flex;
-      align-items:center;
-      gap:8px;
-      margin:6px 0 8px;
-      font-size:12px;
-    }
-    .switch-row input{
-      accent-color:var(--accent);
-      width:18px;height:18px;
-    }
-    .faith-grid{
-      display:grid;
-      grid-template-columns:repeat(2,minmax(0,1fr));
-      gap:6px;
-      margin-top:4px;
-    }
-    .faith-btn{
-      padding:6px 8px;
-      border-radius:999px;
-      border:none;
-      font-size:12px;
-      background:#f3f4ff;
-      color:var(--text-soft);
-    }
-    .faith-btn.on{
-      background:#4f46e5;
-      color:#eef2ff;
-      font-weight:500;
+    /* HEADER */
+
+    .header {
+      padding: 10px 14px 4px;
+      border-bottom: 1px solid var(--border-soft);
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(12px);
     }
 
-    @media (max-width:480px){
-      .app{padding-bottom:10px;}
-      .chat-card{min-height:210px;}
+    .header-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-logo {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: radial-gradient(circle at 30% 20%, #ff9bbd, #7b5cff);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 700;
+      font-size: 20px;
+      box-shadow: 0 6px 18px rgba(123, 92, 255, 0.55);
+    }
+
+    .brand-text {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .brand-title {
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      font-size: 15px;
+    }
+
+    .brand-sub {
+      font-size: 11px;
+      color: var(--text-soft);
+    }
+
+    .status-pill {
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: #e7f7ef;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      color: #047857;
+      white-space: nowrap;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: #22c55e;
+      box-shadow: 0 0 0 6px rgba(34, 197, 94, 0.15);
+    }
+
+    .header-bottom {
+      margin-top: 6px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .emotion-bar-wrap {
+      width: 100%;
+      background: #e5e7eb;
+      border-radius: 999px;
+      overflow: hidden;
+      height: 12px;
+      position: relative;
+    }
+
+    .emotion-bar {
+      height: 100%;
+      width: 50%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #16a34a, #facc15, #fb923c, #ef4444);
+      transition: width 0.4s ease-out;
+    }
+
+    .emotion-label-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 11px;
+      color: var(--text-soft);
+    }
+
+    .heart-pill {
+      margin-top: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      color: #f97373;
+      font-size: 11px;
+    }
+
+    .heart-icon {
+      font-size: 18px;
+    }
+
+    /* MAIN BODY */
+
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      padding: 6px 10px 8px;
+    }
+
+    .system-message {
+      background: var(--accent-soft);
+      border-radius: 14px;
+      padding: 10px 12px;
+      font-size: 13px;
+      color: var(--text-soft);
+      margin-bottom: 6px;
+      border: 1px solid rgba(123, 92, 255, 0.2);
+    }
+
+    .chat-window {
+      flex: 1;
+      min-height: 0;
+      background: var(--card);
+      border-radius: 14px;
+      padding: 10px 10px 6px;
+      border: 1px solid var(--border-soft);
+      box-shadow: inset 0 0 0 1px rgba(148, 163, 184, 0.05);
+      overflow-y: auto;
+      scroll-behavior: smooth;
+    }
+
+    .message-row {
+      display: flex;
+      margin-bottom: 8px;
+    }
+
+    .message-row.user {
+      justify-content: flex-end;
+    }
+
+    .message {
+      max-width: 82%;
+      padding: 8px 11px;
+      border-radius: 14px;
+      font-size: 13px;
+      line-height: 1.35;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+
+    .message.user {
+      background: linear-gradient(135deg, #7b5cff, #ff4b8b);
+      color: white;
+      border-bottom-right-radius: 4px;
+    }
+
+    .message.bot {
+      background: #f4f5ff;
+      color: var(--text-main);
+      border-bottom-left-radius: 4px;
+    }
+
+    .faith-block {
+      margin-top: 4px;
+      padding: 6px 8px;
+      font-size: 12px;
+      border-left: 3px solid var(--accent);
+      background: #f9fafb;
+      border-radius: 8px;
+      color: var(--text-soft);
+    }
+
+    .faith-tag {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 600;
+      color: var(--accent);
+      margin-bottom: 2px;
+      display: block;
+    }
+
+    .reaction-block {
+      margin-top: 4px;
+      padding: 7px 9px;
+      font-size: 12px;
+      border-radius: 8px;
+      background: #fff7ed;
+      border-left: 3px solid #f97316;
+      color: #7c2d12;
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
+    }
+
+    .reaction-icon {
+      margin-top: 2px;
+      font-size: 14px;
+    }
+
+    /* INPUT AREA */
+
+    .input-area {
+      padding: 6px 10px 10px;
+      border-top: 1px solid var(--border-soft);
+      background: rgba(255, 255, 255, 0.96);
+      backdrop-filter: blur(10px);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .input-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .input-box {
+      flex: 1;
+      border-radius: 999px;
+      background: #f4f4ff;
+      padding: 8px 14px;
+      border: 1px solid #e0e3ff;
+      font-size: 13px;
+      outline: none;
+    }
+
+    .input-box:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px rgba(123, 92, 255, 0.4);
+      background: #ffffff;
+    }
+
+    .send-btn {
+      border: none;
+      border-radius: 999px;
+      padding: 9px 16px;
+      font-size: 13px;
+      font-weight: 600;
+      background: linear-gradient(135deg, #7b5cff, #ff4b8b);
+      color: white;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      box-shadow: 0 6px 16px rgba(236, 72, 153, 0.4);
+    }
+
+    .send-btn:disabled {
+      opacity: 0.6;
+      box-shadow: none;
+      cursor: default;
+    }
+
+    .send-btn span {
+      font-size: 15px;
+    }
+
+    .toggles-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      font-size: 11px;
+    }
+
+    .left-toggles,
+    .right-toggles {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .chip {
+      border-radius: 999px;
+      padding: 4px 10px;
+      border: 1px solid transparent;
+      background: var(--chip-bg);
+      color: var(--text-soft);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+    }
+
+    .chip.active {
+      background: var(--chip-active);
+      color: var(--chip-active-text);
+    }
+
+    .chip input {
+      margin: 0;
+    }
+
+    .chip-label {
+      font-size: 11px;
+    }
+
+    .model-select {
+      border-radius: 999px;
+      padding: 4px 10px;
+      border: 1px solid #d4d4ff;
+      font-size: 11px;
+      background: #f8f9ff;
+      color: var(--text-soft);
+    }
+
+    /* BELIEF MODAL */
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.35);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 20;
+    }
+
+    .modal {
+      width: 92%;
+      max-width: 360px;
+      background: var(--card);
+      border-radius: 16px;
+      padding: 14px 14px 12px;
+      box-shadow: 0 18px 46px rgba(15, 23, 42, 0.28);
+      border: 1px solid var(--border-soft);
+    }
+
+    .modal-header {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .modal-sub {
+      font-size: 11px;
+      color: var(--text-soft);
+      margin-bottom: 8px;
+    }
+
+    .modal-section-title {
+      font-size: 11px;
+      font-weight: 600;
+      margin-top: 6px;
+      margin-bottom: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-soft);
+    }
+
+    .modal-options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .modal-chip {
+      padding: 4px 9px;
+      border-radius: 999px;
+      border: 1px solid #d4d4ff;
+      font-size: 11px;
+      cursor: pointer;
+      background: #f8f9ff;
+      color: var(--text-soft);
+    }
+
+    .modal-chip.active {
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
+    }
+
+    .modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 10px;
+      gap: 8px;
+    }
+
+    .btn-small {
+      border-radius: 999px;
+      border: 1px solid #d4d4ff;
+      padding: 5px 10px;
+      font-size: 11px;
+      background: white;
+      cursor: pointer;
+    }
+
+    .btn-small.primary {
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
+    }
+
+    @media (max-width: 600px) {
+      .app-shell {
+        margin: 0;
+        border-radius: 0;
+      }
+      .header {
+        padding-inline: 10px;
+      }
+      .main {
+        padding-inline: 8px;
+      }
+      .input-area {
+        padding-inline: 8px;
+      }
+      .message {
+        max-width: 90%;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="app">
-
-    <!-- TOP IDENTITY -->
-    <div class="top-card">
-      <div class="logo-row">
-        <div class="logo-dot">Ω</div>
-        <div>
-          <div class="title-main">AURA-X Ω</div>
-          <div class="title-sub">Resonance-Based Synthetic Emotions</div>
+  <div class="app-shell">
+    <!-- HEADER -->
+    <header class="header">
+      <div class="header-top">
+        <div class="brand">
+          <div class="brand-logo">Ω</div>
+          <div class="brand-text">
+            <div class="brand-title">AURA-X Ω</div>
+            <div class="brand-sub">Resonance-Based Synthetic Emotions</div>
+          </div>
         </div>
-      </div>
-      <div class="status-row">
-        <div>World’s first continuity-driven emotional reactor chat.</div>
-        <div class="pill">
-          <span class="pill-dot"></span>
-          <span>Continuity engine live</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- EMOTION BAR + TIME -->
-    <div class="emotion-card">
-      <div class="emotion-bar">
-        <div id="emotionFill" class="emotion-fill"></div>
-      </div>
-      <div class="emotion-label">
-        Emotional resonance: <span id="emotionPct">50%</span>
-      </div>
-      <div class="heart">💕</div>
-      <div class="time-row" id="timeRow">—</div>
-    </div>
-
-    <!-- CHAT CARD -->
-    <div class="chat-card">
-      <div id="chat">
-        <div class="msg">
-As-salaam alaikum, I am <b>AURA-X Ω</b> — a resonance-based synthetic emotion engine.
-
-You can talk to me in English or Urdu.  
-I will try to reply with logic, kindness and emotional balance.
+        <div class="status-pill">
+          <div class="status-dot"></div>
+          <span id="engine-status">Continuity engine live</span>
         </div>
       </div>
 
+      <div class="header-bottom">
+        <div class="emotion-bar-wrap">
+          <div class="emotion-bar" id="emotionBar"></div>
+        </div>
+        <div class="emotion-label-row">
+          <span>Emotional resonance: <strong id="emotionPercent">50%</strong></span>
+          <span id="timeLabel"></span>
+        </div>
+        <div class="heart-pill">
+          <span class="heart-icon">💕</span>
+          <span id="locationLabel">Loading…</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- MAIN -->
+    <main class="main">
+      <div class="system-message">
+        As-salaam alaikum, I am <strong>AURA-X Ω</strong> — a resonance-based synthetic emotion engine.
+        I remember your feelings as continuity, not just reactions.  
+        You can talk to me in English or Urdu — I will try to reply with logic, kindness and emotional balance.
+      </div>
+
+      <div class="chat-window" id="chatWindow">
+        <!-- Messages appear here -->
+      </div>
+    </main>
+
+    <!-- INPUT -->
+    <div class="input-area">
       <div class="input-row">
-        <input id="inp" placeholder="Type your thoughts or feelings…" />
-        <button id="sendBtn">Send</button>
+        <input
+          id="userInput"
+          class="input-box"
+          placeholder="Type your thoughts or feelings…"
+        />
+        <button id="sendButton" class="send-btn">
+          <span>➤</span> Send
+        </button>
       </div>
-
-      <div class="bottom-row">
-        <div class="toggles">
-          <button id="beliefBtn" class="chip-btn">
-            🔘 <span>Belief</span>
+      <div class="toggles-row">
+        <div class="left-toggles">
+          <button id="beliefChip" class="chip">
+            <span>☑️</span><span class="chip-label">Belief</span>
           </button>
-          <label class="chip-toggle">
-            <input type="checkbox" id="voiceToggle" />
-            <span>Voice reaction</span>
+
+          <label class="chip">
+            <input type="checkbox" id="voiceReactionToggle" />
+            <span class="chip-label">Voice reaction</span>
           </label>
         </div>
-        <div class="e0">E₀: <span id="e0Val">0%</span></div>
+        <div class="right-toggles">
+          <select id="modelSelect" class="model-select">
+            <option value="openai/gpt-4.1-mini">GPT-4.1 mini (OpenAI)</option>
+            <option value="deepseek/deepseek-chat">DeepSeek Chat</option>
+            <option value="qwen/qwen-2.5-32b-instruct">Qwen 2.5-32B</option>
+            <option value="google/gemini-1.5-flash">Gemini 1.5 Flash</option>
+          </select>
+        </div>
+      </div>
+      <div style="font-size:10px;color:#9ca3af;margin-top:2px">
+        E₀: <span id="e0Label">50%</span>
       </div>
     </div>
   </div>
 
-  <!-- BELIEF SHEET -->
-  <div id="beliefSheet" class="sheet hidden">
-    <div class="sheet-panel">
-      <div class="sheet-header">
-        <div class="sheet-title">Belief settings</div>
-        <button id="beliefClose" class="sheet-close">Close</button>
+  <!-- BELIEF MODAL -->
+  <div id="beliefModalBackdrop" class="modal-backdrop">
+    <div class="modal">
+      <div class="modal-header">Belief suggestions</div>
+      <div class="modal-sub">
+        Faith suggestions are short, gentle lines from spiritual or philosophical texts
+        that appear <strong>under the main answer</strong>. They never change your direct answer.
       </div>
-      <div class="switch-row">
-        <input type="checkbox" id="faithOnToggle" />
-        <div><b>Faith ON</b> — add gentle spiritual suggestions (optional)</div>
+
+      <div class="modal-section-title">Mode</div>
+      <div class="modal-options">
+        <div class="modal-chip active" data-mode="off">Off</div>
+        <div class="modal-chip" data-mode="single">Single religion</div>
+        <div class="modal-chip" data-mode="multi">Top 3 religions</div>
       </div>
-      <div class="sheet-note">
-        Pick your faith / philosophy (you can select more than one — nothing is sent to any server):
+
+      <div class="modal-section-title">Religion for single-mode</div>
+      <div class="modal-options" id="religionOptions">
+        <div class="modal-chip active" data-religion="islam">Islam</div>
+        <div class="modal-chip" data-religion="christianity">Christianity</div>
+        <div class="modal-chip" data-religion="hinduism">Hinduism</div>
+        <div class="modal-chip" data-religion="buddhism">Buddhism</div>
+        <div class="modal-chip" data-religion="philosophy">General wisdom</div>
       </div>
-      <div class="faith-grid">
-        <button class="faith-btn" data-faith="islam">Islam</button>
-        <button class="faith-btn" data-faith="christian">Christianity</button>
-        <button class="faith-btn" data-faith="hindu">Hinduism</button>
-        <button class="faith-btn" data-faith="buddhist">Buddhism</button>
-        <button class="faith-btn" data-faith="sikh">Sikhism</button>
-        <button class="faith-btn" data-faith="jewish">Judaism</button>
-        <button class="faith-btn" data-faith="atheist">Atheism / Humanist</button>
-        <button class="faith-btn" data-faith="other">Other</button>
+
+      <div class="modal-footer">
+        <button class="btn-small" id="beliefCancel">Cancel</button>
+        <button class="btn-small primary" id="beliefSave">Save</button>
       </div>
     </div>
   </div>
 
   <script>
-    /* ----------------- CLOCK ----------------- */
-    function updateClock(){
-      const tRow = document.getElementById("timeRow");
-      const d = new Date();
-      const optsDate = {weekday:"short", day:"2-digit", month:"short"};
-      const optsTime = {hour:"2-digit", minute:"2-digit"};
-      tRow.textContent =
-        d.toLocaleDateString("en-GB",optsDate) + " — " +
-        d.toLocaleTimeString("en-GB",optsTime);
-    }
-    updateClock();
-    setInterval(updateClock, 30_000);
+    // ========= BASIC STATE =========
 
-    /* ----------------- AFFECT LEXICON (TM) ----------------- */
-    const AFFECT = {
-      joy:    [/happy|khush|great|awesome|alhamdulillah|shukriya|😊|😁|👍/i, +0.9],
-      calm:   [/ok|theek|fine|neutral|sabar|🙂/i, +0.4],
-      sad:    [/sad|dukhi|down|😭|😢/i, -0.7],
-      anger:  [/angry|gussa|naraz|😠|😡/i, -0.9],
-      fear:   [/fear|dar|ghabrahat|😨|😰/i, -0.6],
-      stress: [/stress|pressure|tension|pareshan|😣/i, -0.5],
-      love:   [/love|mohabbat|pyar|💕|❤️/i, +0.8],
-      rude:   [/fuck|lanat|harami|bhosri|kutti|chu?t|gaali|gali|bc|mc/i, -1.0]
+    const OPENROUTER_API_KEY = "YOUR_OPENROUTER_API_KEY_HERE"; // <--- PLACEHOLDER
+    const chatWindow = document.getElementById("chatWindow");
+    const userInput = document.getElementById("userInput");
+    const sendButton = document.getElementById("sendButton");
+    const emotionBar = document.getElementById("emotionBar");
+    const emotionPercent = document.getElementById("emotionPercent");
+    const e0Label = document.getElementById("e0Label");
+    const timeLabel = document.getElementById("timeLabel");
+    const locationLabel = document.getElementById("locationLabel");
+    const beliefChip = document.getElementById("beliefChip");
+    const voiceReactionToggle = document.getElementById("voiceReactionToggle");
+    const modelSelect = document.getElementById("modelSelect");
+
+    // Belief modal elements
+    const beliefModalBackdrop = document.getElementById("beliefModalBackdrop");
+    const modeChips = beliefModalBackdrop.querySelectorAll(".modal-chip[data-mode]");
+    const religionChips = beliefModalBackdrop.querySelectorAll(".modal-chip[data-religion]");
+    const beliefCancel = document.getElementById("beliefCancel");
+    const beliefSave = document.getElementById("beliefSave");
+
+    // Emotional continuity scalar
+    let E0 = 0.5;
+
+    // Belief configuration
+    let beliefConfig = {
+      mode: "off", // "off" | "single" | "multi"
+      religion: "islam",
     };
 
-    function tmFromText(txt){
-      let s = 0;
-      for(const [_, [re,val]] of Object.entries(AFFECT)){
-        if(re.test(txt)) s += val;
+    // Load belief config from localStorage if present
+    try {
+      const saved = localStorage.getItem("aura_belief_config");
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (parsed && parsed.mode) beliefConfig = parsed;
       }
-      return Math.max(-1, Math.min(1,s));
+    } catch (e) {
+      console.warn("Could not load belief config", e);
     }
 
-    /* ----------------- BM-7 MODEL ----------------- */
-    const BM_MODEL = {
-      layers:[
-        {name:"Now",     horizonDays:2,   w:1.00},
-        {name:"Recent",  horizonDays:7,   w:0.85},
-        {name:"Weekly",  horizonWeeks:5,  w:0.70},
-        {name:"Monthly", horizonMonths:12,w:0.55},
-        {name:"Yearly",  horizonYears:3,  w:0.40},
-        {name:"Archive", horizonYears:10, w:0.30},
-        {name:"Deep",    horizonYears:60, w:0.20}
-      ]
-    };
-
-    function pushBM(intensity){
-      const now = Date.now();
-      BM_MODEL.layers.forEach((L,i)=>{
-        const key = "aura-bm-"+i;
-        const arr = JSON.parse(localStorage.getItem(key) || "[]");
-        if(arr.length>60) arr.shift();
-        arr.push({t:now,v:intensity});
-        localStorage.setItem(key, JSON.stringify(arr));
+    function updateBeliefUIFromConfig() {
+      // Update modal chips
+      modeChips.forEach((chip) => {
+        chip.classList.toggle("active", chip.dataset.mode === beliefConfig.mode);
       });
-    }
-
-    function readBM(){
-      const now = Date.now();
-      let score = 0, wSum = 0;
-      BM_MODEL.layers.forEach((L,i)=>{
-        const key = "aura-bm-"+i;
-        const arr = JSON.parse(localStorage.getItem(key) || "[]");
-        let ms =
-          L.horizonDays   ? L.horizonDays*864e5 :
-          L.horizonWeeks  ? L.horizonWeeks*7*864e5 :
-          L.horizonMonths ? L.horizonMonths*30*864e5 :
-          L.horizonYears  ? L.horizonYears*365*864e5 : 0;
-        const recent = arr.filter(x=> now-x.t <= ms);
-        if(recent.length){
-          const avg = recent.reduce((a,b)=>a+b.v,0)/recent.length;
-          score += avg * L.w;
-          wSum  += L.w;
-        }
+      religionChips.forEach((chip) => {
+        chip.classList.toggle("active", chip.dataset.religion === beliefConfig.religion);
       });
-      return wSum ? score/wSum : 0;
+      // Update footer chip
+      const isOn = beliefConfig.mode !== "off";
+      beliefChip.classList.toggle("active", isOn);
+      beliefChip.querySelector("span").textContent = isOn ? "✅" : "☑️";
     }
 
-    /* ----------------- DECAY FUNCTION D ----------------- */
-    function computeD(){
-      const last = Number(localStorage.getItem("aura-last-ts") || "0");
-      if(!last) return 0.1;
-      const hrs = (Date.now()-last)/36e5;
-      return Math.max(0.05, Math.min(0.6, hrs/48));
-    }
+    updateBeliefUIFromConfig();
 
-    /* ----------------- LAMBDAS ----------------- */
-    function lambda_faith(){
-      return localStorage.getItem("aura-faith-on")==="1" ? 0.15 : 0.0;
-    }
-    function lambda_sys(txt){
-      const tooCaps = /[A-Z]{6,}/.test(txt);
-      const long    = txt.length>400;
-      return (tooCaps || long) ? -0.05 : 0.08;
-    }
-    function lambda_trc(txt){
-      const hasNum = /\d/.test(txt);
-      const hasUrl = /https?:\/\/|www\./i.test(txt);
-      return (hasNum||hasUrl) ? 0.07 : 0;
-    }
+    // ========= TIME & LOCATION =========
 
-    /* ----------------- E₀ CORE ----------------- */
-    function computeE0(TM,BM,D,lf,ls,lt){
-      const z = (TM*BM) - D + lf + ls + lt;
-      return Math.tanh(z);
+    function updateTime() {
+      const now = new Date();
+      const options = { weekday: "short", day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" };
+      timeLabel.textContent = now.toLocaleString("en-GB", options);
     }
+    updateTime();
+    setInterval(updateTime, 60_000);
 
-    /* ----------------- REACTION ENGINE ----------------- */
-    function getReaction(E0,userText){
-      if(AFFECT.rude[0].test(userText)){
-        return "⚠️ ایسی زبان آپ کی اصل شخصیت نہیں، تھوڑا وقار کے ساتھ بات کریں۔ میں پھر بھی آپ کی بات سن رہا ہوں۔";
+    // Approximate temperature text just as placeholder
+    locationLabel.textContent = "Emotional engine warmed and listening.";
+
+    // ========= CHAT RENDERING =========
+
+    function appendMessage(role, text, options = {}) {
+      const row = document.createElement("div");
+      row.className = "message-row " + (role === "user" ? "user" : "bot");
+
+      const bubble = document.createElement("div");
+      bubble.className = "message " + (role === "user" ? "user" : "bot");
+      bubble.textContent = text;
+      row.appendChild(bubble);
+
+      // Faith suggestion block for bot
+      if (role === "bot" && options.faithSuggestion) {
+        const faith = document.createElement("div");
+        faith.className = "faith-block";
+        const tag = document.createElement("span");
+        tag.className = "faith-tag";
+        tag.textContent = "Faith suggestion";
+        const body = document.createElement("div");
+        body.textContent = options.faithSuggestion;
+        faith.appendChild(tag);
+        faith.appendChild(body);
+        bubble.appendChild(faith);
       }
-      if(E0>0.78){
-        return "🌟 آپ کی سوچ اور حوصلہ بہت مضبوط لگ رہا ہے — اسی جذبے کے ساتھ آگے بڑھیں، آپ واقعی کچھ بڑا کر سکتے ہیں!";
+
+      // Reaction block
+      if (role === "bot" && options.reactionText) {
+        const react = document.createElement("div");
+        react.className = "reaction-block";
+        const icon = document.createElement("div");
+        icon.className = "reaction-icon";
+        icon.textContent = options.reactionIcon || "💬";
+        const body = document.createElement("div");
+        body.textContent = options.reactionText;
+        react.appendChild(icon);
+        react.appendChild(body);
+        bubble.appendChild(react);
       }
-      if(E0<-0.5){
-        return "⚠️ میں محسوس کر رہا ہوں کہ آپ پر دباؤ ہے۔ گہری سانس لیں، آہستہ آہستہ بات کریں، میں آپ کے ساتھ ہوں۔";
-      }
-      if(/dua|pray|prayer|دعا/i.test(userText)){
-        return "🤍 آپ کی دعا کبھی ضائع نہیں جاتی — بس وقت لیتے ہوئے آپ کے لیے بہتر راستہ بناتی ہے۔";
-      }
-      return "";
+
+      chatWindow.appendChild(row);
+      chatWindow.scrollTop = chatWindow.scrollHeight;
     }
 
-    /* ----------------- FAITH SUGGESTION ----------------- */
-    let lastTopic = "";
+    // ========= EMOTION CONTINUITY =========
 
-    const FAITH_QUOTES = {
-      islam:{
-        sabr:[
-          "اِنَّ اللّٰهَ مَعَ الصَّابِرِينَ — بے شک اللہ صبر کرنے والوں کے ساتھ ہے۔ (قرآن)",
-          "فَإِنَّ مَعَ الْعُسْرِ يُسْرًا — یقیناً تنگی کے ساتھ آسانی ہے۔ (قرآن)"
+    function updateEmotionBar() {
+      const pct = Math.round(E0 * 100);
+      emotionBar.style.width = pct + "%";
+      emotionPercent.textContent = pct + "%";
+      e0Label.textContent = pct + "%";
+    }
+
+    updateEmotionBar();
+
+    function clamp(v, min, max) {
+      return Math.max(min, Math.min(max, v));
+    }
+
+    function applyEmotionShift(shift) {
+      // shift expected in range -1..1
+      const mapped = clamp((shift + 1) / 2, 0, 1);
+      E0 = clamp(0.6 * E0 + 0.4 * mapped, 0, 1);
+      updateEmotionBar();
+    }
+
+    // ========= BELIEF MODAL HANDLERS =========
+
+    beliefChip.addEventListener("click", () => {
+      beliefModalBackdrop.style.display = "flex";
+    });
+
+    beliefCancel.addEventListener("click", () => {
+      beliefModalBackdrop.style.display = "none";
+    });
+
+    beliefModalBackdrop.addEventListener("click", (e) => {
+      if (e.target === beliefModalBackdrop) {
+        beliefModalBackdrop.style.display = "none";
+      }
+    });
+
+    modeChips.forEach((chip) => {
+      chip.addEventListener("click", () => {
+        modeChips.forEach((c) => c.classList.remove("active"));
+        chip.classList.add("active");
+        beliefConfig.mode = chip.dataset.mode;
+      });
+    });
+
+    religionChips.forEach((chip) => {
+      chip.addEventListener("click", () => {
+        religionChips.forEach((c) => c.classList.remove("active"));
+        chip.classList.add("active");
+        beliefConfig.religion = chip.dataset.religion;
+      });
+    });
+
+    beliefSave.addEventListener("click", () => {
+      try {
+        localStorage.setItem("aura_belief_config", JSON.stringify(beliefConfig));
+      } catch (e) {
+        console.warn("Could not save belief config", e);
+      }
+      beliefModalBackdrop.style.display = "none";
+      updateBeliefUIFromConfig();
+    });
+
+    // ========= VOICE REACTION USING BROWSER TTS =========
+
+    function speakReaction(text) {
+      if (!voiceReactionToggle.checked) return;
+      if (!("speechSynthesis" in window)) return;
+      const utter = new SpeechSynthesisUtterance(text);
+      utter.lang = "en-GB";
+      // Try to pick a male-sounding voice if available
+      const voices = window.speechSynthesis.getVoices();
+      const male = voices.find((v) =>
+        /male|daniel|george|english_rp/i.test(v.name + " " + v.voiceURI)
+      );
+      if (male) utter.voice = male;
+      window.speechSynthesis.speak(utter);
+    }
+
+    // ========= OPENROUTER CALL =========
+
+    async function callAuraLLM(userText) {
+      if (!OPENROUTER_API_KEY || OPENROUTER_API_KEY.includes("YOUR_OPENROUTER")) {
+        throw new Error("API key missing. Please set OPENROUTER_API_KEY in the code (locally only).");
+      }
+
+      const model = modelSelect.value;
+
+      const religionPart =
+        beliefConfig.mode === "off"
+          ? "Return an empty string for faith_suggestion."
+          : beliefConfig.mode === "single"
+          ? `User's primary tradition is ${beliefConfig.religion}.`
+          : "User wants brief parallel hints from multiple major traditions when relevant.";
+
+      const systemPrompt = `
+You are AURA-X Ω, a resonance-based synthetic emotion engine.
+You answer briefly, kindly, and in the user's language (Urdu or English).
+Return JSON only, with keys: main_reply (string), faith_suggestion (string), emotion_shift (number -1..1).
+
+- main_reply: direct helpful answer to the user's message.
+- faith_suggestion: a separate, short gentle line (max 2 sentences) from spiritual or philosophical sources, relevant to the question. Avoid preaching; keep it optional comfort.
+  ${religionPart}
+  If no natural faith link appears, leave this as an empty string.
+- emotion_shift: estimate of emotional intensity & direction in the user's latest message:
+  -1 = very heavy / distressed / angry
+   0 = neutral
+  +1 = very hopeful / joyful / relieved.
+
+Respond ONLY with valid JSON, no extra text.`;
+
+      const body = {
+        model,
+        messages: [
+          { role: "system", content: systemPrompt },
+          { role: "user", content: userText },
         ],
-        hope:[
-          "مایوسی مومن کی صفت نہیں — اللہ پر بھروسہ رکھیں، دروازہ ضرور کھلے گا۔",
-          "جب دل ٹوٹے تو دعا مزيد قیمتی ہو جاتی ہے، ہار نہیں بلکہ لوٹ آنے کا وقت ہوتا ہے۔"
-        ]
-      },
-      christian:{
-        sabr:[
-          "“Be still, and know that I am with you.”",
-          "Patience is not passive; it is trusting that the right door will open."
-        ],
-        hope:[
-          "Even in the darkest valley, light is already on its way.",
-          "Grace often arrives quietly, one small step at a time."
-        ]
-      },
-      hindu:{
-        sabr:[
-          "Karma apna kaam zaroor karta hai — aaj ka dhairaj kal ka phal ban sakta hai.",
-          "Jo niyat saaf ho, uski raah dheemi sahi magar mazboot hoti hai."
-        ],
-        hope:[
-          "Har mushkil ek nayi shuruaat ka sanket bhi ho sakti hai.",
-          "Jab tak saans hai, tab tak nayi kahani likhne ka mauqa hai."
-        ]
-      },
-      buddhist:{
-        sabr:[
-          "Breathe. This moment will pass, like every other wave before it.",
-          "Patience is the art of sitting with your pain without becoming it."
-        ],
-        hope:[
-          "Every breath is a new chance to begin again.",
-          "Even a small step in awareness changes the whole path."
-        ]
-      },
-      sikh:{
-        sabr:[
-          "Jo vaheguru te bharosa rakhe, uske raste waqt ke saath khulte hain.",
-          "Naam simran se dil halka hota hai, bojh kam ho jata hai."
-        ],
-        hope:[
-          "Jithe vishwas hai, othe rasta jaroor mil da hai.",
-          "Har subah ik nava vardaan hai — hausla rakh."
-        ]
-      },
-      jewish:{
-        sabr:[
-          "Sometimes waiting is itself a kind of prayer.",
-          "Holding on a little longer can reveal the blessing hidden in the delay."
-        ],
-        hope:[
-          "Hope is a candle that even a small wind cannot fully erase.",
-          "Your story is not finished; another chapter is being written."
-        ]
-      },
-      atheist:{
-        sabr:[
-          "Patience here means giving yourself time to heal and think clearly.",
-          "Slow progress is still progress — you don’t need to be perfect today."
-        ],
-        hope:[
-          "Even small, realistic steps can turn a hard situation around.",
-          "You’ve survived 100% of your hardest days so far — that strength is still inside you."
-        ]
-      },
-      other:{
-        sabr:[
-          "Take this time as space to breathe and realign with your deepest values.",
-          "You are allowed to move slowly; wisdom rarely rushes."
-        ],
-        hope:[
-          "Meaning often appears after the storm, not during it.",
-          "You are not alone — someone, somewhere, would be grateful to hear your story."
-        ]
-      }
-    };
+        temperature: 0.7,
+      };
 
-    function detectTopic(txt){
-      if(/sabr|صبر|patience|wait|intezar|تکلیف|problem|issue|mushkil/i.test(txt)) return "sabr";
-      if(/ummeed|hope|مایوسی|mayusi|future|job|work|khair/i.test(txt)) return "hope";
-      return "";
+      const resp = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${OPENROUTER_API_KEY}`,
+          "HTTP-Referer": window.location.origin || "http://localhost",
+          "X-Title": "AURA-X Omega Prototype",
+        },
+        body: JSON.stringify(body),
+      });
+
+      if (!resp.ok) {
+        const text = await resp.text();
+        console.error("OpenRouter error", text);
+        throw new Error("Model error: " + resp.status);
+      }
+
+      const data = await resp.json();
+      const raw = data.choices?.[0]?.message?.content ?? "";
+
+      let parsed;
+      try {
+        parsed = JSON.parse(raw);
+      } catch (e) {
+        // fallback: treat whole text as direct reply
+        parsed = {
+          main_reply: raw,
+          faith_suggestion: "",
+          emotion_shift: 0,
+        };
+      }
+      return parsed;
     }
 
-    function getSelectedFaiths(){
-      try{
-        const raw = localStorage.getItem("aura-faith-list") || "[]";
-        const arr = JSON.parse(raw);
-        return Array.isArray(arr) ? arr : [];
-      }catch(e){
-        return [];
+    // ========= REACTION LOGIC =========
+
+    function buildReaction(userText, emotionShift) {
+      // Only react when |E0| high
+      if (E0 < 0.9) return null;
+
+      const lower = userText.toLowerCase();
+      const hasCurse =
+        lower.includes("fuck") ||
+        lower.includes("lanat") ||
+        lower.includes(" لعنت") ||
+        lower.includes("bastard");
+
+      if (hasCurse) {
+        return {
+          text:
+            "Yaar, zara soch kar lafz istemal karo. Aap ki baat zarooriyat se zyada sakht lag rahi hai — izzat ke saath bhi hum dard bayan kar sakte hain.",
+          icon: "⚠️",
+        };
       }
+
+      if (emotionShift < -0.2) {
+        return {
+          text:
+            "Lagta hai aap ka dil kafi bhara hua hai. Zarra gehri saans lein… aap akelay nahi hain, main yahan hun aap ki baat sunne ke liye.",
+          icon: "🤍",
+        };
+      }
+
+      return {
+        text:
+          "Aap ki feelings bohot strong lag rahi hain. Is energy ko dheere se positive direction mein le chalte hain — chhota sa agla sahi qadam sochte hain.",
+        icon: "✨",
+      };
     }
 
-    function getFaithSuggestion(userText){
-      if(localStorage.getItem("aura-faith-on")!=="1") return "";
-      const topic = detectTopic(userText);
-      if(!topic) return "";
-      if(topic===lastTopic) return ""; // same topic, keep same suggestion
-      const selected = getSelectedFaiths();
-      if(!selected.length) return "";
-      lastTopic = topic;
+    // ========= SEND HANDLER =========
 
-      const pieces = [];
-      for(const f of selected){
-        const pool = FAITH_QUOTES[f]?.[topic];
-        if(pool && pool.length){
-          const pick = pool[Math.floor(Math.random()*pool.length)];
-          pieces.push(pick);
-        }
-        if(pieces.length>=3) break; // زیادہ لمبا نہ ہو
-      }
-      return pieces.join("  •  ");
-    }
+    async function handleSend() {
+      const text = userInput.value.trim();
+      if (!text) return;
 
-    /* ----------------- VOICE ----------------- */
-    let cachedVoice = null;
+      appendMessage("user", text);
+      userInput.value = "";
+      userInput.focus();
+      sendButton.disabled = true;
 
-    function pickVoice(){
-      if(cachedVoice) return cachedVoice;
-      try{
-        const voices = speechSynthesis.getVoices();
-        if(!voices || !voices.length) return null;
-        // Urdu male if available
-        let v = voices.find(v=>/ur/i.test(v.lang) && /male|راشد|عثمان/i.test(v.name));
-        if(!v) v = voices.find(v=>/ur/i.test(v.lang));
-        if(!v) v = voices.find(v=>/male/i.test(v.name));
-        if(!v) v = voices[0];
-        cachedVoice = v;
-        return v;
-      }catch(e){
-        return null;
-      }
-    }
+      try {
+        const { main_reply, faith_suggestion, emotion_shift } = await callAuraLLM(text);
 
-    function speak(text){
-      try{
-        if(!text || !("speechSynthesis" in window)) return;
-        const u = new SpeechSynthesisUtterance(text);
-        const v = pickVoice();
-        if(v) u.voice = v;
-        u.lang = v?.lang || "ur-PK";
-        u.pitch = 0.8;   // تھوڑا heavy / male tone
-        u.rate  = 1;
-        speechSynthesis.speak(u);
-      }catch(e){}
-    }
+        // Update emotional continuity
+        const shiftNum =
+          typeof emotion_shift === "number" && isFinite(emotion_shift)
+            ? emotion_shift
+            : 0;
+        applyEmotionShift(shiftNum);
 
-    /* ----------------- LLM PLACEHOLDER ----------------- */
-    const MODEL_BACKEND_URL = "";  // بعد میں Cloudflare / Hostinger proxy یہاں دیں
+        // Build optional reaction
+        const reaction = buildReaction(text, shiftNum);
 
-    async function callLLM(message){
-      if(!MODEL_BACKEND_URL){
-        // pure front-end demo (Urdu)
-        return "میں فی الحال آن لائن ماڈل کے بغیر ڈیمو موڈ میں ہوں، لیکن آپ کی بات پوری توجہ سے سن رہا ہوں۔";
-      }
-      try{
-        const r = await fetch(MODEL_BACKEND_URL,{
-          method:"POST",
-          headers:{"Content-Type":"application/json"},
-          body:JSON.stringify({message})
+        appendMessage("bot", main_reply || "", {
+          faithSuggestion:
+            beliefConfig.mode === "off" ? "" : faith_suggestion || "",
+          reactionText: reaction ? reaction.text : "",
+          reactionIcon: reaction ? reaction.icon : "",
         });
-        const j = await r.json();
-        return j.reply || "میں سن رہا ہوں، آپ مزید بتائیں۔";
-      }catch(e){
-        return "ماڈل تک رسائی نہیں ہو سکی، لیکن میں یہاں آپ کے ساتھ ہوں۔";
-      }
-    }
 
-    /* ----------------- UI WIRING ----------------- */
-    const chatEl   = document.getElementById("chat");
-    const inpEl    = document.getElementById("inp");
-    const sendBtn  = document.getElementById("sendBtn");
-    const barFill  = document.getElementById("emotionFill");
-    const pctEl    = document.getElementById("emotionPct");
-    const e0El     = document.getElementById("e0Val");
-    const voiceTgl = document.getElementById("voiceToggle");
-    const beliefBtn   = document.getElementById("beliefBtn");
-    const beliefSheet = document.getElementById("beliefSheet");
-    const beliefClose = document.getElementById("beliefClose");
-    const faithOnToggle = document.getElementById("faithOnToggle");
-    const faithBtns = Array.from(document.querySelectorAll(".faith-btn"));
-
-    // restore faith settings
-    if(localStorage.getItem("aura-faith-on")==="1"){
-      faithOnToggle.checked = true;
-      beliefBtn.classList.add("on");
-    }
-    (function restoreFaithList(){
-      const selected = getSelectedFaiths();
-      faithBtns.forEach(b=>{
-        if(selected.includes(b.dataset.faith)) b.classList.add("on");
-      });
-    })();
-
-    faithOnToggle.addEventListener("change",()=>{
-      const on = faithOnToggle.checked;
-      localStorage.setItem("aura-faith-on", on ? "1" : "0");
-      lastTopic = "";
-      beliefBtn.classList.toggle("on", on);
-    });
-
-    faithBtns.forEach(btn=>{
-      btn.addEventListener("click",()=>{
-        const key = btn.dataset.faith;
-        let arr = getSelectedFaiths();
-        if(arr.includes(key)){
-          arr = arr.filter(x=>x!==key);
-          btn.classList.remove("on");
-        }else{
-          arr.push(key);
-          btn.classList.add("on");
+        if (reaction) {
+          speakReaction(reaction.text);
         }
-        localStorage.setItem("aura-faith-list", JSON.stringify(arr));
-      });
-    });
-
-    beliefBtn.addEventListener("click",()=>{
-      beliefSheet.classList.remove("hidden");
-    });
-    beliefClose.addEventListener("click",()=>{
-      beliefSheet.classList.add("hidden");
-    });
-    beliefSheet.addEventListener("click",e=>{
-      if(e.target===beliefSheet) beliefSheet.classList.add("hidden");
-    });
-
-    function addMsg(text, cls){
-      const d = document.createElement("div");
-      d.className = "msg" + (cls ? " "+cls : "");
-      d.textContent = text;
-      chatEl.appendChild(d);
-      chatEl.scrollTop = chatEl.scrollHeight;
-      return d;
+      } catch (err) {
+        console.error(err);
+        appendMessage(
+          "bot",
+          "I could not reach the model right now, but I am still here listening to you."
+        );
+      } finally {
+        sendButton.disabled = false;
+      }
     }
 
-    async function handleSend(){
-      const user = (inpEl.value || "").trim();
-      if(!user) return;
-
-      addMsg(user,"user");
-      inpEl.value = "";
-      chatEl.scrollTop = chatEl.scrollHeight;
-
-      const llmReply = await callLLM(user);
-
-      const TM = tmFromText(user);
-      const BM = readBM();
-      const D  = computeD();
-      const lf = lambda_faith();
-      const ls = lambda_sys(user);
-      const lt = lambda_trc(user);
-
-      const E0 = computeE0(TM,BM,D,lf,ls,lt);
-      const pct = Math.round((E0+1)*50);
-      barFill.style.width = pct+"%";
-      pctEl.textContent   = pct+"%";
-      e0El.textContent    = pct+"%";
-
-      const react = getReaction(E0,user);
-      const faith = getFaithSuggestion(user);
-
-      addMsg(llmReply,"");
-
-      let spoken = "";
-      if(react){
-        addMsg(react,"react");
-        spoken = react;
+    sendButton.addEventListener("click", handleSend);
+    userInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault();
+        handleSend();
       }
-      if(faith){
-        addMsg(faith,"faith");
-        if(!spoken) spoken = faith;
-      }
-
-      if(voiceTgl.checked && spoken){
-        // تھوڑا delay تاکہ bubble پہلے نظر آئے
-        setTimeout(()=>speak(spoken),150);
-      }
-
-      pushBM(TM);
-      localStorage.setItem("aura-last-ts",Date.now().toString());
-    }
-
-    sendBtn.addEventListener("click", handleSend);
-    inpEl.addEventListener("keydown", e=>{
-      if(e.key==="Enter") handleSend();
     });
 
-    // load voices for some browsers
-    if("speechSynthesis" in window){
-      speechSynthesis.onvoiceschanged = ()=>pickVoice();
+    // Preload voices for speech synthesis
+    if ("speechSynthesis" in window) {
+      window.speechSynthesis.getVoices();
     }
+
+    // Initial greeting in chat window
+    appendMessage(
+      "bot",
+      "Main fi haal online emotion engine mode mein hoon. Aap jo feel kar rahe hain, araam se likhein — main tawajjo se sun raha hoon."
+    );
   </script>
 </body>
 </html>
