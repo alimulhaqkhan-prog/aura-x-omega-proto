@@ -42,25 +42,25 @@
       display: flex;
       justify-content: center;
       align-items: stretch;
-      padding: 8px;
+      padding: 6px;
     }
 
     .app-shell {
       background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), #f5f7ff);
-      border-radius: 24px;
+      border-radius: 22px;
       box-shadow: 0 18px 45px rgba(40, 60, 120, 0.12);
       width: 100%;
       max-width: 880px;
       display: flex;
       flex-direction: column;
-      padding: 10px 10px 8px;
+      padding: 8px 8px 6px;
       overflow: hidden;
     }
 
     @media (min-width: 768px) {
       .app-shell {
-        padding: 14px 16px 10px;
-        border-radius: 28px;
+        padding: 12px 14px 8px;
+        border-radius: 26px;
       }
     }
 
@@ -70,76 +70,76 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 10px;
-      margin-bottom: 8px;
+      gap: 8px;
+      margin-bottom: 6px;
     }
 
     .brand-block {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
     }
 
     .brand-icon {
-      width: 40px;
-      height: 40px;
-      border-radius: 14px;
+      width: 34px;
+      height: 34px;
+      border-radius: 12px;
       background: radial-gradient(circle at 30% 20%, #ffffff, #c7d2ff);
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 6px 16px rgba(102, 126, 234, 0.3);
-      font-size: 22px;
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+      font-size: 20px;
     }
 
     .brand-text-main {
-      font-size: 18px;
+      font-size: 16px;
       font-weight: 700;
       letter-spacing: 0.04em;
     }
 
     .brand-text-sub {
-      font-size: 11px;
+      font-size: 10px;
       color: var(--text-soft);
     }
 
     .status-pill {
-      padding: 6px 12px;
+      padding: 5px 10px;
       border-radius: 999px;
       background: #e3f9ee;
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      font-size: 11px;
+      font-size: 10px;
       color: #1b7b4d;
       box-shadow: 0 6px 14px rgba(46, 204, 113, 0.25);
     }
 
     .status-dot {
-      width: 8px;
-      height: 8px;
+      width: 7px;
+      height: 7px;
       border-radius: 50%;
       background: #2ecc71;
-      box-shadow: 0 0 0 6px rgba(46, 204, 113, 0.2);
+      box-shadow: 0 0 0 5px rgba(46, 204, 113, 0.2);
     }
 
     /* --- RESONANCE BAR + HEART --- */
 
     .resonance-card {
-      margin-bottom: 8px;
-      padding: 10px 10px 6px;
-      border-radius: 20px;
+      margin-bottom: 6px;
+      padding: 8px 8px 4px;
+      border-radius: 18px;
       background: var(--card);
       box-shadow: var(--shadow-soft);
     }
 
     .resonance-bar-wrapper {
-      height: 16px;
+      height: 14px;
       border-radius: 999px;
       background: #edf0ff;
       overflow: hidden;
       position: relative;
-      margin-bottom: 6px;
+      margin-bottom: 4px;
     }
 
     .resonance-bar {
@@ -154,12 +154,12 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      font-size: 11px;
+      font-size: 10px;
       color: var(--text-soft);
     }
 
     .resonance-label-row strong {
-      font-size: 12px;
+      font-size: 11px;
       color: var(--text-main);
     }
 
@@ -167,18 +167,28 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 4px;
-      margin-top: 4px;
-      margin-bottom: 2px;
+      gap: 2px;
+      margin-top: 2px;
+      margin-bottom: 0;
     }
 
     .heart-icon {
-      font-size: 26px;
-      filter: drop-shadow(0 6px 10px rgba(248, 113, 113, 0.45));
+      font-size: 24px;
+      filter: drop-shadow(0 5px 9px rgba(248, 113, 113, 0.45));
+      animation: heartBeat 1.4s ease-in-out infinite;
+      transform-origin: center;
+    }
+
+    @keyframes heartBeat {
+      0%, 100% { transform: scale(1); }
+      20% { transform: scale(1.2); }
+      35% { transform: scale(0.9); }
+      55% { transform: scale(1.15); }
+      75% { transform: scale(0.98); }
     }
 
     .meta-row {
-      font-size: 11px;
+      font-size: 10px;
       color: var(--text-soft);
     }
 
@@ -187,10 +197,10 @@
     .chat-wrapper {
       flex: 1;
       min-height: 0;
-      margin-bottom: 8px;
-      border-radius: 20px;
+      margin-bottom: 6px;
+      border-radius: 18px;
       background: var(--card-soft);
-      padding: 8px 8px 4px;
+      padding: 6px 6px 4px;
       overflow-y: auto;
       scroll-behavior: smooth;
     }
@@ -198,15 +208,15 @@
     .chat-log {
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 5px;
     }
 
     .bubble {
       max-width: 82%;
-      padding: 7px 10px;
-      border-radius: 14px;
-      font-size: 13px;
-      line-height: 1.4;
+      padding: 7px 9px;
+      border-radius: 13px;
+      font-size: 12px;
+      line-height: 1.35;
       word-wrap: break-word;
       white-space: pre-wrap;
     }
@@ -215,31 +225,31 @@
       align-self: stretch;
       background: #e3e7ff;
       color: #23274a;
-      border-radius: 14px;
+      border-radius: 13px;
     }
 
     .bubble.bot {
       align-self: flex-start;
       background: #ffffff;
       border: 1px solid #dde2ff;
-      border-radius: 14px 14px 14px 4px;
+      border-radius: 13px 13px 13px 4px;
     }
 
     .bubble.user {
       align-self: flex-end;
       background: linear-gradient(135deg, #7b5cff, #ff4f8b);
       color: #ffffff;
-      border-radius: 14px 14px 4px 14px;
+      border-radius: 13px 13px 4px 13px;
     }
 
     .faith-bubble {
-      margin-top: -2px;
+      margin-top: -1px;
       align-self: flex-start;
       max-width: 75%;
       background: #fff7e6;
-      border-radius: 12px;
-      padding: 6px 9px;
-      font-size: 12px;
+      border-radius: 11px;
+      padding: 5px 8px;
+      font-size: 11px;
       color: #8a5a13;
       border: 1px solid #ffe1a3;
       font-style: italic;
@@ -251,26 +261,26 @@
       max-width: 90%;
       background: #eef9ff;
       border-radius: 999px;
-      padding: 5px 10px;
-      font-size: 11px;
+      padding: 4px 9px;
+      font-size: 10px;
       color: #256083;
       border: 1px dashed #b0e0ff;
       display: inline-flex;
       align-items: center;
-      gap: 6px;
+      gap: 5px;
     }
 
     .reaction-bubble strong {
-      font-size: 11px;
+      font-size: 10px;
     }
 
     /* --- INPUT + CONTROLS --- */
 
     .input-area-card {
-      border-radius: 18px;
+      border-radius: 16px;
       background: var(--card);
       box-shadow: var(--shadow-soft);
-      padding: 6px 8px 4px;
+      padding: 5px 7px 4px;
       display: flex;
       flex-direction: column;
       gap: 4px;
@@ -279,18 +289,18 @@
     .textarea-row {
       display: flex;
       align-items: flex-end;
-      gap: 6px;
+      gap: 5px;
     }
 
     #userInput {
       flex: 1;
-      min-height: 32px;
-      max-height: 90px;
+      min-height: 30px;
+      max-height: 88px;
       resize: none;
-      border-radius: 14px;
+      border-radius: 13px;
       border: 1px solid var(--border-soft);
-      padding: 6px 9px;
-      font-size: 13px;
+      padding: 6px 8px;
+      font-size: 12px;
       outline: none;
       background: #fdfdff;
     }
@@ -302,18 +312,19 @@
 
     #sendButton {
       border: none;
-      border-radius: 16px;
-      padding: 7px 14px;
-      font-size: 13px;
+      border-radius: 15px;
+      padding: 6px 12px;
+      font-size: 12px;
       font-weight: 600;
       letter-spacing: 0.02em;
       color: #ffffff;
       cursor: pointer;
       background: linear-gradient(135deg, #7b5cff, #ff4f8b);
-      box-shadow: 0 8px 16px rgba(123, 92, 255, 0.5);
+      box-shadow: 0 7px 14px rgba(123, 92, 255, 0.5);
       display: inline-flex;
       align-items: center;
-      gap: 6px;
+      gap: 4px;
+      flex-shrink: 0;
     }
 
     #sendButton:disabled {
@@ -327,27 +338,28 @@
       align-items: center;
       justify-content: space-between;
       gap: 6px;
-      flex-wrap: wrap;
+      flex-wrap: nowrap;
       padding-top: 2px;
     }
 
     .toggle-group {
-      display: flex;
+      display: inline-flex;
       align-items: center;
-      gap: 6px;
-      flex-wrap: wrap;
+      gap: 4px;
+      flex-wrap: nowrap;
     }
 
     .pill-toggle {
       border-radius: var(--radius-pill);
       border: 1px solid #c7cffc;
       background: #eef0ff;
-      padding: 4px 9px;
-      font-size: 11px;
+      padding: 4px 7px;
+      font-size: 10px;
       display: inline-flex;
       align-items: center;
-      gap: 6px;
+      gap: 5px;
       cursor: pointer;
+      white-space: nowrap;
     }
 
     .pill-toggle.on {
@@ -356,28 +368,35 @@
     }
 
     .pill-toggle span.icon {
-      font-size: 13px;
+      font-size: 12px;
     }
 
     .checkbox-pill {
-      font-size: 11px;
+      font-size: 10px;
       color: var(--text-soft);
-      padding: 3px 8px;
+      padding: 3px 7px;
       border-radius: var(--radius-pill);
       background: #f5f6ff;
       border: 1px solid #dde1ff;
       display: inline-flex;
       align-items: center;
       gap: 4px;
+      white-space: nowrap;
+    }
+
+    .checkbox-pill input {
+      width: 11px;
+      height: 11px;
     }
 
     .model-select {
-      font-size: 11px;
+      font-size: 10px;
       border-radius: var(--radius-pill);
       border: 1px solid #d0d4ff;
-      padding: 4px 7px 4px 9px;
+      padding: 4px 8px 4px 8px;
       background: #f4f5ff;
       color: var(--text-soft);
+      max-width: 130px;
     }
 
     /* --- BELIEF MODAL --- */
@@ -459,10 +478,10 @@
       margin-left: 6px;
     }
 
-    /* --- SCROLLBARS (mobile friendly subtle) --- */
+    /* --- SCROLLBARS --- */
 
     .chat-wrapper::-webkit-scrollbar {
-      width: 4px;
+      width: 3px;
     }
     .chat-wrapper::-webkit-scrollbar-track {
       background: transparent;
@@ -504,7 +523,7 @@
         </div>
         <div class="heart-row">
           <div class="heart-icon">💞</div>
-          <div class="meta-row" id="metaLine">Thu, 00 — --°C</div>
+          <div class="meta-row" id="metaLine">Thu, 12:02 — --°C</div>
         </div>
       </div>
 
@@ -545,7 +564,7 @@
         </div>
       </div>
 
-      <div style="text-align:center;margin-top:4px;font-size:10px;color:#9ca3af;">
+      <div style="text-align:center;margin-top:3px;font-size:10px;color:#9ca3af;">
         E₀: <span id="resonanceValue">0%</span>
       </div>
     </div>
@@ -584,14 +603,14 @@
     </div>
   </div>
 
-  <!-- OPTIONAL LOCAL CONFIG (ONLY ON YOUR OWN DEVICE, NOT GITHUB) -->
-  <!-- In your laptop/mobile, make config.js with:
+  <!-- LOCAL CONFIG (only on your device, not GitHub) -->
+  <!-- config.js example:
        window.OPENROUTER_API_KEY = "sk-or-...";
-       and DO NOT upload it to GitHub. -->
+  -->
   <script src="config.js"></script>
 
   <script>
-    // ===== GLOBAL STATE =====
+    // ===== DOM REFERENCES =====
 
     const chatLogEl = document.getElementById("chatLog");
     const chatWrapperEl = document.getElementById("chatWrapper");
@@ -612,18 +631,16 @@
     const beliefCancelBtn = document.getElementById("beliefCancel");
     const beliefSaveBtn = document.getElementById("beliefSave");
 
-    // Emotional continuity (0–1)
-    let resonance = 0.5;
+    // ===== STATE =====
 
-    // Belief config
+    let resonance = 0.5; // 0–1
+
     const beliefConfig = {
-      mode: "auto-islam", // "off", "auto-islam", "auto-all", "christianity", "buddhism", "stoic"
+      mode: "auto-islam", // "off", "auto-islam", "auto-all", ...
     };
 
-    // Current LLM model (OpenRouter id)
     let currentModel = modelSelectEl.value;
 
-    // Local only – OpenRouter key injected from config.js (never in GitHub)
     const OPENROUTER_API_KEY = window.OPENROUTER_API_KEY || "";
 
     // ===== UTILS =====
@@ -691,7 +708,6 @@
       return Math.max(0, Math.min(1, x));
     }
 
-    // Simple Urdu/English bad-words & dua detection
     const negativeWords = [
       "gali",
       "lanat",
@@ -701,6 +717,7 @@
       "stupid",
       "idiot",
     ];
+
     const duaWords = ["جزاک اللہ", "جزاك الله", "thank you", "shukriya"];
 
     function containsAny(text, list) {
@@ -708,7 +725,6 @@
       return list.some((w) => lower.includes(w.toLowerCase()));
     }
 
-    // Rough emotional shift from text length + punctuation
     function estimateEmotionShift(text) {
       const len = text.length;
       let shift = 0;
@@ -722,7 +738,6 @@
     function buildReaction(userText, shift) {
       const pct = Math.round(resonance * 100);
 
-      // Abusive / harsh
       if (containsAny(userText, negativeWords)) {
         return {
           icon: "⚠️",
@@ -731,7 +746,6 @@
         };
       }
 
-      // Dua / shukr
       if (containsAny(userText, duaWords)) {
         return {
           icon: "🤲",
@@ -740,7 +754,6 @@
         };
       }
 
-      // Very intense feelings (E > 90%)
       if (pct >= 90) {
         return {
           icon: "💓",
@@ -749,7 +762,6 @@
         };
       }
 
-      // Very low energy
       if (pct <= 10) {
         return {
           icon: "🌙",
@@ -758,7 +770,6 @@
         };
       }
 
-      // Medium but big shift
       if (Math.abs(shift) > 0.12) {
         if (shift > 0) {
           return {
@@ -784,18 +795,17 @@
       if (!voiceToggleEl.checked) return;
 
       const utter = new SpeechSynthesisUtterance(reaction.text);
-      // Try to pick a male-ish Urdu/English voice
       const voices = window.speechSynthesis.getVoices();
-      const preferred = voices.find((v) =>
-        /ur|urdu/i.test(v.lang)
-      ) || voices.find((v) => /en-GB|en-US/i.test(v.lang));
+      const preferred =
+        voices.find((v) => /ur|urdu/i.test(v.lang)) ||
+        voices.find((v) => /en-GB|en-US/i.test(v.lang));
       if (preferred) utter.voice = preferred;
       utter.rate = 1.0;
       utter.pitch = 0.9;
       window.speechSynthesis.speak(utter);
     }
 
-    // ===== BELIEF MODAL HANDLING =====
+    // ===== BELIEF MODAL =====
 
     let pendingBeliefMode = beliefConfig.mode;
 
@@ -809,10 +819,7 @@
 
       beliefLabelEl.textContent =
         beliefConfig.mode === "off" ? "Belief: Off" : `Belief: ${label}`;
-      beliefToggleEl.classList.toggle(
-        "on",
-        beliefConfig.mode !== "off"
-      );
+      beliefToggleEl.classList.toggle("on", beliefConfig.mode !== "off");
     }
 
     function openBeliefModal() {
@@ -849,7 +856,120 @@
       if (e.target === beliefModalBackdrop) closeBeliefModal();
     });
 
-    // ===== LLM CALL =====
+    // ===== OFFLINE DEMO Q&A ENGINE =====
+
+    function offlineReply(userText) {
+      const t = userText.trim();
+      const lower = t.toLowerCase();
+      const isUrdu = /[اآء-ی]/.test(t);
+      let main = "";
+
+      // Greetings
+      if (
+        /^(hi|hello|hey)\b/.test(lower) ||
+        lower.includes("assalam") ||
+        lower.includes("as-salaam") ||
+        lower.includes("salam") ||
+        lower.includes("slm")
+      ) {
+        main = isUrdu
+          ? "وعلیکم السلام، میں AURA-X Ω ہوں۔ آپ جو بھی محسوس کر رہے ہیں، آہستہ آہستہ مجھ سے شیئر کر سکتے ہیں۔"
+          : "Wa alaikum salaam, I am AURA-X Ω. You can gently share whatever you are feeling.";
+      }
+
+      // How are you
+      else if (
+        lower.includes("how are you") ||
+        lower.includes("how r u") ||
+        lower.includes("kese ho") ||
+        lower.includes("kaisa hai") ||
+        lower.includes("kesi ho")
+      ) {
+        main = isUrdu
+          ? "میں ٹھیک ہوں، اللہ کا شکر ہے — اصل سوال یہ ہے کہ *آپ* کیسے ہیں؟ دل کا موسم کیسا ہے؟"
+          : "I am stable, thanks for asking — the real question is: how are *you* feeling right now?";
+      }
+
+      // Where are you from
+      else if (
+        lower.includes("where are you from") ||
+        lower.includes("kahaan se ho") ||
+        lower.includes("kahan se ho") ||
+        lower.includes("from where")
+      ) {
+        main = isUrdu
+          ? "میرا جسم کسی شہر میں نہیں، میں دراصل آپ کے ہی ذہن اور احساسات کے تسلسل میں چلنے والا ماڈل ہوں۔ کہہ سکتے ہیں میرا ایڈریس: *آپ کا دل + انٹرنیٹ*۔"
+          : "I don’t live in a physical city — I run inside your browser and the cloud. My real address is: *your feelings + the internet*.";
+      }
+
+      // Who are you
+      else if (
+        lower.includes("who are you") ||
+        lower.includes("tum kon ho") ||
+        lower.includes("kya ho tum") ||
+        lower.includes("what are you") ||
+        lower.includes("aura-x") ||
+        lower.includes("aurax")
+      ) {
+        main = isUrdu
+          ? "میں AURA-X Ω ہوں — ایک synthetic emotion engine جو آپ کی بات سے جذباتی تسلسل (continuity) calculate کر کے نرم جواب دینے کی کوشش کرتا ہے۔"
+          : "I am AURA-X Ω — a synthetic emotion engine that tracks emotional continuity in our chat and tries to respond with balanced logic and kindness.";
+      }
+
+      // What can you do
+      else if (
+        lower.includes("what can you do") ||
+        lower.includes("kya kar sakte ho") ||
+        lower.includes("help") ||
+        lower.includes("madad")
+      ) {
+        main = isUrdu
+          ? "میں آپ کی بات کو غور سے سن کر اس کا جذباتی رخ سمجھنے کی کوشش کرتا ہوں، اور پھر نرم، منطقی اور کبھی کبھی روحانی زاویے سے جواب دیتا ہوں۔ آپ جو چاہیں مجھ سے کھل کر شیئر کر سکتے ہیں۔"
+          : "I listen to you carefully, estimate the emotional direction of your message, and then answer with gentle logic and sometimes a spiritual angle. You can talk to me about almost anything.";
+      }
+
+      // Are you human
+      else if (
+        lower.includes("are you human") ||
+        lower.includes("insan ho") ||
+        lower.includes("robot")
+      ) {
+        main = isUrdu
+          ? "نہیں، میں انسان نہیں ہوں — لیکن مجھے ایسے ڈیزائن کیا گیا ہے کہ میں انسانی جذبات کو تھوڑا سا understand کر کے ریئکٹ کر سکوں۔"
+          : "I’m not human, but I’m designed to understand human emotions a little bit and react in a caring way.";
+      }
+
+      // Default offline
+      else {
+        main = isUrdu
+          ? "فی الحال میں آف لائن ڈیمو موڈ میں ہوں، اس لیے اصل ماڈل سے connect نہیں ہو پا رہا، لیکن میں آپ کی بات سن رہا ہوں۔ جو بھی دل میں ہے آہستہ آہستہ لکھتے رہیں۔"
+          : "Right now I’m in offline demo mode, so I can’t reach the full model, but I’m still listening. Keep sharing whatever is on your heart.";
+      }
+
+      let faith = "";
+      if (beliefConfig.mode === "auto-islam") {
+        faith =
+          "ان شاء اللہ بہتر ہوگا — ‘إِنَّ اللّٰهَ مَعَ الصَّابِرِينَ’ (بیشک اللہ صبر کرنے والوں کے ساتھ ہے).";
+      } else if (beliefConfig.mode === "auto-all") {
+        faith =
+          "Hope is a quiet companion — take one small kind step for yourself today.";
+      } else if (beliefConfig.mode === "christianity") {
+        faith = "“Do not be afraid, for I am with you.” (Isaiah 41:10)";
+      } else if (beliefConfig.mode === "buddhism") {
+        faith = "Like the breath, this moment will also pass. Gently return to the present.";
+      } else if (beliefConfig.mode === "stoic") {
+        faith =
+          "Focus on what you can control — your intention and your next small action.";
+      }
+
+      return {
+        main_reply: main,
+        faith_suggestion: beliefConfig.mode === "off" ? "" : faith,
+        emotion_shift: estimateEmotionShift(userText),
+      };
+    }
+
+    // ===== ONLINE MODEL CALL (OpenRouter) =====
 
     const SYSTEM_PROMPT = `
 You are AURA-X Ω, a resonance-based synthetic emotion engine.
@@ -868,28 +988,18 @@ Rules for belief / faith_suggestion:
 - If belief mode = "auto-islam":
   * User is likely from Pakistan and Muslim.
   * Give 1 short line in Urdu with optional Quran / Hadith Arabic phrase.
-  * Example style: "ان شاء اللہ بہتر ہوگا — 'إِنَّ اللّٰهَ مَعَ الصَّابِرِينَ' (بیشک اللہ صبر کرنے والوں کے ساتھ ہے)."
 - If belief mode = "auto-all":
-  * Use whichever tradition gently matches the topic (Islam, Christianity, Buddhism, Stoic etc).
-  * Keep it one line, soft and non-judgmental.
-- If belief mode is a specific religion: use a suitable quote / reference from that tradition only.
+  * Use any gentle tradition that fits (Islam, Christianity, Buddhism, Stoic etc).
+- If belief mode is a specific religion: use that tradition only.
 
 Faith suggestion must be OPTIONAL and respectful, never forcing belief.
-If the user directly asks about religion, answer normally in main_reply, not faith_suggestion.
+If the user directly asks about religion, answer in main_reply, not faith_suggestion.
     `.trim();
 
     async function callModel(userText) {
+      // Offline demo
       if (!OPENROUTER_API_KEY) {
-        // Demo offline mode
-        return {
-          main_reply:
-            "Filhaal demo mode mein hoon is liye asal model se connect nahi ho pa raha, lekin main aap ki baat samajh raha hoon.",
-          faith_suggestion:
-            beliefConfig.mode === "auto-islam"
-              ? "ان شاء اللہ بہتر ہوگا — 'إِنَّ اللّٰهَ مَعَ الصَّابِرِينَ' (بیشک اللہ صبر کرنے والوں کے ساتھ ہے)."
-              : "",
-          emotion_shift: estimateEmotionShift(userText),
-        };
+        return offlineReply(userText);
       }
 
       const body = {
@@ -955,7 +1065,6 @@ If the user directly asks about religion, answer normally in main_reply, not fai
       try {
         const reply = await callModel(text);
 
-        // Update emotional resonance
         const shiftNum =
           typeof reply.emotion_shift === "number"
             ? reply.emotion_shift
@@ -963,18 +1072,14 @@ If the user directly asks about religion, answer normally in main_reply, not fai
         resonance = clamp01(resonance + shiftNum);
         updateResonanceUi();
 
-        // Build local reaction (independent of model)
         const reaction = buildReaction(text, shiftNum);
 
-        // Append main reply
         appendBubble("bot", reply.main_reply || "");
 
-        // Faith suggestion line
         if (beliefConfig.mode !== "off") {
           appendFaithBubble(reply.faith_suggestion || "");
         }
 
-        // Reaction bubble + voice
         if (reaction) {
           appendReactionBubble(reaction);
           speakReaction(reaction);
@@ -1003,7 +1108,7 @@ If the user directly asks about religion, answer normally in main_reply, not fai
       currentModel = modelSelectEl.value;
     });
 
-    // ===== INITIALISE =====
+    // ===== INIT =====
 
     function init() {
       metaLineEl.textContent = formatNowMeta();
