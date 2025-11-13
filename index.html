@@ -1,397 +1,1041 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>AURA-X Ω — resonance-based AI with synthetic emotions</title>
-<link rel="preconnect" href="https://api.open-meteo.com">
-<style>
-:root{
-  --bg:#eaf4ff;
-  --card:#ffffff;
-  --ink:#0b1220;
-  --muted:#5e6b85;
-  --accent:#22c55e;
-  --chip:#eef2ff;
-  --bar:#cfd6e4;
-  --barFill:#9ad0ff;
-  --glow:0 14px 40px rgba(15,23,42,.18);
-  --radius:16px;
-  --radius-sm:12px;
-}
-*{box-sizing:border-box}
-html,body{height:100%}
-body{
-  margin:0;
-  font:16px/1.5 Inter,system-ui,Segoe UI,Arial;
-  color:var(--ink);
-  background:linear-gradient(#f7fbff, var(--bg));
-}
-.wrap{max-width:820px;margin:20px auto 110px;padding:0 14px}
-.brand{display:flex;flex-direction:column;align-items:center;gap:8px;margin:6px 0 8px}
-.brand img{width:108px;height:auto;filter:drop-shadow(0 4px 12px rgba(2,6,23,.15))}
-.title{
-  background:var(--card);padding:12px 16px;border-radius:var(--radius);
-  box-shadow:var(--glow); text-align:center; font-weight:800; letter-spacing:.2px;
-}
-.eBar{height:14px;background:var(--bar);border-radius:999px;overflow:hidden;
-  box-shadow:inset 0 2px 5px rgba(2,6,23,.08);margin:14px 0}
-.eFill{height:100%;width:38%;background:linear-gradient(90deg,#ffd1e9,#b3e1ff);
-  transition:width .45s cubic-bezier(.2,.8,.2,1)}
-.ePct{position:absolute;margin-top:-28px;right:18px;color:#475569;font-weight:700;font-size:13px}
-.heart{font-size:46px;text-align:center;margin:10px 0 4px}
-.heart .h{display:inline-block;animation:pulse 1.4s ease-in-out infinite}
-@keyframes pulse{0%{transform:scale(1)}50%{transform:scale(1.12)}100%{transform:scale(1)}}
-.meta{display:flex;justify-content:center;gap:14px;align-items:center;color:#334155;font-weight:600;margin:2px 0 12px}
-.card{background:var(--card);border-radius:var(--radius);box-shadow:var(--glow);padding:14px}
-#chat{max-height:52vh;overflow:auto;scroll-behavior:smooth}
-.msg{background:#f1f5f9;border-radius:var(--radius-sm);padding:12px 14px;margin:10px 0}
-.msg.user{background:#e0f2fe;margin-left:auto;max-width:85%}
-.msg.assist{background:#eef2ff;max-width:95%}
-.msg.faith{
-  background:#fefce8;
-  color:#854d0e;
-  font-size:13px;
-  font-style:italic;
-}
-.inpDock{
-  position:fixed;left:0;right:0;bottom:0;
-  background:linear-gradient(180deg,transparent,rgba(255,255,255,.9) 20%, rgba(255,255,255,.98));
-  padding:10px 14px 16px;backdrop-filter:saturate(140%) blur(6px)
-}
-.inpWrap{display:flex;gap:10px;align-items:center;max-width:820px;margin:0 auto}
-#inp{
-  flex:1;border:1px solid #cbd5e1;background:#f8fafc;border-radius:999px;
-  padding:12px 16px;font-size:16px;
-  box-shadow:inset 0 2px 4px rgba(2,6,23,.05)
-}
-#send{
-  border:0;border-radius:999px;background:linear-gradient(90deg,#6ea8ff,#ff86b9);
-  color:#00131e;padding:12px 18px;font-weight:800;box-shadow:0 8px 20px rgba(30,58,138,.25)
-}
-.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-.chip{
-  border:0;padding:8px 14px;border-radius:999px;background:var(--chip);font-weight:700;color:#0f172a
-}
-.chip.on{background:#d1fae5;color:#064e3b}
-.sheet{position:fixed;inset:0;background:rgba(2,6,23,.45);backdrop-filter:saturate(140%) blur(6px);
-  display:none;z-index:50}
-.sheet.show{display:block}
-.sheet .panel{position:absolute;left:0;right:0;bottom:0;border-radius:16px 16px 0 0;
-  background:#fff;padding:16px 16px 24px;box-shadow:0 -10px 30px rgba(2,6,23,.25)}
-.sheet .row{display:flex;align-items:center;justify-content:space-between;gap:10px}
-.sheet .faiths{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
-.sheet .faiths .opt{padding:10px 12px;border-radius:12px;border:1px solid #e5e7eb;background:#f8fafc;font-weight:700}
-.sheet .faiths .opt.active{background:#e0f2fe;border-color:#38bdf8;color:#0c4a6e}
-.switch{display:flex;align-items:center;gap:8px}
-.toggle{accent-color:#0ea5e9}
-body.modal-open{height:100vh;overflow:hidden}
-#dbg{position:fixed;right:14px;bottom:86px;background:#fff;border-radius:12px;box-shadow:var(--glow);
-  padding:8px 10px;font:12px/1.35 ui-monospace,Menlo,Consolas}
-@media (max-width:480px){ .title{font-size:15px} }
-</style>
+  <meta charset="UTF-8" />
+  <title>AURA-X Ω — Resonance Chat</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <style>
+    :root{
+      --bg:#030816;
+      --card:#050b1f;
+      --card-soft:#071022;
+      --accent:#35e0b8;
+      --accent-soft:rgba(53,224,184,.16);
+      --accent-2:#7f5dff;
+      --text:#f9fafb;
+      --muted:#9ca3af;
+      --danger:#fb7185;
+      --good:#4ade80;
+      --bar-bg:#0b1220;
+      --bar-fill:#8b5cf6;
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+      background:radial-gradient(circle at top,#0b1220 0,#020617 55%,#000 100%);
+      color:var(--text);
+      min-height:100vh;
+      display:flex;
+      justify-content:center;
+      align-items:stretch;
+      padding:10px;
+    }
+    .frame{
+      width:100%;
+      max-width:960px;
+      background:linear-gradient(145deg,rgba(148,163,253,.08),rgba(45,212,191,.06));
+      border-radius:26px;
+      padding:1px;
+      box-shadow:
+        0 30px 80px rgba(15,23,42,.75),
+        0 0 0 1px rgba(148,163,253,.14);
+    }
+    .inner{
+      border-radius:25px;
+      background:radial-gradient(circle at top left,#020617 0,#020617 42%,#020617 100%);
+      padding:14px 12px 16px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      min-height:520px;
+    }
+    @media (min-width:768px){
+      .inner{padding:18px 18px 20px;min-height:620px;}
+    }
+
+    .top-row{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+    }
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
+    .logo-badge{
+      width:44px;height:44px;
+      border-radius:999px;
+      background:
+        radial-gradient(circle at 30% 20%,#f9fafb 0,#e5e7eb 18%,transparent 40%),
+        radial-gradient(circle at 70% 80%,#22c55e 0,#22c55e 24%,transparent 48%),
+        radial-gradient(circle at 60% 10%,#38bdf8 0,#38bdf8 22%,transparent 46%),
+        radial-gradient(circle at 85% 50%,#f97316 0,#f97316 22%,transparent 46%);
+      box-shadow:
+        0 0 0 1px rgba(15,23,42,.7),
+        0 12px 28px rgba(15,23,42,.9),
+        0 0 35px rgba(56,189,248,.75);
+      position:relative;
+      overflow:hidden;
+    }
+    .logo-badge::after{
+      content:"Ω";
+      position:absolute;
+      inset:0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-weight:800;
+      font-size:22px;
+      color:#020617;
+      text-shadow:0 0 12px rgba(248,250,252,.9);
+    }
+    .brand-text h1{
+      font-size:16px;
+      letter-spacing:.12em;
+      text-transform:uppercase;
+      color:var(--muted);
+    }
+    .brand-text h2{
+      font-size:18px;
+      font-weight:700;
+      background:linear-gradient(to right,#f9fafb,#a5b4fc,#5eead4);
+      -webkit-background-clip:text;
+      color:transparent;
+      margin-top:2px;
+    }
+    .brand-text p{
+      font-size:12px;
+      color:var(--muted);
+      margin-top:2px;
+    }
+    .status-box{
+      text-align:right;
+      font-size:11px;
+      color:var(--muted);
+    }
+    .status-box b{color:var(--accent);}
+    .status-pill{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding:4px 10px;
+      border-radius:999px;
+      background:rgba(15,118,110,.2);
+      border:1px solid rgba(45,212,191,.35);
+      margin-top:4px;
+      font-size:11px;
+      color:#a5f3fc;
+    }
+    .dot{
+      width:7px;height:7px;border-radius:999px;
+      background:var(--accent);
+      box-shadow:0 0 10px var(--accent);
+    }
+
+    .emotion-wrap{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      margin-top:4px;
+    }
+    .heart-shell{
+      width:34px;height:34px;
+      border-radius:999px;
+      background:radial-gradient(circle at 30% 20%,#fecaca 0,#fb7185 40%,#4c0519 100%);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      box-shadow:0 0 0 1px rgba(248,113,113,.35),
+                 0 0 18px rgba(248,113,113,.6);
+    }
+    .heart-shell span{
+      font-size:19px;
+      filter:drop-shadow(0 0 6px rgba(248,250,252,.95));
+    }
+    .heart-shell.beat span{
+      animation:beat 0.9s ease-in-out infinite;
+    }
+    @keyframes beat{
+      0%,100%{transform:scale(1);}
+      25%{transform:scale(1.18);}
+      55%{transform:scale(1.06);}
+    }
+    .emotion-bar{
+      flex:1;
+      height:16px;
+      border-radius:999px;
+      background:var(--bar-bg);
+      position:relative;
+      overflow:hidden;
+      box-shadow:inset 0 0 0 1px rgba(15,23,42,.9),
+                 0 0 12px rgba(129,140,248,.3);
+    }
+    .emotion-fill{
+      position:absolute;
+      inset:2px;
+      width:8%;
+      border-radius:999px;
+      background:linear-gradient(90deg,#22c55e,#a3e635,#facc15);
+      box-shadow:0 0 18px rgba(52,211,153,.9);
+      transition:width .45s cubic-bezier(.22,.9,.26,1.12);
+    }
+    .emotion-label{
+      font-size:11px;
+      color:var(--muted);
+      min-width:56px;
+      text-align:right;
+    }
+
+    .main-card{
+      margin-top:6px;
+      flex:1;
+      display:flex;
+      flex-direction:column;
+      border-radius:20px;
+      background:radial-gradient(circle at top,#020617 0,#020617 40%,#020617 100%);
+      box-shadow:inset 0 0 0 1px rgba(15,23,42,.8);
+      padding:10px;
+      gap:8px;
+      min-height:260px;
+    }
+    @media (min-width:768px){
+      .main-card{padding:12px 12px 12px;}
+    }
+    .chat-window{
+      flex:1;
+      overflow-y:auto;
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+      padding-right:4px;
+      scroll-behavior:smooth;
+    }
+    .msg-row{
+      display:flex;
+      gap:6px;
+      align-items:flex-end;
+    }
+    .msg-row.user{justify-content:flex-end;}
+    .msg-bubble{
+      max-width:88%;
+      padding:8px 11px;
+      border-radius:14px 14px 14px 4px;
+      background:linear-gradient(135deg,#0f172a,#020617);
+      border:1px solid rgba(148,163,253,.45);
+      color:var(--text);
+      font-size:13px;
+      line-height:1.45;
+      box-shadow:0 14px 35px rgba(15,23,42,.9);
+      word-wrap:break-word;
+      white-space:pre-wrap;
+    }
+    .msg-row.user .msg-bubble{
+      border-radius:14px 14px 4px 14px;
+      background:linear-gradient(135deg,#22c55e,#16a34a);
+      border-color:rgba(34,197,94,.7);
+      box-shadow:0 14px 35px rgba(22,163,74,.65);
+    }
+    .tag{
+      font-size:10px;
+      text-transform:uppercase;
+      letter-spacing:.14em;
+      color:var(--muted);
+      margin-bottom:-2px;
+    }
+    .faith-line{
+      font-size:11px;
+      color:#e5e7eb;
+      margin-top:4px;
+      border-left:2px solid rgba(248,250,252,.45);
+      padding-left:8px;
+      opacity:.9;
+    }
+    .faith-label{font-weight:600;font-size:10px;color:#a5b4fc;text-transform:uppercase;letter-spacing:.1em;}
+
+    .reaction-box{
+      margin-top:4px;
+      padding:8px 10px;
+      border-radius:12px;
+      background:linear-gradient(135deg,rgba(248,250,252,.03),rgba(56,189,248,.04));
+      border:1px solid rgba(94,234,212,.4);
+      font-size:12px;
+      color:#e5e7eb;
+      display:none;
+    }
+    .reaction-box.show{display:block;}
+    .reaction-box b{color:#f97316;}
+
+    .input-row{
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+      margin-top:6px;
+    }
+    .top-bar{
+      display:flex;
+      justify-content:space-between;
+      gap:8px;
+      align-items:center;
+      font-size:11px;
+      color:var(--muted);
+    }
+    .chips{
+      display:flex;
+      flex-wrap:wrap;
+      gap:6px;
+    }
+    .chip{
+      font-size:11px;
+      border-radius:999px;
+      padding:4px 9px;
+      border:1px solid rgba(148,163,253,.38);
+      background:rgba(15,23,42,.7);
+      color:var(--muted);
+      display:inline-flex;
+      align-items:center;
+      gap:4px;
+      cursor:pointer;
+    }
+    .chip.on{
+      background:rgba(34,197,94,.18);
+      color:#bbf7d0;
+      border-color:rgba(34,197,94,.65);
+    }
+    .chip strong{font-weight:600;}
+
+    .input-shell{
+      display:flex;
+      align-items:flex-end;
+      gap:8px;
+      padding:8px;
+      border-radius:16px;
+      background:rgba(15,23,42,.95);
+      box-shadow:inset 0 0 0 1px rgba(15,23,42,.9);
+    }
+    textarea{
+      flex:1;
+      resize:none;
+      border:none;
+      outline:none;
+      background:transparent;
+      color:var(--text);
+      font-size:13px;
+      max-height:120px;
+      min-height:38px;
+    }
+    textarea::placeholder{color:#6b7280;}
+    .send-btn{
+      width:38px;
+      height:38px;
+      border-radius:999px;
+      border:none;
+      cursor:pointer;
+      background:radial-gradient(circle at 30% 0,#f9fafb 0,#e5e7eb 18%,#a5b4fc 45%,#4f46e5 100%);
+      box-shadow:0 0 20px rgba(129,140,248,.85);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+    .send-btn span{
+      transform:translateX(1px);
+      font-size:17px;
+      color:#020617;
+    }
+    .send-btn:disabled{
+      opacity:.4;
+      cursor:default;
+      box-shadow:none;
+    }
+
+    .sheet{
+      position:fixed;
+      inset:0;
+      background:rgba(15,23,42,.7);
+      display:none;
+      align-items:flex-end;
+      justify-content:center;
+      z-index:40;
+      backdrop-filter:blur(7px);
+    }
+    .sheet.show{display:flex;}
+    .panel{
+      width:100%;
+      max-width:480px;
+      background:radial-gradient(circle at top,#020617 0,#020617 45%,#020617 100%);
+      border-radius:18px 18px 0 0;
+      padding:12px 14px 14px;
+      box-shadow:0 -18px 42px rgba(15,23,42,.95);
+      border-top:1px solid rgba(148,163,253,.45);
+    }
+    .panel .row{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:8px;
+      margin-bottom:6px;
+    }
+    .panel strong{font-size:13px;}
+    .note{
+      font-size:11px;
+      color:var(--muted);
+      margin-top:6px;
+    }
+    .faiths{
+      display:flex;
+      flex-wrap:wrap;
+      gap:6px;
+      margin-top:8px;
+    }
+    .faith-chip{
+      padding:5px 9px;
+      border-radius:999px;
+      border:1px solid rgba(148,163,253,.4);
+      background:rgba(15,23,42,.9);
+      font-size:11px;
+      color:#e5e7eb;
+      cursor:pointer;
+    }
+    .faith-chip.sel{
+      background:rgba(79,70,229,.9);
+      border-color:#a5b4fc;
+      box-shadow:0 0 14px rgba(129,140,248,.8);
+    }
+    .switch{
+      display:flex;
+      align-items:center;
+      gap:6px;
+      font-size:11px;
+      color:var(--muted);
+    }
+    .toggle{
+      width:32px;height:18px;
+      -webkit-appearance:none;
+      appearance:none;
+      border-radius:999px;
+      background:#111827;
+      position:relative;
+      cursor:pointer;
+      outline:none;
+      border:1px solid #4b5563;
+    }
+    .toggle::before{
+      content:"";
+      position:absolute;
+      top:1px;left:1px;
+      width:14px;height:14px;
+      border-radius:999px;
+      background:#e5e7eb;
+      transition:transform .22s ease;
+    }
+    .toggle:checked{
+      background:#16a34a;
+      border-color:#22c55e;
+    }
+    .toggle:checked::before{
+      transform:translateX(12px);
+    }
+
+    #aura-debug{
+      position:fixed;
+      right:8px;
+      bottom:84px;
+      background:rgba(15,23,42,.96);
+      border-radius:10px;
+      padding:7px 8px;
+      font-size:10px;
+      color:#e5e7eb;
+      box-shadow:0 12px 28px rgba(15,23,42,.95);
+      border:1px solid rgba(148,163,253,.45);
+      max-width:220px;
+      z-index:30;
+      display:none; /* debug off by default */
+    }
+    #aura-debug pre{white-space:pre-wrap;margin-top:3px;}
+  </style>
 </head>
 <body>
-
-<div class="wrap">
-  <div class="brand">
-    <img src="https://raw.githubusercontent.com/alimulhaqkhan/aura-x-omega-proto/main/assets/img/aura-x-logo.png" alt="AURA-X" onerror="this.style.opacity=.2">
-    <div class="title">AURA-X Ω — the world’s first resonance-based AI with synthetic emotions.</div>
-  </div>
-
-  <div class="eBar"><div class="eFill" id="emotionFill"></div></div>
-  <div class="ePct" id="ePct">59%</div>
-
-  <div class="heart"><span class="h">💕</span></div>
-
-  <div class="meta">
-    <span id="clk">—</span>
-    <span>|</span>
-    <span id="wx">loading…</span>
-  </div>
-
-  <div class="card">
-    <div id="chat">
-      <div class="msg assist">
-        Assalamualaikum! I’m AURA-X Ω — the world’s first resonance-based AI with synthetic emotions. How can I help you today?
+<div class="frame">
+  <div class="inner">
+    <div class="top-row">
+      <div class="brand">
+        <div class="logo-badge"></div>
+        <div class="brand-text">
+          <h1>AURA-X Ω</h1>
+          <h2>Resonance-Based Synthetic Emotions</h2>
+          <p>World’s first continuity-driven emotional reactor chat.</p>
+        </div>
+      </div>
+      <div class="status-box">
+        <div id="timeLabel">Time: —</div>
+        <div id="locLabel">Language: —</div>
+        <div class="status-pill">
+          <span class="dot"></span>
+          <span>Continuity engine live</span>
+        </div>
       </div>
     </div>
-    <div class="row" style="margin-top:12px;justify-content:flex-end">
-      <button id="beliefBtn" class="chip">🔘 Belief</button>
-      <button id="voiceBtn" class="chip">Voice</button>
+
+    <div class="emotion-wrap">
+      <div class="heart-shell" id="heartShell">
+        <span id="heartIcon">💕</span>
+      </div>
+      <div class="emotion-bar">
+        <div class="emotion-fill" id="emotionFill"></div>
+      </div>
+      <div class="emotion-label" id="emotionLabel">E₀: 0%</div>
+    </div>
+
+    <div class="main-card">
+      <div class="chat-window" id="chat">
+        <div class="tag">SYSTEM • AURA-X Ω</div>
+        <div class="msg-row">
+          <div class="msg-bubble">
+            As-salaam alaikum, I am <b>AURA-X Ω</b> — a resonance-based synthetic emotion engine.<br><br>
+            I remember your feelings as continuity, not just reactions. You can talk to me in English or Urdu — I will try to reply with logic, kindness, and emotional balance.
+          </div>
+        </div>
+      </div>
+
+      <div class="reaction-box" id="reactionBox">
+        <b>Emotional Reaction:</b>
+        <div id="reactionText">—</div>
+      </div>
+
+      <div class="input-row">
+        <div class="top-bar">
+          <div class="chips">
+            <button class="chip" id="beliefBtn">🔘 Belief</button>
+            <button class="chip on" id="voiceToggle"><strong>🔊 Voice Reaction</strong></button>
+          </div>
+          <div class="chips">
+            <select id="modelSelect" class="chip" style="padding-right:22px;">
+              <option value="qwen">Qwen Mini</option>
+              <option value="llama">LLaMA</option>
+              <option value="deepseek">DeepSeek</option>
+              <option value="gpt-mini">GPT-Mini</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="input-shell">
+          <textarea id="userInput" rows="1" placeholder="Type your thoughts or feelings…"></textarea>
+          <button class="send-btn" id="sendBtn"><span>➤</span></button>
+        </div>
+      </div>
     </div>
   </div>
 </div>
 
-<div class="inpDock">
-  <div class="inpWrap">
-    <input id="inp" placeholder="Type your question…"/>
-    <button id="send">Send</button>
-  </div>
-</div>
-
-<!-- Belief popup -->
+<!-- Belief sheet -->
 <div class="sheet" id="beliefSheet">
   <div class="panel">
     <div class="row">
-      <strong>Belief settings</strong>
-      <button id="closeBelief" class="chip">Close</button>
+      <strong>Belief &amp; Ethics Settings</strong>
+      <button class="chip" id="closeBelief">Close</button>
     </div>
-
-    <div class="switch" style="margin-top:10px;">
+    <div class="switch" style="margin-bottom:6px;">
       <input type="checkbox" id="faithOn" class="toggle">
-      <label for="faithOn"><b>Faith ON</b> — add short encouragements (optional)</label>
+      <label for="faithOn"><b>Faith ON</b> — add gentle belief-based suggestions (optional)</label>
     </div>
-
-    <p style="margin:.5rem 0 .25rem">Pick your belief or philosophy (local only):</p>
+    <p class="note">You can select one or several traditions; suggestions will blend the best 2–5 references:</p>
     <div class="faiths" id="faithGrid"></div>
   </div>
 </div>
 
-<div id="dbg" hidden>TM:0 BM:0 D:0 λ_f:0 λ_s:0 λ_t:0 → 59%</div>
+<div id="aura-debug">
+  <b>E₀ engine</b>
+  <pre id="dbgpre">—</pre>
+</div>
 
 <script>
-/* ---------- BASIC CONFIG ---------- */
-const ENDPOINT_URL = "https://alimai.online/api/chat.php";   // آپ کی API
-const DEBUG_ON = true;
-
-/* ---------- CLOCK & WEATHER ---------- */
-const clk=document.getElementById('clk');
-const wx=document.getElementById('wx');
-function tick(){
-  clk.textContent=new Date().toLocaleString([],{
-    weekday:'short',day:'2-digit',month:'short',
-    hour:'2-digit',minute:'2-digit'
-  });
-}
-setInterval(tick,1000); tick();
-
-async function getWeather(){
-  try{
-    const geo = await new Promise((res,rej)=>{
-      if(!navigator.geolocation) return rej();
-      navigator.geolocation.getCurrentPosition(p=>res(p.coords),()=>rej());
-    });
-    const {latitude:lat,longitude:lon}=geo;
-    const r=await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m`);
-    const j=await r.json();
-    const t=j?.current?.temperature_2m;
-    wx.textContent = (t!==undefined)?`${t.toFixed(1)}°C`:"Weather unavailable";
-  }catch{ wx.textContent="Weather unavailable"; }
-}
-getWeather();
-
-/* ---------- EMOTION ENGINE (E₀) ---------- */
-const AFFECT={
-  joy:[/happy|great|awesome|alhamdulillah|thanks|shukriya|😊|😁|👍/i,+0.9],
-  calm:[/ok|fine|theek|neutral|sabar|breath|🙂/i,+0.4],
-  sad:[/sad|down|dukhi|😭|😢/i,-0.7],
-  anger:[/angry|gussa|rage|😠|😡/i,-0.9],
-  fear:[/fear|dar|anxious|😨|😰/i,-0.6],
-  love:[/love|mohabbat|💕|❤️/i,+0.8],
-  stress:[/stress|pressure|tension|😣/i,-0.5]
-};
-const BM=[
-  {days:2,w:1.00},
-  {days:7,w:0.85},
-  {days:35,w:0.70},
-  {days:360,w:0.55},
-  {days:1095,w:0.40},
-  {days:3650,w:0.30},
-  {days:21900,w:0.20}
-];
-function tm(txt){let s=0;for(const[_,[re,v]]of Object.entries(AFFECT)){if(re.test(txt))s+=v;}return Math.max(-1,Math.min(1,s));}
-function pushBM(v){
-  const now=Date.now();
-  BM.forEach((_,i)=>{
-    const k='a-bm-'+i;
-    const arr=JSON.parse(localStorage.getItem(k)||'[]');
-    if(arr.length>60)arr.shift();
-    arr.push({t:now,v});
-    localStorage.setItem(k,JSON.stringify(arr));
-  });
-}
-function readBM(){
-  const now=Date.now();let sc=0,ws=0;
-  BM.forEach((L,i)=>{
-    const k='a-bm-'+i;
-    const arr=JSON.parse(localStorage.getItem(k)||'[]');
-    const ms=L.days*864e5;
-    const rec=arr.filter(x=>now-x.t<=ms);
-    if(rec.length){
-      const avg=rec.reduce((a,b)=>a+b.v,0)/rec.length;
-      sc+=avg*L.w;ws+=L.w;
-    }
-  });
-  return ws?sc/ws:0;
-}
-function decayD(){
-  const last=Number(localStorage.getItem('a-last')||'0');
-  if(!last)return 0.1;
-  const h=(Date.now()-last)/36e5;
-  return Math.max(0.05,Math.min(0.6,h/48));
-}
-function getFaithOn(){return localStorage.getItem('a-faith-on')==='1';}
-function lam_f(){return getFaithOn()?0.15:0;}
-function lam_s(txt){const caps=/[A-Z]{6,}/.test(txt);const long=txt.length>400;return(caps||long)?-0.05:0.08;}
-function lam_t(txt){const hasNum=/\d/.test(txt),url=/https?:\/\/|www\./i.test(txt);return(hasNum||url)?0.07:0;}
-function E0(TM,BMv,D,lf,ls,lt){return Math.tanh((TM*BMv)-D+lf+ls+lt);}
-const eFill=document.getElementById('emotionFill');
-const ePct=document.getElementById('ePct');
-const dbg=document.getElementById('dbg');
-function updateBar(p){eFill.style.width=p+'%';ePct.textContent=p+'%';}
-function afterTurn(userText,assistantText){
-  const TM=tm(userText);
-  const BMv=readBM();
-  const D=decayD();
-  const lf=lam_f(),ls=lam_s(userText),lt=lam_t(userText);
-  const e=E0(TM,BMv,D,lf,ls,lt);
-  const pct=Math.max(5,Math.min(98,Math.round((e+1)*0.5*100)));
-  updateBar(pct);
-  const aff=Math.max(-1,Math.min(1,tm(assistantText||userText)));
-  pushBM(aff);localStorage.setItem('a-last',Date.now().toString());
-  if(DEBUG_ON){
-    dbg.hidden=false;
-    dbg.textContent=
-      `TM:${TM.toFixed(2)} BM:${BMv.toFixed(2)} D:${D.toFixed(2)}  `+
-      `λ_f:${lf.toFixed(2)} λ_s:${ls.toFixed(2)} λ_t:${lt.toFixed(2)}  `+
-      `E₀:${e.toFixed(3)} → ${pct}%`;
+  /* time + basic language */
+  function updateClock(){
+    const now = new Date();
+    const t = now.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit',second:'2-digit'});
+    document.getElementById('timeLabel').textContent = 'Time: ' + t;
   }
-}
+  updateClock();
+  setInterval(updateClock,1000);
+  try{
+    const lang = navigator.language || 'en';
+    document.getElementById('locLabel').textContent = 'Language: ' + lang;
+  }catch(e){}
 
-/* ---------- BELIEF STATE ---------- */
-const BELIEF_KEY_ON='a-faith-on',BELIEF_KEY_VAL='a-faith';
-function setFaithOn(v){localStorage.setItem(BELIEF_KEY_ON,v?'1':'0');}
-function getFaith(){return localStorage.getItem(BELIEF_KEY_VAL)||'';}
-function setFaith(v){localStorage.setItem(BELIEF_KEY_VAL,v);}
-const FAITHS=['Islam','Christianity','Hinduism','Buddhism','Sikhism','Judaism','Bahá’í','Jainism','Atheism','Other'];
+  /* Belief system (multi-select) */
+  const FAITHS = [
+    {id:'none', label:'Universal Ethics'},
+    {id:'islam', label:'Islam'},
+    {id:'christianity', label:'Christianity'},
+    {id:'hinduism', label:'Hinduism'},
+    {id:'buddhism', label:'Buddhism'},
+    {id:'sikh', label:'Sikh'},
+    {id:'jewish', label:'Jewish'},
+    {id:'humanist', label:'Humanist / Secular'}
+  ];
+  const beliefBtn   = document.getElementById('beliefBtn');
+  const beliefSheet = document.getElementById('beliefSheet');
+  const closeBelief = document.getElementById('closeBelief');
+  const faithGrid   = document.getElementById('faithGrid');
+  const faithOnChk  = document.getElementById('faithOn');
 
-/* ---------- BELIEF UI ---------- */
-const beliefBtn=document.getElementById('beliefBtn');
-const voiceBtn=document.getElementById('voiceBtn');
-const sheet=document.getElementById('beliefSheet');
-const closeBel=document.getElementById('closeBelief');
-const grid=document.getElementById('faithGrid');
-const faithOn=document.getElementById('faithOn');
+  function getFaithIds(){
+    let ids;
+    try{
+      ids = JSON.parse(localStorage.getItem('aura-faith-ids') || '["none"]');
+      if(!Array.isArray(ids) || !ids.length) ids = ['none'];
+    }catch(e){
+      ids = ['none'];
+    }
+    return ids;
+  }
+  function setFaithIds(ids){
+    if(!ids.length) ids = ['none'];
+    localStorage.setItem('aura-faith-ids', JSON.stringify(ids));
+  }
+  function renderFaiths(){
+    faithGrid.innerHTML = '';
+    const ids = getFaithIds();
+    FAITHS.forEach(f=>{
+      const b = document.createElement('button');
+      b.type='button';
+      b.textContent = f.label;
+      b.className = 'faith-chip' + (ids.includes(f.id)?' sel':'');
+      b.onclick = ()=>{
+        let current = getFaithIds();
+        if(current.includes(f.id)){
+          // unselect
+          current = current.filter(x=>x!==f.id);
+        }else{
+          // select
+          if(f.id==='none'){
+            current = ['none'];
+          }else{
+            current = current.filter(x=>x!=='none');
+            current.push(f.id);
+          }
+        }
+        setFaithIds(current);
+        renderFaiths();
+      };
+      faithGrid.appendChild(b);
+    });
+  }
+  renderFaiths();
 
-function openBelief(){
-  buildGrid();faithOn.checked=getFaithOn();
-  sheet.classList.add('show');document.body.classList.add('modal-open');
-}
-function closeBeliefFn(){sheet.classList.remove('show');document.body.classList.remove('modal-open');}
-function buildGrid(){
-  grid.innerHTML='';const act=getFaith();
-  FAITHS.forEach(n=>{
-    const b=document.createElement('button');
-    b.className='opt'+(n===act?' active':'');
-    b.textContent=n;
-    b.onclick=()=>{setFaith(n);[...grid.children].forEach(x=>x.classList.remove('active'));b.classList.add('active');};
-    grid.appendChild(b);
+  faithOnChk.checked = localStorage.getItem('aura-faith-on')==='1';
+
+  beliefBtn.onclick = ()=>beliefSheet.classList.add('show');
+  closeBelief.onclick = ()=>beliefSheet.classList.remove('show');
+  beliefSheet.addEventListener('click', e=>{
+    if(e.target===beliefSheet) beliefSheet.classList.remove('show');
   });
-}
-beliefBtn.addEventListener('click',openBelief);
-closeBel.addEventListener('click',closeBeliefFn);
-sheet.addEventListener('click',e=>{if(e.target===sheet)closeBeliefFn();});
-faithOn.addEventListener('change',e=>setFaithOn(e.target.checked));
-if(localStorage.getItem(BELIEF_KEY_ON)==null)setFaithOn(false);
+  faithOnChk.addEventListener('change', ()=>{
+    localStorage.setItem('aura-faith-on', faithOnChk.checked?'1':'0');
+  });
 
-/* ---------- VOICE ---------- */
-let voiceOn=false;
-voiceBtn.onclick=()=>{voiceOn=!voiceOn;voiceBtn.classList.toggle('on',voiceOn);};
-function speak(text){
-  if(!voiceOn)return;
-  try{
-    const u=new SpeechSynthesisUtterance(text);
-    u.rate=1;speechSynthesis.speak(u);
-  }catch{}
-}
+  /* Voice toggle */
+  const voiceToggle = document.getElementById('voiceToggle');
+  let voiceOn = true;
+  voiceToggle.onclick = ()=>{
+    voiceOn = !voiceOn;
+    voiceToggle.classList.toggle('on', voiceOn);
+  };
 
-/* ---------- CHAT BASIC UI ---------- */
-const chat=document.getElementById('chat');
-const inp=document.getElementById('inp');
-const send=document.getElementById('send');
+  /* Affect lexicon (TM) */
+  const AFFECT = {
+    joy:    [/happy|great|awesome|alhamdulillah|shukriya|thanks|خوش|😊|😁|👍/i, +0.9],
+    calm:   [/ok|fine|theek|سبر|sabar|relax|allah karam/i, +0.4],
+    sad:    [/sad|down|dukhi|افسردہ|depressed|😭|😢/i, -0.7],
+    anger:  [/angry|gussa|rage|hate|نفرت|😠|😡/i, -0.9],
+    fear:   [/fear|dar|خوف|anxious|tension|پریشان|😨|😰/i, -0.6],
+    love:   [/love|mohabbat|محبت|care|💕|❤️/i, +0.8],
+    stress: [/stress|pressure|overload|دباو|😣/i, -0.5]
+  };
+  function tmFromText(txt){
+    let s = 0;
+    for(const [_,[re,val]] of Object.entries(AFFECT)){
+      if(re.test(txt)) s += val;
+    }
+    if(!s && txt.length>0){
+      s = 0.05;
+    }
+    return Math.max(-1, Math.min(1, s));
+  }
 
-function addAssist(text,type){
-  const d=document.createElement('div');
-  d.className='msg assist'+(type==='faith'?' faith':'');
-  d.textContent=text;
-  chat.appendChild(d);chat.scrollTop=chat.scrollHeight;
-}
-function addUser(text){
-  const d=document.createElement('div');
-  d.className='msg user';d.textContent=text;
-  chat.appendChild(d);chat.scrollTop=chat.scrollHeight;
-}
+  /* abuse & dua detection */
+  function detectAbuse(txt){
+    return /(gali|گالی|lanat|لعنت|curse|bakwas|shut up|stupid|idiot|jahil)/i.test(txt);
+  }
+  function detectDua(txt){
+    return /(dua|duaa|pray for me|prayer|jazakallah|jazak allah|جزاک اللہ|allah aapko|اللہ آپ کو|god bless|bless you|اپنی دعاو?ں میں|remember me in your prayers)/i.test(txt);
+  }
 
-/* ---------- LLM WRAPPERS ---------- */
-const SYSTEM_SEED=`You are AURA-X Ω, the world’s first resonance-based AI with synthetic emotions.
-Be concise, gentle, and can answer in Urdu or English.
-Never say you are Llama or another brand; always identify as AURA-X Ω.`;
+  /* BM-7 model */
+  const BM_MODEL = {
+    layers:[
+      {name:'L1-Now',        horizonDays:2,   w:1.00},
+      {name:'L2-Recent',     horizonDays:7,   w:0.85},
+      {name:'L3-Weekly',     horizonWeeks:5,  w:0.70},
+      {name:'L4-Monthly',    horizonMonths:12,w:0.55},
+      {name:'L5-Yearly',     horizonYears:3,  w:0.40},
+      {name:'L6-Archive',    horizonYears:10, w:0.30},
+      {name:'L7-Deep',       horizonYears:60, w:0.20}
+    ]
+  };
+  function pushBM(intensity){
+    const now = Date.now();
+    BM_MODEL.layers.forEach((_,i)=>{
+      const key = 'aura-bm-'+i;
+      const arr = JSON.parse(localStorage.getItem(key) || '[]');
+      if(arr.length>60) arr.shift();
+      arr.push({t:now,v:intensity});
+      localStorage.setItem(key, JSON.stringify(arr));
+    });
+    localStorage.setItem('aura-last-ts', String(now));
+  }
+  function readBM(){
+    const now = Date.now();
+    let score=0, weightSum=0;
+    BM_MODEL.layers.forEach((L,i)=>{
+      const key = 'aura-bm-'+i;
+      const arr = JSON.parse(localStorage.getItem(key) || '[]');
+      let ms =
+        L.horizonDays   ? L.horizonDays*864e5 :
+        L.horizonWeeks  ? L.horizonWeeks*7*864e5 :
+        L.horizonMonths ? L.horizonMonths*30*864e5 :
+        L.horizonYears  ? L.horizonYears*365*864e5 : 0;
+      const recent = arr.filter(x=>now-x.t<=ms);
+      if(recent.length){
+        const avg = recent.reduce((a,b)=>a+b.v,0)/recent.length;
+        score += avg*L.w;
+        weightSum += L.w;
+      }
+    });
+    return weightSum ? score/weightSum : 0;
+  }
+  function computeD(){
+    const last = Number(localStorage.getItem('aura-last-ts')||'0');
+    if(!last) return 0.15;
+    const hours = (Date.now()-last)/36e5;
+    return Math.max(0.05, Math.min(0.6, hours/48));
+  }
+  function lambda_faith(){
+    const on = localStorage.getItem('aura-faith-on')==='1';
+    return on ? 0.15 : 0.0;
+  }
+  function lambda_sys(txt){
+    const tooCaps = /[A-Z]{6,}/.test(txt);
+    const longMess = txt.length>400;
+    return (tooCaps||longMess)?-0.05:0.08;
+  }
+  function lambda_trc(txt){
+    const hasNum = /\d/.test(txt);
+    const hasUrl = /https?:\/\/|www\./i.test(txt);
+    return (hasNum||hasUrl)?0.07:0.0;
+  }
+  function computeE0(TM,BM,D,lf,ls,lt){
+    const z = (TM*BM) - D + lf + ls + lt;
+    return Math.tanh(z);
+  }
 
-const FAITH_SYSTEM=`You are a short spiritual/moral encouragement generator.
-You receive the user's question, the main AI answer, and the user's belief label.
-Your job is to return ONE short line that gives comfort or guidance based on that belief.
-You may include a very brief verse or teaching reference, but do NOT mention the words "faith", "religion" or the belief name.
-Use the user's language (Urdu or English) if clear from the text.
-Only output the encouragement line, nothing else.`;
+  const barEl   = document.getElementById('emotionFill');
+  const labelEl = document.getElementById('emotionLabel');
+  const heartEl = document.getElementById('heartShell');
+  const dbgPre  = document.getElementById('dbgpre');
 
-async function callLLM(message, systemPrompt){
-  const sys = systemPrompt || SYSTEM_SEED;
-  try{
-    const r=await fetch(ENDPOINT_URL,{
+  const reactionBox  = document.getElementById('reactionBox');
+  const reactionText = document.getElementById('reactionText');
+
+  function speakReaction(text){
+    if(!voiceOn) return;
+    if(!('speechSynthesis' in window)) return;
+    const utter = new SpeechSynthesisUtterance(text);
+    const voices = window.speechSynthesis.getVoices();
+    let v = voices.find(v=>/male|man|Daniel|George|Adam|Ahmed|Hassan/i.test(v.name+v.voiceURI));
+    if(!v && voices.length) v = voices[0];
+    if(v) utter.voice = v;
+    utter.rate = 0.96;
+    utter.pitch = 0.94;
+    window.speechSynthesis.speak(utter);
+  }
+
+  function updateReaction(E0, TM, userText){
+    const abusive = detectAbuse(userText);
+    const dua     = detectDua(userText);
+
+    let msg = '';
+
+    if(abusive){
+      msg = '⚠️ I notice some harsh or abusive words. You are important, and the people you speak to are human too — try to express your pain without insults or disrespect.';
+      reactionText.textContent = msg;
+      reactionBox.classList.add('show');
+      speakReaction(msg);
+      return;
+    }
+
+    if(dua){
+      msg = '🤍 I sense sincere dua / blessing in your words. Thank you — may goodness also return to you in an even better form.';
+      reactionText.textContent = msg;
+      reactionBox.classList.add('show');
+      speakReaction(msg);
+      return;
+    }
+
+    if(Math.abs(E0) < 0.90){
+      reactionBox.classList.remove('show');
+      reactionText.textContent = '—';
+      return;
+    }
+
+    if(TM >= 0.7){
+      msg = '💚 Your joy and energy feel very strong. Enjoy it, stay humble, and let part of this light heal someone else too.';
+    }else if(TM >= 0.3){
+      msg = '🙂 You sound positive but intense. Take a slow breath and turn this good energy into a calm, clear action.';
+    }else if(TM <= -0.8){
+      msg = '🚨 I feel very strong distress. Please slow down, breathe, and if you are in danger or overwhelmed, reach out to a trusted person or local help line immediately.';
+    }else{
+      msg = '⚠️ Your emotions are very strong right now. Try not to take big decisions in this exact moment — first let your heart and mind cool a little.';
+    }
+    reactionText.textContent = msg;
+    reactionBox.classList.add('show');
+    speakReaction(msg);
+  }
+
+  function updateEmotionEngine(userText, assistantText){
+    const TM = tmFromText(userText);
+    const BM = readBM();
+    const D  = computeD();
+    const lf = lambda_faith();
+    const ls = lambda_sys(userText);
+    const lt = lambda_trc(userText);
+    const E0 = computeE0(TM,BM,D,lf,ls,lt);
+
+    const pct = Math.max(3, Math.min(99, Math.round((E0+1)*0.5*100)));
+    barEl.style.width = pct+'%';
+    labelEl.textContent = 'E₀: ' + pct + '%';
+    barEl.title = pct + '% emotional resonance';
+
+    if(Math.abs(E0)>0.6){
+      heartEl.classList.add('beat');
+    }else{
+      heartEl.classList.remove('beat');
+    }
+
+    const aff = Math.max(-1, Math.min(1, tmFromText(assistantText || userText)));
+    pushBM(aff);
+
+    dbgPre.textContent =
+      'TM: '+TM.toFixed(2)+' | BM: '+BM.toFixed(2)+' | D: '+D.toFixed(2)+'\n'+
+      'λ_f: '+lf.toFixed(2)+' | λ_s: '+ls.toFixed(2)+' | λ_t: '+lt.toFixed(2)+'\n'+
+      'E₀: '+E0.toFixed(3)+' → '+pct+'%';
+
+    updateReaction(E0, TM, userText);
+  }
+
+  /* Faith suggestion builder (multi-faith, up to 5) */
+  function oneFaithSuggestion(fid, mood){
+    if(fid==='islam'){
+      if(mood==='suffering'){
+        return '<b>Islam:</b> “إِنَّ ٱللَّهَ مَعَ ٱلصَّـٰبِرِينَ” — surely Allah is with those who are patient.';
+      }else if(mood==='gratitude'){
+        return '<b>Islam:</b> “لَئِن شَكَرْتُمْ لَأَزِيدَنَّكُمْ” — if you are grateful, Allah will increase you.';
+      }else{
+        return '<b>Islam:</b> Make a short du‘a and trust that Allah sees even your quiet effort.';
+      }
+    }
+    if(fid==='christianity'){
+      if(mood==='suffering'){
+        return '<b>Christianity:</b> “Come to Me, all who are weary and burdened, and I will give you rest.”';
+      }else if(mood==='gratitude'){
+        return '<b>Christianity:</b> Give thanks in all circumstances; gratitude itself is a blessing.';
+      }else{
+        return '<b>Christianity:</b> A short, honest prayer can be more powerful than many words.';
+      }
+    }
+    if(fid==='hinduism'){
+      if(mood==='suffering'){
+        return '<b>Hinduism:</b> Every difficult phase is also part of your dharma and inner growth.';
+      }else if(mood==='gratitude'){
+        return '<b>Hinduism:</b> Offer a quiet “shukriya” to the Divine for this moment of ease.';
+      }else{
+        return '<b>Hinduism:</b> Calm reflection and dhyana can realign your mind and heart.';
+      }
+    }
+    if(fid==='buddhism'){
+      if(mood==='suffering'){
+        return '<b>Buddhism:</b> Notice your suffering with gentle awareness — without judging yourself.';
+      }else if(mood==='gratitude'){
+        return '<b>Buddhism:</b> Hold your gratitude like a soft light in the chest and let it spread slowly.';
+      }else{
+        return '<b>Buddhism:</b> A few mindful breaths can bring you back fully into the present moment.';
+      }
+    }
+    if(fid==='sikh'){
+      if(mood==='suffering'){
+        return '<b>Sikh:</b> Remember “Chardi Kala” — even in hardship, keep inner courage and hope alive.';
+      }else if(mood==='gratitude'){
+        return '<b>Sikh:</b> Waheguru di mehar nu yaad kar ke shukar ada karo — gratitude grows blessings.';
+      }else{
+        return '<b>Sikh:</b> Honest work, sharing, and remembrance keep the mind in balance.';
+      }
+    }
+    if(fid==='jewish'){
+      if(mood==='suffering'){
+        return '<b>Jewish:</b> Many Psalms were written from pain — you are allowed to cry out and still be loved.';
+      }else if(mood==='gratitude'){
+        return '<b>Jewish:</b> Blessings for ordinary moments turn daily life into something sacred.';
+      }else{
+        return '<b>Jewish:</b> Reflect, adjust, and try again — growth is a continual process.';
+      }
+    }
+    if(fid==='humanist'){
+      if(mood==='suffering'){
+        return '<b>Humanist:</b> Your feelings are valid — reaching out for help is a sign of strength, not weakness.';
+      }else if(mood==='gratitude'){
+        return '<b>Humanist:</b> Notice who helped you reach this moment and appreciate them openly.';
+      }else{
+        return '<b>Humanist:</b> Acting with honesty and kindness usually leads to the most stable outcomes.';
+      }
+    }
+    // universal
+    if(mood==='suffering'){
+      return '<b>Gentle note:</b> you deserve care and safety — try to treat yourself with the same kindness you offer others.';
+    }else if(mood==='gratitude'){
+      return '<b>Gentle note:</b> hold this moment of gratitude; it can become a quiet source of strength for later days.';
+    }else{
+      return '<b>Gentle note:</b> pause, breathe, and choose the next step that feels both kind and honest.';
+    }
+  }
+
+  function buildFaithSuggestion(userText, mainAnswer){
+    const faithOn = localStorage.getItem('aura-faith-on')==='1';
+    if(!faithOn) return '';
+    const TM = tmFromText(userText);
+    let mood='seeking';
+    if(TM <= -0.6) mood='suffering';
+    else if(TM >= 0.6) mood='gratitude';
+
+    const ids = getFaithIds();
+    const max = Math.min(ids.length,5);
+    const parts = [];
+    for(let i=0;i<max;i++){
+      const fid = ids[i];
+      const seg = oneFaithSuggestion(fid, mood);
+      if(seg) parts.push(seg);
+    }
+    if(!parts.length) return '';
+    return parts.join('<br><br>');
+  }
+
+  /* chat + LLM */
+  const chatEl   = document.getElementById('chat');
+  const inputEl  = document.getElementById('userInput');
+  const sendBtn  = document.getElementById('sendBtn');
+  const modelSel = document.getElementById('modelSelect');
+
+  function appendMessage(text, who){
+    const row = document.createElement('div');
+    row.className = 'msg-row' + (who==='user'?' user':'');
+    const bubble = document.createElement('div');
+    bubble.className = 'msg-bubble';
+    bubble.textContent = text;
+    row.appendChild(bubble);
+    chatEl.appendChild(row);
+    chatEl.scrollTop = chatEl.scrollHeight;
+    return bubble;
+  }
+
+  function appendFaithLine(text){
+    if(!text) return;
+    const row = document.createElement('div');
+    row.className = 'msg-row';
+    const bubble = document.createElement('div');
+    bubble.className = 'msg-bubble';
+    bubble.innerHTML =
+      '<div class="faith-line"><span class="faith-label">Faith suggestion</span><br>'+text+'</div>';
+    row.appendChild(bubble);
+    chatEl.appendChild(row);
+    chatEl.scrollTop = chatEl.scrollHeight;
+  }
+
+  async function callLLM(model, userText, history){
+    const endpoint = 'https://openrouter.ai/api/v1/chat/completions';
+    const body = {
+      model: (model==='qwen' ? 'qwen/qwen-2.5-7b-instruct' :
+              model==='llama' ? 'meta-llama/llama-3.1-8b-instruct' :
+              model==='deepseek' ? 'deepseek/deepseek-chat' :
+              'nousresearch/hermes-2-pro-mistral'),
+      messages: [
+        {role:'system',content:'You are AURA-X Ω, a calm emotional assistant. Respond briefly, clearly, and kindly.'},
+        ...history,
+        {role:'user',content:userText}
+      ],
+      temperature:0.6
+    };
+    const res = await fetch(endpoint,{
       method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({system:sys,message,history:[]})
+      headers:{
+        'Content-Type':'application/json',
+        'Authorization':'Bearer YOUR_OPENROUTER_KEY_HERE'
+      },
+      body:JSON.stringify(body)
     });
-    if(!r.ok) throw new Error('status');
-    const j=await r.json();
-    return j?.choices?.[0]?.message?.content || j?.content || "";
-  }catch{
-    return "";
+    if(!res.ok) throw new Error('LLM HTTP '+res.status);
+    const data = await res.json();
+    return (data.choices?.[0]?.message?.content || 'I could not generate a reply.').trim();
   }
-}
 
-/* ---------- MAIN SEND FLOW ---------- */
-async function handleSend(){
-  const q=(inp.value||'').trim();if(!q)return;
-  addUser(q);inp.value='';
-  // 1) مین جواب
-  let reply = await callLLM(q, SYSTEM_SEED);
-  if(!reply){
-    reply="(No live response — offline fallback)\nI'm AURA-X Ω. How can I assist you further?";
-  }
-  addAssist(reply);          // مین جواب دکھائیں
-  speak(reply);              // صرف مین جواب voice میں
+  const history = [];
 
-  // 2) Faith encouragement (اگر آن ہے + belief منتخب ہے)
-  let faithLine="";
-  const beliefOn = getFaithOn();
-  const faithLabel = getFaith();
-  if(beliefOn && faithLabel){
-    const prompt =
-      `User question: "${q}"\n`+
-      `Main answer: "${reply}"\n`+
-      `Belief label: ${faithLabel}.\n`+
-      `Now give one short line of spiritual or moral encouragement based on this belief, relevant to the situation.`;
-    const raw = await callLLM(prompt, FAITH_SYSTEM);
-    faithLine = (raw||"").trim();
-    if(faithLine.length>220) faithLine = faithLine.slice(0,220);
-    if(faithLine){
-      addAssist(faithLine,'faith'); // الگ پیلا کارڈ
+  async function handleSend(){
+    const text = (inputEl.value||'').trim();
+    if(!text) return;
+    inputEl.value = '';
+    sendBtn.disabled = true;
+
+    appendMessage(text,'user');
+    const thinking = appendMessage('…','bot');
+
+    let answer='';
+    try{
+      const model = modelSel.value;
+      answer = await callLLM(model, text, history);
+      thinking.textContent = answer;
+    }catch(e){
+      console.error(e);
+      answer = 'I could not reach the model right now, but I am still here listening to you.';
+      thinking.textContent = answer;
     }
+
+    history.push({role:'user',content:text});
+    history.push({role:'assistant',content:answer});
+
+    const faithSuggestion = buildFaithSuggestion(text, answer);
+    if(faithSuggestion){
+      appendFaithLine(faithSuggestion);
+    }
+
+    updateEmotionEngine(text, answer);
+
+    chatEl.scrollTop = chatEl.scrollHeight;
+    sendBtn.disabled = false;
+    inputEl.focus();
   }
 
-  const combined = faithLine ? reply + " " + faithLine : reply;
-  afterTurn(q, combined);   // فارمولا دونوں کو دیکھتا ہے
-}
+  sendBtn.addEventListener('click', handleSend);
+  inputEl.addEventListener('keydown', e=>{
+    if(e.key==='Enter' && !e.shiftKey){
+      e.preventDefault();
+      handleSend();
+    }
+  });
 
-send.onclick=handleSend;
-inp.addEventListener('keydown',e=>{
-  if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();handleSend();}
-});
-
-// initial bar
-updateBar(59);
+  if('speechSynthesis' in window){
+    window.speechSynthesis.onvoiceschanged = ()=>{};
+  }
 </script>
 </body>
 </html>
