@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>AURA X Ω — Emotional Continuity Reactor v3.6</title>
+<title>AURA X Ω — Emotional Continuity Reactor v3.7</title>
 <style>
 body{
   font-family:"Segoe UI",Arial,sans-serif;
@@ -19,7 +19,7 @@ header{
   animation:pulse 1s infinite;box-shadow:0 0 10px rgba(255,105,180,.8);}
 @keyframes pulse{0%{transform:scale(1);}50%{transform:scale(1.4);}100%{transform:scale(1);}}
 .witch{width:26px;height:26px;
-  background:url('https://cdn-icons-png.flaticon.com/512/1102/1102387.png') no-repeat center/cover;}
+  background:url('https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f9d9.svg') no-repeat center/cover;}
 #emotionBar{font-weight:bold;color:#2ecc71;}
 
 .chatbox{
@@ -45,9 +45,9 @@ button:hover{background:#27ae60;}
 .controls{display:flex;gap:12px;margin-top:8px;font-size:0.9em;}
 
 .popup{
-  display:none;position:fixed;top:15%;left:50%;transform:translateX(-50%);
-  background:#fff;padding:20px;border-radius:12px;box-shadow:0 0 15px rgba(0,0,0,.3);
-  max-width:340px;width:90%;z-index:9999;
+  display:none;position:fixed;top:10%;left:50%;transform:translateX(-50%);
+  background:#fff;padding:20px;border-radius:12px;box-shadow:0 0 20px rgba(0,0,0,0.5);
+  width:90%;max-width:360px;z-index:999999;
 }
 .popup h3{text-align:center;margin-top:0;color:#34495e;}
 .popup label{display:block;margin:6px 0;}
@@ -57,7 +57,7 @@ button:hover{background:#27ae60;}
 <body>
 
 <header>
-  💕 AURA X Ω — Emotional Continuity Reactor v3.6
+  💕 AURA X Ω — Emotional Continuity Reactor v3.7
   <div class="status"><div class="heart"></div><div class="witch"></div>
   <span id="emotionBar">59%</span></div>
 </header>
@@ -92,35 +92,43 @@ button:hover{background:#27ae60;}
 </div>
 
 <script>
-// ---------- AURA X Ω EMOTIONAL ENGINE (Continuity Model v3.6) ----------
+// ---------- AURA X Ω v3.7 — GitHub Optimized Engine ----------
 let BM = 0.2, D = 0.05, λ_f = 0.15, λ_s = 0.08, λ_t = 0.00, lastE0 = 0;
 
-// Unlock speech on first tap (mobile fix)
+// Voice unlock for mobile browsers
 window.addEventListener('click',()=>{
   if(window.speechSynthesis && !window.speechSynthesis.speaking){
-    const u = new SpeechSynthesisUtterance("init");
-    u.volume = 0; speechSynthesis.speak(u);
+    const u=new SpeechSynthesisUtterance("init");
+    u.volume=0; speechSynthesis.speak(u);
   }
 },{once:true});
 
-// Text → Temporary Memory (TM)
+document.getElementById("voiceMode").addEventListener("change",()=>{
+ if(document.getElementById("voiceMode").checked){
+   alert("🔊 Please tap once on screen to enable voice playback.");
+   const u=new SpeechSynthesisUtterance("Voice mode enabled");
+   speechSynthesis.speak(u);
+ }
+});
+
+// TM calculation
 function textToTM(t){
- t = t.toLowerCase();
- const pos = ["happy","good","love","peace","beauty","beautiful","hope","smile"];
- const neg = ["sad","angry","pain","alone","cry","fear","hate","bad"];
- let s = 0;
- pos.forEach(w=>{if(t.includes(w)) s += 0.1;});
- neg.forEach(w=>{if(t.includes(w)) s -= 0.1;});
- return Math.max(-0.6, Math.min(0.6, s));
+ t=t.toLowerCase();
+ const pos=["happy","good","love","peace","beauty","beautiful","hope","smile"];
+ const neg=["sad","angry","pain","alone","cry","fear","hate","bad"];
+ let s=0;
+ pos.forEach(w=>{if(t.includes(w))s+=0.1;});
+ neg.forEach(w=>{if(t.includes(w))s-=0.1;});
+ return Math.max(-0.6,Math.min(0.6,s));
 }
 
-// E₀ = tanh((TM×BM) − D + λ_f + λ_s + λ_t)
-function computeEmotion(TM, beliefActive){
- BM = BM * 0.9 + TM * 0.1;  // Decay + Continuity
+// E₀ formula
+function computeEmotion(TM,beliefActive){
+ BM = BM*0.9 + TM*0.1;
  λ_f = beliefActive ? 0.15 : 0.0;
- λ_s = Math.abs(TM − BM)*0.1;
+ λ_s = Math.abs(TM - BM)*0.1;
  λ_t = lastE0*0.05;
- const val = (TM*BM) − D + λ_f + λ_s + λ_t;
+ const val = (TM*BM) - D + λ_f + λ_s + λ_t;
  const E0 = Math.tanh(val);
  lastE0 = E0;
  const pct = Math.round(((E0+1)/2)*100);
@@ -128,85 +136,87 @@ function computeEmotion(TM, beliefActive){
  return {E0,pct};
 }
 
-// Append chat message
+// Append Message
 function appendMsg(role,text,faith=''){
- const box = document.getElementById("chatWindow");
- const div = document.createElement("div");
- div.className = role;
- div.innerHTML = `<p class="response-main">${text}</p>${faith?`<p class='response-faith'>${faith}</p>`:''}`;
- box.appendChild(div); box.scrollTop = box.scrollHeight;
+ const box=document.getElementById("chatWindow");
+ const div=document.createElement("div");
+ div.className=role;
+ div.innerHTML=`<p class="response-main">${text}</p>${faith?`<p class='response-faith'>${faith}</p>`:''}`;
+ box.appendChild(div); box.scrollTop=box.scrollHeight;
 }
 
-// Main AI Processor
+// Core AI Logic
 function processAI(q){
- const beliefOn = document.getElementById("beliefMode").checked;
- const TM = textToTM(q);
- const {E0,pct} = computeEmotion(TM,beliefOn);
- const lower = q.toLowerCase();
- let reply1 = "", reply2 = "";
- const faiths = [...document.querySelectorAll("input[name='faith']:checked")].map(x=>x.value);
+ const beliefOn=document.getElementById("beliefMode").checked;
+ const TM=textToTM(q);
+ const {E0,pct}=computeEmotion(TM,beliefOn);
+ const lower=q.toLowerCase();
+ let reply1="",reply2="";
+ const faiths=[...document.querySelectorAll("input[name='faith']:checked")].map(x=>x.value);
 
- // Professional Answer
- if(lower.includes("hello")) reply1 = "Hello 👋 How can I assist you today?";
+ if(lower.includes("hello")) reply1="Hello 👋 How can I assist you today?";
  else if(lower.includes("beauty")||lower.includes("beautiful"))
-  reply1 = "Beauty reflects harmony and balance between memory and emotion.";
+  reply1="Beauty reflects harmony and balance between memory and emotion.";
  else if(lower.includes("sad")||lower.includes("pain")||lower.includes("story"))
-  reply1 = "I sense emotional turbulence — let’s stabilize the field together.";
- else
-  reply1 = "I’m listening carefully — continuity detected.";
+  reply1="I sense emotional turbulence — let’s stabilize the field together.";
+ else reply1="I’m listening carefully — continuity detected.";
 
- // Faith / Universal Answer
  if(beliefOn && faiths.length>0){
-  const f = faiths[0];
+  const f=faiths[0];
   if((lower.includes("beauty")||lower.includes("beautiful")) && f==="Islam")
-   reply2 = "اللّٰهُ جَمِيلٌ يُحِبُّ الْجَمَالَ — Allah is Beautiful and loves beauty.";
+   reply2="اللّٰهُ جَمِيلٌ يُحِبُّ الْجَمَالَ — Allah is Beautiful and loves beauty.";
   else if(lower.includes("sad")||lower.includes("pain")||lower.includes("story")){
-   if(f==="Islam") reply2 = "إِنَّ اللّٰهَ مَعَ الصَّابِرِينَ — Indeed Allah is with the patient.";
-   else if(f==="Christianity") reply2 = "Blessed are those who mourn, for they shall be comforted. (Matt 5:4)";
-   else reply2 = "You're not alone — faith resonance is with you.";
-  }else reply2 = "Faith resonance stabilizing ... trust the divine continuity.";
- }else{
-  const ethics = [
+   if(f==="Islam") reply2="إِنَّ اللّٰهَ مَعَ الصَّابِرِينَ — Indeed Allah is with the patient.";
+   else if(f==="Christianity") reply2="Blessed are those who mourn, for they shall be comforted. (Matt 5:4)";
+   else reply2="You're not alone — faith resonance supports you.";
+  } else reply2="Faith resonance stabilizing ... trust the divine continuity.";
+ } else {
+  const ethics=[
    "Compassion is the finest form of intelligence.",
    "Patience builds emotional symmetry.",
    "Harmony returns after every phase shift."
   ];
-  reply2 = ethics[Math.floor(Math.random()*ethics.length)];
+  reply2=ethics[Math.floor(Math.random()*ethics.length)];
  }
 
  appendMsg('bot',reply1);
  appendMsg('bot',reply2);
 
  if(document.getElementById("voiceMode").checked){
-  const u = new SpeechSynthesisUtterance(reply1+" "+reply2);
-  u.lang = 'en-US'; u.rate = 1; u.pitch = 1;
+  const u=new SpeechSynthesisUtterance(reply1+" "+reply2);
+  u.lang='en-US'; u.rate=1; u.pitch=1;
   speechSynthesis.cancel(); speechSynthesis.speak(u);
  }
 
- const mem = JSON.parse(localStorage.getItem("auraMemory")||"[]");
+ const mem=JSON.parse(localStorage.getItem("auraMemory")||"[]");
  mem.push({q,reply1,reply2,E0});
  if(mem.length>25) mem.shift();
  localStorage.setItem("auraMemory",JSON.stringify(mem));
 }
 
-// Send button
 function sendMsg(){
- const t = document.getElementById("userText").value.trim();
+ const t=document.getElementById("userText").value.trim();
  if(!t)return;
  appendMsg('user',t);
  document.getElementById("userText").value='';
  processAI(t);
 }
 
-// Belief Popup
+// Popup control
 function toggleBelief(){
- const popup = document.getElementById("beliefPopup");
+ const p=document.getElementById("beliefPopup");
  if(document.getElementById("beliefMode").checked){
-  popup.style.display = "block";
-  popup.scrollIntoView({behavior:'smooth'});
- }else popup.style.display = "none";
+   p.style.display="block";
+   document.body.style.overflow="hidden";
+ } else {
+   p.style.display="none";
+   document.body.style.overflow="auto";
+ }
 }
-function closeBelief(){document.getElementById("beliefPopup").style.display="none";}
+function closeBelief(){
+ document.getElementById("beliefPopup").style.display="none";
+ document.body.style.overflow="auto";
+}
 </script>
 </body>
 </html>
