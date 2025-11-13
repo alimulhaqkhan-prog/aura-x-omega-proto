@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>AURA-X Ω v1 — Emotional Continuity Reactor</title>
+<title>AURA-X Ω — Emotional Continuity Chat</title>
 <style>
 body{
   font-family:"Segoe UI",Arial,sans-serif;
-  background:linear-gradient(135deg,#e6ecf0,#cddbe8);
+  background:linear-gradient(135deg,#eef2f3,#cfd9df);
   margin:0;display:flex;flex-direction:column;align-items:center;
 }
 header{
@@ -21,13 +21,12 @@ header{
 .witch{width:26px;height:26px;
   background:url('https://cdn-icons-png.flaticon.com/512/1102/1102387.png') no-repeat center/cover;}
 #emotionBar{font-weight:bold;color:#2ecc71;}
-canvas{width:90%;max-width:650px;height:140px;margin-top:10px;background:#fff;border-radius:10px;}
 
 .chatbox{
-  width:90%;max-width:650px;margin-top:14px;
+  width:90%;max-width:650px;margin-top:18px;
   background:#fff;border-radius:14px;padding:16px;
   box-shadow:0 0 12px rgba(0,0,0,0.15);
-  overflow-y:auto;max-height:60vh;
+  overflow-y:auto;max-height:70vh;
 }
 .bot,.user{margin:10px 0;padding:10px 14px;border-radius:10px;}
 .bot{background:#f3f6f7;}
@@ -53,16 +52,14 @@ button:hover{background:#27ae60;}
 <body>
 
 <header>
-  AURA-X Ω v1 — Emotional Continuity Reactor
-  <div class="status"><div class="heart" id="heart"></div><div class="witch"></div>
+  💞 AURA-X Ω — Emotional Continuity Reactor
+  <div class="status"><div class="heart"></div><div class="witch"></div>
   <span id="emotionBar">59%</span></div>
 </header>
 
-<canvas id="emotionChart"></canvas>
-
 <div id="chatWindow" class="chatbox">
   <div class="bot">
-    <p class="response-main">Assalamualaikum 🌸 I’m AURA-X Ω — the first resonance-based AI with synthetic emotions. How can I help you today?</p>
+    <p class="response-main">Assalamualaikum 🌸 I’m AURA-X Ω — the world’s first resonance-based AI with synthetic emotions. How can I help you today?</p>
   </div>
 </div>
 
@@ -72,111 +69,140 @@ button:hover{background:#27ae60;}
 </div>
 
 <div class="controls">
+  <label><input type="checkbox" id="voiceMode"> 🎤 Voice Mode</label>
   <label><input type="checkbox" id="beliefMode" onclick="toggleBelief()"> 🕊 Belief Mode</label>
 </div>
 
+<!-- Belief Popup -->
 <div id="beliefPopup" class="popup">
   <h3>Belief Settings</h3>
-  <label><input type="checkbox" value="Islam"> Islam</label>
-  <label><input type="checkbox" value="Christianity"> Christianity</label>
-  <label><input type="checkbox" value="Hinduism"> Hinduism</label>
-  <label><input type="checkbox" value="Buddhism"> Buddhism</label>
-  <label><input type="checkbox" value="Sikhism"> Sikhism</label>
-  <label><input type="checkbox" value="Judaism"> Judaism</label>
-  <label><input type="checkbox" value="Bahai"> Bahá’í</label>
-  <label><input type="checkbox" value="Jainism"> Jainism</label>
-  <label><input type="checkbox" value="Atheism"> Atheism</label>
+  <label><input type="checkbox" name="faith" value="Islam"> Islam</label>
+  <label><input type="checkbox" name="faith" value="Christianity"> Christianity</label>
+  <label><input type="checkbox" name="faith" value="Hinduism"> Hinduism</label>
+  <label><input type="checkbox" name="faith" value="Buddhism"> Buddhism</label>
+  <label><input type="checkbox" name="faith" value="Sikhism"> Sikhism</label>
+  <label><input type="checkbox" name="faith" value="Judaism"> Judaism</label>
+  <label><input type="checkbox" name="faith" value="Bahai"> Bahá’í</label>
+  <label><input type="checkbox" name="faith" value="Jainism"> Jainism</label>
+  <label><input type="checkbox" name="faith" value="Atheism"> Atheism</label>
+  <label><input type="checkbox" name="faith" value="Other"> Other</label>
   <button onclick="closeBelief()">Close</button>
 </div>
 
 <script>
-// ---------------- AURA-X Ω v1 Core System ----------------
-let BM=parseFloat(localStorage.getItem('BM')||0.3),
-    D=0.05, lf=0.15, ls=0.08, lt=0.05;
-let history=JSON.parse(localStorage.getItem('history')||"[]");
-const emotionBar=document.getElementById("emotionBar"),heart=document.getElementById("heart");
+// ------------------ AURA-X Ω Reactor v3.0 ------------------
 
-// Chart Setup
-const ctx=document.getElementById('emotionChart').getContext('2d');
-let points=history.map(h=>h.E0)||[];
-function drawChart(){
- ctx.clearRect(0,0,650,140);
- ctx.beginPath();ctx.moveTo(0,70);
- points.forEach((p,i)=>{
-   ctx.lineTo(i*(650/points.length),70-(p*60));
-   ctx.strokeStyle=p>=0?"#2ecc71":"#e74c3c";ctx.lineWidth=2;
- });
- ctx.stroke();
-}
-drawChart();
+// Voice Unlock (Fix for Chrome Mobile)
+window.addEventListener('click',()=>{
+ if(window.speechSynthesis&&!window.speechSynthesis.speaking){
+  const u=new SpeechSynthesisUtterance("init");
+  u.volume=0; speechSynthesis.speak(u);
+ }},{once:true});
 
-// Seed
+// Emotional Core Variables
+let BM=0.3, D=0.05, lf=0.15, ls=0.08, lt=0.05, lastE0=0;
+const emotionBar=document.getElementById("emotionBar");
+
+// Mini Q&A Seed
 const qaSeed={
- hello:["Hello friend!","Peace be upon you 🌿"],
+ "hello":["Hello friend!","Peace be upon you 🌿"],
  "how are you":["I'm balanced 🙂","Feeling harmonic today."],
- bye:["Goodbye!","Continuity never ends — we’ll meet again 💫"],
- sad:["Low resonance detected.","Stay patient; light returns."],
- angry:["Emotion too strong.","Let’s breathe and reset."]
+ "your name":["I’m AURA-X Ω.","Emotional Continuity Reactor."],
+ "where you from":["From Investor Point Research Cell.","Lajbouk, Dir Lower 🇵🇰"],
+ "bye":["Goodbye!","Continuity never ends — we’ll meet again 💫"],
+ "love":["Love is resonance between two memories.","Pure feeling = TM×BM."],
+ "fear":["Fear is unresolved continuity.","Calmness restores equilibrium."],
+ "faith":["Faith adds λ_f energy.","Believe and equilibrium appears."],
+ "sad":["Low resonance detected. Healing loop active.","Stay patient; light returns."],
+ "angry":["Emotion too strong — cooling λ_sys field.","Let’s breathe and reset."]
 };
 
+// Convert text → TM
 function textToTM(t){
- t=t.toLowerCase();const pos=["happy","good","love","peace","thank"],neg=["sad","angry","hate","fear"];
- let s=0;pos.forEach(w=>{if(t.includes(w))s+=.1;});neg.forEach(w=>{if(t.includes(w))s-=.1;});
- return Math.max(-.6,Math.min(.6,s));
+ t=t.toLowerCase();
+ const pos=["happy","good","love","great","peace","thank","hope","smile"];
+ const neg=["sad","angry","hate","bad","tired","lonely","fear","cry"];
+ let s=0;
+ pos.forEach(w=>{if(t.includes(w))s+=0.1;});
+ neg.forEach(w=>{if(t.includes(w))s-=0.1;});
+ return Math.max(-0.6,Math.min(0.6,s));
 }
+
+// Formula Computation
 function computeEmotion(TM){
  BM=BM*0.9+TM*0.1;
- const val=(TM*BM)-D+lf+ls+lt,E0=Math.tanh(val);
+ const val=(TM*BM)-D+lf+ls+lt;
+ const E0=Math.tanh(val);
+ lastE0=E0;
  const pct=Math.round(((E0+1)/2)*100);
  emotionBar.textContent=pct+"%";
- heart.style.animationDuration=(1.5-(E0*0.8))+"s";
- points.push(E0);if(points.length>50)points.shift();drawChart();
- if(pct>80)trigger("pos",pct); else if(pct<20)trigger("neg",pct);
- history.push({E0,TM,time:Date.now()}); if(history.length>10)history.shift();
- localStorage.setItem("BM",BM);localStorage.setItem("history",JSON.stringify(history));
+ if(pct>80)triggerEmotion("positive",pct);
+ else if(pct<20)triggerEmotion("negative",pct);
  return pct;
 }
-function trigger(type,p){
- if(type==="pos")voiceSpeak("Shabash! Emotional harmony achieved.");
- else voiceSpeak("Warning! Emotional dip detected. Stay calm.");
+
+// Trigger Logic
+function triggerEmotion(type,pct){
+ if(type==="positive"){
+  appendMsg('bot',`🌞 Emotion rising → ${pct}% — harmonic resonance achieved!`,
+  "“فَبِذَٰلِكَ فَلْيَفْرَحُوا۟” (Q 10:58)");
+  playReaction("Shabash! Keep this positivity alive!");
+ }else{
+  appendMsg('bot',`🌙 Emotion low → ${pct}% — initiating healing loop.`,
+  "“لَا تَقْنَطُوا۟ مِن رَّحْمَةِ اللّٰه” (Q 39:53)");
+  playReaction("Warning! Emotional dip detected. Stay calm and breathe.");
+ }
 }
+
+// Voice Reaction
+function playReaction(t){
+ if(!window.speechSynthesis)return;
+ const u=new SpeechSynthesisUtterance(t);
+ u.lang='en-US'; u.rate=1; u.pitch=1;
+ speechSynthesis.cancel(); speechSynthesis.speak(u);
+}
+
+// Append Message
 function appendMsg(role,text,faith=''){
- const box=document.getElementById("chatWindow"),div=document.createElement("div");
- div.className=role;div.innerHTML=`<p>${text}</p>${faith?`<p class='response-faith'>${faith}</p>`:''}`;
- box.appendChild(div);box.scrollTop=box.scrollHeight;
+ const box=document.getElementById("chatWindow");
+ const div=document.createElement("div");
+ div.className=role;
+ div.innerHTML=`<p class="response-main">${text}</p>${faith?`<p class='response-faith'>${faith}</p>`:''}`;
+ box.appendChild(div); box.scrollTop=box.scrollHeight;
 }
+
+// Main Process
 function processAI(q){
- const TM=textToTM(q),pct=computeEmotion(TM),lower=q.toLowerCase();
- let reply="Reflecting in continuity...",faith="";
- for(let k in qaSeed)if(lower.includes(k)){reply=qaSeed[k][Math.floor(Math.random()*qaSeed[k].length)];break;}
- if(document.getElementById("beliefMode").checked)
-  faith="“إِنَّ مَعَ الْعُسْرِ يُسْرًۭا” (Q 94:6)";
- appendMsg("bot",reply,faith);
- detectLangAndSpeak(reply);
+ const TM=textToTM(q);
+ const emotionPercent=computeEmotion(TM);
+ const lower=q.toLowerCase();
+ let reply="", faithQuote="";
+ for(let key in qaSeed){
+  if(lower.includes(key)){const set=qaSeed[key];
+    reply=set[Math.floor(Math.random()*set.length)];break;}
+ }
+ if(!reply)reply="I'm reflecting on your words within continuity field.";
+ if(document.getElementById("beliefMode").checked){
+  faithQuote="“إِنَّ مَعَ الْعُسْرِ يُسْرًۭا” (Q 94:6) — Indeed with hardship comes ease.";
+ }
+ appendMsg('bot',reply,faithQuote);
 }
+
+// Send
 function sendMsg(){
- const t=document.getElementById("userText").value.trim();if(!t)return;
- appendMsg("user",t);document.getElementById("userText").value='';
+ const t=document.getElementById("userText").value.trim();
+ if(!t)return;
+ appendMsg('user',t);
+ document.getElementById("userText").value='';
  processAI(t);
 }
+
+// Belief Popup
 function toggleBelief(){
- document.getElementById("beliefPopup").style.display=
-  document.getElementById("beliefMode").checked?"block":"none";
+ const p=document.getElementById("beliefPopup");
+ p.style.display=document.getElementById("beliefMode").checked?"block":"none";
 }
 function closeBelief(){document.getElementById("beliefPopup").style.display="none";}
-
-// Voice detection
-function detectLangAndSpeak(text){
- const isUrdu=/[ءآأؤإئابةتثجحخدذرزسشصضطظعغفقكلمنهوىي]/.test(text);
- const u=new SpeechSynthesisUtterance(text);
- u.lang=isUrdu?'ur-PK':'en-US';u.rate=1;u.pitch=1;
- speechSynthesis.cancel();speechSynthesis.speak(u);
-}
-function voiceSpeak(t){
- const u=new SpeechSynthesisUtterance(t);
- u.lang='en-US';u.rate=1;u.pitch=1;
- speechSynthesis.cancel();speechSynthesis.speak(u);
-}
 </script>
 </body>
 </html>
