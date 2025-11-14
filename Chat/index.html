@@ -39,14 +39,13 @@
     }
 
     @media (max-height: 720px) {
-      #app { transform: 0.82; transform: scale(0.82); }
+      #app { transform: scale(0.82); }
     }
 
     @media (max-height: 640px) {
       #app { transform: scale(0.75); }
     }
 
-    /* ===== Utility ===== */
     .hidden {
       display: none;
     }
@@ -188,7 +187,8 @@
     }
 
     .settings-btn,
-    .belief-btn {
+    .belief-btn,
+    .voice-btn {
       padding: 0 10px;
       border-radius: 999px;
       border: none;
@@ -203,6 +203,11 @@
 
     .belief-btn {
       background: rgba(96,165,250,0.35);
+      color: #e5e7eb;
+    }
+
+    .voice-btn {
+      background: rgba(52,211,153,0.35);
       color: #e5e7eb;
     }
 
@@ -244,19 +249,19 @@
       position: fixed;
       inset: 0;
       background: rgba(15,23,42,0.75);
-      align-items: center;
-      justify-content: center;
       z-index: 50;
     }
 
-    /* default: hidden */
+    /* default hidden */
     #beliefModal {
       display: none;
     }
 
-    /* visible when .show added */
+    /* visible when .show */
     #beliefModal.show {
       display: flex !important;
+      align-items: center;
+      justify-content: center;
     }
 
     .modal-content {
@@ -374,6 +379,7 @@
       <button class="send-btn" onclick="sendMessage()">Send</button>
       <button class="settings-btn" onclick="toggleSettings()">⚙️</button>
       <button class="belief-btn" onclick="openBeliefModal()">☯</button>
+      <button class="voice-btn" onclick="playVoiceAnswer()">🔊</button>
     </div>
 
     <!-- Settings panel -->
@@ -390,7 +396,7 @@
       </label>
     </div>
 
-    <!-- Belief modal (default hidden by CSS) -->
+    <!-- Belief modal -->
     <div id="beliefModal" class="modal">
       <div class="modal-content">
         <div class="modal-header">
@@ -408,7 +414,6 @@
             <em>"Don't do actions that create negative emotions, and do actions that create positive emotions."</em>
           </div>
 
-          <!-- Belief ON/OFF -->
           <label class="setting-row" style="margin-bottom:6px;">
             <input
               type="checkbox"
@@ -418,7 +423,6 @@
             <span>Enable belief-based flavour in answers</span>
           </label>
 
-          <!-- Religions list -->
           <label class="belief-row">
             <input type="checkbox" class="belief-checkbox" value="islam" />
             <span>Islam</span>
@@ -470,8 +474,8 @@
     // ===== Global settings =====
     const settings = {
       autoFade: true,
-      beliefEnabled: false,     // default: Universal-only
-      beliefs: ["universal"]    // always includes universal ethics
+      beliefEnabled: false,
+      beliefs: ["universal"]
     };
 
     // ===== Settings panel =====
@@ -487,13 +491,11 @@
     // ===== Belief modal =====
     function openBeliefModal() {
       const modal = document.getElementById("beliefModal");
-      modal.classList.add("show");   // CSS se visible hoga
+      modal.classList.add("show");
 
-      // sync toggle
       const toggle = document.getElementById("beliefEnabledToggle");
       if (toggle) toggle.checked = settings.beliefEnabled;
 
-      // sync checkboxes
       const checkboxes = document.querySelectorAll(".belief-checkbox");
       checkboxes.forEach(cb => {
         cb.checked = settings.beliefs.includes(cb.value);
@@ -535,10 +537,12 @@
       }
     }
 
-    // ===== Send message + top floating text =====
+    // ===== Send message =====
     function sendMessage() {
       const input = document.getElementById("userInput");
       const container = document.getElementById("messageContainer");
+      if (!input || !container) return;
+
       const text = input.value.trim();
       if (!text) return;
 
@@ -554,13 +558,24 @@
       }
 
       input.value = "";
-
       processEmotion(text, settings);
     }
 
-    // ===== Simple emotional logic (demo) =====
+    // Enter key sends message
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        const active = document.activeElement;
+        if (active && active.id === "userInput") {
+          e.preventDefault();
+          sendMessage();
+        }
+      }
+    });
+
+    // ===== Emotional logic =====
     function processEmotion(text, settings) {
       const reactionEl = document.getElementById("reactionText");
+      if (!reactionEl) return;
 
       const lower = text.toLowerCase();
       let tone = "neutral";
@@ -593,6 +608,23 @@
 
       reactionEl.textContent = base + extra;
       updateModeLabel();
+    }
+
+    // ===== Voice: read reaction text =====
+    function playVoiceAnswer() {
+      const reactionEl = document.getElementById("reactionText");
+      if (!reactionEl) return;
+
+      const text = reactionEl.innerText || reactionEl.textContent || "";
+      if (!text) return;
+
+      if (window.speechSynthesis.speaking) {
+        window.speechSynthesis.cancel();
+      }
+
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = "en-US"; // بعد میں Urdu یا mix بھی کر سکتے ہیں
+      window.speechSynthesis.speak(utterance);
     }
   </script>
 </body>
