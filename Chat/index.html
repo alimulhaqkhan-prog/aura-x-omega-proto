@@ -198,10 +198,10 @@
       background: radial-gradient(circle, rgba(250,204,21,0.38), transparent 70%);
     }
 
-    /* Moon texture */
+    /* Moon texture (simple but soft) */
     .celestial.moon {
       background:
-        radial-gradient(circle at 30% 30%, #ffffff 0%, #e5e7eb 40%, #cbd5f5 70%, #9ca3af 100%);
+        radial-gradient(circle at 35% 25%, #ffffff 0%, #e5e7eb 35%, #cbd5f5 60%, #9ca3af 100%);
       box-shadow:
         0 0 26px rgba(191,219,254,0.8),
         0 0 70px rgba(129,140,248,0.55);
@@ -217,17 +217,17 @@
     }
 
     .moon::before {
-      width: 60%;
-      height: 60%;
+      width: 46%;
+      height: 46%;
       top: 18%;
-      left: 12%;
+      left: 14%;
     }
 
     .moon::after {
-      width: 38%;
-      height: 38%;
-      bottom: 12%;
-      right: 6%;
+      width: 30%;
+      height: 30%;
+      bottom: 14%;
+      right: 10%;
     }
 
     .moon-glow {
@@ -282,6 +282,86 @@
       color: #e5e7eb;
       font-size: 12px;
       line-height: 1.45;
+    }
+
+    /* ===== Formula panel (TM, BM, D, λ, ΣCt, E0) ===== */
+    .formula-box {
+      width: 100%;
+      margin-top: 6px;
+      border-radius: 14px;
+      padding: 8px 10px;
+      background: rgba(15,23,42,0.85);
+      border: 1px solid rgba(148,163,184,0.4);
+      font-size: 11px;
+      box-sizing: border-box;
+    }
+
+    .formula-title {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: #9ca3af;
+      margin-bottom: 4px;
+    }
+
+    .formula-equation {
+      font-size: 11px;
+      color: #e5e7eb;
+      margin-bottom: 4px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .formula-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 2px 8px;
+      margin-bottom: 4px;
+    }
+
+    .formula-item {
+      color: #d1d5db;
+    }
+
+    .formula-item span.label {
+      color: #9ca3af;
+    }
+
+    .formula-bar-wrapper {
+      margin-top: 2px;
+    }
+
+    .formula-bar-bg {
+      width: 100%;
+      height: 5px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #ef4444, #e5e7eb, #22c55e);
+      position: relative;
+      overflow: hidden;
+      opacity: 0.7;
+    }
+
+    .formula-bar-marker {
+      position: absolute;
+      top: 0;
+      width: 3px;
+      height: 5px;
+      border-radius: 999px;
+      background: #f9fafb;
+      box-shadow: 0 0 6px rgba(248,250,252,0.9);
+      transform: translateX(50%);
+    }
+
+    .formula-e0-row {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 2px;
+      color: #d1d5db;
+    }
+
+    .formula-e0-row span.label {
+      color: #9ca3af;
     }
 
     /* ===== Input bar ===== */
@@ -587,6 +667,49 @@
         Universal Ethics says: avoid actions that create negative emotions in you or others,
         and gently move toward actions that create calm, kindness and positive feelings.
       </div>
+
+      <!-- Formula panel showing live CRM/AEC equation values -->
+      <div class="formula-box">
+        <div class="formula-title">Continuity Equation</div>
+        <div class="formula-equation">
+          E₀ = tanh((TM × BM) − D + λ_faith + λ_sys + ΣCₜ)
+        </div>
+        <div class="formula-grid">
+          <div class="formula-item">
+            <span class="label">TM:</span>
+            <span id="tmVal">0.00</span>
+          </div>
+          <div class="formula-item">
+            <span class="label">BM:</span>
+            <span id="bmVal">0.00</span>
+          </div>
+          <div class="formula-item">
+            <span class="label">D:</span>
+            <span id="dVal">0.20</span>
+          </div>
+          <div class="formula-item">
+            <span class="label">λ_faith:</span>
+            <span id="lambdaFaithVal">0.00</span>
+          </div>
+          <div class="formula-item">
+            <span class="label">λ_sys:</span>
+            <span id="lambdaSysVal">0.10</span>
+          </div>
+          <div class="formula-item">
+            <span class="label">ΣCₜ:</span>
+            <span id="ctVal">0.00</span>
+          </div>
+        </div>
+        <div class="formula-bar-wrapper">
+          <div class="formula-bar-bg">
+            <div class="formula-bar-marker" id="e0Marker"></div>
+          </div>
+        </div>
+        <div class="formula-e0-row">
+          <span class="label">E₀ (Resonance):</span>
+          <span id="e0Val">0.00</span>
+        </div>
+      </div>
     </div>
 
     <!-- Input -->
@@ -681,7 +804,7 @@
         <em>reduce unnecessary emotional pain, increase calm and kindness.</em>
       </div>
       <div class="panel-footer">
-        Current build: <strong>Offline demo · v0.6 (Top menu)</strong>.
+        Current build: <strong>Offline demo · v0.7 (Continuity Equation)</strong>.
       </div>
     </div>
   </div>
@@ -718,10 +841,21 @@
     const voiceStatus = $("voiceStatus");
     const llmLabel = $("llmLabel");
 
+    const modeLabel = $("modeLabel");
     const youSaidEl = $("youSaid");
     const assistantTextEl = $("assistantText");
     const userInput = $("userInput");
     const sendBtn = $("sendBtn");
+
+    // Formula UI elements
+    const tmValEl = $("tmVal");
+    const bmValEl = $("bmVal");
+    const dValEl = $("dVal");
+    const lambdaFaithValEl = $("lambdaFaithVal");
+    const lambdaSysValEl = $("lambdaSysVal");
+    const ctValEl = $("ctVal");
+    const e0ValEl = $("e0Val");
+    const e0Marker = $("e0Marker");
 
     // ===== State =====
     let celestialState = 0; // 0=sun,1=moon floating,2=moon static,3=empty
@@ -743,6 +877,18 @@
     let llmState = "Offline basic QA only";
 
     const beliefLabels = Object.keys(beliefState);
+
+    // Continuity / emotion state (AECN / CRM)
+    let TM_value = 0.0;              // current sentiment
+    let BM_value = 0.0;              // running emotional state
+    let D_value  = 0.2;              // decay / healing
+    const lambda_sys = 0.10;         // structural constant
+    let lambda_faith = 0.0;          // from beliefs
+    let continuityTrace = 0.0;       // ΣCₜ
+    let historySentiments = [];      // for continuity
+
+    // Set constant on UI
+    lambdaSysValEl.textContent = lambda_sys.toFixed(2);
 
     // ===== Time-based default theme =====
     (function initThemeByTime () {
@@ -832,11 +978,16 @@
         chip.textContent = label;
         chip.addEventListener("click", () => {
           beliefState[label] = !beliefState[label];
+
+          // Always keep at least Universal Ethics ON
           if (!beliefState.Natural && !beliefState["Universal Ethics"]) {
             beliefState["Universal Ethics"] = true;
           }
+
           renderBeliefChips();
           updateBeliefFooter();
+          recalcLambdaFaith();
+          updateModeLabel();
         });
         beliefChipsContainer.appendChild(chip);
       });
@@ -846,6 +997,34 @@
       const active = beliefLabels.filter(l => beliefState[l]);
       beliefFooter.innerHTML =
         "Currently selected: <strong>" + active.join(" · ") + "</strong>.";
+    }
+
+    function updateModeLabel() {
+      const active = beliefLabels.filter(l => beliefState[l]);
+      if (active.length === 0) {
+        modeLabel.textContent = "Universal Ethics";
+      } else {
+        modeLabel.textContent = active.join(" · ");
+      }
+    }
+
+    // λ_faith from beliefs (simple mapping)
+    function recalcLambdaFaith() {
+      let base = 0.0;
+      const active = beliefLabels.filter(l => beliefState[l]);
+
+      const faithful = active.filter(l =>
+        ["Islam","Christianity","Hinduism","Buddhism","Sikhism","Judaism","Bahá’í","Jainism"].includes(l)
+      );
+
+      if (faithful.length > 0) {
+        base = 0.30 + 0.05 * (faithful.length - 1);
+      }
+
+      // cap
+      if (base > 0.6) base = 0.6;
+      lambda_faith = base;
+      lambdaFaithValEl.textContent = lambda_faith.toFixed(2);
     }
 
     beliefsMenuItem.addEventListener("click", () => {
@@ -946,7 +1125,88 @@
       });
     });
 
-    // ===== Simple QA engine =====
+    // ===== Simple sentiment analyzer (TM) =====
+    const positiveWords = [
+      "good","great","happy","khushi","love","pyar","peace","calm","relaxed",
+      "shukar","shukr","alhamdulillah","wonderful","amazing","zabardast","perfect"
+    ];
+    const negativeWords = [
+      "bad","sad","depressed","tension","stress","gussa","angry","fear",
+      "dar","gham","dard","problem","issue","thaka","tired","anxious"
+    ];
+
+    function computeSentiment(text) {
+      const lower = text.toLowerCase();
+      let pos = 0, neg = 0;
+
+      positiveWords.forEach(w => {
+        if (lower.includes(w)) pos += 1;
+      });
+      negativeWords.forEach(w => {
+        if (lower.includes(w)) neg += 1;
+      });
+
+      const total = pos + neg;
+      if (total === 0) return 0.0;
+
+      const raw = (pos - neg) / total;
+      // clamp
+      return Math.max(-1, Math.min(1, raw));
+    }
+
+    // ===== Continuity Equation (E0) =====
+    function computeE0() {
+      // raw = (TM × BM) − D + λ_faith + λ_sys + ΣCₜ
+      const raw = (TM_value * BM_value) - D_value + lambda_faith + lambda_sys + continuityTrace;
+      const E0 = Math.tanh(raw);
+      return E0;
+    }
+
+    function updateDecayAndContinuity(sentiment) {
+      // history
+      historySentiments.push(sentiment);
+      if (historySentiments.length > 200) {
+        historySentiments.shift();
+      }
+
+      const avgAbs = historySentiments.reduce((s, v) => s + Math.abs(v), 0) /
+                     Math.max(1, historySentiments.length);
+
+      // continuityTrace acts as ΣCₜ compressed
+      // slow update as EMA
+      continuityTrace = 0.9 * continuityTrace + 0.1 * avgAbs;
+
+      // D behavior:
+      // - neutral / calm → D ↑ (healing)
+      // - intense negative → D ↓ (trauma hold)
+      const mag = Math.abs(sentiment);
+      if (mag < 0.2) {
+        D_value += 0.01;
+      } else if (sentiment < -0.4) {
+        D_value -= 0.015;
+      } else {
+        D_value += 0.002;
+      }
+
+      // clamp D between 0 and 0.6
+      if (D_value < 0.0) D_value = 0.0;
+      if (D_value > 0.6) D_value = 0.6;
+    }
+
+    function updateFormulaUI(E0) {
+      tmValEl.textContent = TM_value.toFixed(2);
+      bmValEl.textContent = BM_value.toFixed(2);
+      dValEl.textContent  = D_value.toFixed(2);
+      lambdaFaithValEl.textContent = lambda_faith.toFixed(2);
+      ctValEl.textContent = continuityTrace.toFixed(2);
+      e0ValEl.textContent = E0.toFixed(2);
+
+      // marker position: map E0 (-1..1) to 0..100%
+      const pct = ((E0 + 1) / 2) * 100;
+      e0Marker.style.left = pct.toFixed(1) + "%";
+    }
+
+    // ===== Simple QA engine (text reply) =====
     function getBasicReply(message) {
       const text = message.trim();
       if (!text) {
@@ -964,15 +1224,19 @@
         return "I’m feeling balanced and focused — ready to support you. How are you feeling right now?";
       }
 
+      if (lower.includes("how old are you") || lower.includes("when were you born")) {
+        return "I am AURA-X Ω — born as a concept in 2025, October ke aas-paas, jab آپ نے mujhe pehli dafa zinda socha. 😄";
+      }
+
       if (lower.includes("stress") || lower.includes("tension")) {
-        return "Take a slow breath… in for 4 seconds, hold for 4, out for 6. Notice which thoughts increase tension and which bring relief.";
+        return "Take a slow breath… 4 seconds in, 4 hold, 6 out. Dekhein kaun se khayal tension barhate hain aur kaun se halka kar dete hain.";
       }
 
       if (lower.includes("happy") || lower.includes("khushi")) {
         return "Khushi ko share karna sab se behtareen sadaqa hai. Aaj aap ek chhoti si khushi kisi aur tak bhi pohanchayein. 🌱";
       }
 
-      return "I’ve heard you. Let’s look at this with calm logic and gentle ethics together.";
+      return "I’ve heard you. Aao is baat ko sakoon aur logic ke sath dekhte hain — bina kisi judgement ke.";
     }
 
     // ===== Voice output =====
@@ -995,9 +1259,25 @@
 
       youSaidEl.textContent = 'You said: "' + message + '"';
 
-      let reply = getBasicReply(message);
-      const activeBeliefs = beliefLabels.filter(l => beliefState[l]);
+      // 1) Sentiment → TM
+      TM_value = computeSentiment(message);
 
+      // 2) Update BM (running emotional state)
+      BM_value = 0.8 * BM_value + 0.2 * TM_value;
+
+      // 3) Update decay & continuity
+      updateDecayAndContinuity(TM_value);
+
+      // 4) Compute E0 from equation
+      const E0 = computeE0();
+
+      // 5) Update formula panel
+      updateFormulaUI(E0);
+
+      // 6) Text reply (offline QA)
+      let reply = getBasicReply(message);
+
+      const activeBeliefs = beliefLabels.filter(l => beliefState[l]);
       if (activeBeliefs.includes("Islam") && !reply.includes("Alhamdulillah")) {
         reply = reply + " InshaAllah, cheezain behtar hongi.";
       }
@@ -1015,8 +1295,11 @@
     function init() {
       renderBeliefChips();
       updateBeliefFooter();
+      updateModeLabel();
       renderLlmChips();
       updateVoiceUI();
+      recalcLambdaFaith();
+      updateFormulaUI(0.0);
     }
     init();
   </script>
