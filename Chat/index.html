@@ -138,7 +138,7 @@
       font-size: 13px;
       line-height: 1.4;
       color: #e5e7eb;
-      white-space: pre-wrap; /* تاکہ لائن بریک بھی نظر آئیں */
+      white-space: pre-wrap;
     }
 
     /* ===== Buttons INSIDE card (right side vertical) ===== */
@@ -163,11 +163,19 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      transition: box-shadow 0.2s ease, transform 0.2s ease, background 0.2s ease;
     }
 
     .settings-btn { background: rgba(148,163,184,0.3); color: #e5e7eb; }
     .belief-btn   { background: rgba(96,165,250,0.35); color: #e5e7eb; }
     .voice-btn    { background: rgba(52,211,153,0.35); color: #e5e7eb; }
+
+    /* voice ON highlight */
+    .voice-btn.voice-on {
+      background: rgba(52,211,153,0.8);
+      box-shadow: 0 0 12px rgba(52,211,153,0.9);
+      transform: scale(1.05);
+    }
 
     /* ===== Input Area (bottom: full width textbox + send) ===== */
     .input-area {
@@ -360,7 +368,7 @@ and move toward actions that create calm, kindness and positive feelings.
       <div class="card-button-column">
         <button class="icon-btn settings-btn" onclick="toggleSettings()">⚙️</button>
         <button class="icon-btn belief-btn" onclick="openBeliefModal()">☯</button>
-        <button class="icon-btn voice-btn" onclick="playVoiceAnswer()">🔊</button>
+        <button id="voiceBtn" class="icon-btn voice-btn" onclick="toggleVoiceMode()">🔊</button>
       </div>
     </div>
 
@@ -468,7 +476,8 @@ and move toward actions that create calm, kindness and positive feelings.
     const settings = {
       autoFade: true,
       beliefEnabled: false,
-      beliefs: ["universal"]
+      beliefs: ["universal"],
+      voiceAuto: false   // voice ON/OFF toggle
     };
 
     function toggleSettings() {
@@ -526,6 +535,23 @@ and move toward actions that create calm, kindness and positive feelings.
         modeLabel.textContent = "Universal Ethics";
       } else {
         modeLabel.textContent = "Universal + Belief Mode";
+      }
+    }
+
+    // ===== Voice toggle button =====
+    function toggleVoiceMode() {
+      const btn = document.getElementById("voiceBtn");
+      settings.voiceAuto = !settings.voiceAuto;
+
+      if (settings.voiceAuto) {
+        btn.classList.add("voice-on");
+        // current جواب بھی فوراً پڑھ دو
+        playVoiceAnswer();
+      } else {
+        btn.classList.remove("voice-on");
+        if (window.speechSynthesis.speaking) {
+          window.speechSynthesis.cancel();
+        }
       }
     }
 
@@ -608,7 +634,15 @@ and move toward actions that create calm, kindness and positive feelings.
 
       const fullReply = `${header}\n\n${toneLine}\n\n${base}${extra}`;
       reactionEl.textContent = fullReply;
+
+      // voice کیلئے صرف header + toneLine save کرو (ethical paragraph نہیں)
+      reactionEl.dataset.speech = `${header}. ${toneLine}`;
+
       updateModeLabel();
+
+      if (settings.voiceAuto) {
+        playVoiceAnswer();
+      }
     }
 
     // ===== Voice Answer =====
@@ -616,14 +650,18 @@ and move toward actions that create calm, kindness and positive feelings.
       const reactionEl = document.getElementById("reactionText");
       if (!reactionEl) return;
 
-      const text = reactionEl.innerText || reactionEl.textContent || "";
-      if (!text) return;
+      const speechText =
+        reactionEl.dataset.speech ||
+        reactionEl.innerText ||
+        reactionEl.textContent ||
+        "";
+      if (!speechText) return;
 
       if (window.speechSynthesis.speaking) {
         window.speechSynthesis.cancel();
       }
 
-      const utterance = new SpeechSynthesisUtterance(text);
+      const utterance = new SpeechSynthesisUtterance(speechText);
       utterance.lang = "en-US";
       window.speechSynthesis.speak(utterance);
     }
