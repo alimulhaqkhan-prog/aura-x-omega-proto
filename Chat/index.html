@@ -76,6 +76,7 @@
 
     /* ===== Main Card ===== */
     .card {
+      position: relative;
       width: 100%;
       border-radius: 24px;
       padding: 18px 16px 16px;
@@ -139,7 +140,35 @@
       color: #e5e7eb;
     }
 
-    /* ===== Input Area (textbox left, buttons right column) ===== */
+    /* ===== Buttons INSIDE card (right side vertical) ===== */
+    .card-button-column {
+      position: absolute;
+      top: 50%;
+      right: 12px;
+      transform: translateY(-50%);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .icon-btn {
+      width: 34px;
+      height: 34px;
+      border-radius: 999px;
+      border: none;
+      font-size: 18px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .settings-btn { background: rgba(148,163,184,0.3); color: #e5e7eb; }
+    .belief-btn   { background: rgba(96,165,250,0.35); color: #e5e7eb; }
+    .voice-btn    { background: rgba(52,211,153,0.35); color: #e5e7eb; }
+
+    /* ===== Input Area (bottom: full width textbox + send) ===== */
     .input-area {
       width: 100%;
       max-width: 480px;
@@ -167,45 +196,17 @@
       opacity: 0.85;
     }
 
-    /* Right side vertical button bar */
-    .button-stack {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      align-items: stretch;
-      justify-content: flex-start;
-    }
-
     .send-btn {
-      padding: 10px 14px;
-      border-radius: 20px;
+      padding: 0 20px;
+      border-radius: 30px;
       border: none;
       background: #facc15;
       color: #0f172a;
-      font-size: 13px;
+      font-size: 14px;
       font-weight: 700;
       cursor: pointer;
       white-space: nowrap;
     }
-
-    .settings-btn,
-    .belief-btn,
-    .voice-btn {
-      padding: 0 9px;
-      height: 32px;
-      min-width: 32px;
-      border-radius: 999px;
-      border: none;
-      font-size: 18px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .settings-btn { background: rgba(148,163,184,0.3); color: #e5e7eb; }
-    .belief-btn   { background: rgba(96,165,250,0.35); color: #e5e7eb; }
-    .voice-btn    { background: rgba(52,211,153,0.35); color: #e5e7eb; }
 
     /* ===== Settings Panel ===== */
     .settings-panel {
@@ -336,6 +337,7 @@
   <div id="app">
     <div id="messageContainer"></div>
 
+    <!-- ===== Main Card ===== -->
     <div class="card">
       <h1 class="title">AURA-X Ω</h1>
       <p class="subtitle">Logical • Emotional • Universal Ethics Reactor</p>
@@ -352,9 +354,16 @@
         Universal Ethics says: avoid actions that create negative emotions in you or others,
         and move toward actions that create calm, kindness and positive feelings.
       </div>
+
+      <!-- Buttons INSIDE card on right -->
+      <div class="card-button-column">
+        <button class="icon-btn settings-btn" onclick="toggleSettings()">⚙️</button>
+        <button class="icon-btn belief-btn" onclick="openBeliefModal()">☯</button>
+        <button class="icon-btn voice-btn" onclick="playVoiceAnswer()">🔊</button>
+      </div>
     </div>
 
-    <!-- Input + right-side vertical buttons -->
+    <!-- ===== Input Area (bottom) ===== -->
     <div class="input-area">
       <input
         id="userInput"
@@ -362,13 +371,7 @@
         type="text"
         placeholder="✨ Write anything… AURA-X will feel it with you"
       />
-
-      <div class="button-stack">
-        <button class="send-btn" onclick="sendMessage()">Send</button>
-        <button class="settings-btn" onclick="toggleSettings()">⚙️</button>
-        <button class="belief-btn" onclick="openBeliefModal()">☯</button>
-        <button class="voice-btn" onclick="playVoiceAnswer()">🔊</button>
-      </div>
+      <button class="send-btn" onclick="sendMessage()">Send</button>
     </div>
 
     <!-- Settings panel -->
@@ -460,7 +463,7 @@
   </div>
 
   <script>
-    // ===== Global settings =====
+    // ===== Global Settings =====
     const settings = {
       autoFade: true,
       beliefEnabled: false,
@@ -476,7 +479,7 @@
       settings.autoFade = checkbox.checked;
     }
 
-    // ===== Belief modal =====
+    // ===== Belief Modal =====
     function openBeliefModal() {
       const modal = document.getElementById("beliefModal");
       modal.classList.add("show");
@@ -525,7 +528,7 @@
       }
     }
 
-    // ===== Send message =====
+    // ===== Send Message =====
     function sendMessage() {
       const input = document.getElementById("userInput");
       const container = document.getElementById("messageContainer");
@@ -534,6 +537,7 @@
       const text = input.value.trim();
       if (!text) return;
 
+      // Show floating bubble
       container.innerHTML = "";
       const msg = document.createElement("div");
       msg.className = "sent-message";
@@ -549,7 +553,7 @@
       processEmotion(text, settings);
     }
 
-    // Enter key sends
+    // Enter key support
     document.addEventListener("keydown", (e) => {
       if (e.key === "Enter") {
         const active = document.activeElement;
@@ -560,7 +564,7 @@
       }
     });
 
-    // ===== Emotional logic =====
+    // ===== Emotional Logic =====
     function processEmotion(text, settings) {
       const reactionEl = document.getElementById("reactionText");
       if (!reactionEl) return;
@@ -598,7 +602,7 @@
       updateModeLabel();
     }
 
-    // ===== Voice answer =====
+    // ===== Voice Answer =====
     function playVoiceAnswer() {
       const reactionEl = document.getElementById("reactionText");
       if (!reactionEl) return;
