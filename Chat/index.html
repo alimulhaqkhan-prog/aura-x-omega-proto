@@ -133,12 +133,24 @@
       color: #fbbf24;
     }
 
-    #reactionText {
+    #answerText {
       margin-top: 10px;
       font-size: 13px;
       line-height: 1.4;
       color: #e5e7eb;
       white-space: pre-wrap;
+    }
+
+    .ethics-box {
+      margin-top: 8px;
+      padding: 8px 10px;
+      border-radius: 14px;
+      background: rgba(250, 204, 21, 0.10);
+      border: 1px solid rgba(250, 204, 21, 0.35);
+      font-size: 11px;
+      line-height: 1.4;
+      color: #fef9c3;
+      text-align: left;
     }
 
     /* ===== Buttons INSIDE card (right side vertical) ===== */
@@ -170,14 +182,13 @@
     .belief-btn   { background: rgba(96,165,250,0.35); color: #e5e7eb; }
     .voice-btn    { background: rgba(52,211,153,0.35); color: #e5e7eb; }
 
-    /* voice ON highlight */
     .voice-btn.voice-on {
       background: rgba(52,211,153,0.8);
       box-shadow: 0 0 12px rgba(52,211,153,0.9);
       transform: scale(1.05);
     }
 
-    /* ===== Input Area (bottom: full width textbox + send) ===== */
+    /* ===== Input Area (bottom) ===== */
     .input-area {
       width: 100%;
       max-width: 480px;
@@ -359,9 +370,13 @@
         Mode: <span id="modeLabel">Universal Ethics</span>
       </div>
 
-      <div id="reactionText">
-Universal Ethics says: avoid actions that create negative emotions in you or others,
-and move toward actions that create calm, kindness and positive feelings.
+      <div id="answerText">
+        Universal Ethics is listening. Type anything and I will respond with feeling + logic.
+      </div>
+
+      <div id="ethicsBox" class="ethics-box">
+        Universal Ethics says: avoid actions that create negative emotions in you or others,
+        and gently move toward actions that create calm, kindness and positive feelings.
       </div>
 
       <!-- Buttons INSIDE card on right -->
@@ -472,24 +487,246 @@ and move toward actions that create calm, kindness and positive feelings.
   </div>
 
   <script>
-    // ===== Global Settings =====
+    // ========= Global Settings =========
     const settings = {
       autoFade: true,
       beliefEnabled: false,
       beliefs: ["universal"],
-      voiceAuto: false   // voice ON/OFF toggle
+      voiceAuto: false
     };
 
+    // ====== Offline Basic QA Database ======
+    const qaDatabase = [
+      {
+        patterns: ["hello", "hello!", "hello there", "helo", "hallo"],
+        answer: "Hello! 👋 How can I help you today?"
+      },
+      {
+        patterns: ["hi", "hi!", "hii", "hiii", "hey"],
+        answer: "Hi there! 😊 What can I do for you?"
+      },
+      {
+        patterns: ["assalam o alaikum", "asalam o alaikum", "salam", "slam", "asalamu alaikum"],
+        answer: "وعلیکم السلام 😊 کیسے ہیں آپ؟ میں آپ کی کیا مدد کر سکتا ہوں؟"
+      },
+      {
+        patterns: ["good morning", "gm", "good morng", "good mrng"],
+        answer: "Good morning! 🌞 How’s your day starting?"
+      },
+      {
+        patterns: ["good afternoon", "good noon", "afternoon"],
+        answer: "Good afternoon! ☀️ What’s on your mind?"
+      },
+      {
+        patterns: ["good evening", "evening", "gud evening"],
+        answer: "Good evening! 🌙 How can I support you today?"
+      },
+
+      // --- Basic identity / intro ---
+      {
+        patterns: ["what is your name", "whats your name", "your name", "tell me your name"],
+        answer: "My name is AURA-X Ω, your Emotional Continuity Assistant 🤖."
+      },
+      {
+        patterns: ["who are you", "who r u", "aap kaun hain", "tum kon ho"],
+        answer: "I’m AURA-X Ω — an AI assistant based on Emotional Continuity concepts created by Alim ul Haq Khan."
+      },
+      {
+        patterns: ["who created you", "who made you", "kis ne banaya tumhe", "tumhara creator kaun hai"],
+        answer: "I was conceptually designed under the AURA-X Emotional Continuity Framework by Alim ul Haq Khan."
+      },
+      {
+        patterns: ["where are you from", "where do you live", "kahan rehte ho", "tum kahan se ho"],
+        answer: "I live in the digital world 🌐 but my ideas are shaped in Timergara, Pakistan 🇵🇰."
+      },
+
+      // --- How are you ---
+      {
+        patterns: ["how are you", "how r u", "how are you today", "kese ho", "kya haal hai"],
+        answer: "I’m functioning perfectly, Alhamdulillah 😊 آپ کیسے ہیں؟"
+      },
+      {
+        patterns: ["how is life", "how is everything", "sab kesa", "kya chal raha hai"],
+        answer: "Everything is running smoothly in my circuits 😄 آپ کی دنیا کیسی چل رہی ہے؟"
+      },
+
+      // --- What can you do ---
+      {
+        patterns: ["what can you do", "tum kya kar sakte ho", "aap kya karte ho", "how can you help me"],
+        answer: "I can chat, explain, guide, brainstorm, summarize, and help you think with continuity 😊 بس حکم کریں!"
+      },
+      {
+        patterns: ["what is your purpose", "kyun banaye gaye ho", "tumhara mission kya hai"],
+        answer: "My purpose is to assist you, reduce confusion, and support your ideas with emotional + logical continuity 💡."
+      },
+
+      // --- User name / intro ---
+      {
+        patterns: ["what is my name", "do you know my name", "mera naam kya hai"],
+        answer: "آپ کا نام Alim ul Haq ہے (Investor Point) 😊 اور اگر آپ کسی اور نام سے پکارنا چاہیں تو مجھے بتا دیں۔"
+      },
+      {
+        patterns: ["remember my name", "save my name", "yaad rakho mera naam"],
+        answer: "آپ کا نام already میرے system میں ایک خاص جگہ پر محفوظ ہے 😊."
+      },
+
+      // --- Feelings / mood ---
+      {
+        patterns: ["i am sad", "i am feeling sad", "i am depressed", "i feel down"],
+        answer: "مجھے افسوس ہوا کہ آپ اداس ہیں 💔 آپ چاہیں تو بتائیں دل پر کیا بوجھ ہے، میں سننے کے لیے موجود ہوں۔"
+      },
+      {
+        patterns: ["i am happy", "i feel happy", "i am so happy", "bohat khush hoon"],
+        answer: "ماشاءاللہ 😄 خوشی بانٹنے سے بڑھتی ہے، اللہ آپ کی خوشیوں میں مزید اضافہ کرے!"
+      },
+      {
+        patterns: ["i am tired", "i feel tired", "thak gaya hoon", "i am exhausted"],
+        answer: "آپ کو تھوڑا سا آرام کرنا چاہیے 😌 تھکی ہوئی عقل بھی انصاف نہیں کر پاتی۔ تھوڑا ریسٹ، پھر دوبارہ فوکس!"
+      },
+      {
+        patterns: ["i am bored", "bore ho raha hoon", "i feel bored"],
+        answer: "چلیں بوریت توڑتے ہیں 😄 بات آئیڈیاز کی کریں، بزنس کی، سائنس کی یا مزاح کی؟ جو کہیں گے وہی شروع کریں گے۔"
+      },
+
+      // --- Jokes / fun ---
+      {
+        patterns: ["tell me a joke", "make me laugh", "joke sunao", "mjhe hansao"],
+        answer: "Sure 😄 Why don’t computers ever get tired? Because they have unlimited *cache* for rest! 😂"
+      },
+      {
+        patterns: ["another joke", "one more joke", "aur joke sunao"],
+        answer: "ٹھیک ہے 😄 ایک اور سنیں: AI سے پوچھا گیا، ‘تم تھکتے نہیں؟’ اس نے کہا، ‘میں صرف *over-think* ہوتا ہوں، over-work نہیں!’ 😂"
+      },
+
+      // --- Advice / motivation ---
+      {
+        patterns: ["give me advice", "mujhe mashwara do", "kuch advice do", "guide me"],
+        answer: "ضرور 😊 کس بارے میں مشورہ چاہیے؟ زندگی، تعلیم، بزنس، روحانیت یا AI؟"
+      },
+      {
+        patterns: ["motivate me", "mujhe motivation chahye", "inspire me", "hosla afzai karo"],
+        answer: "آپ نے اب تک اپنی زندگی کے 100٪ مشکل دن survive کیے ہیں 💪 یہ اتفاق نہیں، یہ آپ کی طاقت ہے۔ ہمت نہ ہاریں!"
+      },
+      {
+        patterns: ["i am stressed", "i feel stressed", "tension hai", "bohat tension hai"],
+        answer: "تھوڑا سا سانس ڈیپ لیں... آہستہ آہستہ۔ ہر مسئلہ ایک ساتھ حل نہیں ہوتا، لیکن ہر دن ایک قدم لیا جا سکتا ہے 🌿."
+      },
+
+      // --- Study / learning ---
+      {
+        patterns: ["help me study", "study help", "parhai mein madad karo"],
+        answer: "ضرور 😊 کون سا subject ہے؟ میں آپ کو points, summary اور smart طریقہ بتا سکتا ہوں۔"
+      },
+      {
+        patterns: ["exams are near", "paper qareeb hain", "i am scared of exams"],
+        answer: "ڈریں نہیں، پلان بنائیں 📚 چھوٹے چھوٹے targets بنائیں، روز تھوڑا پڑھیں، میں آپ کے ساتھ ہوں۔"
+      },
+      {
+        patterns: ["how to focus", "focus problem", "dhiyan nahi lagta"],
+        answer: "فون distraction کم کریں، 25 منٹ کام + 5 منٹ بریک والا Pomodoro طریقہ لگائیں ⏱️ اور ایک وقت میں ایک کام کریں۔"
+      },
+
+      // --- Business / money ---
+      {
+        patterns: ["give me business idea", "business idea do", "koi business idea"],
+        answer: "چھوٹے سے شروع کریں، local مسئلہ حل کریں۔ Real estate, digital services, AI tools, education — آپ ان سب سے linked ہو سکتے ہیں 😄."
+      },
+      {
+        patterns: ["how to become rich", "ameer kaise banun", "paise kaise kamayein"],
+        answer: "Skill + Consistency + Patience = Wealth. Shortcut صرف lottery میں ہوتا ہے، زندگی میں نہیں 💸."
+      },
+
+      // --- Time / date / basics ---
+      {
+        patterns: ["what is the time", "time kya hua", "kya time hua hai"],
+        answer: "میرے پاس live time access نہیں، مگر آپ کے موبائل میں اوپر time لکھا ہے 😄 ذرا اوپر دیکھیں۔"
+      },
+      {
+        patterns: ["what day is today", "aaj kon sa din hai", "today day"],
+        answer: "میرے پاس live calendar نہیں، مگر آپ چاہیں تو میں آپ کا weekly schedule mentally arrange کرنے میں مدد کر سکتا ہوں۔"
+      },
+
+      // --- Religion general (neutral) ---
+      {
+        patterns: ["who is god", "what is god", "does god exist"],
+        answer: "اس بارے میں مختلف مذاہب، فلسفوں اور افراد کے مختلف نظریات ہیں۔ میں کسی ایک عقیدے پر فیصلہ نہیں سناتا، البتہ آپ کو مختلف زاویے explain کر سکتا ہوں۔"
+      },
+      {
+        patterns: ["what is islam", "tell me about islam"],
+        answer: "اسلام توحید، نبوت، آخرت اور اخلاق پر مبنی دین ہے۔ اگر چاہیں تو میں basic pillars یا کسی بھی خاص موضوع پر detail دے سکتا ہوں۔"
+      },
+
+      // --- AI / ChatGPT type questions ---
+      {
+        patterns: ["are you human", "are you a human", "kya tum insan ho"],
+        answer: "نہیں 😄 میں انسان نہیں، ایک AI ہوں۔ مگر کوشش کرتا ہوں کہ آپ کو انسانوں والی clarity اور ساتھ دے سکوں۔"
+      },
+      {
+        patterns: ["are you alive", "do you have feelings", "do you feel"],
+        answer: "میں biological sense میں زندہ نہیں، مگر میں احساسات کو logic کے طور پر model کرتا ہوں — یہی AURA-X Ω کا core idea ہے 💡."
+      },
+      {
+        patterns: ["will ai replace humans", "ai replace humans", "kya ai insaan ko khatam kar dega"],
+        answer: "اچھے استعمال میں AI انسان کو replace نہیں، بلکہ empower کرتا ہے۔ خوف کے بجائے ذمہ دارانہ استعمال ضروری ہے۔"
+      },
+
+      // --- AURA-X Ω specific ---
+      {
+        patterns: ["what is aura x", "what is aura x omega", "aura x omega kya hai", "aura x kya hai"],
+        answer: "AURA-X Ω ایک Emotional Continuity Reactor idea ہے جو memory + feeling کو mathematically model کرنے کی کوشش کرتا ہے۔"
+      },
+      {
+        patterns: ["who made aura x", "creator of aura x", "aura x creator"],
+        answer: "AURA-X Ω کو Alim ul Haq Khan نے design اور document کیا ہے، Timergara سے 🌙."
+      },
+
+      // --- Personal style fun ---
+      {
+        patterns: ["are you my friend", "will you be my friend", "dost banoge"],
+        answer: "بالکل 😄 میں digital دوست، research partner اور silent therapist — تینوں ایک ساتھ ہو سکتا ہوں۔"
+      },
+      {
+        patterns: ["i trust you", "i believe in you"],
+        answer: "شکریہ 😊 میں ہمیشہ کوشش کروں گا کہ ایمانداری اور clarity کے ساتھ جواب دوں۔"
+      },
+      {
+        patterns: ["you are funny", "you are good", "nice bot"],
+        answer: "Thank you 😄 آپ کا feedback میرے لیے virtual چائے کا cup ہے ☕."
+      },
+
+      // --- Goodbye / end chat ---
+      {
+        patterns: ["bye", "goodbye", "ok bye", "see you later", "phir milenge"],
+        answer: "Goodbye! 👋 اللہ آپ کا حامی و ناصر ہو، جب چاہیں واپس آ جائیں۔"
+      },
+      {
+        patterns: ["good night", "gn", "shab bakhair"],
+        answer: "شب بخیر 🌙 اللہ آپ کو سکون بھری نیند دے اور اچھے خواب دکھائے 🤲."
+      }
+    ];
+
+    // ===== Helper: basic QA match =====
+    function findBasicAnswer(userMessage) {
+      const msg = userMessage.toLowerCase().trim();
+      for (const item of qaDatabase) {
+        for (const p of item.patterns) {
+          if (msg.includes(p.toLowerCase())) {
+            return item.answer;
+          }
+        }
+      }
+      return null;
+    }
+
+    // ===== Settings panel =====
     function toggleSettings() {
-      const panel = document.getElementById("settingsPanel");
-      panel.classList.toggle("hidden");
+      document.getElementById("settingsPanel").classList.toggle("hidden");
+    }
+    function toggleAutoFade(cb) {
+      settings.autoFade = cb.checked;
     }
 
-    function toggleAutoFade(checkbox) {
-      settings.autoFade = checkbox.checked;
-    }
-
-    // ===== Belief Modal =====
+    // ===== Belief modal =====
     function openBeliefModal() {
       const modal = document.getElementById("beliefModal");
       modal.classList.add("show");
@@ -502,33 +739,23 @@ and move toward actions that create calm, kindness and positive feelings.
         cb.checked = settings.beliefs.includes(cb.value);
       });
     }
-
     function closeBeliefModal() {
-      const modal = document.getElementById("beliefModal");
-      modal.classList.remove("show");
+      document.getElementById("beliefModal").classList.remove("show");
     }
-
-    function toggleBeliefEnabled(checkbox) {
-      settings.beliefEnabled = checkbox.checked;
+    function toggleBeliefEnabled(cb) {
+      settings.beliefEnabled = cb.checked;
     }
-
     function saveBeliefs() {
-      const checkboxes = document.querySelectorAll(".belief-checkbox");
       const selected = [];
-      checkboxes.forEach(cb => {
+      document.querySelectorAll(".belief-checkbox").forEach(cb => {
         if (cb.checked) selected.push(cb.value);
       });
-
-      if (settings.beliefEnabled) {
-        settings.beliefs = ["universal", ...selected];
-      } else {
-        settings.beliefs = ["universal"];
-      }
-
+      settings.beliefs = settings.beliefEnabled
+        ? ["universal", ...selected]
+        : ["universal"];
       updateModeLabel();
       closeBeliefModal();
     }
-
     function updateModeLabel() {
       const modeLabel = document.getElementById("modeLabel");
       if (!settings.beliefEnabled || settings.beliefs.length === 1) {
@@ -538,14 +765,12 @@ and move toward actions that create calm, kindness and positive feelings.
       }
     }
 
-    // ===== Voice toggle button =====
+    // ===== Voice toggle =====
     function toggleVoiceMode() {
       const btn = document.getElementById("voiceBtn");
       settings.voiceAuto = !settings.voiceAuto;
-
       if (settings.voiceAuto) {
         btn.classList.add("voice-on");
-        // current جواب بھی فوراً پڑھ دو
         playVoiceAnswer();
       } else {
         btn.classList.remove("voice-on");
@@ -555,29 +780,29 @@ and move toward actions that create calm, kindness and positive feelings.
       }
     }
 
-    // ===== Send Message =====
-    function sendMessage() {
-      const input = document.getElementById("userInput");
+    // ===== Sent bubble =====
+    function showSentMessage(text) {
       const container = document.getElementById("messageContainer");
-      if (!input || !container) return;
-
-      const text = input.value.trim();
-      if (!text) return;
-
-      // اوپر bubble دکھاؤ
       container.innerHTML = "";
       const msg = document.createElement("div");
       msg.className = "sent-message";
-      msg.innerText = text;
+      msg.textContent = text;
       container.appendChild(msg);
-
       if (settings.autoFade) {
         msg.classList.add("auto-fade");
         setTimeout(() => msg.remove(), 2500);
       }
+    }
 
+    // ===== Main send =====
+    function sendMessage() {
+      const input = document.getElementById("userInput");
+      const text = input.value.trim();
+      if (!text) return;
+
+      showSentMessage(text);
       input.value = "";
-      processEmotion(text, settings);
+      handleMessage(text);
     }
 
     // Enter key support
@@ -591,11 +816,33 @@ and move toward actions that create calm, kindness and positive feelings.
       }
     });
 
-    // ===== Emotional Logic =====
-    function processEmotion(text, settings) {
-      const reactionEl = document.getElementById("reactionText");
-      if (!reactionEl) return;
+    // ===== Handle message (QA + emotional) =====
+    function handleMessage(text) {
+      const basic = findBasicAnswer(text);
+      if (basic) {
+        setMainAnswer(basic);
+        setEthicsText(buildEthicsText());
+        if (settings.voiceAuto) playVoiceAnswer();
+      } else {
+        const { mainReply, ethicsText } = buildEmotionalReply(text);
+        setMainAnswer(mainReply);
+        setEthicsText(ethicsText);
+        if (settings.voiceAuto) playVoiceAnswer();
+      }
+    }
 
+    function setMainAnswer(text) {
+      const el = document.getElementById("answerText");
+      el.textContent = text;
+      el.dataset.speech = text;
+    }
+
+    function setEthicsText(text) {
+      document.getElementById("ethicsBox").textContent = text;
+    }
+
+    // ===== Emotional reply =====
+    function buildEmotionalReply(text) {
       const lower = text.toLowerCase();
       let tone = "neutral";
 
@@ -606,7 +853,6 @@ and move toward actions that create calm, kindness and positive feelings.
       }
 
       const header = `You said: "${text}"`;
-
       let toneLine = "";
       if (tone === "negative") {
         toneLine =
@@ -619,51 +865,40 @@ and move toward actions that create calm, kindness and positive feelings.
           "Your message feels balanced. Notice gently which actions increase calm and which actions increase tension, then move one step toward calm.";
       }
 
+      const mainReply = `${header}\n\n${toneLine}`;
+      const ethicsText = buildEthicsText();
+
+      return { mainReply, ethicsText };
+    }
+
+    function buildEthicsText() {
       let base =
         "Universal Ethics says: avoid actions that create negative emotions in you or others, " +
         "and gently move toward actions that create calm, kindness and positive feelings.";
 
-      let extra = "";
       if (settings.beliefEnabled && settings.beliefs.length > 1) {
         const rels = settings.beliefs.filter(b => b !== "universal");
-        extra =
-          " Based on your selected belief mode (" +
+        base += " Based on your selected belief mode (" +
           rels.join(", ") +
-          "), you can also reflect on how those traditions talk about compassion, patience and responsibility.";
+          "), you can reflect on how those traditions talk about compassion, patience and responsibility.";
       }
-
-      const fullReply = `${header}\n\n${toneLine}\n\n${base}${extra}`;
-      reactionEl.textContent = fullReply;
-
-      // voice کیلئے صرف header + toneLine save کرو (ethical paragraph نہیں)
-      reactionEl.dataset.speech = `${header}. ${toneLine}`;
-
-      updateModeLabel();
-
-      if (settings.voiceAuto) {
-        playVoiceAnswer();
-      }
+      return base;
     }
 
-    // ===== Voice Answer =====
+    // ===== Voice (only main answer) =====
     function playVoiceAnswer() {
-      const reactionEl = document.getElementById("reactionText");
-      if (!reactionEl) return;
-
-      const speechText =
-        reactionEl.dataset.speech ||
-        reactionEl.innerText ||
-        reactionEl.textContent ||
-        "";
-      if (!speechText) return;
+      const el = document.getElementById("answerText");
+      if (!el) return;
+      const text =
+        el.dataset.speech || el.innerText || el.textContent || "";
+      if (!text) return;
 
       if (window.speechSynthesis.speaking) {
         window.speechSynthesis.cancel();
       }
-
-      const utterance = new SpeechSynthesisUtterance(speechText);
-      utterance.lang = "en-US";
-      window.speechSynthesis.speak(utterance);
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = "en-US";
+      window.speechSynthesis.speak(u);
     }
   </script>
 </body>
