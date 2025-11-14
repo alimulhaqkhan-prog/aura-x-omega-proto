@@ -146,14 +146,14 @@
       color: #e5e7eb;
     }
 
-    /* ===== Input Area ===== */
+    /* ===== Input Area (textbox left, buttons right column) ===== */
     .input-area {
       width: 100%;
       max-width: 480px;
       display: flex;
       gap: 8px;
       margin-top: 18px;
-      align-items: center;
+      align-items: stretch;
     }
 
     .input-box {
@@ -174,26 +174,46 @@
       opacity: 0.85;
     }
 
+    /* Right side button stack */
+    .button-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      align-items: stretch;
+      justify-content: flex-start;
+    }
+
     .send-btn {
-      padding: 10px 16px;
-      border-radius: 30px;
+      padding: 10px 14px;
+      border-radius: 20px;
       border: none;
       background: #facc15;
       color: #0f172a;
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 700;
       cursor: pointer;
       white-space: nowrap;
     }
 
+    .icon-row {
+      display: flex;
+      gap: 4px;
+      justify-content: center;
+    }
+
     .settings-btn,
     .belief-btn,
     .voice-btn {
-      padding: 0 10px;
+      padding: 0 9px;
+      height: 32px;
+      min-width: 32px;
       border-radius: 999px;
       border: none;
       font-size: 18px;
       cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .settings-btn {
@@ -252,12 +272,10 @@
       z-index: 50;
     }
 
-    /* default hidden */
     #beliefModal {
       display: none;
     }
 
-    /* visible when .show */
     #beliefModal.show {
       display: flex !important;
       align-items: center;
@@ -368,7 +386,7 @@
       </div>
     </div>
 
-    <!-- Input + buttons -->
+    <!-- Input + buttons (textbox left, buttons right) -->
     <div class="input-area">
       <input
         id="userInput"
@@ -376,10 +394,15 @@
         type="text"
         placeholder="✨ Write anything… AURA-X will feel it with you"
       />
-      <button class="send-btn" onclick="sendMessage()">Send</button>
-      <button class="settings-btn" onclick="toggleSettings()">⚙️</button>
-      <button class="belief-btn" onclick="openBeliefModal()">☯</button>
-      <button class="voice-btn" onclick="playVoiceAnswer()">🔊</button>
+
+      <div class="button-stack">
+        <button class="send-btn" onclick="sendMessage()">Send</button>
+        <div class="icon-row">
+          <button class="settings-btn" onclick="toggleSettings()">⚙️</button>
+          <button class="belief-btn" onclick="openBeliefModal()">☯</button>
+          <button class="voice-btn" onclick="playVoiceAnswer()">🔊</button>
+        </div>
+      </div>
     </div>
 
     <!-- Settings panel -->
