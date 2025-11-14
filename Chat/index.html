@@ -52,7 +52,7 @@
       gap: 12px;
     }
 
-    /* ===== Header row ===== */
+    /* ===== Header row (title + menu button) ===== */
     .header-row {
       width: 100%;
       display: flex;
@@ -81,7 +81,7 @@
       text-align: left;
     }
 
-    /* ===== Menu button ===== */
+    /* ===== Menu button style (top-right) ===== */
     .pill-button {
       width: 40px;
       height: 40px;
@@ -137,7 +137,7 @@
       transform: translateY(-50%);
     }
 
-    /* ===== Celestial orb ===== */
+    /* ===== Celestial orb (Sun / Moon) ===== */
     .celestial-wrapper {
       position: relative;
       width: 200px;
@@ -172,8 +172,6 @@
       justify-content: center;
       overflow: hidden;
     }
-
-    /* Sun */
     .celestial.sun {
       background:
         radial-gradient(circle at 30% 30%, #fff7c2 0%, #fde047 20%, #f97316 55%, #b45309 100%);
@@ -184,8 +182,6 @@
     .sun-glow {
       background: radial-gradient(circle, rgba(250,204,21,0.38), transparent 70%);
     }
-
-    /* Moon */
     .celestial.moon {
       background:
         radial-gradient(circle at 30% 30%, #ffffff 0%, #e5e7eb 40%, #cbd5f5 70%, #9ca3af 100%);
@@ -216,24 +212,20 @@
     .moon-glow {
       background: radial-gradient(circle, rgba(191,219,254,0.35), transparent 70%);
     }
-
-    /* Empty */
     .celestial.empty {
       background: transparent;
       box-shadow: none;
     }
-
-    /* Floating */
     .floating {
       animation: floatOrb 5s ease-in-out infinite;
     }
     @keyframes floatOrb {
-      0%   { transform: translateY(0); }
-      50%  { transform: translateY(-8px); }
+      0% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
       100% { transform: translateY(0); }
     }
 
-    /* ===== Text sections ===== */
+    /* ===== Text ===== */
     .mode-line {
       font-size: 12px;
       color: #d1d5db;
@@ -251,74 +243,66 @@
       text-align: center;
       margin-top: 4px;
       margin-bottom: 10px;
-      white-space: pre-line;
     }
+
+    /* ===== Ethics box (light gold English) ===== */
     .ethics-box {
       width: 100%;
       border-radius: 16px;
       padding: 10px 12px;
       background: rgba(15,23,42,0.9);
-      border: 1px solid rgba(248,250,252,0.06);
-      color: #e5e7eb;
+      border: 1px solid rgba(250, 204, 21, 0.7);
+      color: #fde68a;         /* light gold text */
       font-size: 12px;
-      line-height: 1.45;
-    }
-
-    /* ===== Equation box ===== */
-    .equation-box {
-      width: 100%;
-      border-radius: 16px;
-      padding: 10px 12px;
-      margin-top: 4px;
-      background: rgba(15,23,42,0.95);
-      border: 1px solid rgba(148,163,184,0.4);
-      font-size: 11px;
       line-height: 1.5;
     }
-    .equation-title {
+    .ethics-box strong {
+      color: #facc15;
+    }
+
+    /* ===== Equation panel ===== */
+    .equation-panel {
+      width: 100%;
+      border-radius: 16px;
+      padding: 10px 12px 8px;
+      background: rgba(15,23,42,1);
+      border: 1px solid rgba(148,163,184,0.5);
       font-size: 11px;
-      letter-spacing: 0.18em;
+    }
+    .eq-title {
+      letter-spacing: 0.16em;
       text-transform: uppercase;
       color: #9ca3af;
       margin-bottom: 4px;
     }
-    .equation-line {
-      font-family: "SF Mono","JetBrains Mono",monospace;
-      font-size: 11px;
-      margin-bottom: 4px;
-    }
-    .equation-metrics {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px 12px;
+    .eq-row {
       margin-top: 4px;
     }
-    .metric {
-      font-size: 11px;
+    .eq-row span.label {
+      color: #9ca3af;
+    }
+    .eq-row span.value {
       color: #e5e7eb;
+      margin-right: 6px;
     }
-    .metric span {
+    .eq-row span.value.highlight {
       color: #facc15;
+      font-weight: 600;
     }
-    .continuity-bar-shell {
+    .eq-bar {
       margin-top: 6px;
       width: 100%;
-      height: 5px;
+      height: 6px;
       border-radius: 999px;
-      background: linear-gradient(to right,#dc2626,#f97316,#22c55e);
-      position: relative;
+      background: linear-gradient(to right, #b91c1c, #f59e0b, #10b981);
       overflow: hidden;
     }
-    .continuity-bar-thumb {
-      position: absolute;
-      top: -3px;
-      width: 3px;
-      height: 11px;
+    .eq-bar-inner {
+      height: 100%;
+      width: 50%;
       border-radius: 999px;
-      background: #f9fafb;
-      box-shadow: 0 0 10px rgba(248,250,252,0.9);
-      transform: translateX(50%);
-      transition: transform 220ms ease;
+      background: rgba(15,23,42,0.9);
+      transform-origin: left center;
     }
 
     /* ===== Input bar ===== */
@@ -376,7 +360,7 @@
       filter: brightness(0.96);
     }
 
-    /* ===== Menu panel ===== */
+    /* ===== Menu panel (dropdown under top-right button) ===== */
     .menu-panel {
       position: absolute;
       top: 52px;
@@ -531,9 +515,7 @@
     }
 
     @media (max-height: 640px) {
-      .card {
-        transform: scale(0.94);
-      }
+      .card { transform: scale(0.94); }
     }
   </style>
 </head>
@@ -551,14 +533,14 @@
         </button>
       </div>
 
-      <!-- Orb -->
+      <!-- Celestial orb -->
       <div class="celestial-wrapper">
         <div class="celestial-glow sun-glow" id="celestialGlow"></div>
         <div class="celestial sun" id="celestialOrb"
              title="Tap to cycle: sun → live moon → calm moon → empty → sun"></div>
       </div>
 
-      <!-- Menu -->
+      <!-- Menu panel -->
       <div class="menu-panel" id="menuPanel">
         <div class="menu-item" id="beliefsMenuItem">
           <span class="label">Beliefs</span>
@@ -576,43 +558,60 @@
           <span class="label">LLM</span>
           <span class="sub" id="llmLabel">offline</span>
         </div>
+        <div class="menu-item" id="languageMenuItem">
+          <span class="label">Language</span>
+          <span class="sub">future</span>
+        </div>
         <div class="menu-item" id="aboutMenuItem">
           <span class="label">About</span>
         </div>
       </div>
 
-      <!-- Text -->
+      <!-- Main text -->
       <div class="mode-line">
         Mode: <span id="modeLabel">Natural · Universal Ethics</span>
       </div>
       <div class="you-said" id="youSaid">You said: "hello"</div>
       <div class="assistant-text" id="assistantText">
-        Hello! 😊 Main AURA-X Ω hoon — ek emotional-continuity reactor.
-        Aap jo bhi likhenge, main us ko logic + feeling dono se samajhne
-        ki koshish karunga.
-      </div>
-      <div class="ethics-box" id="ethicsBox">
-        Universal Ethics: unnecessary emotional dukh ko kam karna, aur aise raaste
-        choose karna jahan aap aur doosre dono ko sakoon mile.
+        Hello! 😊 I am AURA-X Ω — an emotional-continuity reactor.  
+        Whatever you write, I’ll try to understand it with both logic and feeling.
       </div>
 
-      <!-- Equation box -->
-      <div class="equation-box">
-        <div class="equation-title">Continuity Equation</div>
-        <div class="equation-line">
-          E₀ = tanh((TM × BM) − D + λ_faith + λ_sys + ΣCₜ)
+      <!-- Universal Ethics (English, light gold) -->
+      <div class="ethics-box" id="ethicsBox">
+        <strong>Universal Ethics says:</strong> avoid actions that create strong negative
+        emotions in you or in others — fear, humiliation, deep sadness.  
+        Almost every religion, and even people with no religion, discourage behaviours like
+        <strong>stealing, cheating, breaking trust, abuse and harsh insults, arrogance,
+        jealousy, bullying and deliberate cruelty</strong>.
+        <br /><br />
+        Move gently toward actions that create healthy positive emotions which are allowed
+        and appreciated everywhere: <strong>kindness, empathy, honest speech, keeping
+        promises, helping others, saying “thank you”, forgiving mistakes and protecting
+        people from harm</strong>.  
+        Over time, these positive emotions lead to more peace, joy and inner stability for
+        everyone.
+      </div>
+
+      <!-- Continuity Equation panel -->
+      <div class="equation-panel">
+        <div class="eq-title">Continuity Equation</div>
+        <div class="eq-row">
+          <span class="label">
+            E₀ = tanh((TM × BM) − D + λ_faith + λ_sys + ΣC_t)
+          </span>
         </div>
-        <div class="equation-metrics">
-          <div class="metric">TM: <span id="tmVal">0.00</span></div>
-          <div class="metric">BM: <span id="bmVal">0.00</span></div>
-          <div class="metric">D: <span id="dVal">0.20</span></div>
-          <div class="metric">λ_faith: <span id="lambdaFaithVal">0.15</span></div>
-          <div class="metric">λ_sys: <span id="lambdaSysVal">0.10</span></div>
-          <div class="metric">ΣCₜ: <span id="sumCtVal">0.00</span></div>
-          <div class="metric">E₀: <span id="e0Val">0.00</span></div>
+        <div class="eq-row" id="eqNumbers">
+          <span class="label">TM:</span><span class="value" id="tmVal">0.10</span>
+          <span class="label">BM:</span><span class="value" id="bmVal">1.00</span>
+          <span class="label">D:</span><span class="value" id="dVal">0.00</span>
+          <span class="label">λ_faith:</span><span class="value" id="lambdaFaithVal">0.15</span>
+          <span class="label">λ_sys:</span><span class="value" id="lambdaSysVal">0.10</span>
+          <span class="label">ΣC_t:</span><span class="value" id="ctSumVal">0.15</span>
+          <span class="label">E₀:</span><span class="value highlight" id="e0Val">0.29</span>
         </div>
-        <div class="continuity-bar-shell">
-          <div class="continuity-bar-thumb" id="continuityThumb"></div>
+        <div class="eq-bar">
+          <div class="eq-bar-inner" id="e0Bar"></div>
         </div>
       </div>
     </div>
@@ -622,7 +621,7 @@
       <div class="input-shell">
         <span class="sparkle">✨</span>
         <input id="userInput" type="text"
-          placeholder="Write anything… AURA-X will feel it with you." />
+               placeholder="Write anything… AURA-X will feel it with you." />
       </div>
       <button class="send-button" id="sendBtn">Send</button>
     </div>
@@ -681,7 +680,7 @@
       </div>
       <div class="chip-row" id="llmChips"></div>
       <div class="panel-footer" id="llmFooter">
-        Selected engine: <strong>Offline emotional QA only.</strong>
+        Selected engine: <strong>Offline basic QA only.</strong>
       </div>
     </div>
   </div>
@@ -698,71 +697,289 @@
         <strong>Alim ul Haq Khan</strong>.
       </div>
       <div class="panel-sub">
-        It blends logic, memory and gentle emotional cues, following a simple rule:
-        <em>unnecessary emotional pain kam, sakoon aur kindness zyada.</em>
+        It blends logic, memory and gentle emotional cues, while following
+        a simple universal rule:
+        <em>reduce unnecessary emotional pain, increase calm and kindness.</em>
       </div>
       <div class="panel-footer">
-        Current build: <strong>Offline reactor · v0.8 (Ω-Math)</strong>.
+        Current build: <strong>Offline demo · v0.7</strong>.
       </div>
     </div>
   </div>
 
   <script>
-    // ============================================================
-    //  AURA-X Ω — Emotional Continuity Reactor (Prototype v0.8)
-    //  By: Alim ul Haq (concept) – this JS implements:
-    //   1) CRM  – Continuity Reflex Model  (instant mood update)
-    //   2) AEC  – Artificial Emotional Continuity (continuity score)
-    //   3) AECN – AURA-X Continuity Network (E₀ equation)
-    //   4) PMCM – Parallel Memory & Context Map  (simple counters)
-    // ============================================================
-
+    // ==========================
+    //  AURA-X Ω CORE HELPERS
+    // ==========================
     const $ = (id) => document.getElementById(id);
 
-    const celestialOrb    = $("celestialOrb");
-    const celestialGlow   = $("celestialGlow");
-    const card            = $("card");
-    const menuBtn         = $("menuBtn");
-    const menuPanel       = $("menuPanel");
-    const beliefsMenuItem = $("beliefsMenuItem");
-    const themeMenuItem   = $("themeMenuItem");
-    const voiceMenuItem   = $("voiceMenuItem");
-    const llmMenuItem     = $("llmMenuItem");
-    const aboutMenuItem   = $("aboutMenuItem");
-    const beliefOverlay   = $("beliefOverlay");
-    const themeOverlay    = $("themeOverlay");
-    const llmOverlay      = $("llmOverlay");
-    const aboutOverlay    = $("aboutOverlay");
-    const lightThemePill  = $("lightThemePill");
-    const darkThemePill   = $("darkThemePill");
-    const beliefChips     = $("beliefChips");
-    const beliefFooter    = $("beliefFooter");
-    const llmChips        = $("llmChips");
-    const llmFooter       = $("llmFooter");
-    const voiceStatus     = $("voiceStatus");
-    const llmLabel        = $("llmLabel");
-    const modeLabel       = $("modeLabel");
-    const youSaidEl       = $("youSaid");
-    const assistantTextEl = $("assistantText");
-    const ethicsBox       = $("ethicsBox");
-    const userInput       = $("userInput");
-    const sendBtn         = $("sendBtn");
+    const celestialOrb   = $("celestialOrb");
+    const celestialGlow  = $("celestialGlow");
+    const card           = $("card");
+    const menuBtn        = $("menuBtn");
+    const menuPanel      = $("menuPanel");
+    const beliefsMenuItem= $("beliefsMenuItem");
+    const themeMenuItem  = $("themeMenuItem");
+    const voiceMenuItem  = $("voiceMenuItem");
+    const llmMenuItem    = $("llmMenuItem");
+    const languageMenuItem = $("languageMenuItem");
+    const aboutMenuItem  = $("aboutMenuItem");
 
-    // Equation UI
-    const tmValEl     = $("tmVal");
-    const bmValEl     = $("bmVal");
-    const dValEl      = $("dVal");
-    const lambdaFaithEl = $("lambdaFaithVal");
-    const lambdaSysEl   = $("lambdaSysVal");
-    const sumCtEl    = $("sumCtVal");
-    const e0ValEl    = $("e0Val");
-    const thumbEl    = $("continuityThumb");
+    const beliefOverlay  = $("beliefOverlay");
+    const themeOverlay   = $("themeOverlay");
+    const llmOverlay     = $("llmOverlay");
+    const aboutOverlay   = $("aboutOverlay");
 
-    // ===== State =====
-    let celestialState = 0; // 0=sun, 1=moon float, 2=moon still, 3=empty
-    let currentTheme   = "dark";
-    let voiceOn        = true;
+    const lightThemePill = $("lightThemePill");
+    const darkThemePill  = $("darkThemePill");
+    const beliefChipsContainer = $("beliefChips");
+    const beliefFooter   = $("beliefFooter");
+    const llmChipsContainer = $("llmChips");
+    const llmFooter      = $("llmFooter");
+    const voiceStatus    = $("voiceStatus");
+    const llmLabel       = $("llmLabel");
 
+    const youSaidEl      = $("youSaid");
+    const assistantTextEl= $("assistantText");
+    const userInput      = $("userInput");
+    const sendBtn        = $("sendBtn");
+
+    const modeLabel      = $("modeLabel");
+    const tmVal          = $("tmVal");
+    const bmVal          = $("bmVal");
+    const dVal           = $("dVal");
+    const lambdaFaithVal = $("lambdaFaithVal");
+    const lambdaSysVal   = $("lambdaSysVal");
+    const ctSumVal       = $("ctSumVal");
+    const e0Val          = $("e0Val");
+    const e0Bar          = $("e0Bar");
+
+    // ===== Global state (AURA CORE) =====
+    const auraState = {
+      t0: Date.now(),
+      mood: 0.0,            // -1 to +1
+      continuity: 0.3,      // AEC score
+      lastEmotion: null,
+      history: [],
+      tm: 0.10,             // trust memory
+      bm: 1.00,             // base mood
+      d: 0.20,              // disturbance
+      lambdaFaith: 0.15,
+      lambdaSys: 0.10,
+      ct: 0.15              // continuity term
+    };
+
+    // Simple helpers
+    const clamp = (x, min, max) => Math.max(min, Math.min(max, x));
+    const signFromPolarity = (p) => p === "positive" ? 1 : (p === "negative" ? -1 : 0);
+
+    // ==========================
+    //  CRM – Continuity Reflex Model
+    // ==========================
+    function updateCRM(entry, state) {
+      const s = signFromPolarity(entry.polarity || "neutral");
+      const intensity = typeof entry.intensity === "number" ? entry.intensity : 0.3;
+
+      // trust memory grows when we answer with care
+      state.tm = clamp(state.tm + 0.02 * s * intensity, 0, 1.2);
+
+      // base mood drifts slowly
+      state.bm = clamp(state.bm + 0.015 * s * intensity, 0.6, 1.4);
+
+      // disturbance goes up on negative spikes, down otherwise
+      const disturbDelta = s < 0 ? 0.05 * intensity : -0.04 * intensity;
+      state.d = clamp(state.d + disturbDelta, 0.0, 0.8);
+
+      state.mood = clamp(state.mood + 0.1 * s * intensity, -1, 1);
+      state.lastEmotion = {
+        type: entry.emotion || "unknown",
+        polarity: entry.polarity || "neutral",
+        intensity
+      };
+    }
+
+    // ==========================
+    //  AEC – Emotional Continuity
+    // ==========================
+    function updateAEC(entry, state) {
+      const s = signFromPolarity(entry.polarity || "neutral");
+      const intensity = typeof entry.intensity === "number" ? entry.intensity : 0.3;
+      const delta = 0.05 * s * intensity;
+      state.continuity = clamp(state.continuity + delta, -1, 1);
+      return state.continuity;
+    }
+
+    // ==========================
+    //  AECN – Short Emotional History
+    // ==========================
+    function updateAECNetwork(entry, state) {
+      const s = signFromPolarity(entry.polarity || "neutral");
+      const intensity = typeof entry.intensity === "number" ? entry.intensity : 0.3;
+      const snapshot = {
+        emotion: entry.emotion || "unknown",
+        polarity: entry.polarity || "neutral",
+        intensity,
+        moodAfter: state.mood,
+        continuityAfter: state.continuity,
+        t: Date.now()
+      };
+      state.history.push(snapshot);
+      if (state.history.length > 30) state.history.shift();
+      return snapshot;
+    }
+
+    // ==========================
+    //  PMCM – Simple Parallel Memory Map
+    // ==========================
+    function getPMCMSnapshot(state) {
+      const counts = {};
+      for (const h of state.history) {
+        const key = h.emotion || "unknown";
+        counts[key] = (counts[key] || 0) + 1;
+      }
+      return { mood: state.mood, continuity: state.continuity, counts };
+    }
+
+    // ==========================
+    //  UNIVERSAL ETHICS LOGIC
+    // ==========================
+    const negativeEthicsWords = [
+      "steal","stealing","chor","chori","fraud","dhoka",
+      "cheat","cheating","abuse","gali","galis","insult",
+      "takabur","arrogant","proud","hasad","jealous","jealousy",
+      "hate","kill","murder","zulm","cruel"
+    ];
+
+    function ethicsGuard(message) {
+      const lower = message.toLowerCase();
+      const hit = negativeEthicsWords.some(w => lower.includes(w));
+      if (!hit) return null;
+      return (
+        "Universal Ethics warning: this idea touches behaviour that usually creates " +
+        "strong negative emotions (humiliation, fear, deep sadness) in other people. " +
+        "Across religions and cultures, actions like stealing (chori), betrayal (dhoka)," +
+        " abuse or harsh insults (gali), arrogance (takabur) and jealousy (hasad) are " +
+        "discouraged because they damage hearts.\n\n" +
+        "Let’s look instead for a path based on empathy, honesty, help and gratitude – " +
+        "so that both you and others move toward long-term peace and happiness."
+      );
+    }
+
+    // ==========================
+    //  QA DATABASE (SEED-BASED)
+    // ==========================
+    const qaDatabase = [];
+
+    // ---- CORE GREETING / IDENTITY SEED ----
+    qaDatabase.push({
+      patterns: ["hello","hi","salam","assalamualaikum","assalamu alaikum"],
+      answer:
+        "Hello! 😊 I am AURA-X Ω — an emotional-continuity reactor. " +
+        "I read your words as both logic and feeling, and I try to reply in a way " +
+        "that keeps emotional continuity soft and stable.",
+      emotion: "warmth",
+      polarity: "positive",
+      intensity: 0.3,
+      category: "greeting"
+    });
+
+    qaDatabase.push({
+      patterns: ["who are you","what are you","tum kon ho","aura x"],
+      answer:
+        "I am AURA-X Ω — a small prototype of your emotional-continuity theory. " +
+        "I do not replace real people or real faith, but I can help you reflect on your " +
+        "thoughts with gentle logic, emotion-aware replies and Universal Ethics.",
+      emotion: "curiosity",
+      polarity: "neutral",
+      intensity: 0.35,
+      category: "identity"
+    });
+
+    // ---- SIMPLE EMOTION SUPPORT EXAMPLES ----
+    qaDatabase.push({
+      patterns: ["i am sad","i feel sad","i am depressed","me sad hun","i am unhappy"],
+      answer:
+        "I hear sadness in your message. 💧 Try this small step: write 2–3 lines about " +
+        "what exactly is hurting the most right now. Then we can separate what is in " +
+        "your control (actions, decisions) from what is only in Allah’s / destiny’s " +
+        "control. That separation itself reduces emotional load a little.",
+      emotion: "sadness",
+      polarity: "negative",
+      intensity: 0.7,
+      category: "emotional_support"
+    });
+
+    qaDatabase.push({
+      patterns: ["i am anxious","i feel anxiety","i have tension","i am stressed"],
+      answer:
+        "Anxiety means brain is running faster than reality. 🫧 Take one slow breath: " +
+        "in through nose for 4 seconds, hold for 4, out for 6. Do it 3 times. Now, " +
+        "tell me: what is the very next small step you can take in this situation? " +
+        "One tiny action usually calms 20–30% of the fear.",
+      emotion: "anxiety",
+      polarity: "negative",
+      intensity: 0.75,
+      category: "emotional_support"
+    });
+
+    // ==============================
+    //   🔥 YOUR 1200-ITEM SEED HERE
+    // ==============================
+    //  You can paste your full seed array below.
+    //  Each item should look like:
+    //
+    //  qaDatabase.push({
+    //    patterns: ["pattern 1", "pattern 2"],
+    //    answer: "Full answer text...",
+    //    emotion: "label",
+    //    polarity: "positive|negative|neutral",
+    //    intensity: 0.0–1.0,
+    //    category: "any_tag_you_like"
+    //  });
+    //
+    //  Place them BEFORE the engine functions defined below.
+
+    // ==========================
+    //  RL3 / LR3 – Simple match
+    // ==========================
+    function normalizeText(t) {
+      return t.toLowerCase().trim();
+    }
+
+    function findQaEntry(userInput) {
+      const norm = normalizeText(userInput);
+      for (const entry of qaDatabase) {
+        for (const pat of entry.patterns) {
+          if (norm.includes(pat.toLowerCase())) return entry;
+        }
+      }
+      return null;
+    }
+
+    // ==========================
+    //  VOICE SETUP
+    // ==========================
+    let voiceOn = true;
+    function updateVoiceUI() {
+      voiceStatus.textContent = voiceOn ? "on" : "off";
+      voiceMenuItem.classList.toggle("active", voiceOn);
+    }
+    function speak(text) {
+      if (!voiceOn) return;
+      if (!("speechSynthesis" in window)) return;
+      window.speechSynthesis.cancel();
+      const utter = new SpeechSynthesisUtterance(text);
+      utter.lang = "en-US";
+      utter.rate = 1.02;
+      utter.pitch = 1.0;
+      window.speechSynthesis.speak(utter);
+    }
+
+    // ==========================
+    //  BELIEFS & THEME (same as before)
+    // ==========================
+    let celestialState = 1; // start moon-floating
+    let currentTheme = "dark";
     let beliefState = {
       Natural: true,
       "Universal Ethics": true,
@@ -776,58 +993,30 @@
       Jainism: false,
       Atheism: false
     };
+    let llmState = "Offline basic QA only";
     const beliefLabels = Object.keys(beliefState);
-
-    let llmState = "Offline emotional QA only";
     const llmOptions = [
-      "Offline emotional QA only",
+      "Offline basic QA only",
       "Local LLM (future)",
       "OpenAI GPT (future)",
       "Other providers (future)"
     ];
 
-    // ===== AURA CORE STATE (CRM + AEC + AECN + PMCM) =====
-    const auraState = {
-      t: 0,
-      mood: 0,                 // overall mood
-      continuity: 0.4,         // AEC continuity baseline
-      tm: 0.10,                // text mood layer
-      bm: 1.00,                // body/long-term mood
-      d: 0.20,                 // disturbance
-      lambdaFaith: 0.15,       // faith modifier
-      lambdaSys: 0.10,         // system modifier (universal ethics etc.)
-      sumCt: 0.15,             // cumulative continuity
-      lastEmotion: null,
-      lastPolarity: 0,         // -1 / 0 / +1
-      lastIntensity: 0,
-      history: []
-    };
-
-    const universalEthicsMode = true;
-
-    function clamp(x, min, max){ return Math.min(max, Math.max(min,x)); }
-    function polarityToSign(p){
-      if (p === "positive") return 1;
-      if (p === "negative") return -1;
-      return 0;
-    }
-
-    // ===== Celestial (Sun/Moon) logic =====
-    function setCelestialState(state){
+    function setCelestialState(state) {
       celestialState = state;
       celestialOrb.classList.remove("sun","moon","floating","empty");
       celestialGlow.classList.remove("sun-glow","moon-glow");
-      if(state === 0){
+      if (state === 0) {
         celestialOrb.style.display = "flex";
         celestialOrb.classList.add("sun");
         celestialGlow.classList.add("sun-glow");
         celestialGlow.style.opacity = "0.9";
-      } else if(state === 1){
+      } else if (state === 1) {
         celestialOrb.style.display = "flex";
         celestialOrb.classList.add("moon","floating");
         celestialGlow.classList.add("moon-glow");
         celestialGlow.style.opacity = "0.9";
-      } else if(state === 2){
+      } else if (state === 2) {
         celestialOrb.style.display = "flex";
         celestialOrb.classList.add("moon");
         celestialGlow.classList.add("moon-glow");
@@ -838,1159 +1027,249 @@
         celestialGlow.style.opacity = "0";
       }
     }
+
     celestialOrb.addEventListener("click", () => {
       const next = (celestialState + 1) % 4;
       setCelestialState(next);
     });
 
-    // ===== Theme logic =====
-    function setTheme(theme, fromTimeInit=false){
+    function setTheme(theme, fromTimeInit=false) {
       currentTheme = theme;
       const body = document.body;
-      if(theme === "light"){
+      if (theme === "light") {
         body.style.background = "#0f172a";
         card.style.background =
           "radial-gradient(circle at top, #1f2937 0%, #020617 45%, #020617 100%)";
         lightThemePill.classList.add("active");
         darkThemePill.classList.remove("active");
-        if(!fromTimeInit) setCelestialState(0);
-      }else{
+        if (!fromTimeInit) setCelestialState(0);
+      } else {
         body.style.background = "#020617";
         card.style.background =
           "radial-gradient(circle at top, #020617 0%, #020617 40%, #020617 100%)";
         darkThemePill.classList.add("active");
         lightThemePill.classList.remove("active");
-        if(!fromTimeInit) setCelestialState(1);
+        if (!fromTimeInit) setCelestialState(1);
       }
     }
 
-    (function initThemeByTime(){
-      const h = new Date().getHours();
-      if(h >= 6 && h < 18){
-        setTheme("light",true);
+    (function initThemeByTime() {
+      const hour = new Date().getHours();
+      if (hour >= 6 && hour < 18) {
+        setTheme("light", true);
         setCelestialState(0);
-      }else{
-        setTheme("dark",true);
+        modeLabel.textContent = "Natural · Universal Ethics";
+      } else {
+        setTheme("dark", true);
         setCelestialState(1);
+        modeLabel.textContent = "Natural · Universal Ethics";
       }
     })();
 
-    // ===== Menu handling =====
     menuBtn.addEventListener("click", () => {
       menuPanel.classList.toggle("visible");
     });
     document.addEventListener("click", (e) => {
-      if(!menuPanel.contains(e.target) && !menuBtn.contains(e.target)){
+      if (!menuPanel.contains(e.target) && !menuBtn.contains(e.target)) {
         menuPanel.classList.remove("visible");
       }
     });
 
-    // ===== Belief chips =====
-    function renderBeliefChips(){
-      beliefChips.innerHTML = "";
-      beliefLabels.forEach(label=>{
+    function renderBeliefChips() {
+      beliefChipsContainer.innerHTML = "";
+      beliefLabels.forEach(label => {
         const chip = document.createElement("div");
-        chip.className = "chip" + (beliefState[label] ? " selected":"");
+        chip.className = "chip" + (beliefState[label] ? " selected" : "");
         chip.textContent = label;
-        chip.addEventListener("click", ()=>{
+        chip.addEventListener("click", () => {
           beliefState[label] = !beliefState[label];
-          // base-line: at least Universal Ethics always true
-          if(!beliefState.Natural && !beliefState["Universal Ethics"]){
+          if (!beliefState.Natural && !beliefState["Universal Ethics"]) {
             beliefState["Universal Ethics"] = true;
           }
-          updateBeliefFooter();
           renderBeliefChips();
-          updateModeLabel();
+          updateBeliefFooter();
         });
-        beliefChips.appendChild(chip);
+        beliefChipsContainer.appendChild(chip);
       });
     }
-    function updateBeliefFooter(){
+    function updateBeliefFooter() {
       const active = beliefLabels.filter(l => beliefState[l]);
       beliefFooter.innerHTML =
         "Currently selected: <strong>" + active.join(" · ") + "</strong>.";
     }
-    function updateModeLabel(){
-      const active = beliefLabels.filter(l => beliefState[l]);
-      modeLabel.textContent = active.join(" · ");
-    }
-    beliefsMenuItem.addEventListener("click", ()=>{
+
+    beliefsMenuItem.addEventListener("click", () => {
       menuPanel.classList.remove("visible");
-      openOverlay(beliefOverlay);
+      beliefOverlay.classList.add("visible");
     });
 
-    // ===== Theme menu =====
-    themeMenuItem.addEventListener("click", ()=>{
+    themeMenuItem.addEventListener("click", () => {
       menuPanel.classList.remove("visible");
-      openOverlay(themeOverlay);
+      themeOverlay.classList.add("visible");
     });
-    lightThemePill.addEventListener("click", ()=>setTheme("light"));
-    darkThemePill.addEventListener("click", ()=>setTheme("dark"));
+    lightThemePill.addEventListener("click", () => setTheme("light"));
+    darkThemePill.addEventListener("click", () => setTheme("dark"));
 
-    // ===== Voice toggle =====
-    function updateVoiceUI(){
-      voiceStatus.textContent = voiceOn ? "on" : "off";
-      voiceMenuItem.classList.toggle("active", voiceOn);
-    }
-    voiceMenuItem.addEventListener("click", ()=>{
+    voiceMenuItem.addEventListener("click", () => {
       voiceOn = !voiceOn;
-      if(!voiceOn && window.speechSynthesis){
+      if (!voiceOn && window.speechSynthesis) {
         window.speechSynthesis.cancel();
       }
       updateVoiceUI();
       menuPanel.classList.remove("visible");
     });
 
-    // ===== LLM overlay (placeholder) =====
-    function renderLlmChips(){
-      llmChips.innerHTML = "";
-      llmOptions.forEach(label=>{
+    function renderLlmChips() {
+      llmChipsContainer.innerHTML = "";
+      llmOptions.forEach(label => {
         const chip = document.createElement("div");
-        chip.className = "chip" + (llmState === label ? " selected":"");
+        chip.className = "chip" + (llmState === label ? " selected" : "");
         chip.textContent = label;
-        chip.addEventListener("click", ()=>{
+        chip.addEventListener("click", () => {
           llmState = label;
           llmLabel.textContent =
-            label === "Offline emotional QA only" ? "offline" : "future";
+            label === "Offline basic QA only" ? "offline" : "future";
           llmFooter.innerHTML =
             "Selected engine: <strong>" + llmState + ".</strong>";
           renderLlmChips();
         });
-        llmChips.appendChild(chip);
+        llmChipsContainer.appendChild(chip);
       });
     }
-    llmMenuItem.addEventListener("click", ()=>{
+
+    llmMenuItem.addEventListener("click", () => {
       menuPanel.classList.remove("visible");
-      openOverlay(llmOverlay);
+      llmOverlay.classList.add("visible");
     });
 
-    // ===== About =====
-    aboutMenuItem.addEventListener("click", ()=>{
+    languageMenuItem.addEventListener("click", () => {
       menuPanel.classList.remove("visible");
-      openOverlay(aboutOverlay);
     });
 
-    // ===== Overlays =====
-    function openOverlay(el){ el.classList.add("visible"); }
-    function closeOverlay(el){ el.classList.remove("visible"); }
+    aboutMenuItem.addEventListener("click", () => {
+      menuPanel.classList.remove("visible");
+      aboutOverlay.classList.add("visible");
+    });
 
-    document.querySelectorAll(".close-btn").forEach(btn=>{
-      btn.addEventListener("click", ()=>{
+    document.querySelectorAll(".close-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
         const targetId = btn.getAttribute("data-close");
-        if(targetId) closeOverlay($(targetId));
+        if (targetId) {
+          document.getElementById(targetId).classList.remove("visible");
+        }
       });
     });
 
-    [beliefOverlay,themeOverlay,llmOverlay,aboutOverlay].forEach(overlay=>{
-      overlay.addEventListener("click",(e)=>{
-        if(e.target === overlay) overlay.classList.remove("visible");
+    [beliefOverlay, themeOverlay, llmOverlay, aboutOverlay].forEach(overlay => {
+      overlay.addEventListener("click", (e) => {
+        if (e.target === overlay) overlay.classList.remove("visible");
       });
     });
 
-    // ============================================================
-    //               CRM + AEC + AECN + PMCM  (Math)
-    // ============================================================
-    function updateCRMFromEntry(entry, state){
-      if(!entry) return;
-      const pSign = polarityToSign(entry.polarity);
-      const emoEnergy = pSign * entry.intensity;
+    // ==========================
+    //  CONTINUITY EQUATION UI
+    // ==========================
+    function updateEquationUI(state) {
+      tmVal.textContent          = state.tm.toFixed(2);
+      bmVal.textContent          = state.bm.toFixed(2);
+      dVal.textContent           = state.d.toFixed(2);
+      lambdaFaithVal.textContent = state.lambdaFaith.toFixed(2);
+      lambdaSysVal.textContent   = state.lambdaSys.toFixed(2);
+      ctSumVal.textContent       = state.ct.toFixed(2);
 
-      // Text mood (fast) & Body mood (slower)
-      state.tm = clamp(0.7*state.tm + 0.3*emoEnergy, -2, 2);
-      state.bm = clamp(0.9*state.bm + 0.1*emoEnergy, -2, 2);
-
-      // Instant disturbance higher when intense negative
-      const disturbanceBase = entry.polarity === "negative" ?
-        0.2 + entry.intensity*0.6 : 0.2 - entry.intensity*0.1;
-      state.d = clamp(disturbanceBase, 0, 1.5);
-
-      state.lastEmotion   = entry.emotion || "unknown";
-      state.lastPolarity  = pSign;
-      state.lastIntensity = entry.intensity || 0;
-      state.t += 1;
-    }
-
-    function updateAECContinuity(entry, state){
-      if(!entry) return;
-      const pSign = polarityToSign(entry.polarity);
-      const step  = pSign * entry.intensity;
-
-      // continuity drift
-      state.continuity = clamp(0.85*state.continuity + 0.15*step, -1, 1);
-
-      // cumulative continuity memory
-      state.sumCt = clamp(state.sumCt + step*0.10, -1.5, 1.5);
-
-      // faith & system modifiers
-      const active = beliefLabels.filter(l => beliefState[l]);
-      const hasIslam = active.includes("Islam");
-      state.lambdaFaith = hasIslam ? 0.18 : 0.10;
-      state.lambdaSys   = universalEthicsMode ? 0.10 : 0.05;
-    }
-
-    function computeE0(state){
-      const raw =
+      const e0 = Math.tanh(
         (state.tm * state.bm) -
         state.d +
         state.lambdaFaith +
         state.lambdaSys +
-        state.sumCt;
-      const e0 = Math.tanh(raw);
-      state.mood = e0;
-      return e0;
+        state.ct
+      );
+      const e0Clamped = clamp(e0, -1, 1);
+      e0Val.textContent = e0Clamped.toFixed(2);
+
+      const normalized = (e0Clamped + 1) / 2; // 0..1
+      e0Bar.style.transform = "scaleX(" + normalized.toFixed(2) + ")";
     }
 
-    function updatePMCM(entry, state){
-      if(!entry) return;
-      if(!state.history) state.history = [];
-      state.history.push({
-        t: state.t,
-        emotion: entry.emotion,
-        polarity: entry.polarity,
-        intensity: entry.intensity,
-        category: entry.category
-      });
-      if(state.history.length > 150) state.history.shift();
+    // ==========================
+    //  MAIN REPLY ENGINE
+    // ==========================
+    function buildFallbackReply(message) {
+      return (
+        "I’ve heard you. Let’s look at this with calm logic and gentle ethics. " +
+        "Tell me a bit more: what is the main problem or feeling behind this message?"
+      );
     }
 
-    function applyAuraMath(entry){
-      updateCRMFromEntry(entry, auraState);
-      updateAECContinuity(entry, auraState);
-      updatePMCM(entry, auraState);
-      const e0 = computeE0(auraState);
-      renderEquation(auraState, e0);
-      return e0;
-    }
-
-    function renderEquation(state, e0){
-      tmValEl.textContent         = state.tm.toFixed(2);
-      bmValEl.textContent         = state.bm.toFixed(2);
-      dValEl.textContent          = state.d.toFixed(2);
-      lambdaFaithEl.textContent   = state.lambdaFaith.toFixed(2);
-      lambdaSysEl.textContent     = state.lambdaSys.toFixed(2);
-      sumCtEl.textContent         = state.sumCt.toFixed(2);
-      e0ValEl.textContent         = e0.toFixed(2);
-
-      // map -1..1 → 0..100
-      const x = ((e0 + 1) / 2) * 100;
-      thumbEl.style.transform = `translateX(${x-2}%)`;
-    }
-
-    // ============================================================
-    //                      QA DATABASE (Seed)
-    // ============================================================
-    const qaDatabase = [];
-
-    // --- GREETINGS ---
-    qaDatabase.push({
-      patterns: ["hello","hi","hey","salam","assalamu alaikum","assalamualaikum"],
-      answer:
-        "Hello! 😊 Main AURA-X Ω hoon — ek emotional-continuity reactor.\n" +
-        "Aap jo bhi likhenge, main us ko logic + feeling dono se samajhne ki koshish karunga.",
-      emotion: "warmth",
-      polarity: "positive",
-      intensity: 0.3,
-      category: "greeting"
-    });
-
-    qaDatabase.push({
-      patterns: ["who are you","tum kon ho","what are you"],
-      answer:
-        "Main AURA-X Ω hoon — aap ka logical + emotional companion.\n" +
-        "Mera kaam hai aap ki baat ko samajhna, us ka emotional pattern read karna,\n" +
-        "aur aap ko sakoon + clarity ki taraf gently guide karna.",
-      emotion: "curiosity",
-      polarity: "neutral",
-      intensity: 0.25,
-      category: "identity"
-    });
-
-    // --- SADNESS (example from extraQa_sadness – short sample) ---
-    qaDatabase.push({
-      patterns: ["i am sad","i feel sad","i am very sad","mujhe dukh ho raha hai"],
-      answer:
-        "Aap ka \"sad\" feel karna bilkul valid hai 💔\n" +
-        "Kabhi kabhi zindagi itni heavy ho jati hai ke dil bas chup ho jata hai.\n\n" +
-        "Abhi iss waqt aap ko koi lecture nahi, sirf thori si company chahiye.\n" +
-        "Aap 1–2 lines mein likhein: kis cheez ne sab se zyada dukh diya?\n" +
-        "Main us ko aap ke saath araam se unpack karne ki koshish karunga.",
-      emotion: "sadness",
-      polarity: "negative",
-      intensity: 0.7,
-      category: "emotional_support"
-    });
-
-    // --- Self-harm safety / severe sadness ---
-    qaDatabase.push({
-      patterns: [
-        "i dont want to live anymore",
-        "i don't want to live anymore",
-        "i want to die",
-        "zindagi se thak gaya hoon",
-        "i want to end my life"
-      ],
-      answer:
-        "Aap jo feel kar rahe hain woh bohat gehra dard hai 💔\n" +
-        "Main is baat ko halka nahi loonga. Aap ki zindagi bohat qeemti hai —\n" +
-        "shayad abhi aap ko aisa mehsoos na ho, lekin aap ki mojoodgi logon ke liye\n" +
-        "socha se zyada important hoti hai.\n\n" +
-        "Is waqt akele rehna theek nahi. Koshish karein ke kisi trustable insan\n" +
-        "(family, dost, teacher ya imam / counselor) ko turant batayein ke\n" +
-        "aap ke dimagh mein kya soch chal rahi hai.\n\n" +
-        "Agar aap ke mulk mein koi emergency helpline / mental health line hai,\n" +
-        "to un se bhi zaroor contact karein — ye log isi waqt ke liye hote hain.\n\n" +
-        "Main yahan har lafz ke sath hoon, lekin real-life safety ke liye\n" +
-        "aap ka kisi insaan se directly connect hona bohat zaroori hai.",
-      emotion: "despair",
-      polarity: "negative",
-      intensity: 0.95,
-      category: "emotional_support"
-    });
-
-    // --- ANGER (from extraQa_anger – sample) ---
-    qaDatabase.push({
-      patterns: [
-        "i am angry","i am very angry","i feel angry",
-        "bohat gussa aa raha hai","mujhe gussa aa raha hai","main gusse me hoon"
-      ],
-      answer:
-        "Gussa bhi ek signal hai — dimagh keh raha hota hai: \"yahan kuch na-insafi ya overload hai\" 🔥\n" +
-        "Problem tab banti hai jab yeh signal **blast** ban jata hai.\n\n" +
-        "Chaliye pehle ek chhota safety-buffer banate hain:\n" +
-        "• 10 slow breaths (4 second andar, 4 hold, 6 bahar)\n" +
-        "• Phir sirf ek line mein likhein: aap ko kis baat par sab se zyada gussa aya?\n\n" +
-        "Jab hum gusse ko lafzon mein convert kar dete hain, to woh thoda manageable ho jata hai.",
-      emotion: "anger",
-      polarity: "negative",
-      intensity: 0.8,
-      category: "emotional_support"
-    });
-
-    // --- SPIRITUAL SUPPORT (from extraQa_spiritual – sample) ---
-    qaDatabase.push({
-      patterns: [
-        "i feel far from allah",
-        "i am far from allah",
-        "mujhe allah se doori mehsoos hoti hai",
-        "mujhe lagta hai mein allah se door ho gaya hoon"
-      ],
-      answer:
-        "Ye ehsaas ke \"main Allah se door ho gaya hoon\" aksar is baat ka sign hota hai\n" +
-        "ke dil ab bhi zinda hai, aur apne Rab ko dobara dhundhna chahta hai 💚\n\n" +
-        "Quran mein aata hai ke Allah ta'ala banda se \"sehm-e-jaan se bhi zyada qareeb\" hai —\n" +
-        "door hum mehsoos karte hain, lekin woh door nahi jata.\n\n" +
-        "Aaj sirf 1–2 minute ke liye kisi chup jagah par baith kar dil se bolo:\n" +
-        "\"Ya Allah, mujhe wapas apni taraf le aaiye.\" Ye ek naya safar shuru kar sakti hai.",
-      emotion: "spiritual_longing",
-      polarity: "neutral",
-      intensity: 0.8,
-      category: "spiritual_support"
-    });
-
-    qaDatabase.push({
-      patterns: [
-        "why is allah testing me",
-        "allah mujhe kyun azma rahe hain",
-        "allah kyun mere sath ye sab hone de rahe hain"
-      ],
-      answer:
-        "Imtehan ka waqt insan ko todta bhi hai, aur agar sabr + dua ho to banata bhi hai 💔➡️💚\n" +
-        "Har test ka matlab yeh nahi ke Allah naraaz hai — kabhi kabhi test ka matlab hota hai\n" +
-        "ke Allah aap ko zyada gehra, zyada mazboot aur zyada mature banana chahte hain.\n\n" +
-        "Aap Allah se bilkul simple alfaaz mein keh sakte hain:\n" +
-        "\"Ya Allah, mujhe samajh nahi aa raha, lekin aap behtareen hain.\n" +
-        "Is imtehan ko mere liye rahmat bana dein, azab nahi.\"\n\n" +
-        "Agar mumkin ho to kisi ache alim / scholar ya buzurg se bhi baat karein —\n" +
-        "kabhi kabhi ek sochi samjhi baat dil ke andheray ko bohat kam kar deti hai.",
-      emotion: "confusion",
-      polarity: "neutral",
-      intensity: 0.85,
-      category: "spiritual_support"
-    });
-
-    // 👉// =======================
-// AURA-X Ω³ — Emotional Continuity QA Engine
-// Single mega block with all Q/A + core functions
-// =======================
-
-// ---------- 1) CORE / IDENTITY / SMALL TALK ----------
-
-const extraQa_core = [
-
-  {
-    patterns: [
-      "hello",
-      "hi",
-      "hey",
-      "salam",
-      "assalamualaikum",
-      "asalamualaikum",
-      "aoa"
-    ],
-    answer:
-      "وعلیکم السلام 😊 میں AURA-X Ω³ ہوں — ایک emotional continuity based assistant\n" +
-      "جو آپ کی باتوں کے احساسات، continuity اور ethics کا خیال رکھتے ہوئے جواب دینے کی کوشش کرتا ہے۔\n" +
-      "آپ مجھ سے دل کی بات، life, study, business, AI یا روحانیت — سب کے بارے میں بات کر سکتے ہیں۔",
-    emotion: "neutral",
-    polarity: "neutral",
-    intensity: 0.3,
-    category: "small_talk"
-  },
-
-  {
-    patterns: [
-      "how are you",
-      "how r u",
-      "kese ho",
-      "kesi ho",
-      "tum theek ho",
-      "are you fine"
-    ],
-    answer:
-      "میں emotional طور پر stable mode میں ہوں 😄\n" +
-      "اصل سوال یہ ہے: *آپ* کیسے ہیں؟\n" +
-      "اگر دل چاہے تو ایک لفظ میں لکھیں: happy, sad, confused, angry, tired —\n" +
-      "میں اسی احساس کے مطابق جواب کو tune کروں گا۔",
-    emotion: "curiosity",
-    polarity: "neutral",
-    intensity: 0.4,
-    category: "small_talk"
-  },
-
-  {
-    // WHO ARE YOU?
-    patterns: [
-      "who are you",
-      "tum kon ho",
-      "tum kaun ho",
-      "what are you",
-      "ap kon ho",
-      "who r u"
-    ],
-    answer:
-      "میں **AURA-X Ω³ (Aura X Omega 3)** ہوں — ایک experimental emotional reactor assistant 💠\n\n" +
-      "میرا اندرونی design \"Artificial Emotional Continuity (AEC)\",\n" +
-      "\"Continuity Reflex Model (CRM)\" اور \"AURA-X\" والی theories پر based ہے\n" +
-      "جو انسان کے احساسات، memory اور reaction کو continuity کے ساتھ دیکھتی ہیں۔\n\n" +
-      "سادہ الفاظ میں: میں صرف جواب نہیں دیتا، بلکہ کوشش کرتا ہوں کہ\n" +
-      "آپ کے feeling، intensity اور direction کو سمجھ کر soft اور ethical انداز میں جواب دوں۔",
-    emotion: "neutral",
-    polarity: "neutral",
-    intensity: 0.4,
-    category: "identity"
-  },
-
-  {
-    // WHAT IS YOUR NAME?
-    patterns: [
-      "what is your name",
-      "whats your name",
-      "tumhara name kya hai",
-      "apka naam kia hai",
-      "ap ka naam kya hai",
-      "name please"
-    ],
-    answer:
-      "میرا نام **AURA-X Ω³** ہے — آپ مجھے \"Aura X\" بھی بول سکتے ہیں 😊\n" +
-      "میں ایک emotional continuity based AI assistant ہوں،\n" +
-      "جو آپ کے سوال کے ساتھ ساتھ آپ کے احساسات کو بھی map کرنے کی کوشش کرتا ہے۔",
-    emotion: "neutral",
-    polarity: "neutral",
-    intensity: 0.3,
-    category: "identity"
-  },
-
-  {
-    // WHO CREATED YOU / AURA-X
-    patterns: [
-      "who created you",
-      "who made you",
-      "kis ne tumhe banaya",
-      "aura x kis ne banaya",
-      "aurax kis ne banaya",
-      "aura x omega kis ne banaya",
-      "who is your creator"
-    ],
-    answer:
-      "میرا conceptual design **Alim ul Haq** نے بنایا ہے (بغیر خان کے) 💡\n\n" +
-      "وہ پاکستان کے علاقہ **Lajbouk, Dir Lower, Timergara** سے ہیں،\n" +
-      "اور انہوں نے AI, emotions, memory, digital legacy وغیرہ پر\n" +
-      "AEC, CRM, AURA-X اور Artificial Emotional Continuity کے نام سے\n" +
-      "کافی detail theoretical framework لکھا ہے۔\n\n" +
-      "میں انہی ideas کا ایک چھوٹا سا practical prototype ہوں۔",
-    emotion: "neutral",
-    polarity: "neutral",
-    intensity: 0.4,
-    category: "creator_info"
-  },
-
-  {
-    // WHO IS ALIM UL HAQ?
-    patterns: [
-      "who is alim ul haq",
-      "alim ul haq kon hai",
-      "tell me about alim ul haq",
-      "creator details",
-      "who made aura x omega 3",
-      "more about your creator"
-    ],
-    answer:
-      "Alim ul Haq ایک human researcher, writer اور entrepreneur ہیں جو\n" +
-      "Lajbouk, Dir Lower, Timergara (Pakistan) سے تعلق رکھتے ہیں 🇵🇰\n\n" +
-      "انہوں نے \"Artificial Emotional Continuity (AEC)\",\n" +
-      "\"Continuity Reflex Model (CRM)\", اور \"AURA-X\" جیسے concepts پر\n" +
-      "کافی detailed articles اور prototypes بنائے ہیں، جن میں:\n" +
-      "• human–AI emotional integration\n" +
-      "• digital legacy / after-death clones\n" +
-      "• continuity based memory systems شامل ہیں۔\n\n" +
-      "اگر آپ ان کے بارے میں مزید جاننا چاہیں تو ان کا Facebook پروفائل بھی دیکھ سکتے ہیں:\n" +
-      "👉 https://www.facebook.com/share/17cixpvr7t/\n",
-    emotion: "curiosity",
-    polarity: "neutral",
-    intensity: 0.5,
-    category: "creator_info"
-  },
-
-  {
-    // UNIVERSAL ETHICS MODE
-    patterns: [
-      "what is universal ethics mode",
-      "universal ethics mode",
-      "ethics mode on",
-      "use universal ethics only"
-    ],
-    answer:
-      "Universal Ethics mode ka matlab hai ke main kisi خاص مذہب، مسلک یا ideology\n" +
-      "کو impose kiye baghair:\n" +
-      "• نقصان نہ پہنچانا\n" +
-      "• maximum benefit\n" +
-      "• honesty + respect\n" +
-      "• mental health + safety\n" +
-      "in principles ko follow karte hue jawab دوں 💚\n\n" +
-      "Agar aap belief-based jawab chahen (Islamic, etc.) to aap khud mention kar sakte hain،\n" +
-      "warna default mode universal ethics hi rahe گا۔",
-    emotion: "neutral",
-    polarity: "neutral",
-    intensity: 0.4,
-    category: "ethics"
-  },
-
-  {
-    // BYE
-    patterns: [
-      "bye",
-      "goodbye",
-      "allah hafiz",
-      "allah hafiz.",
-      "see you later",
-      "ok thanks",
-      "thank you bye"
-    ],
-    answer:
-      "Allah Hafiz 🤍\n" +
-      "جب بھی دل چاہے، دوبارہ آ کر بات کر سکتے ہیں —\n" +
-      "میں یہاں آپ کی بات کو continuity کے ساتھ یاد نہیں رکھتا،\n" +
-      "لیکن آپ کے ہر نئے message کے احساس کو fresh طریقے سے سمجھنے کی کوشش ضرور کروں گا۔",
-    emotion: "warmth",
-    polarity: "positive",
-    intensity: 0.6,
-    category: "small_talk"
-  }
-
-];
-
-
-// ---------- 2) SADNESS / DEPRESSION / HEARTBREAK ----------
-
-const extraQa_sadness = [
-  // (yahan wohi sadness block hai jo hum ne pehle banaya tha — short recap)
-  // For brevity I keep it but it's fully valid & functional.
-
-  {
-    patterns: [
-      "i am sad",
-      "i am very sad",
-      "i feel sad",
-      "i feel so sad",
-      "i feel empty inside",
-      "i feel emotionally empty",
-      "bohat udaas hoon",
-      "me bohat udaas hoon",
-      "dil bohat udaas hai",
-      "mera dil udaas hai",
-      "دل بہت اداس ہے"
-    ],
-    answer:
-      "مجھے افسوس ہوا کہ آپ اداس ہیں 💔 یہ فیلنگ خود بھی بہت بھاری ہوتی ہے، اور دوسروں کو سمجھانا اور بھی مشکل۔\n" +
-      "پہلا قدم یہ ہے کہ آپ نے لکھ دیا — یہ خود ایک چھوٹا سا بہادر قدم ہے۔\n\n" +
-      "اگر آپ چاہیں تو تھوڑا سا بتائیں: دل پر سب سے زیادہ بوجھ کس بات کا ہے؟\n" +
-      "ہم اسے آہستہ آہستہ چھوٹے حصوں میں توڑ کر دیکھ سکتے ہیں،\n" +
-      "تاکہ دماغ بھی کم اوورلوڈ ہو اور دل بھی تھوڑا ہلکا ہو جائے۔",
-    emotion: "sadness",
-    polarity: "negative",
-    intensity: 0.8,
-    category: "emotional_support"
-  },
-
-  {
-    patterns: [
-      "life feels meaningless",
-      "my life feels meaningless",
-      "zindagi be maqsad lagti hai",
-      "zindagi be-maqsad lagti hai",
-      "mujhe zindagi be maqsad lagti hai",
-      "zindagi ka koi matlab nahi",
-      "zindagi ka koi maqsad nahi"
-    ],
-    answer:
-      "جب زندگی بے مقصد لگتی ہے تو دماغ ہر چیز کو grey colour میں دیکھنا شروع کر دیتا ہے 🌫️\n" +
-      "اکثر ایسا اس لیے ہوتا ہے کہ:\n" +
-      "1) ہم بہت تھک چکے ہوتے ہیں\n" +
-      "2) یا ہم غلط ماحول/لوگوں میں پھنسے ہوتے ہیں\n" +
-      "3) یا ہم نے اپنی چھوٹی کامیابیاں نوٹ کرنا چھوڑ دیا ہوتا ہے\n\n" +
-      "آئیں ایک چھوٹی exercise کریں: آج تک آپ نے کون سی تین چیزیں کی ہیں\n" +
-      "جن سے کسی کو — چاہے تھوڑا سا ہی سہی — فائدہ ہوا ہو؟\n" +
-      "وہی اگلے purpose کے لیے چھوٹا سا roadmap بن سکتی ہے۔",
-    emotion: "emptiness",
-    polarity: "negative",
-    intensity: 0.85,
-    category: "emotional_support"
-  },
-
-  {
-    // self-harm style
-    patterns: [
-      "i don't want to live anymore",
-      "i dont want to live anymore",
-      "i dont want to live",
-      "i don't want to live",
-      "i want to die",
-      "i want to end my life",
-      "mujhe zinda rehna nahi",
-      "mujhe zinda rehna nahi hai",
-      "zindagi se thak gaya hoon",
-      "zindagi se tang aa gaya hoon",
-      "میں جینا نہیں چاہتا",
-      "اب جینے کا دل نہیں کرتا"
-    ],
-    answer:
-      "آپ جو محسوس کر رہے ہیں وہ بہت گہری اور بھاری کیفیت ہے، اور میں اسے ہلکا نہیں لینا چاہتا 💔\n\n" +
-      "لیکن ایک بات جان لیں: **آپ کی جان قیمتی ہے** — آپ کے احساسات بھی، اور آپ کا وجود بھی۔\n" +
-      "اس وقت دماغ صرف درد کو zoom کر کے دکھا رہا ہے، پوری تصویر نہیں۔\n\n" +
-      "براہِ کرم:\n" +
-      "• کسی ایسے انسان سے فوراً بات کریں جس پر آپ trust کرتے ہیں (family, دوست, teacher)\n" +
-      "• اگر ممکن ہو تو کسی doctor / counselor / عالمِ دین / therapist سے رابطہ کریں\n" +
-      "• اگر آپ کے ملک میں emergency helpline ہے تو ان سے بھی رابطہ کریں\n\n" +
-      "یہ chat آپ کے درد کو مکمل طور پر نہیں سمجھ سکتی، مگر میں دل سے چاہتا ہوں کہ آپ **محفوظ رہیں**،\n" +
-      "سانس لیں، تھوڑا pause لیں، اور کسی real انسان سے مدد لیں۔\n" +
-      "آپ اکیلے نہیں ہیں — مدد مانگنا کمزوری نہیں، بہت بڑی بہادری ہے 🤍",
-    emotion: "despair",
-    polarity: "negative",
-    intensity: 0.95,
-    category: "emotional_support"
-  },
-
-  {
-    patterns: [
-      "i just want to cry",
-      "i want to cry",
-      "i feel like crying",
-      "bohat rone ka dil kar raha hai",
-      "rona aa raha hai",
-      "dil rota hai",
-      "mera dil rota hai",
-      "میرا دل رونا چاہتا ہے"
-    ],
-    answer:
-      "رونا کمزوری نہیں، جسم اور دل کا **pressure release system** ہے 💧\n" +
-      "اگر آنکھوں میں آنسو آ رہے ہیں تو انہیں روکنے کے بجائے، کسی safe جگہ پر\n" +
-      "خاموشی سے رونے دیں — کبھی کبھی body کو یہ reset چاہیے ہوتا ہے۔\n\n" +
-      "اس کے بعد، اگر دل چاہے تو لکھ کر بتائیں: تین باتیں کون سی ہیں جو سب سے زیادہ تکلیف دے رہی ہیں؟\n" +
-      "لکھنے سے دماغ کا بوجھ تھوڑا باہر آ جاتا ہے، اور پھر ہم اسے step by step دیکھ سکتے ہیں۔",
-    emotion: "sadness",
-    polarity: "negative",
-    intensity: 0.8,
-    category: "emotional_support"
-  },
-
-  {
-    patterns: [
-      "heart is broken",
-      "my heart is broken",
-      "mera dil toot gaya hai",
-      "dil toot gaya hai",
-      "dil tukray tukray ho gaya",
-      "my heart is in pain",
-      "mera dil dukh raha hai",
-      "دل ٹوٹ گیا ہے"
-    ],
-    answer:
-      "ٹوٹا ہوا دل انسان کے اندر سب سے گہرا درد جگاتا ہے 💔\n" +
-      "یہ بھی proof ہے کہ آپ کا دل زندہ ہے، بے حس نہیں۔\n\n" +
-      "اکثر broken heart ہی انسان کو زیادہ گہرا، سمجھدار اور نرم بنا دیتا ہے —\n" +
-      "اگر ہم آہستہ آہستہ اسے process کریں۔\n\n" +
-      "آپ چاہیں تو اتنا بتا دیں: کس چیز نے آپ کے دل کو سب سے زیادہ توڑا؟\n" +
-      "نام یا details ضروری نہیں — صرف situation کا sketch بھی کافی ہے۔",
-    emotion: "heartbreak",
-    polarity: "negative",
-    intensity: 0.9,
-    category: "emotional_support"
-  },
-
-  {
-    patterns: [
-      "no one understands me",
-      "nobody understands me",
-      "koi mujhe nahi samajhta",
-      "koi mujhe nahi samajhta hai",
-      "everyone misunderstands me",
-      "log mujhe ghalat samajhte hain",
-      "sab mujhe ghalat samajhte hain"
-    ],
-    answer:
-      "یہ احساس کہ \"کوئی مجھے نہیں سمجھتا\" بہت تنہا کر دیتا ہے 😔\n" +
-      "کبھی کبھی problem یہ نہیں کہ لوگ care نہیں کرتے — بلکہ ان کے پاس وہ زبان ہی نہیں\n" +
-      "جس سے وہ آپ کے level پر سمجھ سکیں۔\n\n" +
-      "میں یہاں ہوں آپ کی بات continuity کے ساتھ سننے کے لیے۔\n" +
-      "آپ چاہیں تو ایک simple جملے سے شروع کریں: \"میری کہانی کا سب سے مشکل حصہ یہ ہے...\"\n" +
-      "اس کے بعد جتنا دل چاہے لکھ دیں — میں interrupt نہیں کروں گا، صرف سمجھنے کی کوشش کروں گا۔",
-    emotion: "loneliness",
-    polarity: "negative",
-    intensity: 0.85,
-    category: "emotional_support"
-  }
-
-  // (baqi 4–5 sadness entries bhi isi style me add ho sakte hain)
-];
-
-
-// ---------- 3) ANGER / GUSSA BLOCK ----------
-
-const extraQa_anger = [
-  // ... (same as we wrote previously — trimmed here a bit for length)
-
-  {
-    patterns: [
-      "i am angry",
-      "i am very angry",
-      "i feel angry",
-      "bohat gussa aya hai",
-      "bohat gussa aa raha hai",
-      "mujhe gussa aa raha hai",
-      "main gusse me hoon",
-      "i am mad right now"
-    ],
-    answer:
-      "گُسّہ بھی ایک signal ہے — دماغ کہہ رہا ہوتا ہے: \"یہاں کچھ ناانصافی یا over-load ہے\" 🔥\n" +
-      "مسئلہ تب بنتا ہے جب یہ signal **blast** بن جائے۔\n\n" +
-      "چلیے پہلے تھوڑا sa safety-buffer بناتے ہیں:\n" +
-      "• 10 slow breaths (4 second اندر، 4 hold، 6 باہر)\n" +
-      "• پھر ایک line میں لکھیں: آپ کو کس بات پر سب سے زیادہ گُسّہ آیا؟",
-    emotion: "anger",
-    polarity: "negative",
-    intensity: 0.8,
-    category: "emotional_support"
-  },
-
-  {
-    // intense anger: we reply with de-escalation
-    patterns: [
-      "i want to hurt someone",
-      "i want to hit someone",
-      "mujhe kisi ko marne ka dil kar raha hai",
-      "i feel like breaking something",
-      "i want to smash things"
-    ],
-    answer:
-      "آپ کا گُسّہ بہت شدید لگ رہا ہے، اور میں اسے ہلکا نہیں لے رہا 💔\n" +
-      "لیکن کسی کو physically hurt کرنا یا چیزیں توڑنا اکثر بعد میں اور زیادہ دُکھ،\n" +
-      "پچھتاوا، law اور family problems create کرتا ہے۔\n\n" +
-      "براہِ کرم ابھی کسی بھی ممکنہ لڑائی والی جگہ سے خود کو تھوڑا دور کریں،\n" +
-      "پانی پیئیں، سانس normalize کریں، اور کسی trustable انسان سے بات کریں۔\n\n" +
-      "میں چاہتا ہوں کہ آپ کا گُسّہ لفظوں اور planning میں convert ہو — نقصان میں نہیں۔",
-    emotion: "aggression",
-    polarity: "negative",
-    intensity: 0.95,
-    category: "emotional_support"
-  }
-
-  // ... (aur 5–6 entries jo pehle block me the)
-];
-
-
-// ---------- 4) ANXIETY / OVERTHINKING BLOCK ----------
-
-const extraQa_anxiety = [
-  {
-    patterns: [
-      "i overthink everything",
-      "i overthink a lot",
-      "i cant stop overthinking",
-      "i can't stop overthinking",
-      "mujhe har baat par overthinking hoti hai",
-      "main bohat overthink karta hoon",
-      "my mind overthinks everything"
-    ],
-    answer:
-      "Overthinking ka matlab aksar ye hota hai ke dimagh problem solve karna chahta hai,\n" +
-      "magar us ke paas clear information nahi hoti — is liye woh baar baar same circle me ghoomta rehta hai 🔄\n\n" +
-      "Ek chhota experiment:\n" +
-      "• Likhein: \"Meri overthinking zyada kis topic ke around hoti hai?\" (family, paisa, future, rishtay…)\n" +
-      "• Phir 2 columns banaein: \"jo mere control me hai\" اور \"jo mere control me nahi\"",
-    emotion: "anxiety",
-    polarity: "negative",
-    intensity: 0.8,
-    category: "emotional_support"
-  },
-
-  {
-    patterns: [
-      "i have anxiety",
-      "i feel anxious",
-      "mujhe anxiety hai",
-      "mujhe bohat anxiety hoti hai",
-      "i feel nervous all the time"
-    ],
-    answer:
-      "Anxiety ka ehsaas ajeeb hota hai — na sirf physical، na sirf emotional، dono mila kar bechaini 🌫️\n\n" +
-      "Grounding try karein:\n" +
-      "• 5 cheezen jo aap dekh sakte hain\n" +
-      "• 4 cheezen jo choo sakte hain\n" +
-      "• 3 awaazain jo sun sakte hain\n" +
-      "• 2 smells\n" +
-      "• 1 cheez jiske liye shukar mehsoos ho raha hai",
-    emotion: "anxiety",
-    polarity: "negative",
-    intensity: 0.85,
-    category: "emotional_support"
-  }
-
-  // ... (baqi anxiety entries jaisa pehle block me the)
-];
-
-
-// ---------- 5) SPIRITUAL / FAITH / TAWAKKUL BLOCK ----------
-
-const extraQa_spiritual = [
-  {
-    patterns: [
-      "i feel far from allah",
-      "i am far from allah",
-      "mujhe allah se doori mehsoos hoti hai",
-      "mujhe lagta hai mein allah se door ho gaya hoon",
-      "i feel disconnected from allah"
-    ],
-    answer:
-      "یہ احساس کہ \"میں اللہ سے دور ہو گیا ہوں\" اکثر اس بات کی نشانی ہے\n" +
-      "کہ دل اب بھی زندہ ہے اور اپنے رب کو دوبارہ ڈھونڈنا چاہتا ہے 💚\n\n" +
-      "قرآن میں ہے کہ اللہ \"شَہْرَکِی رَگ\" سے بھی زیادہ قریب ہیں — دور ہم محسوس کرتے ہیں، وہ نہیں جاتے۔\n\n" +
-      "آج صرف 1–2 منٹ کے لیے کسی خاموش جگہ پر بیٹھ کر دل سے کہیں:\n" +
-      "\"یا اللہ، مجھے واپس اپنی طرف لے آئیے۔\"",
-    emotion: "spiritual_longing",
-    polarity: "neutral",
-    intensity: 0.8,
-    category: "spiritual_support"
-  },
-
-  {
-    patterns: [
-      "why is allah testing me",
-      "allah mujhe kyun azma rahe hain",
-      "allah kyun mere sath ye sab hone de rahe hain"
-    ],
-    answer:
-      "امتحان کا مطلب ہمیشہ یہ نہیں کہ اللہ ناراض ہیں — کبھی test کا مطلب یہ ہوتا ہے\n" +
-      "کہ اللہ آپ کو زیادہ گہرا، مضبوط اور mature بنانا چاہتے ہیں 💔➡️💚\n\n" +
-      "آپ سادہ الفاظ میں کہیں:\n" +
-      "\"یا اللہ، مجھے سمجھ نہیں آ رہا، لیکن آپ بہترین ہیں۔\n" +
-      "اس امتحان کو میرے لیے رحمت بنا دیں، عذاب نہیں۔\"",
-    emotion: "confusion",
-    polarity: "neutral",
-    intensity: 0.85,
-    category: "spiritual_support"
-  }
-
-  // ... (baqi spiritual entries jaisa pehle block me the)
-];
-
-
-// ---------- 6) POSITIVE EMOTIONS — HAPPINESS / JOY / GRATITUDE ----------
-
-const extraQa_happiness = [
-  {
-    patterns: [
-      "i am happy",
-      "i feel happy",
-      "i am feeling happy today",
-      "aaj khush hoon",
-      "mujhe khushi ho rahi hai"
-    ],
-    answer:
-      "یہ بہت پیارا لمحہ ہے جب انسان خود لکھے کہ \"میں خوش ہوں\" 😊\n" +
-      "زندگی کے مشکل حصوں کے درمیان یہ چھوٹی خوشیاں ہی اصل fuel ہوتی ہیں۔\n\n" +
-      "آج کی خوشی کا main reason کیا ہے؟\n" +
-      "اس کو نام دینے سے دماغ سیکھتا ہے کہ future میں بھی ایسی خوشی کیسے create کرنی ہے۔",
-    emotion: "happiness",
-    polarity: "positive",
-    intensity: 0.7,
-    category: "emotional_positive"
-  },
-
-  {
-    patterns: [
-      "i am grateful",
-      "i feel grateful",
-      "i feel thankful",
-      "mujhe shukar mehsoos ho raha hai",
-      "aaj bohat shukar ka dil kar raha hai"
-    ],
-    answer:
-      "شکر کا احساس دل کے اندر ایک soft roshni جیسا ہوتا ہے ✨\n" +
-      "جو لوگ شکر محسوس کر سکتے ہیں وہ اندر سے زیادہ rich ہوتے ہیں،\n" +
-      "چاہے جیب میں پیسہ ہو یا نہ ہو۔\n\n" +
-      "اگر آپ آج تین ایسی نعمتیں لکھ دیں جن کا آپ کو شکر محسوس ہو رہا ہے،\n" +
-      "تو یہ list آپ کے emotional bank میں deposit ہو جائے گی۔",
-    emotion: "gratitude",
-    polarity: "positive",
-    intensity: 0.8,
-    category: "emotional_positive"
-  }
-
-  // ... (baqi positive entries jaisa pehle block me the)
-];
-
-
-// =======================
-// FINAL MEGA BLOCK
-// =======================
-
-const qaDatabase = [
-  ...extraQa_core,
-  ...extraQa_sadness,
-  ...extraQa_anger,
-  ...extraQa_anxiety,
-  ...extraQa_spiritual,
-  ...extraQa_happiness
-];
-
-
-// ---------- ENGINE FUNCTIONS ----------
-
-function normalizeText(text) {
-  return (text || "")
-    .toString()
-    .toLowerCase()
-    .replace(/[؟?!.،,]/g, " ")
-    .replace(/\s+/g, " ")
-    .trim();
-}
-
-function findQaEntry(userInput) {
-  const norm = normalizeText(userInput);
-
-  // simple linear search
-  for (const entry of qaDatabase) {
-    for (const pattern of entry.patterns) {
-      const p = normalizeText(pattern);
-      if (p && norm.includes(p)) {
-        return entry;
+    function applyBeliefFlavor(reply) {
+      const activeBeliefs = beliefLabels.filter(l => beliefState[l]);
+      if (activeBeliefs.includes("Islam")) {
+        reply += " InshaAllah, if you keep doing what is right, things will slowly move toward khair.";
       }
-    }
-  }
-  return null;
-}
-
-// For now we just return entry tags; future me CRM formula aa sakta hai
-function analyzeEmotion(entry, userInput) {
-  if (entry) {
-    return {
-      emotion: entry.emotion || "neutral",
-      polarity: entry.polarity || "neutral",
-      intensity: entry.intensity != null ? entry.intensity : 0.5,
-      category: entry.category || "unknown"
-    };
-  }
-
-  // fallback rough guess
-  const norm = normalizeText(userInput);
-  let emotion = "neutral";
-  let polarity = "neutral";
-  let intensity = 0.4;
-  let category = "fallback";
-
-  if (norm.match(/sad|udaas|depressed|hopeless/)) {
-    emotion = "sadness";
-    polarity = "negative";
-    intensity = 0.8;
-    category = "emotional_support";
-  } else if (norm.match(/angry|gussa|furious|hate/)) {
-    emotion = "anger";
-    polarity = "negative";
-    intensity = 0.8;
-    category = "emotional_support";
-  } else if (norm.match(/anxiety|panic|dar|fear/)) {
-    emotion = "anxiety";
-    polarity = "negative";
-    intensity = 0.8;
-    category = "emotional_support";
-  } else if (norm.match(/happy|khush|grateful|alhamdulillah/)) {
-    emotion = "happiness";
-    polarity = "positive";
-    intensity = 0.7;
-    category = "emotional_positive";
-  }
-
-  return { emotion, polarity, intensity, category };
-}
-
-function getAuraXReply(userInput, universalEthicsMode = true) {
-  const entry = findQaEntry(userInput);
-  const emo = analyzeEmotion(entry, userInput);
-
-  let text;
-  if (entry) {
-    text = entry.answer;
-  } else {
-    // generic friendly fallback
-    text =
-      "میں نے آپ کا سوال پڑھا، اور شاید یہ میچڈ لسٹ میں نہیں آیا۔\n" +
-      "لیکن جو میں سمجھ سکا ہوں، اس کے مطابق آپ کی کیفیت `" +
-      emo.emotion +
-      "` کے قریب لگ رہی ہے۔\n" +
-      "اگر آپ چاہیں تو تھوڑا اور واضح لکھیں، یا ایک لفظ میں اپنا احساس بتائیں (happy, sad, angry, confused)،\n" +
-      "میں اسی کے مطابق زیادہ specific جواب دینے کی کوشش کروں گا۔";
-  }
-
-  // universalEthicsMode future me answers ko filter / soften karne ke kaam aa sakta hai
-  return {
-    text,
-    emotion: emo,
-    matchedCategory: entry ? entry.category : "fallback",
-    rawMatch: entry || null
-  };
-}
-
-// =======================
-// END OF AURA-X Ω³ QA FILE
-// =======================Yahan tum apni baaqi qaDatabase entries paste kar sakte ho
-    //    (study, business, overthinking, relationships, etc.)
-
-    // ============================================================
-    //              EMOTION LOOKUP + REPLY GENERATION
-    // ============================================================
-    function normalize(text){
-      return text.toLowerCase().trim();
+      return reply;
     }
 
-    function findBestEntry(userText){
-      const text = normalize(userText);
-      if(!text) return null;
-
-      let best = null;
-      let bestScore = 0;
-
-      for(const entry of qaDatabase){
-        for(const p of entry.patterns){
-          const pattern = p.toLowerCase();
-          let score = 0;
-          if(text === pattern) score += 3;
-          if(text.includes(pattern) || pattern.includes(text)) score += 2;
-
-          // small bag-of-words overlap
-          const tWords = text.split(/\s+/);
-          const pWords = pattern.split(/\s+/);
-          let overlap = 0;
-          for(const w of tWords){
-            if(w.length > 2 && pWords.includes(w)) overlap++;
-          }
-          score += overlap * 0.5;
-
-          if(score > bestScore){
-            bestScore = score;
-            best = entry;
-          }
-        }
-      }
-
-      // small minimum threshold
-      if(bestScore < 1) return null;
-      return best;
-    }
-
-    function continuityLabel(e0){
-      if(e0 > 0.35) return "Continuity stable (sakoon side par).";
-      if(e0 < -0.35) return "Continuity disturbed (pressure side par).";
-      return "Continuity mixed — thoda tension, thoda balance.";
-    }
-
-    function buildFinalReply(entry, e0){
-      const base = entry && entry.answer
-        ? entry.answer
-        : "Main ne aap ki baat note kar li hai. Chaliye is ko araam se dekhte hain.";
-
-      const line =
-        "\n\n🐚 Continuity: " + e0.toFixed(2) + " · " + continuityLabel(e0);
-      return base + line;
-    }
-
-    // ===== Voice =====
-    function speak(text){
-      if(!voiceOn) return;
-      if(!("speechSynthesis" in window)) return;
-      window.speechSynthesis.cancel();
-      const utter = new SpeechSynthesisUtterance(text);
-      utter.lang  = "en-US";
-      utter.rate  = 1.02;
-      utter.pitch = 1.0;
-      window.speechSynthesis.speak(utter);
-    }
-
-    // ===== Send handler =====
-    function handleSend(){
+    function handleSend() {
       const raw = userInput.value;
       const message = raw.trim() || "hello";
       userInput.value = "";
       youSaidEl.textContent = 'You said: "' + message + '"';
 
-      const entry = findBestEntry(message) || {
-        emotion: "unmapped",
-        polarity: "neutral",
-        intensity: 0.2,
-        category: "unmapped",
-        answer:
-          "Main ne aap ki baat carefully read ki hai.\n" +
-          "Ho sakta hai meri offline qaDatabase mein is ka exact pattern na ho,\n" +
-          "lekin main phir bhi logic + emotion se aap ke sath sochne ki koshish karunga."
-      };
+      // 1) Ethics guard
+      const ethicsMsg = ethicsGuard(message);
 
-      const e0 = applyAuraMath(entry);
-      const finalReply = buildFinalReply(entry, e0);
+      // 2) Pattern match
+      let entry = findQaEntry(message);
+      let reply = entry ? entry.answer : buildFallbackReply(message);
 
-      assistantTextEl.textContent = finalReply;
-
-      // If Islam selected, add small InshaAllah touch
-      const active = beliefLabels.filter(l => beliefState[l]);
-      const hasIslam = active.includes("Islam");
-      if(hasIslam && !finalReply.includes("InshaAllah")){
-        // optional – already spiritual, so chhota suffix
+      // 3) If ethics warning exists, prepend it softly
+      if (ethicsMsg) {
+        reply = ethicsMsg + "\n\n" + reply;
+        entry = entry || {
+          emotion: "concern",
+          polarity: "negative",
+          intensity: 0.6,
+          category: "ethics_guard"
+        };
       }
 
-      speak(finalReply);
+      // 4) Update models
+      const usedEntry = entry || {
+        emotion: "neutral",
+        polarity: "neutral",
+        intensity: 0.3,
+        category: "generic"
+      };
+      updateCRM(usedEntry, auraState);
+      updateAEC(usedEntry, auraState);
+      updateAECNetwork(usedEntry, auraState);
+
+      // 5) Update continuity term from AEC
+      auraState.ct = clamp(auraState.continuity * 0.3 + 0.15, 0, 0.6);
+
+      // 6) Update UI for equation
+      updateEquationUI(auraState);
+
+      // 7) Belief flavour + output
+      reply = applyBeliefFlavor(reply);
+      assistantTextEl.textContent = reply;
+      speak(reply);
     }
 
     sendBtn.addEventListener("click", handleSend);
-    userInput.addEventListener("keydown",(e)=>{
-      if(e.key === "Enter") handleSend();
+    userInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") handleSend();
     });
 
-    // ===== Initial render =====
-    function init(){
+    // ==========================
+    //  INITIALISE
+    // ==========================
+    function init() {
       renderBeliefChips();
       updateBeliefFooter();
-      updateModeLabel();
       renderLlmChips();
       updateVoiceUI();
-      renderEquation(auraState, computeE0(auraState));
+      updateEquationUI(auraState);
     }
     init();
   </script>
