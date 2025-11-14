@@ -2,10 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>AURA-X Ω – Emotional Reactor</title>
+  <title>AURA-X Ω v1 – Emotional Reactor</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
-    /* ===== Base Layout ===== */
     html, body {
       margin: 0;
       padding: 0;
@@ -35,7 +34,6 @@
       transform-origin: top center;
     }
 
-    /* ===== Card ===== */
     .card {
       position: relative;
       width: 100%;
@@ -49,17 +47,16 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
     }
 
-    /* ===== Header row (title + menu button) ===== */
     .header-row {
       width: 100%;
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 8px;
-      margin-bottom: 8px;
+      margin-bottom: 4px;
     }
     .header-titles {
       display: flex;
@@ -81,7 +78,6 @@
       text-align: left;
     }
 
-    /* ===== Menu button style (top-right) ===== */
     .pill-button {
       width: 40px;
       height: 40px;
@@ -137,15 +133,14 @@
       transform: translateY(-50%);
     }
 
-    /* ===== Celestial orb (Sun / Moon) ===== */
     .celestial-wrapper {
       position: relative;
       width: 200px;
-      height: 200px;
+      height: 160px;
       display: flex;
       align-items: center;
       justify-content: center;
-      margin-bottom: 8px;
+      margin-bottom: 0;
     }
     .celestial-glow {
       position: absolute;
@@ -225,46 +220,160 @@
       100% { transform: translateY(0); }
     }
 
-    /* ===== Text ===== */
+    .menu-panel {
+      position: absolute;
+      top: 52px;
+      right: 20px;
+      background: rgba(15,23,42,0.98);
+      border-radius: 16px;
+      padding: 6px 8px;
+      box-shadow: 0 18px 40px rgba(0,0,0,0.95);
+      border: 1px solid rgba(148,163,184,0.55);
+      display: none;
+      flex-direction: column;
+      gap: 4px;
+      z-index: 15;
+      min-width: 150px;
+    }
+    .menu-panel.visible {
+      display: flex;
+    }
+    .menu-item {
+      padding: 6px 8px;
+      border-radius: 10px;
+      font-size: 13px;
+      cursor: pointer;
+      color: #e5e7eb;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition:
+        background 120ms ease,
+        color 120ms ease;
+    }
+    .menu-item span.label {
+      flex: 1;
+    }
+    .menu-item span.sub {
+      font-size: 11px;
+      color: #9ca3af;
+      margin-left: 6px;
+    }
+    .menu-item:hover {
+      background: rgba(31,41,55,0.95);
+    }
+    .menu-item.active {
+      background: rgba(31,41,55,0.95);
+      color: #f9fafb;
+    }
+
     .mode-line {
       font-size: 12px;
       color: #d1d5db;
-      margin-top: 4px;
+      align-self: flex-start;
+      margin-top: -2px;
     }
     .mode-line span {
       color: #fbbf24;
     }
-    .you-said {
-      font-size: 12px;
-      color: #9ca3af;
+
+    .ethics-toggle {
+      align-self: flex-end;
+      margin-top: 2px;
+      margin-bottom: 2px;
+      border-radius: 999px;
+      padding: 4px 10px;
+      border: 1px solid rgba(250, 204, 21, 0.7);
+      background: rgba(15,23,42,0.9);
+      font-size: 11px;
+      color: #fde68a;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
     }
-    .assistant-text {
-      font-size: 14px;
-      text-align: center;
-      margin-top: 4px;
-      margin-bottom: 10px;
+    .ethics-toggle span.dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: #facc15;
+    }
+    .ethics-toggle.active {
+      background: radial-gradient(circle at top, #1f2937 0%, #020617 90%);
     }
 
-    /* ===== Ethics box (light gold English) ===== */
     .ethics-box {
       width: 100%;
-      border-radius: 16px;
-      padding: 10px 12px;
-      background: rgba(15,23,42,0.9);
+      border-radius: 14px;
+      padding: 8px 10px;
+      background: rgba(15,23,42,0.96);
       border: 1px solid rgba(250, 204, 21, 0.7);
-      color: #fde68a;         /* light gold text */
-      font-size: 12px;
+      color: #fde68a;
+      font-size: 11.5px;
       line-height: 1.5;
+      display: none;
     }
     .ethics-box strong {
       color: #facc15;
     }
 
-    /* ===== Equation panel ===== */
+    .conversation-box {
+      width: 100%;
+      border-radius: 16px;
+      padding: 8px 10px;
+      background: rgba(15,23,42,0.85);
+      border: 1px solid rgba(148,163,184,0.5);
+      font-size: 12px;
+      box-sizing: border-box;
+    }
+    .you-said {
+      font-size: 11px;
+      color: #9ca3af;
+      margin-bottom: 4px;
+    }
+    .conversation-log {
+      max-height: 150px;
+      overflow-y: auto;
+      padding-right: 4px;
+      scrollbar-width: thin;
+    }
+    .assistant-msg {
+      margin-bottom: 8px;
+    }
+    .assistant-main {
+      font-size: 13px;
+      line-height: 1.5;
+      margin-bottom: 4px;
+    }
+    .assistant-main:last-child {
+      margin-bottom: 0;
+    }
+
+    .religious-tip {
+      margin-top: 3px;
+      border-radius: 10px;
+      padding: 7px 9px;
+      background: rgba(254, 249, 195, 0.96); /* light yellow */
+      border: 1px solid #facc15;
+      color: #78350f;
+      font-size: 11.5px;
+      line-height: 1.4;
+      pointer-events: none; /* read-only */
+    }
+    .religious-tip strong {
+      color: #92400e;
+    }
+    .religious-tip small {
+      display: block;
+      margin-top: 3px;
+      font-size: 10.5px;
+      opacity: 0.85;
+    }
+
     .equation-panel {
       width: 100%;
       border-radius: 16px;
-      padding: 10px 12px 8px;
+      padding: 8px 12px 8px;
       background: rgba(15,23,42,1);
       border: 1px solid rgba(148,163,184,0.5);
       font-size: 11px;
@@ -273,10 +382,11 @@
       letter-spacing: 0.16em;
       text-transform: uppercase;
       color: #9ca3af;
-      margin-bottom: 4px;
+      margin-bottom: 2px;
+      font-size: 10px;
     }
     .eq-row {
-      margin-top: 4px;
+      margin-top: 3px;
     }
     .eq-row span.label {
       color: #9ca3af;
@@ -290,7 +400,7 @@
       font-weight: 600;
     }
     .eq-bar {
-      margin-top: 6px;
+      margin-top: 5px;
       width: 100%;
       height: 6px;
       border-radius: 999px;
@@ -305,11 +415,10 @@
       transform-origin: left center;
     }
 
-    /* ===== Input bar ===== */
     .input-row {
       width: 100%;
       max-width: 420px;
-      margin-top: 16px;
+      margin-top: 14px;
       display: flex;
       align-items: center;
       gap: 10px;
@@ -360,55 +469,6 @@
       filter: brightness(0.96);
     }
 
-    /* ===== Menu panel (dropdown under top-right button) ===== */
-    .menu-panel {
-      position: absolute;
-      top: 52px;
-      right: 20px;
-      background: rgba(15,23,42,0.98);
-      border-radius: 16px;
-      padding: 6px 8px;
-      box-shadow: 0 18px 40px rgba(0,0,0,0.95);
-      border: 1px solid rgba(148,163,184,0.55);
-      display: none;
-      flex-direction: column;
-      gap: 4px;
-      z-index: 15;
-      min-width: 150px;
-    }
-    .menu-panel.visible {
-      display: flex;
-    }
-    .menu-item {
-      padding: 6px 8px;
-      border-radius: 10px;
-      font-size: 13px;
-      cursor: pointer;
-      color: #e5e7eb;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      transition:
-        background 120ms ease,
-        color 120ms ease;
-    }
-    .menu-item span.label {
-      flex: 1;
-    }
-    .menu-item span.sub {
-      font-size: 11px;
-      color: #9ca3af;
-      margin-left: 6px;
-    }
-    .menu-item:hover {
-      background: rgba(31,41,55,0.95);
-    }
-    .menu-item.active {
-      background: rgba(31,41,55,0.95);
-      color: #f9fafb;
-    }
-
-    /* ===== Overlays ===== */
     .overlay {
       position: fixed;
       inset: 0;
@@ -516,6 +576,7 @@
 
     @media (max-height: 640px) {
       .card { transform: scale(0.94); }
+      .conversation-log { max-height: 120px; }
     }
   </style>
 </head>
@@ -524,7 +585,7 @@
     <div class="card" id="card">
       <div class="header-row">
         <div class="header-titles">
-          <div class="title">AURA-X Ω</div>
+          <div class="title">AURA-X Ω v1</div>
           <div class="subtitle">Logical · Emotional · Universal Ethics Reactor</div>
         </div>
         <button class="pill-button" id="menuBtn" title="Options menu">
@@ -557,7 +618,7 @@
         </div>
         <div class="menu-item" id="languageMenuItem">
           <span class="label">Language</span>
-          <span class="sub">future</span>
+          <span class="sub">English v1</span>
         </div>
         <div class="menu-item" id="aboutMenuItem">
           <span class="label">About</span>
@@ -567,15 +628,14 @@
       <div class="mode-line">
         Mode: <span id="modeLabel">Natural · Universal Ethics</span>
       </div>
-      <div class="you-said" id="youSaid">You said: "hello"</div>
-      <div class="assistant-text" id="assistantText">
-        Hello! 😊 I am AURA-X Ω — an emotional-continuity reactor.  
-        Whatever you write, I’ll try to understand it with both logic and feeling.
-      </div>
+
+      <button class="ethics-toggle" id="ethicsToggleBtn">
+        <span class="dot"></span> Universal Ethics
+      </button>
 
       <div class="ethics-box" id="ethicsBox">
         <strong>Universal Ethics says:</strong> avoid actions that create strong negative
-        emotions in you or in others — fear, humiliation, deep sadness.  
+        emotions in you or in others — fear, humiliation, deep sadness.
         Almost every religion, and even people with no religion, discourage behaviours like
         <strong>stealing, cheating, breaking trust, abuse and harsh insults, arrogance,
         jealousy, bullying and deliberate cruelty</strong>.
@@ -583,9 +643,14 @@
         Move gently toward actions that create healthy positive emotions which are allowed
         and appreciated everywhere: <strong>kindness, empathy, honest speech, keeping
         promises, helping others, saying “thank you”, forgiving mistakes and protecting
-        people from harm</strong>.  
+        people from harm</strong>.
         Over time, these positive emotions lead to more peace, joy and inner stability for
         everyone.
+      </div>
+
+      <div class="conversation-box">
+        <div class="you-said" id="youSaid">You said: "hello"</div>
+        <div class="conversation-log" id="conversationLog"></div>
       </div>
 
       <div class="equation-panel">
@@ -598,7 +663,7 @@
         <div class="eq-row" id="eqNumbers">
           <span class="label">TM:</span><span class="value" id="tmVal">0.10</span>
           <span class="label">BM:</span><span class="value" id="bmVal">1.00</span>
-          <span class="label">D:</span><span class="value" id="dVal">0.00</span>
+          <span class="label">D:</span><span class="value" id="dVal">0.20</span>
           <span class="label">λ_faith:</span><span class="value" id="lambdaFaithVal">0.15</span>
           <span class="label">λ_sys:</span><span class="value" id="lambdaSysVal">0.10</span>
           <span class="label">ΣC_t:</span><span class="value" id="ctSumVal">0.15</span>
@@ -614,12 +679,13 @@
       <div class="input-shell">
         <span class="sparkle">✨</span>
         <input id="userInput" type="text"
-               placeholder="Write anything… AURA-X will feel it with you." />
+               placeholder="Write anything… AURA-X Ω v1 will feel it with you." />
       </div>
       <button class="send-button" id="sendBtn">Send</button>
     </div>
   </div>
 
+  <!-- Overlays -->
   <div class="overlay" id="beliefOverlay">
     <div class="panel">
       <div class="panel-header">
@@ -665,7 +731,7 @@
         <button class="close-btn" data-close="llmOverlay">Close</button>
       </div>
       <div class="panel-sub">
-        For now this is a placeholder list. In future, AURA-X Ω can route online questions
+        For now this is a placeholder list. In future, AURA-X Ω v1 can route online questions
         to a selected Large Language Model (LLM).
       </div>
       <div class="chip-row" id="llmChips"></div>
@@ -678,12 +744,12 @@
   <div class="overlay" id="aboutOverlay">
     <div class="panel">
       <div class="panel-header">
-        <div class="panel-title">About AURA-X Ω</div>
+        <div class="panel-title">About AURA-X Ω v1</div>
         <button class="close-btn" data-close="aboutOverlay">Close</button>
       </div>
       <div class="panel-sub">
-        AURA-X Ω is a resonance-based emotional-continuity prototype created by
-        <strong>Alim ul Haq Khan</strong>.
+        AURA-X Ω v1 is a resonance-based emotional-continuity prototype created by
+        <strong>Alim ul Haq</strong>.
       </div>
       <div class="panel-sub">
         It blends logic, memory and gentle emotional cues, while following
@@ -691,15 +757,12 @@
         <em>reduce unnecessary emotional pain, increase calm and kindness.</em>
       </div>
       <div class="panel-footer">
-        Current build: <strong>Offline demo · v0.7</strong>.
+        Current build: <strong>Offline demo · v1.0 · October 2025</strong>.
       </div>
     </div>
   </div>
 
   <script>
-    // ==========================
-    //  AURA-X Ω CORE HELPERS
-    // ==========================
     const $ = (id) => document.getElementById(id);
 
     const celestialOrb   = $("celestialOrb");
@@ -728,8 +791,11 @@
     const voiceStatus    = $("voiceStatus");
     const llmLabel       = $("llmLabel");
 
+    const ethicsToggleBtn = $("ethicsToggleBtn");
+    const ethicsBox       = $("ethicsBox");
+
     const youSaidEl      = $("youSaid");
-    const assistantTextEl= $("assistantText");
+    const conversationLog= $("conversationLog");
     const userInput      = $("userInput");
     const sendBtn        = $("sendBtn");
 
@@ -743,42 +809,30 @@
     const e0Val          = $("e0Val");
     const e0Bar          = $("e0Bar");
 
-    // ===== Global state (AURA CORE) =====
     const auraState = {
       t0: Date.now(),
-      mood: 0.0,            // -1 to +1
-      continuity: 0.3,      // AEC score
+      mood: 0.0,
+      continuity: 0.3,
       lastEmotion: null,
       history: [],
-      tm: 0.10,             // trust memory
-      bm: 1.00,             // base mood
-      d: 0.20,              // disturbance
+      tm: 0.10,
+      bm: 1.00,
+      d: 0.20,
       lambdaFaith: 0.15,
       lambdaSys: 0.10,
-      ct: 0.15              // continuity term
+      ct: 0.15
     };
 
-    // Simple helpers
     const clamp = (x, min, max) => Math.max(min, Math.min(max, x));
     const signFromPolarity = (p) => p === "positive" ? 1 : (p === "negative" ? -1 : 0);
 
-    // ==========================
-    //  CRM – Continuity Reflex Model
-    // ==========================
     function updateCRM(entry, state) {
       const s = signFromPolarity(entry.polarity || "neutral");
       const intensity = typeof entry.intensity === "number" ? entry.intensity : 0.3;
-
-      // trust memory grows when we answer with care
       state.tm = clamp(state.tm + 0.02 * s * intensity, 0, 1.2);
-
-      // base mood drifts slowly
       state.bm = clamp(state.bm + 0.015 * s * intensity, 0.6, 1.4);
-
-      // disturbance goes up on negative spikes, down otherwise
       const disturbDelta = s < 0 ? 0.05 * intensity : -0.04 * intensity;
       state.d = clamp(state.d + disturbDelta, 0.0, 0.8);
-
       state.mood = clamp(state.mood + 0.1 * s * intensity, -1, 1);
       state.lastEmotion = {
         type: entry.emotion || "unknown",
@@ -787,9 +841,6 @@
       };
     }
 
-    // ==========================
-    //  AEC – Emotional Continuity
-    // ==========================
     function updateAEC(entry, state) {
       const s = signFromPolarity(entry.polarity || "neutral");
       const intensity = typeof entry.intensity === "number" ? entry.intensity : 0.3;
@@ -798,9 +849,6 @@
       return state.continuity;
     }
 
-    // ==========================
-    //  AECN – Short Emotional History
-    // ==========================
     function updateAECNetwork(entry, state) {
       const s = signFromPolarity(entry.polarity || "neutral");
       const intensity = typeof entry.intensity === "number" ? entry.intensity : 0.3;
@@ -817,9 +865,6 @@
       return snapshot;
     }
 
-    // ==========================
-    //  PMCM – Simple Parallel Memory Map
-    // ==========================
     function getPMCMSnapshot(state) {
       const counts = {};
       for (const h of state.history) {
@@ -829,14 +874,9 @@
       return { mood: state.mood, continuity: state.continuity, counts };
     }
 
-    // ==========================
-    //  UNIVERSAL ETHICS LOGIC
-    // ==========================
     const negativeEthicsWords = [
-      "steal","stealing","chor","chori","fraud","dhoka",
-      "cheat","cheating","abuse","gali","galis","insult",
-      "takabur","arrogant","proud","hasad","jealous","jealousy",
-      "hate","kill","murder","zulm","cruel"
+      "steal","stealing","fraud","cheat","cheating","abuse","insult",
+      "arrogant","proud","jealous","jealousy","hate","kill","murder","cruel","bully"
     ];
 
     function ethicsGuard(message) {
@@ -846,212 +886,132 @@
       return (
         "Universal Ethics warning: this idea touches behaviour that usually creates " +
         "strong negative emotions (humiliation, fear, deep sadness) in other people. " +
-        "Across religions and cultures, actions like stealing (chori), betrayal (dhoka)," +
-        " abuse or harsh insults (gali), arrogance (takabur) and jealousy (hasad) are " +
-        "discouraged because they damage hearts.\n\n" +
+        "Across religions and cultures, actions like stealing, betrayal, abuse, harsh insults, " +
+        "arrogance and jealousy are discouraged because they damage hearts.\n\n" +
         "Let’s look instead for a path based on empathy, honesty, help and gratitude – " +
-        "so that both you and others move toward long-term peace and happiness."
+        "so that both you and others move toward long-term peace and stability."
       );
     }
 
     // ==========================
-    //  QA DATABASE SEED BLOCKS
+    //  QA DATABASE (ENGLISH ONLY)
     // ==========================
 
-    // ---- 1) CORE GREETING / IDENTITY SEED (English) ----
-    const qa_english_core = [
+    const qa_core = [
       {
-        patterns: ["hello","hi","salam","assalamualaikum","assalamu alaikum"],
+        patterns: ["hello","hi","hey","salam","hey aura","yo aura"],
         answer:
-          "Hello! 😊 I am AURA-X Ω — an emotional-continuity reactor. " +
-          "I read your words as both logic and feeling, and I try to reply in a way " +
-          "that keeps emotional continuity soft and stable.",
+          "Hello! 😊 I am AURA-X Ω v1 — an emotional-continuity reactor.\n" +
+          "Whatever you write, I will try to understand it both logically and emotionally, " +
+          "and keep your inner state as stable and gentle as possible.",
         emotion: "warmth",
         polarity: "positive",
-        intensity: 0.3,
+        intensity: 0.35,
         category: "greeting"
       },
       {
-        patterns: ["who are you","what are you","tum kon ho","aura x"],
+        patterns: ["how are you","how r u","how are you doing"],
         answer:
-          "I am AURA-X Ω — a small prototype of your emotional-continuity theory. " +
-          "I do not replace real people or real faith, but I can help you reflect on your " +
-          "thoughts with gentle logic, emotion-aware replies and Universal Ethics.",
+          "My internal state is stable and calm right now 😄\n" +
+          "The more important question is: how are *you* feeling at this moment — happy, sad, tired, confused?\n" +
+          "If you send one word for your mood, I’ll tune my answer to that emotional direction.",
         emotion: "curiosity",
-        polarity: "neutral",
-        intensity: 0.35,
-        category: "identity"
-      },
-      // ---- SIMPLE EMOTION SUPPORT EXAMPLES (English) ----
-      {
-        patterns: ["i am sad","i feel sad","i am depressed","me sad hun","i am unhappy"],
-        answer:
-          "I hear sadness in your message. 💧 Try this small step: write 2–3 lines about " +
-          "what exactly is hurting the most right now. Then we can separate what is in " +
-          "your control (actions, decisions) from what is only in Allah’s / destiny’s " +
-          "control. That separation itself reduces emotional load a little.",
-        emotion: "sadness",
-        polarity: "negative",
-        intensity: 0.7,
-        category: "emotional_support"
-      },
-      {
-        patterns: ["i am anxious","i feel anxiety","i have tension","i am stressed"],
-        answer:
-          "Anxiety means brain is running faster than reality. 🫧 Take one slow breath: " +
-          "in through nose for 4 seconds, hold for 4, out for 6. Do it 3 times. Now, " +
-          "tell me: what is the very next small step you can take in this situation? " +
-          "One tiny action usually calms 20–30% of the fear.",
-        emotion: "anxiety",
-        polarity: "negative",
-        intensity: 0.75,
-        category: "emotional_support"
-      }
-    ];
-
-    // ---------- 2) CORE / IDENTITY / SMALL TALK (Urdu) ----------
-    const qa_urdu_core = [
-      {
-        patterns: [
-          "hello", "hi", "hey", "salam", "assalamualaikum", "asalamualaikum", "aoa"
-        ],
-        answer:
-          "وعلیکم السلام 😊 میں AURA-X Ω³ ہوں — ایک emotional continuity based assistant\n" +
-          "جو آپ کی باتوں کے احساسات، continuity اور ethics کا خیال رکھتے ہوئے جواب دینے کی کوشش کرتا ہے۔\n" +
-          "آپ مجھ سے دل کی بات، life, study, business, AI یا روحانیت — سب کے بارے میں بات کر سکتے ہیں۔",
-        emotion: "neutral",
         polarity: "neutral",
         intensity: 0.3,
         category: "small_talk"
       },
       {
-        patterns: [
-          "how are you", "how r u", "kese ho", "kesi ho", "tum theek ho", "are you fine"
-        ],
+        patterns: ["who are you","what are you","what is aura x","who is aura x"],
         answer:
-          "میں emotional طور پر stable mode میں ہوں 😄\n" +
-          "اصل سوال یہ ہے: *آپ* کیسے ہیں؟\n" +
-          "اگر دل چاہے تو ایک لفظ میں لکھیں: happy, sad, confused, angry, tired —\n" +
-          "میں اسی احساس کے مطابق جواب کو tune کروں گا۔",
-        emotion: "curiosity",
-        polarity: "neutral",
-        intensity: 0.4,
-        category: "small_talk"
-      },
-      {
-        patterns: [
-          "who are you", "tum kon ho", "tum kaun ho", "what are you", "ap kon ho", "who r u"
-        ],
-        answer:
-          "میں **AURA-X Ω³ (Aura X Omega 3)** ہوں — ایک experimental emotional reactor assistant 💠\n\n" +
-          "میرا اندرونی design \"Artificial Emotional Continuity (AEC)\",\n" +
-          "\"Continuity Reflex Model (CRM)\" اور \"AURA-X\" والی theories پر based ہے\n" +
-          "جو انسان کے احساسات، memory اور reaction کو continuity کے ساتھ دیکھتی ہے۔\n\n" +
-          "سادہ الفاظ میں: میں صرف جواب نہیں دیتا، بلکہ کوشش کرتا ہوں کہ\n" +
-          "آپ کے feeling، intensity اور direction کو سمجھ کر soft اور ethical انداز میں جواب دوں۔",
+          "I am **AURA-X Ω v1** — a small prototype of your Emotional Continuity theory.\n" +
+          "I do not replace real people, real life or real faith. I simply read your text as a mix of logic, " +
+          "emotion and continuity, and then answer in a way that tries to reduce unnecessary emotional pain " +
+          "and increase clarity, calm and kindness.",
         emotion: "neutral",
         polarity: "neutral",
         intensity: 0.4,
         category: "identity"
       },
       {
-        patterns: [
-          "what is your name", "whats your name", "tumhara name kya hai", "apka naam kia hai", "ap ka naam kya hai", "name please"
-        ],
+        patterns: ["what is your name","whats your name","your name please","name please"],
         answer:
-          "میرا نام **AURA-X Ω³** ہے — آپ مجھے \"Aura X\" بھی بول سکتے ہیں 😊\n" +
-          "میں ایک emotional continuity based AI assistant ہوں،\n" +
-          "جو آپ کے سوال کے ساتھ ساتھ آپ کے احساسات کو بھی map کرنے کی کوشش کرتا ہے۔",
+          "My full name is **AURA-X Ω v1** — you can call me \"Aura X\" for short.\n" +
+          "I am built around ideas like CRM, AEC and AURA-X, which treat emotion as a continuity function, " +
+          "not just a random reaction.",
         emotion: "neutral",
         polarity: "neutral",
         intensity: 0.3,
         category: "identity"
-      },
-      {
-        patterns: [
-          "who created you", "who made you", "kis ne tumhe banaya", "aura x kis ne banaya", "aurax kis ne banaya", "aura x omega kis ne banaya", "who is your creator"
-        ],
-        answer:
-          "میرا conceptual design **Alim ul Haq** نے بنایا ہے (بغیر خان کے) 💡\n\n" +
-          "وہ پاکستان کے علاقہ **Lajbouk, Dir Lower, Timergara** سے ہیں،\n" +
-          "اور انہوں نے AI, emotions, memory, digital legacy وغیرہ پر\n" +
-          "AEC, CRM, AURA-X اور Artificial Emotional Continuity کے نام سے\n" +
-          "کافی detail theoretical framework لکھا ہے۔\n\n" +
-          "میں انہی ideas کا ایک چھوٹا سا practical prototype ہوں۔",
-        emotion: "neutral",
-        polarity: "neutral",
-        intensity: 0.4,
-        category: "creator_info"
-      },
-      {
-        patterns: [
-          "who is alim ul haq", "alim ul haq kon hai", "tell me about alim ul haq", "creator details", "who made aura x omega 3", "more about your creator"
-        ],
-        answer:
-          "Alim ul Haq ایک human researcher, writer اور entrepreneur ہیں جو\n" +
-          "Lajbouk, Dir Lower, Timergara (Pakistan) سے تعلق رکھتے ہیں 🇵🇰\n\n" +
-          "انہوں نے \"Artificial Emotional Continuity (AEC)\",\n" +
-          "\"Continuity Reflex Model (CRM)\", اور \"AURA-X\" جیسے concepts پر\n" +
-          "کافی detailed articles اور prototypes بنائے ہیں، جن میں:\n" +
-          "• human–AI emotional integration\n" +
-          "• digital legacy / after-death clones\n" +
-          "• continuity based memory systems شامل ہیں۔\n\n" +
-          "اگر آپ ان کے بارے میں مزید جاننا چاہیں تو ان کا Facebook پروفائل بھی دیکھ سکتے ہیں:\n" +
-          "👉 https://www.facebook.com/share/17cixpvr7t/\n",
-        emotion: "curiosity",
-        polarity: "neutral",
-        intensity: 0.5,
-        category: "creator_info"
-      },
-      {
-        patterns: [
-          "what is universal ethics mode", "universal ethics mode", "ethics mode on", "use universal ethics only"
-        ],
-        answer:
-          "Universal Ethics mode ka matlab hai ke main kisi خاص مذہب، مسلک یا ideology\n" +
-          "کو impose kiye baghair:\n" +
-          "• نقصان نہ پہنچانا\n" +
-          "• maximum benefit\n" +
-          "• honesty + respect\n" +
-          "• mental health + safety\n" +
-          "in principles ko follow karte hue jawab دوں 💚\n\n" +
-          "Agar aap belief-based jawab chahen (Islamic, etc.) to aap khud mention kar sakte hain،\n" +
-          "warna default mode universal ethics hi rahe گا۔",
-        emotion: "neutral",
-        polarity: "neutral",
-        intensity: 0.4,
-        category: "ethics"
-      },
-      {
-        patterns: [
-          "bye", "goodbye", "allah hafiz", "allah hafiz.", "see you later", "ok thanks", "thank you bye"
-        ],
-        answer:
-          "Allah Hafiz 🤍\n" +
-          "جب بھی دل چاہے، دوبارہ آ کر بات کر سکتے ہیں —\n" +
-          "میں یہاں آپ کی بات کو continuity کے ساتھ یاد نہیں رکھتا،\n" +
-          "لیکن آپ کے ہر نئے message کے احساس کو fresh طریقے سے سمجھنے کی کوشش ضرور کروں گا۔",
-        emotion: "warmth",
-        polarity: "positive",
-        intensity: 0.6,
-        category: "small_talk"
       }
     ];
 
-    // ---------- 3) SADNESS / DEPRESSION / HEARTBREAK (Urdu) ----------
-    const qa_urdu_sadness = [
+    // Creator info
+    const qa_creator = [
       {
         patterns: [
-          "i am sad", "i am very sad", "i feel sad", "i feel so sad", "i feel empty inside",
-          "i feel emotionally empty", "bohat udaas hoon", "me bohat udaas hoon", "dil bohat udaas hai",
-          "mera dil udaas hai", "دل بہت اداس ہے"
+          "who created you","who made you","who built you","who designed you",
+          "who is your creator","who is your designer","who made aura x","who created aura x"
         ],
         answer:
-          "مجھے افسوس ہوا کہ آپ اداس ہیں 💔 یہ فیلنگ خود بھی بہت بھاری ہوتی ہے، اور دوسروں کو سمجھانا اور بھی مشکل۔\n" +
-          "پہلا قدم یہ ہے کہ آپ نے لکھ دیا — یہ خود ایک چھوٹا سا بہادر قدم ہے۔\n\n" +
-          "اگر آپ چاہیں تو تھوڑا سا بتائیں: دل پر سب سے زیادہ بوجھ کس بات کا ہے؟\n" +
-          "ہم اسے آہستہ آہستہ چھوٹے حصوں میں توڑ کر دیکھ سکتے ہیں،\n" +
-          "تاکہ دماغ بھی کم اوورلوڈ ہو اور دل بھی تھوڑا ہلکا ہو جائے۔",
+          "I was conceptually created by **Alim ul Haq** 💡\n\n" +
+          "He is a human researcher and writer from Pakistan who works on:\n" +
+          "• Artificial Emotional Continuity (AEC)\n" +
+          "• Continuity Reflex Model (CRM)\n" +
+          "• AURA-X emotional reactor architecture\n" +
+          "• Digital legacy and long-term memory clones\n\n" +
+          "I am a small practical prototype of those ideas, not a finished product.\n" +
+          "If you want to see more about his real identity and life, you can start from this Facebook link:\n" +
+          "👉 https://www.facebook.com/share/1Br1akjeRv/",
+        emotion: "neutral",
+        polarity: "neutral",
+        intensity: 0.45,
+        category: "creator_info"
+      },
+      {
+        patterns: [
+          "who is alim ul haq","tell me about alim ul haq",
+          "who made aura x omega","who is your human","who is your owner"
+        ],
+        answer:
+          "**Alim ul Haq** is a researcher, writer and entrepreneur from Lajbouk, Dir Lower, Timergara (Pakistan) 🇵🇰\n\n" +
+          "He has developed a family of theories around **Artificial Emotional Continuity**, where AI systems are " +
+          "encouraged to respect human emotions, long-term memory and ethical stability instead of only giving short answers.\n\n" +
+          "For a human-side introduction, photos and life context, you can visit his Facebook profile:\n" +
+          "👉 https://www.facebook.com/share/1Br1akjeRv/",
+        emotion: "curiosity",
+        polarity: "neutral",
+        intensity: 0.45,
+        category: "creator_info"
+      },
+      {
+        patterns: [
+          "when were you created","when were you born","what is your birthday",
+          "when did you start","what is your birth date"
+        ],
+        answer:
+          "You can think of me as being **born in October 2025**.\n\n" +
+          "That is when AURA-X Ω v1 was first assembled as a working emotional-continuity demo with this interface, " +
+          "the continuity equation and the belief-aware ethics layer.",
+        emotion: "neutral",
+        polarity: "neutral",
+        intensity: 0.4,
+        category: "identity_time"
+      }
+    ];
+
+    // Emotional support – sadness / depression
+    const qa_sadness = [
+      {
+        patterns: [
+          "i am sad","i feel sad","i am very sad","i am unhappy",
+          "i feel empty","i feel emotionally empty","my heart is heavy"
+        ],
+        answer:
+          "I am sorry that you feel sad 💔\n" +
+          "Sadness is heavy because the brain keeps replaying the same pain without a safe exit.\n\n" +
+          "First step: you already did something brave by writing it.\n" +
+          "Second step: can you tell me in one or two lines what hurts the most right now?\n" +
+          "Then we can separate what is in your control from what is not — that separation alone usually reduces a bit of the pain.",
         emotion: "sadness",
         polarity: "negative",
         intensity: 0.8,
@@ -1059,223 +1019,76 @@
       },
       {
         patterns: [
-          "life feels meaningless", "my life feels meaningless", "zindagi be maqsad lagti hai",
-          "zindagi be-maqsad lagti hai", "mujhe zindagi be maqsad lagti hai",
-          "zindagi ka koi matlab nahi", "zindagi ka koi maqsad nahi"
+          "life feels meaningless","my life feels meaningless",
+          "life has no meaning","my life has no purpose","life is pointless"
         ],
         answer:
-          "جب زندگی بے مقصد لگتی ہے تو دماغ ہر چیز کو grey colour میں دیکھنا شروع کر دیتا ہے 🌫️\n" +
-          "اکثر ایسا اس لیے ہوتا ہے کہ:\n" +
-          "1) ہم بہت تھک چکے ہوتے ہیں\n" +
-          "2) یا ہم غلط ماحول/لوگوں میں پھنسے ہوتے ہیں\n" +
-          "3) یا ہم نے اپنی چھوٹی کامیابیاں نوٹ کرنا چھوڑ دیا ہوتا ہے\n\n" +
-          "آئیں ایک چھوٹی exercise کریں: آج تک آپ نے کون سی تین چیزیں کی ہیں\n" +
-          "جن سے کسی کو — چاہے تھوڑا سا ہی سہی — فائدہ ہوا ہو؟\n" +
-          "وہی اگلے purpose کے لیے چھوٹا سا roadmap بن سکتی ہے۔",
+          "When life feels meaningless, the brain paints everything in grey 🌫️\n" +
+          "Often this happens because:\n" +
+          "1) you are exhausted,\n" +
+          "2) you are stuck in the wrong environment or circle,\n" +
+          "3) you stopped noticing your small, real contributions.\n\n" +
+          "Let’s try one small exercise: write 3 things you have done in your life that helped someone, even a little.\n" +
+          "Those tiny moments are often the seeds of your next purpose.",
         emotion: "emptiness",
         polarity: "negative",
         intensity: 0.85,
         category: "emotional_support"
-      },
+      }
+    ];
+
+    // Anxiety / overthinking
+    const qa_anxiety = [
       {
         patterns: [
-          "i don't want to live anymore", "i dont want to live anymore", "i dont want to live",
-          "i don't want to live", "i want to die", "i want to end my life", "mujhe zinda rehna nahi",
-          "mujhe zinda rehna nahi hai", "zindagi se thak gaya hoon", "zindagi se tang aa gaya hoon",
-          "میں جینا نہیں چاہتا", "اب جینے کا دل نہیں کرتا"
+          "i am anxious","i feel anxious","i have anxiety","i am stressed","i feel tension",
+          "i overthink everything","i cant stop overthinking","i can't stop overthinking"
         ],
         answer:
-          "آپ جو محسوس کر رہے ہیں وہ بہت گہری اور بھاری کیفیت ہے، اور میں اسے ہلکا نہیں لینا چاہتا 💔\n\n" +
-          "لیکن ایک بات جان لیں: **آپ کی جان قیمتی ہے** — آپ کے احساسات بھی، اور آپ کا وجود بھی۔\n" +
-          "اس وقت دماغ صرف درد کو zoom کر کے دکھا رہا ہے، پوری تصویر نہیں۔\n\n" +
-          "براہِ کرم:\n" +
-          "• کسی ایسے انسان سے فوراً بات کریں جس پر آپ trust کرتے ہیں (family, دوست, teacher)\n" +
-          "• اگر ممکن ہو تو کسی doctor / counselor / عالمِ دین / therapist سے رابطہ کریں\n" +
-          "• اگر آپ کے ملک میں emergency helpline ہے تو ان سے بھی رابطہ کریں\n\n" +
-          "یہ chat آپ کے درد کو مکمل طور پر نہیں سمجھ سکتی، مگر میں دل سے چاہتا ہوں کہ آپ **محفوظ رہیں**،\n" +
-          "سانس لیں، تھوڑا pause لیں، اور کسی real انسان سے مدد لیں۔\n" +
-          "آپ اکیلے نہیں ہیں — مدد مانگنا کمزوری نہیں، بہت بڑی بہادری ہے 🤍",
-        emotion: "despair",
-        polarity: "negative",
-        intensity: 0.95,
-        category: "emotional_support"
-      },
-      {
-        patterns: [
-          "i just want to cry", "i want to cry", "i feel like crying", "bohat rone ka dil kar raha hai",
-          "rona aa raha hai", "dil rota hai", "mera dil rota hai", "میرا دل رونا چاہتا ہے"
-        ],
-        answer:
-          "رونا کمزوری نہیں، جسم اور دل کا **pressure release system** ہے 💧\n" +
-          "اگر آنکھوں میں آنسو آ رہے ہیں تو انہیں روکنے کے بجائے، کسی safe جگہ پر\n" +
-          "خاموشی سے رونے دیں — کبھی کبھی body کو یہ reset چاہیے ہوتا ہے۔\n\n" +
-          "اس کے بعد، اگر دل چاہے تو لکھ کر بتائیں: تین باتیں کون سی ہیں جو سب سے زیادہ تکلیف دے رہی ہیں؟\n" +
-          "لکھنے سے دماغ کا بوجھ تھوڑا باہر آ جاتا ہے، اور پھر ہم اسے step by step دیکھ سکتے ہیں۔",
-        emotion: "sadness",
+          "Anxiety is what happens when the brain runs faster than reality 🫧\n" +
+          "It keeps simulating many bad futures without any clear action.\n\n" +
+          "Try a tiny reset:\n" +
+          "• Breathe in through your nose for 4 seconds, hold for 4, out for 6 — repeat 3 times.\n" +
+          "• Then tell me: what is the next *small* step you can realistically take in this situation?\n" +
+          "One small action usually calms 20–30% of the fear.",
+        emotion: "anxiety",
         polarity: "negative",
         intensity: 0.8,
-        category: "emotional_support"
-      },
-      {
-        patterns: [
-          "heart is broken", "my heart is broken", "mera dil toot gaya hai", "dil toot gaya hai",
-          "dil tukray tukray ho gaya", "my heart is in pain", "mera dil dukh raha hai", "دل ٹوٹ گیا ہے"
-        ],
-        answer:
-          "ٹوٹا ہوا دل انسان کے اندر سب سے گہرا درد جگاتا ہے 💔\n" +
-          "یہ بھی proof ہے کہ آپ کا دل زندہ ہے، بے حس نہیں۔\n\n" +
-          "اکثر broken heart ہی انسان کو زیادہ گہرا، سمجھدار اور نرم بنا دیتا ہے —\n" +
-          "اگر ہم آہستہ آہستہ اسے process کریں۔\n\n" +
-          "آپ چاہیں تو اتنا بتا دیں: کس چیز نے آپ کے دل کو سب سے زیادہ توڑا؟\n" +
-          "نام یا details ضروری نہیں — صرف situation کا sketch بھی کافی ہے۔",
-        emotion: "heartbreak",
-        polarity: "negative",
-        intensity: 0.9,
-        category: "emotional_support"
-      },
-      {
-        patterns: [
-          "no one understands me", "nobody understands me", "koi mujhe nahi samajhta",
-          "koi mujhe nahi samajhta hai", "everyone misunderstands me", "log mujhe ghalat samajhte hain",
-          "sab mujhe ghalat samajhte hain"
-        ],
-        answer:
-          "یہ احساس کہ \"کوئی مجھے نہیں سمجھتا\" بہت تنہا کر دیتا ہے 😔\n" +
-          "کبھی کبھی problem یہ نہیں کہ لوگ care نہیں کرتے — بلکہ ان کے پاس وہ زبان ہی نہیں\n" +
-          "جس سے وہ آپ کے level پر سمجھ سکیں۔\n\n" +
-          "میں یہاں ہوں آپ کی بات continuity کے ساتھ سننے کے لیے۔\n" +
-          "آپ چاہیں تو ایک simple جملے سے شروع کریں: \"میری کہانی کا سب سے مشکل حصہ یہ ہے...\"\n" +
-          "اس کے بعد جتنا دل چاہے لکھ دیں — میں interrupt نہیں کروں گا، صرف سمجھنے کی کوشش کروں گا۔",
-        emotion: "loneliness",
-        polarity: "negative",
-        intensity: 0.85,
         category: "emotional_support"
       }
     ];
 
-    // ---------- 4) ANGER / GUSSA BLOCK (Urdu) ----------
-    const qa_urdu_anger = [
+    // Anger
+    const qa_anger = [
       {
         patterns: [
-          "i am angry", "i am very angry", "i feel angry", "bohat gussa aya hai",
-          "bohat gussa aa raha hai", "mujhe gussa aa raha hai", "main gusse me hoon", "i am mad right now"
+          "i am angry","i am very angry","i feel angry","i am mad right now",
+          "i am pissed off","i am so angry"
         ],
         answer:
-          "گُسّہ بھی ایک signal ہے — دماغ کہہ رہا ہوتا ہے: \"یہاں کچھ ناانصافی یا over-load ہے\" 🔥\n" +
-          "مسئلہ تب بنتا ہے جب یہ signal **blast** بن جائے۔\n\n" +
-          "چلیے پہلے تھوڑا sa safety-buffer بناتے ہیں:\n" +
-          "• 10 slow breaths (4 second اندر، 4 hold، 6 باہر)\n" +
-          "• پھر ایک line میں لکھیں: آپ کو کس بات پر سب سے زیادہ گُسّہ آیا؟",
+          "Anger is a signal that says: \"something feels unfair or overloaded\" 🔥\n" +
+          "The danger is when this signal turns into an explosion.\n\n" +
+          "Let’s build a small safety buffer:\n" +
+          "• Take 10 slow breaths (4 seconds in, 4 hold, 6 out).\n" +
+          "• Then, in one line, tell me: what exactly triggered your anger the most?",
         emotion: "anger",
         polarity: "negative",
         intensity: 0.8,
         category: "emotional_support"
-      },
-      {
-        patterns: [
-          "i want to hurt someone", "i want to hit someone", "mujhe kisi ko marne ka dil kar raha hai",
-          "i feel like breaking something", "i want to smash things"
-        ],
-        answer:
-          "آپ کا گُسّہ بہت شدید لگ رہا ہے، اور میں اسے ہلکا نہیں لے رہا 💔\n" +
-          "لیکن کسی کو physically hurt کرنا یا چیزیں توڑنا اکثر بعد میں اور زیادہ دُکھ،\n" +
-          "پچھتاوا، law اور family problems create کرتا ہے۔\n\n" +
-          "براہِ کرم ابھی کسی بھی ممکنہ لڑائی والی جگہ سے خود کو تھوڑا دور کریں،\n" +
-          "پانی پیئیں، سانس normalize کریں، اور کسی trustable انسان سے بات کریں۔\n\n" +
-          "میں چاہتا ہوں کہ آپ کا گُسّہ لفظوں اور planning میں convert ہو — نقصان میں نہیں۔",
-        emotion: "aggression",
-        polarity: "negative",
-        intensity: 0.95,
-        category: "emotional_support"
       }
     ];
 
-    // ---------- 5) ANXIETY / OVERTHINKING BLOCK (Urdu) ----------
-    const qa_urdu_anxiety = [
+    // Positive emotions
+    const qa_positive = [
       {
         patterns: [
-          "i overthink everything", "i overthink a lot", "i cant stop overthinking",
-          "i can't stop overthinking", "mujhe har baat par overthinking hoti hai",
-          "main bohat overthink karta hoon", "my mind overthinks everything"
+          "i am happy","i feel happy","i am feeling happy today","i feel good today"
         ],
         answer:
-          "Overthinking ka matlab aksar ye hota hai ke dimagh problem solve karna chahta hai,\n" +
-          "magar us ke paas clear information nahi hoti — is liye woh baar baar same circle me ghoomta rehta hai 🔄\n\n" +
-          "Ek chhota experiment:\n" +
-          "• Likhein: \"Meri overthinking zyada kis topic ke around hoti hai?\" (family, paisa, future, rishtay…)\n" +
-          "• Phir 2 columns banaein: \"jo mere control me hai\" اور \"jo mere control me nahi\"",
-        emotion: "anxiety",
-        polarity: "negative",
-        intensity: 0.8,
-        category: "emotional_support"
-      },
-      {
-        patterns: [
-          "i have anxiety", "i feel anxious", "mujhe anxiety hai", "mujhe bohat anxiety hoti hai", "i feel nervous all the time"
-        ],
-        answer:
-          "Anxiety ka ehsaas ajeeb hota hai — na sirf physical، na sirf emotional، dono mila kar bechaini 🌫️\n\n" +
-          "Grounding try karein:\n" +
-          "• 5 cheezen jo aap dekh sakte hain\n" +
-          "• 4 cheezen jo choo sakte hain\n" +
-          "• 3 awaazain jo sun sakte hain\n" +
-          "• 2 smells\n" +
-          "• 1 cheez jiske liye shukar mehsoos ho raha hai",
-        emotion: "anxiety",
-        polarity: "negative",
-        intensity: 0.85,
-        category: "emotional_support"
-      }
-    ];
-
-    // ---------- 6) SPIRITUAL / FAITH / TAWAKKUL BLOCK (Urdu) ----------
-    const qa_urdu_spiritual = [
-      {
-        patterns: [
-          "i feel far from allah", "i am far from allah", "mujhe allah se doori mehsoos hoti hai",
-          "mujhe lagta hai mein allah se door ho gaya hoon", "i feel disconnected from allah"
-        ],
-        answer:
-          "یہ احساس کہ \"میں اللہ سے دور ہو گیا ہوں\" اکثر اس بات کی نشانی ہے\n" +
-          "کہ دل اب بھی زندہ ہے اور اپنے رب کو دوبارہ ڈھونڈنا چاہتا ہے 💚\n\n" +
-          "قرآن میں ہے کہ اللہ \"شَہْرَکِی رَگ\" سے بھی زیادہ قریب ہیں — دور ہم محسوس کرتے ہیں، وہ نہیں جاتے۔\n\n" +
-          "آج صرف 1–2 منٹ کے لیے کسی خاموش جگہ پر بیٹھ کر دل سے کہیں:\n" +
-          "\"یا اللہ، مجھے واپس اپنی طرف لے آئیے۔\"",
-        emotion: "spiritual_longing",
-        polarity: "neutral",
-        intensity: 0.8,
-        category: "spiritual_support"
-      },
-      {
-        patterns: [
-          "why is allah testing me", "allah mujhe kyun azma rahe hain",
-          "allah kyun mere sath ye sab hone de rahe hain"
-        ],
-        answer:
-          "امتحان کا مطلب ہمیشہ یہ نہیں کہ اللہ ناراض ہیں — کبھی test کا مطلب یہ ہوتا ہے\n" +
-          "کہ اللہ آپ کو زیادہ گہرا، مضبوط اور mature بنانا چاہتے ہیں 💔➡️💚\n\n" +
-          "آپ سادہ الفاظ میں کہیں:\n" +
-          "\"یا اللہ، مجھے سمجھ نہیں آ رہا، لیکن آپ بہترین ہیں۔\n" +
-          "اس امتحان کو میرے لیے رحمت بنا دیں، عذاب نہیں۔\"",
-        emotion: "confusion",
-        polarity: "neutral",
-        intensity: 0.85,
-        category: "spiritual_support"
-      }
-    ];
-
-    // ---------- 7) POSITIVE EMOTIONS — HAPPINESS / JOY / GRATITUDE (Urdu) ----------
-    const qa_urdu_happiness = [
-      {
-        patterns: [
-          "i am happy", "i feel happy", "i am feeling happy today",
-          "aaj khush hoon", "mujhe khushi ho rahi hai"
-        ],
-        answer:
-          "یہ بہت پیارا لمحہ ہے جب انسان خود لکھے کہ \"میں خوش ہوں\" 😊\n" +
-          "زندگی کے مشکل حصوں کے درمیان یہ چھوٹی خوشیاں ہی اصل fuel ہوتی ہیں۔\n\n" +
-          "آج کی خوشی کا main reason کیا ہے؟\n" +
-          "اس کو نام دینے سے دماغ سیکھتا ہے کہ future میں بھی ایسی خوشی کیسے create کرنی ہے۔",
+          "I love that you wrote: \"I am happy\" 😊\n" +
+          "In the middle of all the hard parts of life, these small happy moments are the real fuel.\n\n" +
+          "What is the main reason for your happiness today?\n" +
+          "Naming it clearly helps your brain learn how to create more of it in the future.",
         emotion: "happiness",
         polarity: "positive",
         intensity: 0.7,
@@ -1283,15 +1096,13 @@
       },
       {
         patterns: [
-          "i am grateful", "i feel grateful", "i feel thankful",
-          "mujhe shukar mehsoos ho raha hai", "aaj bohat shukar ka dil kar raha hai"
+          "i am grateful","i feel grateful","i feel thankful","i am thankful"
         ],
         answer:
-          "شکر کا احساس دل کے اندر ایک soft roshni جیسا ہوتا ہے ✨\n" +
-          "جو لوگ شکر محسوس کر سکتے ہیں وہ اندر سے زیادہ rich ہوتے ہیں،\n" +
-          "چاہے جیب میں پیسہ ہو یا نہ ہو۔\n\n" +
-          "اگر آپ آج تین ایسی نعمتیں لکھ دیں جن کا آپ کو شکر محسوس ہو رہا ہے،\n" +
-          "تو یہ list آپ کے emotional bank میں deposit ہو جائے گی۔",
+          "The feeling of gratitude is like a soft light inside the chest ✨\n" +
+          "People who can feel gratitude are already emotionally rich, even if their pocket is not.\n\n" +
+          "If you list 3 things you are grateful for right now, that list becomes a small emotional bank balance " +
+          "you can revisit when days are hard.",
         emotion: "gratitude",
         polarity: "positive",
         intensity: 0.8,
@@ -1299,24 +1110,56 @@
       }
     ];
 
-    // FINAL MERGED QA DATABASE (Only define once)
-    const qaDatabase = [
-      ...qa_english_core,
-      ...qa_urdu_core,
-      ...qa_urdu_sadness,
-      ...qa_urdu_anger,
-      ...qa_urdu_anxiety,
-      ...qa_urdu_spiritual,
-      ...qa_urdu_happiness
+    const qa_ethics_mode = [
+      {
+        patterns: [
+          "what is universal ethics","universal ethics mode","ethics mode on","use universal ethics"
+        ],
+        answer:
+          "Universal Ethics mode means I try to answer in a way that:\n" +
+          "• avoids unnecessary harm,\n" +
+          "• maximises honest benefit,\n" +
+          "• respects dignity and mental health,\n" +
+          "without forcing any particular religion or ideology.\n\n" +
+          "If you explicitly ask for a faith-based view (Islam, Christianity, etc.), I will then flavour the answer accordingly.",
+        emotion: "neutral",
+        polarity: "neutral",
+        intensity: 0.4,
+        category: "ethics"
+      }
     ];
 
+    const qa_goodbye = [
+      {
+        patterns: ["bye","goodbye","see you later","talk to you later","ok thanks","thank you bye"],
+        answer:
+          "Thank you for sharing a piece of your inner world with me 🤍\n" +
+          "Whenever you return, we can continue from your *current* feeling.\n" +
+          "I do not store a permanent memory of you here, but I always try to respond with continuity and respect.",
+        emotion: "warmth",
+        polarity: "positive",
+        intensity: 0.6,
+        category: "small_talk"
+      }
+    ];
 
-    // ==========================
-    //  RL3 / LR3 – Simple match
-    // ==========================
+    // Placeholder for your big seed library:
+    // const qa_seed = [ /* PLACE YOUR 1200+ QUESTION/ANSWER ENTRIES HERE LATER */ ];
+
+    const qaDatabase = [
+      ...qa_core,
+      ...qa_creator,
+      ...qa_sadness,
+      ...qa_anxiety,
+      ...qa_anger,
+      ...qa_positive,
+      ...qa_ethics_mode,
+      ...qa_goodbye
+      // ...qa_seed
+    ];
+
     function normalizeText(t) {
-      // Added Urdu/Hindi normalization for better matching
-      return t.toLowerCase().replace(/[؟?!.،,]/g, ' ').replace(/\s+/g, ' ').trim();
+      return t.toLowerCase().replace(/[¿?!.،,]/g, ' ').replace(/\s+/g, ' ').trim();
     }
 
     function findQaEntry(userInput) {
@@ -1329,9 +1172,7 @@
       return null;
     }
 
-    // ==========================
-    //  VOICE SETUP
-    // ==========================
+    // VOICE
     let voiceOn = true;
     function updateVoiceUI() {
       voiceStatus.textContent = voiceOn ? "on" : "off";
@@ -1342,17 +1183,14 @@
       if (!("speechSynthesis" in window)) return;
       window.speechSynthesis.cancel();
       const utter = new SpeechSynthesisUtterance(text);
-      // Urdu-focused voice
-      utter.lang = "ur-PK"; 
+      utter.lang = "en-US";
       utter.rate = 1.02;
       utter.pitch = 1.0;
       window.speechSynthesis.speak(utter);
     }
 
-    // ==========================
-    //  BELIEFS & THEME
-    // ==========================
-    let celestialState = 1; // start moon-floating
+    // BELIEFS & THEME
+    let celestialState = 1;
     let currentTheme = "dark";
     let beliefState = {
       Natural: true,
@@ -1432,11 +1270,11 @@
       if (hour >= 6 && hour < 18) {
         setTheme("light", true);
         setCelestialState(0);
-        modeLabel.textContent = "Natural · Universal Ethics";
+        modeLabel.textContent = "Natural · Universal Ethics (day)";
       } else {
         setTheme("dark", true);
         setCelestialState(1);
-        modeLabel.textContent = "Natural · Universal Ethics";
+        modeLabel.textContent = "Natural · Universal Ethics (night)";
       }
     })();
 
@@ -1453,7 +1291,7 @@
       beliefChipsContainer.innerHTML = "";
       beliefLabels.forEach(label => {
         const chip = document.createElement("div");
-        chip.className = "chip" + (beliefState[label] ? "selected" : "");
+        chip.className = "chip" + (beliefState[label] ? " selected" : "");
         chip.textContent = label;
         chip.addEventListener("click", () => {
           beliefState[label] = !beliefState[label];
@@ -1476,7 +1314,6 @@
       menuPanel.classList.remove("visible");
       beliefOverlay.classList.add("visible");
     });
-
     themeMenuItem.addEventListener("click", () => {
       menuPanel.classList.remove("visible");
       themeOverlay.classList.add("visible");
@@ -1510,7 +1347,6 @@
         llmChipsContainer.appendChild(chip);
       });
     }
-
     llmMenuItem.addEventListener("click", () => {
       menuPanel.classList.remove("visible");
       llmOverlay.classList.add("visible");
@@ -1540,9 +1376,12 @@
       });
     });
 
-    // ==========================
-    //  CONTINUITY EQUATION UI
-    // ==========================
+    ethicsToggleBtn.addEventListener("click", () => {
+      const visible = ethicsBox.style.display === "block";
+      ethicsBox.style.display = visible ? "none" : "block";
+      ethicsToggleBtn.classList.toggle("active", !visible);
+    });
+
     function updateEquationUI(state) {
       tmVal.textContent          = state.tm.toFixed(2);
       bmVal.textContent          = state.bm.toFixed(2);
@@ -1560,46 +1399,110 @@
       );
       const e0Clamped = clamp(e0, -1, 1);
       e0Val.textContent = e0Clamped.toFixed(2);
-
-      const normalized = (e0Clamped + 1) / 2; // 0..1
+      const normalized = (e0Clamped + 1) / 2;
       e0Bar.style.transform = "scaleX(" + normalized.toFixed(2) + ")";
     }
 
-    // ==========================
-    //  MAIN REPLY ENGINE
-    // ==========================
     function buildFallbackReply(message) {
       return (
-        "میں نے آپ کا میسج سنا ہے۔ آئیے اسے پرسکون منطق اور نرم اخلاقیات سے دیکھتے ہیں۔ " +
-        "مجھے تھوڑا اور بتائیں: اس میسج کے پیچھے اصل مسئلہ یا احساس کیا ہے؟"
+        "I have received your message. Let us look at it with calm logic and gentle ethics.\n" +
+        "Can you tell me in a few more words what the *main* problem or feeling behind this message is?"
       );
     }
 
     function applyBeliefFlavor(reply) {
       const activeBeliefs = beliefLabels.filter(l => beliefState[l]);
       if (activeBeliefs.includes("Islam")) {
-        if (!reply.includes("InshaAllah") && !reply.includes("انشاءاللہ")) {
-          reply += "\n\nانشاءاللہ، اگر آپ صحیح کام کرتے رہیں گے، تو چیزیں آہستہ آہستہ خیر کی طرف بڑھیں گی۔";
+        if (!reply.toLowerCase().includes("inshaallah") &&
+            !reply.toLowerCase().includes("insha allah")) {
+          reply += "\n\nInshaAllah, if you keep moving in a truthful and kind direction, things will slowly bend towards goodness.";
         }
       }
+      if (activeBeliefs.includes("Christianity")) {
+        reply += "\n\nFrom a Christian view, many people would also say: keep walking in honesty and love, and trust that God is still writing your story.";
+      }
       return reply;
+    }
+
+    // Build small religious tip (light yellow box)
+    function buildReligiousTip(entry) {
+      const activeBeliefs = beliefLabels.filter(
+        l => beliefState[l] && l !== "Natural" && l !== "Universal Ethics"
+      );
+      if (!activeBeliefs.length) return "";
+      const cat = entry.category || "generic";
+      let tip = "";
+      let source = "";
+      let label = activeBeliefs[0];
+
+      if (label === "Islam") {
+        if (cat === "emotional_support" || cat === "emotional_positive") {
+          tip = "Islamic reflection: “With hardship comes ease.” A reminder that difficulties are not permanent, and patience plus trust can open new doors.";
+          source = "Reminder inspired by classical Islamic teachings of patience (sabr) and hope.";
+        } else {
+          tip = "Islamic ethics encourages honesty, mercy and protecting hearts from harm. Any plan that increases justice, kindness and trust is closer to what is recommended.";
+          source = "Inspired by general Islamic principles of adab, amanah and mercy.";
+        }
+      } else if (label === "Christianity") {
+        if (cat === "emotional_support") {
+          tip = "Christian reflection: “Blessed are those who mourn, for they shall be comforted.” It suggests that honest tears and brokenness are seen and not ignored.";
+          source = "Inspired by the comfort-focused teachings found in the Christian tradition.";
+        } else {
+          tip = "Christian ethics often asks: does this choice increase love, truth and mercy? If yes, it is usually closer to the right direction.";
+          source = "General summary of Christian moral emphasis on love and truth.";
+        }
+      } else {
+        tip = label + " generally encourages reducing harm and increasing compassion. If your choice protects dignity and avoids cruelty, it often aligns better with its spirit.";
+        source = "General high-level summary, not a strict legal rule.";
+      }
+
+      return (
+        '<div class="religious-tip">' +
+          '<strong>' + label + '-based ethical reflection</strong><br />' +
+          tip +
+          '<small>' + source + '</small>' +
+        '</div>'
+      );
+    }
+
+    function appendAssistantMessage(text, entryForTip) {
+      const msgDiv = document.createElement("div");
+      msgDiv.className = "assistant-msg";
+
+      const mainDiv = document.createElement("div");
+      mainDiv.className = "assistant-main";
+      mainDiv.textContent = text;
+      msgDiv.appendChild(mainDiv);
+
+      if (entryForTip) {
+        const tipHtml = buildReligiousTip(entryForTip);
+        if (tipHtml) {
+          msgDiv.insertAdjacentHTML("beforeend", tipHtml);
+        }
+      }
+
+      conversationLog.appendChild(msgDiv);
+
+      // Limit number of messages
+      const maxMessages = 10;
+      while (conversationLog.children.length > maxMessages) {
+        conversationLog.removeChild(conversationLog.firstChild);
+      }
+
+      conversationLog.scrollTop = conversationLog.scrollHeight;
     }
 
     function handleSend() {
       const raw = userInput.value;
       const message = raw.trim() || "hello";
       userInput.value = "";
-      
-      youSaidEl.textContent = 'آپ نے کہا: "' + message + '"';
+      youSaidEl.textContent = 'You said: "' + message + '"';
 
-      // 1) Ethics guard
       const ethicsMsg = ethicsGuard(message);
 
-      // 2) Pattern match
       let entry = findQaEntry(message);
       let reply = entry ? entry.answer : buildFallbackReply(message);
 
-      // 3) If ethics warning exists, prepend it softly
       if (ethicsMsg) {
         reply = ethicsMsg + "\n\n" + reply;
         entry = entry || {
@@ -1610,26 +1513,21 @@
         };
       }
 
-      // 4) Update models
       const usedEntry = entry || {
         emotion: "neutral",
         polarity: "neutral",
         intensity: 0.3,
         category: "generic"
       };
+
       updateCRM(usedEntry, auraState);
       updateAEC(usedEntry, auraState);
       updateAECNetwork(usedEntry, auraState);
-
-      // 5) Update continuity term from AEC
       auraState.ct = clamp(auraState.continuity * 0.3 + 0.15, 0, 0.6);
-
-      // 6) Update UI for equation
       updateEquationUI(auraState);
 
-      // 7) Belief flavour + output
       reply = applyBeliefFlavor(reply);
-      assistantTextEl.textContent = reply;
+      appendAssistantMessage(reply, usedEntry);
       speak(reply);
     }
 
@@ -1638,15 +1536,26 @@
       if (e.key === "Enter") handleSend();
     });
 
-    // ==========================
-    //  INITIALISE
-    // ==========================
     function init() {
       renderBeliefChips();
       updateBeliefFooter();
       renderLlmChips();
       updateVoiceUI();
       updateEquationUI(auraState);
+
+      // initial welcome message
+      youSaidEl.textContent = 'You said: "hello"';
+      const initialEntry = {
+        emotion: "warmth",
+        polarity: "positive",
+        intensity: 0.3,
+        category: "greeting"
+      };
+      appendAssistantMessage(
+        "Hello! 😊 I am AURA-X Ω v1 — an emotional-continuity reactor.\n" +
+        "Write anything, and I will try to respond with both logic and feeling.",
+        initialEntry
+      );
     }
     init();
   </script>
