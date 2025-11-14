@@ -79,7 +79,7 @@
       position: relative;
       width: 100%;
       border-radius: 24px;
-      padding: 18px 16px 16px;
+      padding: 18px 16px 16px 16px;
       background: radial-gradient(circle at top, rgba(56,189,248,0.25), transparent 55%),
                   radial-gradient(circle at bottom, rgba(251,191,36,0.18), transparent 55%),
                   #020617;
@@ -167,13 +167,29 @@
       right: 14px;
       transform: translateY(-50%);
       display: flex;
-      flex-direction: column;
+      flex-direction: row;
       align-items: center;
       gap: 10px;
     }
 
+    .emotion-column {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .emotion-label {
+      font-size: 10px;
+      color: #e5e7eb;
+      background: rgba(15,23,42,0.9);
+      padding: 2px 6px;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.5);
+    }
+
     .emotion-bar {
-      width: 5px;
+      width: 6px;
       height: 110px;
       border-radius: 999px;
       background: linear-gradient(180deg, #ef4444, #facc15, #22c55e);
@@ -194,6 +210,13 @@
       transition: height 0.5s ease, filter 0.5s ease;
     }
 
+    .button-column {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
     .icon-btn {
       width: 40px;
       height: 40px;
@@ -211,14 +234,15 @@
       transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.2s ease;
     }
 
+    .icon-btn span {
+      font-size: 15px;
+      font-weight: 600;
+    }
+
     .icon-btn:active {
       transform: translateY(1px) scale(0.97);
       box-shadow: 0 4px 12px rgba(0,0,0,0.7);
     }
-
-    .settings-btn { }
-    .belief-btn   { }
-    .voice-btn    { }
 
     .voice-btn.voice-on {
       border-color: rgba(52,211,153,0.9);
@@ -420,14 +444,19 @@
         and gently move toward actions that create calm, kindness and positive feelings.
       </div>
 
-      <!-- Right side: emotion bar + buttons -->
+      <!-- Right side: emotion bar + buttons (side by side) -->
       <div class="card-side-column">
-        <div id="emotionBar" class="emotion-bar">
-          <div id="emotionFill" class="emotion-bar-fill"></div>
+        <div class="emotion-column">
+          <div id="emotionLabel" class="emotion-label">E = 0.226</div>
+          <div id="emotionBar" class="emotion-bar">
+            <div id="emotionFill" class="emotion-bar-fill"></div>
+          </div>
         </div>
-        <button class="icon-btn settings-btn" onclick="toggleSettings()">⚙️</button>
-        <button class="icon-btn belief-btn" onclick="openBeliefModal()">☯</button>
-        <button id="voiceBtn" class="icon-btn voice-btn" onclick="toggleVoiceMode()">🔊</button>
+        <div class="button-column">
+          <button class="icon-btn settings-btn" onclick="toggleSettings()">⚙️</button>
+          <button class="icon-btn belief-btn" onclick="openBeliefModal()"><span>B</span></button>
+          <button id="voiceBtn" class="icon-btn voice-btn" onclick="toggleVoiceMode()"><span>V</span></button>
+        </div>
       </div>
     </div>
 
@@ -893,10 +922,13 @@
 
     function updateEmotionBar() {
       const fill = document.getElementById("emotionFill");
-      if (!fill) return;
+      const label = document.getElementById("emotionLabel");
+      if (!fill || !label) return;
+
       const percent = 15 + E * 75; // 15–90%
       fill.style.height = percent + "%";
       fill.style.filter = `brightness(${0.6 + E})`;
+      label.textContent = "E = " + E.toFixed(3);
     }
 
     // ===== Handle message (QA + emotional) =====
@@ -908,9 +940,10 @@
         updateEmotionFromTone("positive");
         if (settings.voiceAuto) playVoiceAnswer();
       } else {
-        const { mainReply, ethicsText } = buildEmotionalReply(text);
+        const { mainReply, ethicsText, tone } = buildEmotionalReply(text);
         setMainAnswer(mainReply);
         setEthicsText(ethicsText);
+        updateEmotionFromTone(tone);
         if (settings.voiceAuto) playVoiceAnswer();
       }
     }
@@ -949,12 +982,10 @@
           "Your message feels balanced. Notice gently which actions increase calm and which actions increase tension, then move one step toward calm.";
       }
 
-      updateEmotionFromTone(tone);
-
       const mainReply = `${header}\n\n${toneLine}`;
       const ethicsText = buildEthicsText();
 
-      return { mainReply, ethicsText };
+      return { mainReply, ethicsText, tone };
     }
 
     function buildEthicsText() {
