@@ -21,6 +21,22 @@
       align-items: center;
       justify-content: center;
       overflow: hidden;
+      transition: background 0.4s ease;
+    }
+
+    /* Theme variants (simple for now) */
+    body.theme-sun { background: #020617; }
+    body.theme-moon { background: radial-gradient(circle at top, #020617 0%, #020617 40%, #000 100%); }
+    body.theme-galaxy {
+      background:
+        radial-gradient(circle at 10% 20%, rgba(59,130,246,0.25), transparent 60%),
+        radial-gradient(circle at 80% 10%, rgba(244,114,182,0.25), transparent 60%),
+        #020617;
+    }
+    body.theme-belief {
+      background:
+        radial-gradient(circle at top, rgba(34,197,94,0.24), transparent 60%),
+        #020617;
     }
 
     #app {
@@ -34,19 +50,19 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      transform: scale(0.9);
+      transform: scale(0.88);
       transform-origin: top center;
     }
 
-    @media (max-height: 720px) { #app { transform: scale(0.82); } }
-    @media (max-height: 640px) { #app { transform: scale(0.75); } }
+    @media (max-height: 720px) { #app { transform: scale(0.84); } }
+    @media (max-height: 640px) { #app { transform: scale(0.78); } }
 
     .hidden { display: none; }
 
     /* ===== Top floating sent text ===== */
     #messageContainer {
       position: absolute;
-      top: 12px;
+      top: 10px;
       left: 0;
       right: 0;
       text-align: center;
@@ -87,6 +103,22 @@
       box-shadow: 0 18px 45px rgba(0,0,0,0.7);
       text-align: center;
       box-sizing: border-box;
+      margin-top: -8px; /* thora upar */
+    }
+
+    body.theme-moon .card {
+      background: radial-gradient(circle at top, rgba(96,165,250,0.25), transparent 55%),
+                  radial-gradient(circle at bottom, rgba(15,118,110,0.22), transparent 55%),
+                  #020617;
+    }
+    body.theme-galaxy .card {
+      background: radial-gradient(circle at top, rgba(147,51,234,0.3), transparent 60%),
+                  radial-gradient(circle at bottom, rgba(251,191,36,0.18), transparent 55%),
+                  #020617;
+    }
+    body.theme-belief .card {
+      background: radial-gradient(circle at top, rgba(34,197,94,0.28), transparent 60%),
+                  #020617;
     }
 
     .title {
@@ -108,7 +140,6 @@
       height: 150px;
       border-radius: 999px;
       margin: 8px auto 10px;
-      background: radial-gradient(circle, rgba(59,130,246,0.4), transparent 60%);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -215,7 +246,7 @@
       font-size: 11px;
     }
 
-    /* ===== Right side buttons only ===== */
+    /* ===== Right side buttons ===== */
     .card-side-column {
       position: absolute;
       top: 50%;
@@ -334,17 +365,16 @@
 
     .setting-row input { accent-color: #facc15; }
 
-    /* ===== Belief Modal ===== */
+    /* ===== Generic Modal ===== */
     .modal {
       position: fixed;
       inset: 0;
       background: rgba(15,23,42,0.75);
       z-index: 50;
+      display: none;
     }
 
-    #beliefModal { display: none; }
-
-    #beliefModal.show {
+    .modal.show {
       display: flex !important;
       align-items: center;
       justify-content: center;
@@ -426,9 +456,20 @@
       font-size: 14px;
       cursor: pointer;
     }
+
+    .choice-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 4px;
+      cursor: pointer;
+      font-size: 13px;
+    }
+
+    .choice-row input { accent-color: #facc15; }
   </style>
 </head>
-<body>
+<body class="theme-sun">
   <div id="app">
     <div id="messageContainer"></div>
 
@@ -455,11 +496,11 @@
       </div>
 
       <div id="mathBox" class="math-box">
-        <div class="math-box-title">Emotional Continuity Equation</div>
+        <div class="math-box-title">EMOTIONAL CONTINUITY EQUATION</div>
         <div class="math-formula">
           E = M·Eₚ + K·P·C,&nbsp;&nbsp; P = tₘ + bₘ − d<br />
           <span id="mathValues">
-            E = 0.226 | P = 0.00 | tₘ = 0 | bₘ = 0.00 | d = 0.00 | C = 0.50
+            E = 0.226 | P = 0.00 | tₘ = 0.00 | bₘ = 0.00 | d = 0.00 | C = 0.50
           </span>
         </div>
       </div>
@@ -469,6 +510,8 @@
         <button class="icon-btn settings-btn" onclick="toggleSettings()">⚙️</button>
         <button class="icon-btn belief-btn" onclick="openBeliefModal()"><span>B</span></button>
         <button id="voiceBtn" class="icon-btn voice-btn" onclick="toggleVoiceMode()"><span>V</span></button>
+        <button class="icon-btn llm-btn" onclick="openLLMModal()"><span>L</span></button>
+        <button class="icon-btn theme-btn" onclick="openThemeModal()"><span>T</span></button>
       </div>
     </div>
 
@@ -569,6 +612,82 @@
         <button class="modal-save" onclick="saveBeliefs()">Save Belief Mode</button>
       </div>
     </div>
+
+    <!-- LLM modal -->
+    <div id="llmModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>Select LLM</h3>
+          <button class="modal-close" onclick="closeLLMModal()">✕</button>
+        </div>
+        <p class="modal-sub">
+          Here you can choose which Large Language Model will answer when online mode is enabled.
+        </p>
+
+        <div class="belief-list">
+          <label class="choice-row">
+            <input type="radio" name="llmChoice" value="offline" />
+            <span>Local / Offline engine (only basic QA + reactor)</span>
+          </label>
+          <label class="choice-row">
+            <input type="radio" name="llmChoice" value="gpt-mini" />
+            <span>GPT-4.1 Mini</span>
+          </label>
+          <label class="choice-row">
+            <input type="radio" name="llmChoice" value="gpt-full" />
+            <span>GPT-4.1 (full)</span>
+          </label>
+          <label class="choice-row">
+            <input type="radio" name="llmChoice" value="claude" />
+            <span>Claude</span>
+          </label>
+          <label class="choice-row">
+            <input type="radio" name="llmChoice" value="gemini" />
+            <span>Gemini</span>
+          </label>
+          <label class="choice-row">
+            <input type="radio" name="llmChoice" value="custom" />
+            <span>Custom API</span>
+          </label>
+        </div>
+
+        <button class="modal-save" onclick="saveLLM()">Save LLM</button>
+      </div>
+    </div>
+
+    <!-- Theme modal -->
+    <div id="themeModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>Themes</h3>
+          <button class="modal-close" onclick="closeThemeModal()">✕</button>
+        </div>
+        <p class="modal-sub">
+          Choose how AURA-X Ω feels visually. Sun/Moon cycle will still work on the core.
+        </p>
+
+        <div class="belief-list">
+          <label class="choice-row">
+            <input type="radio" name="themeChoice" value="sun" />
+            <span>☀️ Sun Core (default)</span>
+          </label>
+          <label class="choice-row">
+            <input type="radio" name="themeChoice" value="moon" />
+            <span>🌙 Night / Moon ambience</span>
+          </label>
+          <label class="choice-row">
+            <input type="radio" name="themeChoice" value="galaxy" />
+            <span>⭐ Galaxy Reactor</span>
+          </label>
+          <label class="choice-row">
+            <input type="radio" name="themeChoice" value="belief" />
+            <span>🕊️ Belief-flavoured aura</span>
+          </label>
+        </div>
+
+        <button class="modal-save" onclick="saveTheme()">Save Theme</button>
+      </div>
+    </div>
   </div>
 
   <script>
@@ -577,7 +696,9 @@
       autoFade: true,
       beliefEnabled: false,
       beliefs: ["universal"],
-      voiceAuto: false
+      voiceAuto: false,
+      llmModel: "offline",
+      theme: "sun"
     };
 
     // ===== AURA-X Emotional State (reactor) =====
@@ -598,7 +719,7 @@
       core.classList.remove("moon", "moon-static", "hidden");
 
       if (auraState === 0) {
-        // default sun (no extra class)
+        // default sun
       } else if (auraState === 1) {
         core.classList.add("moon");
       } else if (auraState === 2) {
@@ -883,6 +1004,56 @@
       }
     }
 
+    // ===== LLM modal =====
+    function openLLMModal() {
+      const modal = document.getElementById("llmModal");
+      modal.classList.add("show");
+      const radios = document.querySelectorAll('input[name="llmChoice"]');
+      radios.forEach(r => {
+        r.checked = (r.value === settings.llmModel);
+      });
+    }
+    function closeLLMModal() {
+      document.getElementById("llmModal").classList.remove("show");
+    }
+    function saveLLM() {
+      const radios = document.querySelectorAll('input[name="llmChoice"]');
+      radios.forEach(r => {
+        if (r.checked) settings.llmModel = r.value;
+      });
+      closeLLMModal();
+      // future: use settings.llmModel when calling APIs
+    }
+
+    // ===== Theme modal =====
+    function openThemeModal() {
+      const modal = document.getElementById("themeModal");
+      modal.classList.add("show");
+      const radios = document.querySelectorAll('input[name="themeChoice"]');
+      radios.forEach(r => {
+        r.checked = (r.value === settings.theme);
+      });
+    }
+    function closeThemeModal() {
+      document.getElementById("themeModal").classList.remove("show");
+    }
+    function saveTheme() {
+      const radios = document.querySelectorAll('input[name="themeChoice"]');
+      radios.forEach(r => {
+        if (r.checked) settings.theme = r.value;
+      });
+      applyTheme();
+      closeThemeModal();
+    }
+    function applyTheme() {
+      const body = document.body;
+      body.classList.remove("theme-sun", "theme-moon", "theme-galaxy", "theme-belief");
+      if (settings.theme === "moon") body.classList.add("theme-moon");
+      else if (settings.theme === "galaxy") body.classList.add("theme-galaxy");
+      else if (settings.theme === "belief") body.classList.add("theme-belief");
+      else body.classList.add("theme-sun");
+    }
+
     // ===== Voice toggle =====
     function toggleVoiceMode() {
       const btn = document.getElementById("voiceBtn");
@@ -1071,8 +1242,9 @@
       window.speechSynthesis.speak(u);
     }
 
-    // init math panel once
+    // init
     updateMathPanel(0, 0, 0, 0);
+    applyTheme();
   </script>
 </body>
 </html>
