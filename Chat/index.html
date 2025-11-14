@@ -1342,7 +1342,7 @@
       if (!("speechSynthesis" in window)) return;
       window.speechSynthesis.cancel();
       const utter = new SpeechSynthesisUtterance(text);
-      // Changed to Urdu/Hindi language code for better pronunciation of your Q/A
+      // Urdu-focused voice
       utter.lang = "ur-PK"; 
       utter.rate = 1.02;
       utter.pitch = 1.0;
@@ -1350,7 +1350,7 @@
     }
 
     // ==========================
-    //  BELIEFS & THEME (same as before)
+    //  BELIEFS & THEME
     // ==========================
     let celestialState = 1; // start moon-floating
     let currentTheme = "dark";
@@ -1453,7 +1453,7 @@
       beliefChipsContainer.innerHTML = "";
       beliefLabels.forEach(label => {
         const chip = document.createElement("div");
-        chip.className = "chip" + (beliefState[label] ? " selected" : "");
+        chip.className = "chip" + (beliefState[label] ? "selected" : "");
         chip.textContent = label;
         chip.addEventListener("click", () => {
           beliefState[label] = !beliefState[label];
@@ -1578,7 +1578,6 @@
     function applyBeliefFlavor(reply) {
       const activeBeliefs = beliefLabels.filter(l => beliefState[l]);
       if (activeBeliefs.includes("Islam")) {
-        // Simple Urdu version of the Islamic flavor text
         if (!reply.includes("InshaAllah") && !reply.includes("انشاءاللہ")) {
           reply += "\n\nانشاءاللہ، اگر آپ صحیح کام کرتے رہیں گے، تو چیزیں آہستہ آہستہ خیر کی طرف بڑھیں گی۔";
         }
@@ -1591,7 +1590,6 @@
       const message = raw.trim() || "hello";
       userInput.value = "";
       
-      // Updated to Urdu/consistent display
       youSaidEl.textContent = 'آپ نے کہا: "' + message + '"';
 
       // 1) Ethics guard
