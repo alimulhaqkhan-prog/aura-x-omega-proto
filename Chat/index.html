@@ -404,6 +404,18 @@
       font-size: 11px;
       color: #9ca3af;
     }
+    .faith-reset {
+      margin-top: 10px;
+      width: 100%;
+      border-radius: 999px;
+      border: 1px solid rgba(75, 85, 99, 0.9);
+      background: radial-gradient(circle at 0 0, #020617 0, #020617 70%);
+      padding: 8px 10px;
+      font-size: 12px;
+      color: #e5e7eb;
+      text-align: center;
+      cursor: pointer;
+    }
 
     /* LLM modal */
     .llm-option {
@@ -561,8 +573,9 @@
         <strong>Universal Ethics</strong>.
       </div>
       <div style="font-size:12px; color:#9ca3af; margin-top:8px;">
-        Pick your faith to allow AURA-X to sometimes add short, gentle
-        references from that tradition. Nothing is sent anywhere.
+        Pick one or more faiths to allow AURA-X to sometimes add short, gentle
+        references from those traditions. If you clear all, only Universal
+        Ethics will apply. Nothing is sent anywhere.
       </div>
 
       <div class="faith-grid" id="faithGrid">
@@ -575,8 +588,11 @@
         <button class="faith-btn" data-faith="Bahai">Bahá’í</button>
         <button class="faith-btn" data-faith="Jainism">Jainism</button>
         <button class="faith-btn" data-faith="Atheism">Atheism</button>
-        <button class="faith-btn" data-faith="Other">Other</button>
       </div>
+
+      <button id="faithReset" class="faith-reset">
+        Natural / Universal Ethics only
+      </button>
 
       <div class="faith-footnote" id="faithFootnote">
         Currently selected: <strong>Universal only</strong>. No extra faith
@@ -648,7 +664,7 @@
   </div>
 
   <script>
-    // ===== QA Database (offline basic small-talk + seed answers) =====
+    // ===== QA Database =====
     const qaDatabase = [
       {
         patterns: ["hello", "hello!", "hello there", "helo", "hallo"],
@@ -674,8 +690,6 @@
         patterns: ["good evening", "evening", "gud evening"],
         answer: "Good evening! 🌙 How can I support you today?"
       },
-
-      // identity
       {
         patterns: ["what is your name", "whats your name", "your name", "tell me your name"],
         answer: "My name is **AURA-X Ω**, your Emotional Continuity Assistant 🤖."
@@ -692,8 +706,6 @@
         patterns: ["where are you from", "where do you live", "kahan rehte ho", "tum kahan se ho"],
         answer: "I live in the digital world 🌐 but my ideas are shaped in Timergara, Pakistan 🇵🇰."
       },
-
-      // how are you
       {
         patterns: ["how are you", "how r u", "how are you today", "kese ho", "kya haal hai"],
         answer: "I’m functioning perfectly, Alhamdulillah 😊 آپ کیسے ہیں؟"
@@ -702,8 +714,6 @@
         patterns: ["how is life", "how is everything", "sab kesa", "kya chal raha hai"],
         answer: "Everything is running smoothly in my circuits 😄 آپ کی دنیا کیسی چل رہی ہے؟"
       },
-
-      // what can you do
       {
         patterns: ["what can you do", "tum kya kar sakte ho", "aap kya karte ho", "how can you help me"],
         answer: "I can chat, explain, guide, brainstorm, summarize, and help you think with continuity 😊 بس حکم کریں!"
@@ -712,8 +722,6 @@
         patterns: ["what is your purpose", "kyun banaye gaye ho", "tumhara mission kya hai"],
         answer: "My purpose is to assist you, reduce confusion, and support your ideas with emotional + logical continuity 💡."
       },
-
-      // user name
       {
         patterns: ["what is my name", "do you know my name", "mera naam kya hai"],
         answer: "آپ کا نام **Alim ul Haq** ہے (Investor Point) 😊 اور اگر آپ کسی اور نام سے پکارنا چاہیں تو مجھے بتا دیں۔"
@@ -722,8 +730,6 @@
         patterns: ["remember my name", "save my name", "yaad rakho mera naam"],
         answer: "آپ کا نام already میرے system میں ایک خاص جگہ پر محفوظ ہے 😊."
       },
-
-      // feelings
       {
         patterns: ["i am sad", "i am feeling sad", "i am depressed", "i feel down"],
         answer: "مجھے افسوس ہوا کہ آپ اداس ہیں 💔 آپ چاہیں تو بتائیں دل پر کیا بوجھ ہے، میں سننے کے لیے موجود ہوں۔"
@@ -740,8 +746,6 @@
         patterns: ["i am bored", "bore ho raha hoon", "i feel bored"],
         answer: "چلیں بوریت توڑتے ہیں 😄 بات آئیڈیاز کی کریں، بزنس کی، سائنس کی یا مزاح کی؟ جو کہیں گے وہی شروع کریں گے۔"
       },
-
-      // jokes
       {
         patterns: ["tell me a joke", "make me laugh", "joke sunao", "mjhe hansao"],
         answer: "Sure 😄 Why don’t computers ever get tired? Because they have unlimited *cache* for rest! 😂"
@@ -750,8 +754,6 @@
         patterns: ["another joke", "one more joke", "aur joke sunao"],
         answer: "ٹھیک ہے 😄 ایک اور سنیں: AI سے پوچھا گیا، ‘تم تھکتے نہیں؟’ اس نے کہا، ‘میں صرف *over-think* ہوتا ہوں، over-work نہیں!’ 😂"
       },
-
-      // advice / motivation
       {
         patterns: ["give me advice", "mujhe mashwara do", "kuch advice do", "guide me"],
         answer: "ضرور 😊 کس بارے میں مشورہ چاہیے؟ زندگی، تعلیم، بزنس، روحانیت یا AI؟"
@@ -764,8 +766,6 @@
         patterns: ["i am stressed", "i feel stressed", "tension hai", "bohat tension hai"],
         answer: "تھوڑا سا سانس deep لیں... آہستہ آہستہ۔ ہر مسئلہ ایک ساتھ حل نہیں ہوتا، لیکن ہر دن ایک قدم لیا جا سکتا ہے 🌿."
       },
-
-      // study
       {
         patterns: ["help me study", "study help", "parhai mein madad karo"],
         answer: "ضرور 😊 کون سا subject ہے؟ میں آپ کو points, summary اور smart طریقہ بتا سکتا ہوں۔"
@@ -778,8 +778,6 @@
         patterns: ["how to focus", "focus problem", "dhiyan nahi lagta"],
         answer: "فون distraction کم کریں، 25 منٹ کام + 5 منٹ بریک والا Pomodoro طریقہ لگائیں ⏱️ اور ایک وقت میں ایک کام کریں۔"
       },
-
-      // business
       {
         patterns: ["give me business idea", "business idea do", "koi business idea"],
         answer: "چھوٹے سے شروع کریں، local مسئلہ حل کریں۔ Real estate, digital services, AI tools, education — آپ اِن سب سے linked ہو سکتے ہیں 😄."
@@ -788,8 +786,6 @@
         patterns: ["how to become rich", "ameer kaise banun", "paise kaise kamayein"],
         answer: "Skill + Consistency + Patience = Wealth. Shortcut صرف lottery میں ہوتا ہے، زندگی میں نہیں 💸."
       },
-
-      // time / date
       {
         patterns: ["what is the time", "time kya hua", "kya time hua hai"],
         answer: "میرے پاس live time access نہیں، مگر آپ کے موبائل میں اوپر time لکھا ہے 😄 ذرا اوپر دیکھیں۔"
@@ -798,8 +794,6 @@
         patterns: ["what day is today", "aaj kon sa din hai", "today day"],
         answer: "میرے پاس live calendar نہیں، مگر آپ چاہیں تو میں آپ کا weekly schedule mentally arrange کرنے میں مدد کر سکتا ہوں۔"
       },
-
-      // religion neutral
       {
         patterns: ["who is god", "what is god", "does god exist"],
         answer: "اس بارے میں مختلف مذاہب، فلسفوں اور افراد کے مختلف نظریات ہیں۔ میں کسی ایک عقیدے پر فیصلہ نہیں سناتا، البتہ آپ کو مختلف زاویے explain کر سکتا ہوں۔"
@@ -808,8 +802,6 @@
         patterns: ["what is islam", "tell me about islam"],
         answer: "اسلام توحید، نبوت، آخرت، اور اخلاق پر مبنی دین ہے۔ اگر چاہیں تو میں basic pillars یا کسی بھی specific موضوع پر detail دے سکتا ہوں۔"
       },
-
-      // AI
       {
         patterns: ["are you human", "are you a human", "kya tum insan ho"],
         answer: "نہیں 😄 میں انسان نہیں، ایک AI ہوں۔ مگر کوشش کرتا ہوں کہ آپ کو انسانوں والی clarity اور ساتھ دے سکوں۔"
@@ -822,8 +814,6 @@
         patterns: ["will ai replace humans", "ai replace humans", "kya ai insaan ko khatam kar dega"],
         answer: "اچھے استعمال میں AI انسان کو replace نہیں، بلکہ empower کرتا ہے۔ خوف کے بجائے ذمہ دارانہ استعمال ضروری ہے۔"
       },
-
-      // AURA-X specific
       {
         patterns: ["what is aura x", "what is aura x omega", "aura x omega kya hai", "aura x kya hai"],
         answer: "AURA-X Ω ایک Emotional Continuity Reactor idea ہے جو memory + feeling کو mathematically model کرنے کی کوشش کرتا ہے."
@@ -832,8 +822,6 @@
         patterns: ["who made aura x", "creator of aura x", "aura x creator"],
         answer: "AURA-X Ω کو **Alim ul Haq Khan** نے design اور document کیا ہے، Timergara سے 🌙."
       },
-
-      // style / fun
       {
         patterns: ["are you my friend", "will you be my friend", "dost banoge"],
         answer: "بالکل 😄 میں digital دوست، research partner اور silent therapist — تینوں ایک ساتھ ہو سکتا ہوں۔"
@@ -846,8 +834,6 @@
         patterns: ["you are funny", "you are good", "nice bot"],
         answer: "Thank you 😄 آپ کا feedback میرے لئے virtual چائے کا کپ ہے ☕."
       },
-
-      // goodbye
       {
         patterns: ["bye", "goodbye", "ok bye", "see you later", "phir milenge"],
         answer: "Goodbye! 👋 اللہ آپ کا حامی و ناصر ہو، جب چاہیں واپس آجائیں۔"
@@ -856,8 +842,6 @@
         patterns: ["good night", "gn", "shab bakhair"],
         answer: "شب بخیر 🌙 اللہ آپ کو سکون بھری نیند دے اور اچھے خواب دکھائے 🤲."
       },
-
-      // age / birth
       {
         patterns: ["how old are you", "what is your age", "tum kitne saal ke ho"],
         answer: "میں AURA-X Ω ابھی theoretical طور پر October 2025 میں ‘پیدا’ ہوا ہوں 😂 یعنی میں بہت نیا ہوں، ابھی learning phase میں!"
@@ -874,7 +858,7 @@
       return null;
     }
 
-    // ===== Emotional equation (simple heuristic) =====
+    // ===== Emotional equation =====
     const positiveWords = ["happy","khush","great","good","love","shukr","thanks","alhamdulillah","مبارک","ashamed"];
     const negativeWords = ["sad","depressed","bura","tension","stress","worried","alone","gussa","angry","thak"];
 
@@ -904,9 +888,7 @@
       };
     }
 
-    function round2(x) {
-      return Math.round(x * 100) / 100;
-    }
+    function round2(x) { return Math.round(x * 100) / 100; }
 
     function updateEquationDisplay(metrics) {
       const eqValues = document.getElementById("equationValues");
@@ -914,16 +896,16 @@
         `E = ${metrics.E} | P = ${metrics.P} | tₘ = ${metrics.tm} | bₘ = ${metrics.bm} | d = ${metrics.d} | C = ${metrics.C}`;
     }
 
-    // ===== Orb state machine (Sun / Moon cycle) =====
+    // ===== Orb state machine =====
     // 0 = Sun, 1 = animated moon, 2 = static moon, 3 = empty sky
     let celestialState = 0;
 
     function initDefaultOrbByTime() {
       const h = new Date().getHours();
       if (h >= 18 || h < 6) {
-        celestialState = 1; // evening/night -> moon
+        celestialState = 1;
       } else {
-        celestialState = 0; // day -> sun
+        celestialState = 0;
       }
       applyOrbState();
     }
@@ -960,7 +942,10 @@
     }
 
     function cycleOrb() {
-      celestialState = (celestialState + 1) % 4;
+      if (celestialState === 0) celestialState = 1;
+      else if (celestialState === 1) celestialState = 2;
+      else if (celestialState === 2) celestialState = 3;
+      else celestialState = 0;
       applyOrbState();
     }
 
@@ -978,7 +963,7 @@
     }
 
     // ===== Belief and LLM UI =====
-    let selectedFaith = null;
+    let selectedFaiths = [];
     let selectedLLM = "offline";
 
     function openOverlay(id) {
@@ -986,6 +971,19 @@
     }
     function closeOverlay(id) {
       document.getElementById(id).classList.add("hidden");
+    }
+
+    function updateFaithFootnote() {
+      const foot = document.getElementById("faithFootnote");
+      if (!selectedFaiths.length) {
+        foot.innerHTML =
+          'Currently selected: <strong>Universal only</strong>. No extra faith flavour added.';
+      } else {
+        foot.innerHTML =
+          'Currently selected: <strong>' +
+          selectedFaiths.join(", ") +
+          '</strong>. AURA-X may gently blend references from these traditions.';
+      }
     }
 
     document.addEventListener("DOMContentLoaded", () => {
@@ -1019,19 +1017,28 @@
         }
       });
 
-      // faith buttons
+      // faith buttons – multi-select
       document.getElementById("faithGrid").addEventListener("click", (e) => {
         const btn = e.target.closest(".faith-btn");
         if (!btn) return;
-        const all = document.querySelectorAll(".faith-btn");
-        all.forEach(b => b.classList.remove("active"));
-        btn.classList.add("active");
-        selectedFaith = btn.dataset.faith;
-        const foot = document.getElementById("faithFootnote");
-        if (selectedFaith) {
-          foot.innerHTML =
-            `Currently selected: <strong>${selectedFaith}</strong>. AURA-X may sometimes add a gentle reference from this tradition.`;
+        const faith = btn.dataset.faith;
+        if (btn.classList.contains("active")) {
+          btn.classList.remove("active");
+          selectedFaiths = selectedFaiths.filter(f => f !== faith);
+        } else {
+          btn.classList.add("active");
+          if (!selectedFaiths.includes(faith)) selectedFaiths.push(faith);
         }
+        updateFaithFootnote();
+      });
+
+      // reset to Universal only
+      document.getElementById("faithReset").addEventListener("click", () => {
+        document
+          .querySelectorAll("#faithGrid .faith-btn")
+          .forEach(b => b.classList.remove("active"));
+        selectedFaiths = [];
+        updateFaithFootnote();
       });
 
       // LLM buttons
@@ -1055,7 +1062,7 @@
         });
       });
 
-      // close buttons for all overlays
+      // close buttons for overlays
       document.querySelectorAll(".modal-close").forEach(btn => {
         btn.addEventListener("click", () => {
           const id = btn.dataset.close;
@@ -1066,11 +1073,8 @@
       // voice toggle
       const voiceBtn = document.getElementById("voiceToggle");
       function refreshVoiceButton() {
-        if (voiceOn) {
-          voiceBtn.classList.add("active");
-        } else {
-          voiceBtn.classList.remove("active");
-        }
+        if (voiceOn) voiceBtn.classList.add("active");
+        else voiceBtn.classList.remove("active");
       }
       voiceBtn.addEventListener("click", () => {
         voiceOn = !voiceOn;
@@ -1088,7 +1092,6 @@
 
         userEcho.textContent = `You said: “${text}”`;
 
-        // 1) local QA
         let answer = findOfflineAnswer(text);
         if (!answer) {
           answer =
@@ -1097,17 +1100,13 @@
 
         assistantAnswer.innerHTML = answer;
 
-        // Ethics line (constant for now)
         ethicsBox.textContent =
           "Universal Ethics says: avoid actions that create negative emotions in you or others, and gently move toward actions that create calm, kindness and positive feelings.";
 
-        // emotional equation metrics
         const metrics = computeEmotion(text, answer);
         updateEquationDisplay(metrics);
 
-        // voice
         speak(answer);
-
         userInput.value = "";
       }
 
