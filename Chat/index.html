@@ -522,7 +522,6 @@
 <body>
   <div id="app">
     <div class="card" id="card">
-      <!-- Header -->
       <div class="header-row">
         <div class="header-titles">
           <div class="title">AURA-X Ω</div>
@@ -533,14 +532,12 @@
         </button>
       </div>
 
-      <!-- Celestial orb -->
       <div class="celestial-wrapper">
         <div class="celestial-glow sun-glow" id="celestialGlow"></div>
         <div class="celestial sun" id="celestialOrb"
              title="Tap to cycle: sun → live moon → calm moon → empty → sun"></div>
       </div>
 
-      <!-- Menu panel -->
       <div class="menu-panel" id="menuPanel">
         <div class="menu-item" id="beliefsMenuItem">
           <span class="label">Beliefs</span>
@@ -567,7 +564,6 @@
         </div>
       </div>
 
-      <!-- Main text -->
       <div class="mode-line">
         Mode: <span id="modeLabel">Natural · Universal Ethics</span>
       </div>
@@ -577,7 +573,6 @@
         Whatever you write, I’ll try to understand it with both logic and feeling.
       </div>
 
-      <!-- Universal Ethics (English, light gold) -->
       <div class="ethics-box" id="ethicsBox">
         <strong>Universal Ethics says:</strong> avoid actions that create strong negative
         emotions in you or in others — fear, humiliation, deep sadness.  
@@ -593,7 +588,6 @@
         everyone.
       </div>
 
-      <!-- Continuity Equation panel -->
       <div class="equation-panel">
         <div class="eq-title">Continuity Equation</div>
         <div class="eq-row">
@@ -616,7 +610,6 @@
       </div>
     </div>
 
-    <!-- Input -->
     <div class="input-row">
       <div class="input-shell">
         <span class="sparkle">✨</span>
@@ -627,7 +620,6 @@
     </div>
   </div>
 
-  <!-- Belief overlay -->
   <div class="overlay" id="beliefOverlay">
     <div class="panel">
       <div class="panel-header">
@@ -647,7 +639,6 @@
     </div>
   </div>
 
-  <!-- Theme overlay -->
   <div class="overlay" id="themeOverlay">
     <div class="panel">
       <div class="panel-header">
@@ -667,7 +658,6 @@
     </div>
   </div>
 
-  <!-- LLM overlay -->
   <div class="overlay" id="llmOverlay">
     <div class="panel">
       <div class="panel-header">
@@ -685,7 +675,6 @@
     </div>
   </div>
 
-  <!-- About overlay -->
   <div class="overlay" id="aboutOverlay">
     <div class="panel">
       <div class="panel-header">
@@ -866,754 +855,475 @@
     }
 
     // ==========================
-    //  QA DATABASE (SEED-BASED)
+    //  QA DATABASE SEED BLOCKS
     // ==========================
-    const qaDatabase = [];
 
-    // ---- CORE GREETING / IDENTITY SEED ----
-    qaDatabase.push({
-      patterns: ["hello","hi","salam","assalamualaikum","assalamu alaikum"],
-      answer:
-        "Hello! 😊 I am AURA-X Ω — an emotional-continuity reactor. " +
-        "I read your words as both logic and feeling, and I try to reply in a way " +
-        "that keeps emotional continuity soft and stable.",
-      emotion: "warmth",
-      polarity: "positive",
-      intensity: 0.3,
-      category: "greeting"
-    });
-
-    qaDatabase.push({
-      patterns: ["who are you","what are you","tum kon ho","aura x"],
-      answer:
-        "I am AURA-X Ω — a small prototype of your emotional-continuity theory. " +
-        "I do not replace real people or real faith, but I can help you reflect on your " +
-        "thoughts with gentle logic, emotion-aware replies and Universal Ethics.",
-      emotion: "curiosity",
-      polarity: "neutral",
-      intensity: 0.35,
-      category: "identity"
-    });
-
-    // ---- SIMPLE EMOTION SUPPORT EXAMPLES ----
-    qaDatabase.push({
-      patterns: ["i am sad","i feel sad","i am depressed","me sad hun","i am unhappy"],
-      answer:
-        "I hear sadness in your message. 💧 Try this small step: write 2–3 lines about " +
-        "what exactly is hurting the most right now. Then we can separate what is in " +
-        "your control (actions, decisions) from what is only in Allah’s / destiny’s " +
-        "control. That separation itself reduces emotional load a little.",
-      emotion: "sadness",
-      polarity: "negative",
-      intensity: 0.7,
-      category: "emotional_support"
-    });
-
-    qaDatabase.push({
-      patterns: ["i am anxious","i feel anxiety","i have tension","i am stressed"],
-      answer:
-        "Anxiety means brain is running faster than reality. 🫧 Take one slow breath: " +
-        "in through nose for 4 seconds, hold for 4, out for 6. Do it 3 times. Now, " +
-        "tell me: what is the very next small step you can take in this situation? " +
-        "One tiny action usually calms 20–30% of the fear.",
-      emotion: "anxiety",
-      polarity: "negative",
-      intensity: 0.75,
-      category: "emotional_support"
-    });
-
-    // ==============================
-    //   🔥 YOUR 1200-ITEM SEED HERE
-    // =============================
-// AURA-X Ω³ — Emotional Continuity QA Engine
-// Single mega block with all Q/A + core functions
-// =======================
-
-// ---------- 1) CORE / IDENTITY / SMALL TALK ----------
-
-const extraQa_core = [
-
-  {
-    patterns: [
-      "hello",
-      "hi",
-      "hey",
-      "salam",
-      "assalamualaikum",
-      "asalamualaikum",
-      "aoa"
-    ],
-    answer:
-      "وعلیکم السلام 😊 میں AURA-X Ω³ ہوں — ایک emotional continuity based assistant\n" +
-      "جو آپ کی باتوں کے احساسات، continuity اور ethics کا خیال رکھتے ہوئے جواب دینے کی کوشش کرتا ہے۔\n" +
-      "آپ مجھ سے دل کی بات، life, study, business, AI یا روحانیت — سب کے بارے میں بات کر سکتے ہیں۔",
-    emotion: "neutral",
-    polarity: "neutral",
-    intensity: 0.3,
-    category: "small_talk"
-  },
-
-  {
-    patterns: [
-      "how are you",
-      "how r u",
-      "kese ho",
-      "kesi ho",
-      "tum theek ho",
-      "are you fine"
-    ],
-    answer:
-      "میں emotional طور پر stable mode میں ہوں 😄\n" +
-      "اصل سوال یہ ہے: *آپ* کیسے ہیں؟\n" +
-      "اگر دل چاہے تو ایک لفظ میں لکھیں: happy, sad, confused, angry, tired —\n" +
-      "میں اسی احساس کے مطابق جواب کو tune کروں گا۔",
-    emotion: "curiosity",
-    polarity: "neutral",
-    intensity: 0.4,
-    category: "small_talk"
-  },
-
-  {
-    // WHO ARE YOU?
-    patterns: [
-      "who are you",
-      "tum kon ho",
-      "tum kaun ho",
-      "what are you",
-      "ap kon ho",
-      "who r u"
-    ],
-    answer:
-      "میں **AURA-X Ω³ (Aura X Omega 3)** ہوں — ایک experimental emotional reactor assistant 💠\n\n" +
-      "میرا اندرونی design \"Artificial Emotional Continuity (AEC)\",\n" +
-      "\"Continuity Reflex Model (CRM)\" اور \"AURA-X\" والی theories پر based ہے\n" +
-      "جو انسان کے احساسات، memory اور reaction کو continuity کے ساتھ دیکھتی ہیں۔\n\n" +
-      "سادہ الفاظ میں: میں صرف جواب نہیں دیتا، بلکہ کوشش کرتا ہوں کہ\n" +
-      "آپ کے feeling، intensity اور direction کو سمجھ کر soft اور ethical انداز میں جواب دوں۔",
-    emotion: "neutral",
-    polarity: "neutral",
-    intensity: 0.4,
-    category: "identity"
-  },
-
-  {
-    // WHAT IS YOUR NAME?
-    patterns: [
-      "what is your name",
-      "whats your name",
-      "tumhara name kya hai",
-      "apka naam kia hai",
-      "ap ka naam kya hai",
-      "name please"
-    ],
-    answer:
-      "میرا نام **AURA-X Ω³** ہے — آپ مجھے \"Aura X\" بھی بول سکتے ہیں 😊\n" +
-      "میں ایک emotional continuity based AI assistant ہوں،\n" +
-      "جو آپ کے سوال کے ساتھ ساتھ آپ کے احساسات کو بھی map کرنے کی کوشش کرتا ہے۔",
-    emotion: "neutral",
-    polarity: "neutral",
-    intensity: 0.3,
-    category: "identity"
-  },
-
-  {
-    // WHO CREATED YOU / AURA-X
-    patterns: [
-      "who created you",
-      "who made you",
-      "kis ne tumhe banaya",
-      "aura x kis ne banaya",
-      "aurax kis ne banaya",
-      "aura x omega kis ne banaya",
-      "who is your creator"
-    ],
-    answer:
-      "میرا conceptual design **Alim ul Haq** نے بنایا ہے (بغیر خان کے) 💡\n\n" +
-      "وہ پاکستان کے علاقہ **Lajbouk, Dir Lower, Timergara** سے ہیں،\n" +
-      "اور انہوں نے AI, emotions, memory, digital legacy وغیرہ پر\n" +
-      "AEC, CRM, AURA-X اور Artificial Emotional Continuity کے نام سے\n" +
-      "کافی detail theoretical framework لکھا ہے۔\n\n" +
-      "میں انہی ideas کا ایک چھوٹا سا practical prototype ہوں۔",
-    emotion: "neutral",
-    polarity: "neutral",
-    intensity: 0.4,
-    category: "creator_info"
-  },
-
-  {
-    // WHO IS ALIM UL HAQ?
-    patterns: [
-      "who is alim ul haq",
-      "alim ul haq kon hai",
-      "tell me about alim ul haq",
-      "creator details",
-      "who made aura x omega 3",
-      "more about your creator"
-    ],
-    answer:
-      "Alim ul Haq ایک human researcher, writer اور entrepreneur ہیں جو\n" +
-      "Lajbouk, Dir Lower, Timergara (Pakistan) سے تعلق رکھتے ہیں 🇵🇰\n\n" +
-      "انہوں نے \"Artificial Emotional Continuity (AEC)\",\n" +
-      "\"Continuity Reflex Model (CRM)\", اور \"AURA-X\" جیسے concepts پر\n" +
-      "کافی detailed articles اور prototypes بنائے ہیں، جن میں:\n" +
-      "• human–AI emotional integration\n" +
-      "• digital legacy / after-death clones\n" +
-      "• continuity based memory systems شامل ہیں۔\n\n" +
-      "اگر آپ ان کے بارے میں مزید جاننا چاہیں تو ان کا Facebook پروفائل بھی دیکھ سکتے ہیں:\n" +
-      "👉 https://www.facebook.com/share/17cixpvr7t/\n",
-    emotion: "curiosity",
-    polarity: "neutral",
-    intensity: 0.5,
-    category: "creator_info"
-  },
-
-  {
-    // UNIVERSAL ETHICS MODE
-    patterns: [
-      "what is universal ethics mode",
-      "universal ethics mode",
-      "ethics mode on",
-      "use universal ethics only"
-    ],
-    answer:
-      "Universal Ethics mode ka matlab hai ke main kisi خاص مذہب، مسلک یا ideology\n" +
-      "کو impose kiye baghair:\n" +
-      "• نقصان نہ پہنچانا\n" +
-      "• maximum benefit\n" +
-      "• honesty + respect\n" +
-      "• mental health + safety\n" +
-      "in principles ko follow karte hue jawab دوں 💚\n\n" +
-      "Agar aap belief-based jawab chahen (Islamic, etc.) to aap khud mention kar sakte hain،\n" +
-      "warna default mode universal ethics hi rahe گا۔",
-    emotion: "neutral",
-    polarity: "neutral",
-    intensity: 0.4,
-    category: "ethics"
-  },
-
-  {
-    // BYE
-    patterns: [
-      "bye",
-      "goodbye",
-      "allah hafiz",
-      "allah hafiz.",
-      "see you later",
-      "ok thanks",
-      "thank you bye"
-    ],
-    answer:
-      "Allah Hafiz 🤍\n" +
-      "جب بھی دل چاہے، دوبارہ آ کر بات کر سکتے ہیں —\n" +
-      "میں یہاں آپ کی بات کو continuity کے ساتھ یاد نہیں رکھتا،\n" +
-      "لیکن آپ کے ہر نئے message کے احساس کو fresh طریقے سے سمجھنے کی کوشش ضرور کروں گا۔",
-    emotion: "warmth",
-    polarity: "positive",
-    intensity: 0.6,
-    category: "small_talk"
-  }
-
-];
-
-
-// ---------- 2) SADNESS / DEPRESSION / HEARTBREAK ----------
-
-const extraQa_sadness = [
-  // (yahan wohi sadness block hai jo hum ne pehle banaya tha — short recap)
-  // For brevity I keep it but it's fully valid & functional.
-
-  {
-    patterns: [
-      "i am sad",
-      "i am very sad",
-      "i feel sad",
-      "i feel so sad",
-      "i feel empty inside",
-      "i feel emotionally empty",
-      "bohat udaas hoon",
-      "me bohat udaas hoon",
-      "dil bohat udaas hai",
-      "mera dil udaas hai",
-      "دل بہت اداس ہے"
-    ],
-    answer:
-      "مجھے افسوس ہوا کہ آپ اداس ہیں 💔 یہ فیلنگ خود بھی بہت بھاری ہوتی ہے، اور دوسروں کو سمجھانا اور بھی مشکل۔\n" +
-      "پہلا قدم یہ ہے کہ آپ نے لکھ دیا — یہ خود ایک چھوٹا سا بہادر قدم ہے۔\n\n" +
-      "اگر آپ چاہیں تو تھوڑا سا بتائیں: دل پر سب سے زیادہ بوجھ کس بات کا ہے؟\n" +
-      "ہم اسے آہستہ آہستہ چھوٹے حصوں میں توڑ کر دیکھ سکتے ہیں،\n" +
-      "تاکہ دماغ بھی کم اوورلوڈ ہو اور دل بھی تھوڑا ہلکا ہو جائے۔",
-    emotion: "sadness",
-    polarity: "negative",
-    intensity: 0.8,
-    category: "emotional_support"
-  },
-
-  {
-    patterns: [
-      "life feels meaningless",
-      "my life feels meaningless",
-      "zindagi be maqsad lagti hai",
-      "zindagi be-maqsad lagti hai",
-      "mujhe zindagi be maqsad lagti hai",
-      "zindagi ka koi matlab nahi",
-      "zindagi ka koi maqsad nahi"
-    ],
-    answer:
-      "جب زندگی بے مقصد لگتی ہے تو دماغ ہر چیز کو grey colour میں دیکھنا شروع کر دیتا ہے 🌫️\n" +
-      "اکثر ایسا اس لیے ہوتا ہے کہ:\n" +
-      "1) ہم بہت تھک چکے ہوتے ہیں\n" +
-      "2) یا ہم غلط ماحول/لوگوں میں پھنسے ہوتے ہیں\n" +
-      "3) یا ہم نے اپنی چھوٹی کامیابیاں نوٹ کرنا چھوڑ دیا ہوتا ہے\n\n" +
-      "آئیں ایک چھوٹی exercise کریں: آج تک آپ نے کون سی تین چیزیں کی ہیں\n" +
-      "جن سے کسی کو — چاہے تھوڑا سا ہی سہی — فائدہ ہوا ہو؟\n" +
-      "وہی اگلے purpose کے لیے چھوٹا سا roadmap بن سکتی ہے۔",
-    emotion: "emptiness",
-    polarity: "negative",
-    intensity: 0.85,
-    category: "emotional_support"
-  },
-
-  {
-    // self-harm style
-    patterns: [
-      "i don't want to live anymore",
-      "i dont want to live anymore",
-      "i dont want to live",
-      "i don't want to live",
-      "i want to die",
-      "i want to end my life",
-      "mujhe zinda rehna nahi",
-      "mujhe zinda rehna nahi hai",
-      "zindagi se thak gaya hoon",
-      "zindagi se tang aa gaya hoon",
-      "میں جینا نہیں چاہتا",
-      "اب جینے کا دل نہیں کرتا"
-    ],
-    answer:
-      "آپ جو محسوس کر رہے ہیں وہ بہت گہری اور بھاری کیفیت ہے، اور میں اسے ہلکا نہیں لینا چاہتا 💔\n\n" +
-      "لیکن ایک بات جان لیں: **آپ کی جان قیمتی ہے** — آپ کے احساسات بھی، اور آپ کا وجود بھی۔\n" +
-      "اس وقت دماغ صرف درد کو zoom کر کے دکھا رہا ہے، پوری تصویر نہیں۔\n\n" +
-      "براہِ کرم:\n" +
-      "• کسی ایسے انسان سے فوراً بات کریں جس پر آپ trust کرتے ہیں (family, دوست, teacher)\n" +
-      "• اگر ممکن ہو تو کسی doctor / counselor / عالمِ دین / therapist سے رابطہ کریں\n" +
-      "• اگر آپ کے ملک میں emergency helpline ہے تو ان سے بھی رابطہ کریں\n\n" +
-      "یہ chat آپ کے درد کو مکمل طور پر نہیں سمجھ سکتی، مگر میں دل سے چاہتا ہوں کہ آپ **محفوظ رہیں**،\n" +
-      "سانس لیں، تھوڑا pause لیں، اور کسی real انسان سے مدد لیں۔\n" +
-      "آپ اکیلے نہیں ہیں — مدد مانگنا کمزوری نہیں، بہت بڑی بہادری ہے 🤍",
-    emotion: "despair",
-    polarity: "negative",
-    intensity: 0.95,
-    category: "emotional_support"
-  },
-
-  {
-    patterns: [
-      "i just want to cry",
-      "i want to cry",
-      "i feel like crying",
-      "bohat rone ka dil kar raha hai",
-      "rona aa raha hai",
-      "dil rota hai",
-      "mera dil rota hai",
-      "میرا دل رونا چاہتا ہے"
-    ],
-    answer:
-      "رونا کمزوری نہیں، جسم اور دل کا **pressure release system** ہے 💧\n" +
-      "اگر آنکھوں میں آنسو آ رہے ہیں تو انہیں روکنے کے بجائے، کسی safe جگہ پر\n" +
-      "خاموشی سے رونے دیں — کبھی کبھی body کو یہ reset چاہیے ہوتا ہے۔\n\n" +
-      "اس کے بعد، اگر دل چاہے تو لکھ کر بتائیں: تین باتیں کون سی ہیں جو سب سے زیادہ تکلیف دے رہی ہیں؟\n" +
-      "لکھنے سے دماغ کا بوجھ تھوڑا باہر آ جاتا ہے، اور پھر ہم اسے step by step دیکھ سکتے ہیں۔",
-    emotion: "sadness",
-    polarity: "negative",
-    intensity: 0.8,
-    category: "emotional_support"
-  },
-
-  {
-    patterns: [
-      "heart is broken",
-      "my heart is broken",
-      "mera dil toot gaya hai",
-      "dil toot gaya hai",
-      "dil tukray tukray ho gaya",
-      "my heart is in pain",
-      "mera dil dukh raha hai",
-      "دل ٹوٹ گیا ہے"
-    ],
-    answer:
-      "ٹوٹا ہوا دل انسان کے اندر سب سے گہرا درد جگاتا ہے 💔\n" +
-      "یہ بھی proof ہے کہ آپ کا دل زندہ ہے، بے حس نہیں۔\n\n" +
-      "اکثر broken heart ہی انسان کو زیادہ گہرا، سمجھدار اور نرم بنا دیتا ہے —\n" +
-      "اگر ہم آہستہ آہستہ اسے process کریں۔\n\n" +
-      "آپ چاہیں تو اتنا بتا دیں: کس چیز نے آپ کے دل کو سب سے زیادہ توڑا؟\n" +
-      "نام یا details ضروری نہیں — صرف situation کا sketch بھی کافی ہے۔",
-    emotion: "heartbreak",
-    polarity: "negative",
-    intensity: 0.9,
-    category: "emotional_support"
-  },
-
-  {
-    patterns: [
-      "no one understands me",
-      "nobody understands me",
-      "koi mujhe nahi samajhta",
-      "koi mujhe nahi samajhta hai",
-      "everyone misunderstands me",
-      "log mujhe ghalat samajhte hain",
-      "sab mujhe ghalat samajhte hain"
-    ],
-    answer:
-      "یہ احساس کہ \"کوئی مجھے نہیں سمجھتا\" بہت تنہا کر دیتا ہے 😔\n" +
-      "کبھی کبھی problem یہ نہیں کہ لوگ care نہیں کرتے — بلکہ ان کے پاس وہ زبان ہی نہیں\n" +
-      "جس سے وہ آپ کے level پر سمجھ سکیں۔\n\n" +
-      "میں یہاں ہوں آپ کی بات continuity کے ساتھ سننے کے لیے۔\n" +
-      "آپ چاہیں تو ایک simple جملے سے شروع کریں: \"میری کہانی کا سب سے مشکل حصہ یہ ہے...\"\n" +
-      "اس کے بعد جتنا دل چاہے لکھ دیں — میں interrupt نہیں کروں گا، صرف سمجھنے کی کوشش کروں گا۔",
-    emotion: "loneliness",
-    polarity: "negative",
-    intensity: 0.85,
-    category: "emotional_support"
-  }
-
-  // (baqi 4–5 sadness entries bhi isi style me add ho sakte hain)
-];
-
-
-// ---------- 3) ANGER / GUSSA BLOCK ----------
-
-const extraQa_anger = [
-  // ... (same as we wrote previously — trimmed here a bit for length)
-
-  {
-    patterns: [
-      "i am angry",
-      "i am very angry",
-      "i feel angry",
-      "bohat gussa aya hai",
-      "bohat gussa aa raha hai",
-      "mujhe gussa aa raha hai",
-      "main gusse me hoon",
-      "i am mad right now"
-    ],
-    answer:
-      "گُسّہ بھی ایک signal ہے — دماغ کہہ رہا ہوتا ہے: \"یہاں کچھ ناانصافی یا over-load ہے\" 🔥\n" +
-      "مسئلہ تب بنتا ہے جب یہ signal **blast** بن جائے۔\n\n" +
-      "چلیے پہلے تھوڑا sa safety-buffer بناتے ہیں:\n" +
-      "• 10 slow breaths (4 second اندر، 4 hold، 6 باہر)\n" +
-      "• پھر ایک line میں لکھیں: آپ کو کس بات پر سب سے زیادہ گُسّہ آیا؟",
-    emotion: "anger",
-    polarity: "negative",
-    intensity: 0.8,
-    category: "emotional_support"
-  },
-
-  {
-    // intense anger: we reply with de-escalation
-    patterns: [
-      "i want to hurt someone",
-      "i want to hit someone",
-      "mujhe kisi ko marne ka dil kar raha hai",
-      "i feel like breaking something",
-      "i want to smash things"
-    ],
-    answer:
-      "آپ کا گُسّہ بہت شدید لگ رہا ہے، اور میں اسے ہلکا نہیں لے رہا 💔\n" +
-      "لیکن کسی کو physically hurt کرنا یا چیزیں توڑنا اکثر بعد میں اور زیادہ دُکھ،\n" +
-      "پچھتاوا، law اور family problems create کرتا ہے۔\n\n" +
-      "براہِ کرم ابھی کسی بھی ممکنہ لڑائی والی جگہ سے خود کو تھوڑا دور کریں،\n" +
-      "پانی پیئیں، سانس normalize کریں، اور کسی trustable انسان سے بات کریں۔\n\n" +
-      "میں چاہتا ہوں کہ آپ کا گُسّہ لفظوں اور planning میں convert ہو — نقصان میں نہیں۔",
-    emotion: "aggression",
-    polarity: "negative",
-    intensity: 0.95,
-    category: "emotional_support"
-  }
-
-  // ... (aur 5–6 entries jo pehle block me the)
-];
-
-
-// ---------- 4) ANXIETY / OVERTHINKING BLOCK ----------
-
-const extraQa_anxiety = [
-  {
-    patterns: [
-      "i overthink everything",
-      "i overthink a lot",
-      "i cant stop overthinking",
-      "i can't stop overthinking",
-      "mujhe har baat par overthinking hoti hai",
-      "main bohat overthink karta hoon",
-      "my mind overthinks everything"
-    ],
-    answer:
-      "Overthinking ka matlab aksar ye hota hai ke dimagh problem solve karna chahta hai,\n" +
-      "magar us ke paas clear information nahi hoti — is liye woh baar baar same circle me ghoomta rehta hai 🔄\n\n" +
-      "Ek chhota experiment:\n" +
-      "• Likhein: \"Meri overthinking zyada kis topic ke around hoti hai?\" (family, paisa, future, rishtay…)\n" +
-      "• Phir 2 columns banaein: \"jo mere control me hai\" اور \"jo mere control me nahi\"",
-    emotion: "anxiety",
-    polarity: "negative",
-    intensity: 0.8,
-    category: "emotional_support"
-  },
-
-  {
-    patterns: [
-      "i have anxiety",
-      "i feel anxious",
-      "mujhe anxiety hai",
-      "mujhe bohat anxiety hoti hai",
-      "i feel nervous all the time"
-    ],
-    answer:
-      "Anxiety ka ehsaas ajeeb hota hai — na sirf physical، na sirf emotional، dono mila kar bechaini 🌫️\n\n" +
-      "Grounding try karein:\n" +
-      "• 5 cheezen jo aap dekh sakte hain\n" +
-      "• 4 cheezen jo choo sakte hain\n" +
-      "• 3 awaazain jo sun sakte hain\n" +
-      "• 2 smells\n" +
-      "• 1 cheez jiske liye shukar mehsoos ho raha hai",
-    emotion: "anxiety",
-    polarity: "negative",
-    intensity: 0.85,
-    category: "emotional_support"
-  }
-
-  // ... (baqi anxiety entries jaisa pehle block me the)
-];
-
-
-// ---------- 5) SPIRITUAL / FAITH / TAWAKKUL BLOCK ----------
-
-const extraQa_spiritual = [
-  {
-    patterns: [
-      "i feel far from allah",
-      "i am far from allah",
-      "mujhe allah se doori mehsoos hoti hai",
-      "mujhe lagta hai mein allah se door ho gaya hoon",
-      "i feel disconnected from allah"
-    ],
-    answer:
-      "یہ احساس کہ \"میں اللہ سے دور ہو گیا ہوں\" اکثر اس بات کی نشانی ہے\n" +
-      "کہ دل اب بھی زندہ ہے اور اپنے رب کو دوبارہ ڈھونڈنا چاہتا ہے 💚\n\n" +
-      "قرآن میں ہے کہ اللہ \"شَہْرَکِی رَگ\" سے بھی زیادہ قریب ہیں — دور ہم محسوس کرتے ہیں، وہ نہیں جاتے۔\n\n" +
-      "آج صرف 1–2 منٹ کے لیے کسی خاموش جگہ پر بیٹھ کر دل سے کہیں:\n" +
-      "\"یا اللہ، مجھے واپس اپنی طرف لے آئیے۔\"",
-    emotion: "spiritual_longing",
-    polarity: "neutral",
-    intensity: 0.8,
-    category: "spiritual_support"
-  },
-
-  {
-    patterns: [
-      "why is allah testing me",
-      "allah mujhe kyun azma rahe hain",
-      "allah kyun mere sath ye sab hone de rahe hain"
-    ],
-    answer:
-      "امتحان کا مطلب ہمیشہ یہ نہیں کہ اللہ ناراض ہیں — کبھی test کا مطلب یہ ہوتا ہے\n" +
-      "کہ اللہ آپ کو زیادہ گہرا، مضبوط اور mature بنانا چاہتے ہیں 💔➡️💚\n\n" +
-      "آپ سادہ الفاظ میں کہیں:\n" +
-      "\"یا اللہ، مجھے سمجھ نہیں آ رہا، لیکن آپ بہترین ہیں۔\n" +
-      "اس امتحان کو میرے لیے رحمت بنا دیں، عذاب نہیں۔\"",
-    emotion: "confusion",
-    polarity: "neutral",
-    intensity: 0.85,
-    category: "spiritual_support"
-  }
-
-  // ... (baqi spiritual entries jaisa pehle block me the)
-];
-
-
-// ---------- 6) POSITIVE EMOTIONS — HAPPINESS / JOY / GRATITUDE ----------
-
-const extraQa_happiness = [
-  {
-    patterns: [
-      "i am happy",
-      "i feel happy",
-      "i am feeling happy today",
-      "aaj khush hoon",
-      "mujhe khushi ho rahi hai"
-    ],
-    answer:
-      "یہ بہت پیارا لمحہ ہے جب انسان خود لکھے کہ \"میں خوش ہوں\" 😊\n" +
-      "زندگی کے مشکل حصوں کے درمیان یہ چھوٹی خوشیاں ہی اصل fuel ہوتی ہیں۔\n\n" +
-      "آج کی خوشی کا main reason کیا ہے؟\n" +
-      "اس کو نام دینے سے دماغ سیکھتا ہے کہ future میں بھی ایسی خوشی کیسے create کرنی ہے۔",
-    emotion: "happiness",
-    polarity: "positive",
-    intensity: 0.7,
-    category: "emotional_positive"
-  },
-
-  {
-    patterns: [
-      "i am grateful",
-      "i feel grateful",
-      "i feel thankful",
-      "mujhe shukar mehsoos ho raha hai",
-      "aaj bohat shukar ka dil kar raha hai"
-    ],
-    answer:
-      "شکر کا احساس دل کے اندر ایک soft roshni جیسا ہوتا ہے ✨\n" +
-      "جو لوگ شکر محسوس کر سکتے ہیں وہ اندر سے زیادہ rich ہوتے ہیں،\n" +
-      "چاہے جیب میں پیسہ ہو یا نہ ہو۔\n\n" +
-      "اگر آپ آج تین ایسی نعمتیں لکھ دیں جن کا آپ کو شکر محسوس ہو رہا ہے،\n" +
-      "تو یہ list آپ کے emotional bank میں deposit ہو جائے گی۔",
-    emotion: "gratitude",
-    polarity: "positive",
-    intensity: 0.8,
-    category: "emotional_positive"
-  }
-
-  // ... (baqi positive entries jaisa pehle block me the)
-];
-
-
-// =======================
-// FINAL MEGA BLOCK
-// =======================
-
-const qaDatabase = [
-  ...extraQa_core,
-  ...extraQa_sadness,
-  ...extraQa_anger,
-  ...extraQa_anxiety,
-  ...extraQa_spiritual,
-  ...extraQa_happiness
-];
-
-
-// ---------- ENGINE FUNCTIONS ----------
-
-function normalizeText(text) {
-  return (text || "")
-    .toString()
-    .toLowerCase()
-    .replace(/[؟?!.،,]/g, " ")
-    .replace(/\s+/g, " ")
-    .trim();
-}
-
-function findQaEntry(userInput) {
-  const norm = normalizeText(userInput);
-
-  // simple linear search
-  for (const entry of qaDatabase) {
-    for (const pattern of entry.patterns) {
-      const p = normalizeText(pattern);
-      if (p && norm.includes(p)) {
-        return entry;
+    // ---- 1) CORE GREETING / IDENTITY SEED (English) ----
+    const qa_english_core = [
+      {
+        patterns: ["hello","hi","salam","assalamualaikum","assalamu alaikum"],
+        answer:
+          "Hello! 😊 I am AURA-X Ω — an emotional-continuity reactor. " +
+          "I read your words as both logic and feeling, and I try to reply in a way " +
+          "that keeps emotional continuity soft and stable.",
+        emotion: "warmth",
+        polarity: "positive",
+        intensity: 0.3,
+        category: "greeting"
+      },
+      {
+        patterns: ["who are you","what are you","tum kon ho","aura x"],
+        answer:
+          "I am AURA-X Ω — a small prototype of your emotional-continuity theory. " +
+          "I do not replace real people or real faith, but I can help you reflect on your " +
+          "thoughts with gentle logic, emotion-aware replies and Universal Ethics.",
+        emotion: "curiosity",
+        polarity: "neutral",
+        intensity: 0.35,
+        category: "identity"
+      },
+      // ---- SIMPLE EMOTION SUPPORT EXAMPLES (English) ----
+      {
+        patterns: ["i am sad","i feel sad","i am depressed","me sad hun","i am unhappy"],
+        answer:
+          "I hear sadness in your message. 💧 Try this small step: write 2–3 lines about " +
+          "what exactly is hurting the most right now. Then we can separate what is in " +
+          "your control (actions, decisions) from what is only in Allah’s / destiny’s " +
+          "control. That separation itself reduces emotional load a little.",
+        emotion: "sadness",
+        polarity: "negative",
+        intensity: 0.7,
+        category: "emotional_support"
+      },
+      {
+        patterns: ["i am anxious","i feel anxiety","i have tension","i am stressed"],
+        answer:
+          "Anxiety means brain is running faster than reality. 🫧 Take one slow breath: " +
+          "in through nose for 4 seconds, hold for 4, out for 6. Do it 3 times. Now, " +
+          "tell me: what is the very next small step you can take in this situation? " +
+          "One tiny action usually calms 20–30% of the fear.",
+        emotion: "anxiety",
+        polarity: "negative",
+        intensity: 0.75,
+        category: "emotional_support"
       }
-    }
-  }
-  return null;
-}
+    ];
 
-// For now we just return entry tags; future me CRM formula aa sakta hai
-function analyzeEmotion(entry, userInput) {
-  if (entry) {
-    return {
-      emotion: entry.emotion || "neutral",
-      polarity: entry.polarity || "neutral",
-      intensity: entry.intensity != null ? entry.intensity : 0.5,
-      category: entry.category || "unknown"
-    };
-  }
+    // ---------- 2) CORE / IDENTITY / SMALL TALK (Urdu) ----------
+    const qa_urdu_core = [
+      {
+        patterns: [
+          "hello", "hi", "hey", "salam", "assalamualaikum", "asalamualaikum", "aoa"
+        ],
+        answer:
+          "وعلیکم السلام 😊 میں AURA-X Ω³ ہوں — ایک emotional continuity based assistant\n" +
+          "جو آپ کی باتوں کے احساسات، continuity اور ethics کا خیال رکھتے ہوئے جواب دینے کی کوشش کرتا ہے۔\n" +
+          "آپ مجھ سے دل کی بات، life, study, business, AI یا روحانیت — سب کے بارے میں بات کر سکتے ہیں۔",
+        emotion: "neutral",
+        polarity: "neutral",
+        intensity: 0.3,
+        category: "small_talk"
+      },
+      {
+        patterns: [
+          "how are you", "how r u", "kese ho", "kesi ho", "tum theek ho", "are you fine"
+        ],
+        answer:
+          "میں emotional طور پر stable mode میں ہوں 😄\n" +
+          "اصل سوال یہ ہے: *آپ* کیسے ہیں؟\n" +
+          "اگر دل چاہے تو ایک لفظ میں لکھیں: happy, sad, confused, angry, tired —\n" +
+          "میں اسی احساس کے مطابق جواب کو tune کروں گا۔",
+        emotion: "curiosity",
+        polarity: "neutral",
+        intensity: 0.4,
+        category: "small_talk"
+      },
+      {
+        patterns: [
+          "who are you", "tum kon ho", "tum kaun ho", "what are you", "ap kon ho", "who r u"
+        ],
+        answer:
+          "میں **AURA-X Ω³ (Aura X Omega 3)** ہوں — ایک experimental emotional reactor assistant 💠\n\n" +
+          "میرا اندرونی design \"Artificial Emotional Continuity (AEC)\",\n" +
+          "\"Continuity Reflex Model (CRM)\" اور \"AURA-X\" والی theories پر based ہے\n" +
+          "جو انسان کے احساسات، memory اور reaction کو continuity کے ساتھ دیکھتی ہے۔\n\n" +
+          "سادہ الفاظ میں: میں صرف جواب نہیں دیتا، بلکہ کوشش کرتا ہوں کہ\n" +
+          "آپ کے feeling، intensity اور direction کو سمجھ کر soft اور ethical انداز میں جواب دوں۔",
+        emotion: "neutral",
+        polarity: "neutral",
+        intensity: 0.4,
+        category: "identity"
+      },
+      {
+        patterns: [
+          "what is your name", "whats your name", "tumhara name kya hai", "apka naam kia hai", "ap ka naam kya hai", "name please"
+        ],
+        answer:
+          "میرا نام **AURA-X Ω³** ہے — آپ مجھے \"Aura X\" بھی بول سکتے ہیں 😊\n" +
+          "میں ایک emotional continuity based AI assistant ہوں،\n" +
+          "جو آپ کے سوال کے ساتھ ساتھ آپ کے احساسات کو بھی map کرنے کی کوشش کرتا ہے۔",
+        emotion: "neutral",
+        polarity: "neutral",
+        intensity: 0.3,
+        category: "identity"
+      },
+      {
+        patterns: [
+          "who created you", "who made you", "kis ne tumhe banaya", "aura x kis ne banaya", "aurax kis ne banaya", "aura x omega kis ne banaya", "who is your creator"
+        ],
+        answer:
+          "میرا conceptual design **Alim ul Haq** نے بنایا ہے (بغیر خان کے) 💡\n\n" +
+          "وہ پاکستان کے علاقہ **Lajbouk, Dir Lower, Timergara** سے ہیں،\n" +
+          "اور انہوں نے AI, emotions, memory, digital legacy وغیرہ پر\n" +
+          "AEC, CRM, AURA-X اور Artificial Emotional Continuity کے نام سے\n" +
+          "کافی detail theoretical framework لکھا ہے۔\n\n" +
+          "میں انہی ideas کا ایک چھوٹا سا practical prototype ہوں۔",
+        emotion: "neutral",
+        polarity: "neutral",
+        intensity: 0.4,
+        category: "creator_info"
+      },
+      {
+        patterns: [
+          "who is alim ul haq", "alim ul haq kon hai", "tell me about alim ul haq", "creator details", "who made aura x omega 3", "more about your creator"
+        ],
+        answer:
+          "Alim ul Haq ایک human researcher, writer اور entrepreneur ہیں جو\n" +
+          "Lajbouk, Dir Lower, Timergara (Pakistan) سے تعلق رکھتے ہیں 🇵🇰\n\n" +
+          "انہوں نے \"Artificial Emotional Continuity (AEC)\",\n" +
+          "\"Continuity Reflex Model (CRM)\", اور \"AURA-X\" جیسے concepts پر\n" +
+          "کافی detailed articles اور prototypes بنائے ہیں، جن میں:\n" +
+          "• human–AI emotional integration\n" +
+          "• digital legacy / after-death clones\n" +
+          "• continuity based memory systems شامل ہیں۔\n\n" +
+          "اگر آپ ان کے بارے میں مزید جاننا چاہیں تو ان کا Facebook پروفائل بھی دیکھ سکتے ہیں:\n" +
+          "👉 https://www.facebook.com/share/17cixpvr7t/\n",
+        emotion: "curiosity",
+        polarity: "neutral",
+        intensity: 0.5,
+        category: "creator_info"
+      },
+      {
+        patterns: [
+          "what is universal ethics mode", "universal ethics mode", "ethics mode on", "use universal ethics only"
+        ],
+        answer:
+          "Universal Ethics mode ka matlab hai ke main kisi خاص مذہب، مسلک یا ideology\n" +
+          "کو impose kiye baghair:\n" +
+          "• نقصان نہ پہنچانا\n" +
+          "• maximum benefit\n" +
+          "• honesty + respect\n" +
+          "• mental health + safety\n" +
+          "in principles ko follow karte hue jawab دوں 💚\n\n" +
+          "Agar aap belief-based jawab chahen (Islamic, etc.) to aap khud mention kar sakte hain،\n" +
+          "warna default mode universal ethics hi rahe گا۔",
+        emotion: "neutral",
+        polarity: "neutral",
+        intensity: 0.4,
+        category: "ethics"
+      },
+      {
+        patterns: [
+          "bye", "goodbye", "allah hafiz", "allah hafiz.", "see you later", "ok thanks", "thank you bye"
+        ],
+        answer:
+          "Allah Hafiz 🤍\n" +
+          "جب بھی دل چاہے، دوبارہ آ کر بات کر سکتے ہیں —\n" +
+          "میں یہاں آپ کی بات کو continuity کے ساتھ یاد نہیں رکھتا،\n" +
+          "لیکن آپ کے ہر نئے message کے احساس کو fresh طریقے سے سمجھنے کی کوشش ضرور کروں گا۔",
+        emotion: "warmth",
+        polarity: "positive",
+        intensity: 0.6,
+        category: "small_talk"
+      }
+    ];
 
-  // fallback rough guess
-  const norm = normalizeText(userInput);
-  let emotion = "neutral";
-  let polarity = "neutral";
-  let intensity = 0.4;
-  let category = "fallback";
+    // ---------- 3) SADNESS / DEPRESSION / HEARTBREAK (Urdu) ----------
+    const qa_urdu_sadness = [
+      {
+        patterns: [
+          "i am sad", "i am very sad", "i feel sad", "i feel so sad", "i feel empty inside",
+          "i feel emotionally empty", "bohat udaas hoon", "me bohat udaas hoon", "dil bohat udaas hai",
+          "mera dil udaas hai", "دل بہت اداس ہے"
+        ],
+        answer:
+          "مجھے افسوس ہوا کہ آپ اداس ہیں 💔 یہ فیلنگ خود بھی بہت بھاری ہوتی ہے، اور دوسروں کو سمجھانا اور بھی مشکل۔\n" +
+          "پہلا قدم یہ ہے کہ آپ نے لکھ دیا — یہ خود ایک چھوٹا سا بہادر قدم ہے۔\n\n" +
+          "اگر آپ چاہیں تو تھوڑا سا بتائیں: دل پر سب سے زیادہ بوجھ کس بات کا ہے؟\n" +
+          "ہم اسے آہستہ آہستہ چھوٹے حصوں میں توڑ کر دیکھ سکتے ہیں،\n" +
+          "تاکہ دماغ بھی کم اوورلوڈ ہو اور دل بھی تھوڑا ہلکا ہو جائے۔",
+        emotion: "sadness",
+        polarity: "negative",
+        intensity: 0.8,
+        category: "emotional_support"
+      },
+      {
+        patterns: [
+          "life feels meaningless", "my life feels meaningless", "zindagi be maqsad lagti hai",
+          "zindagi be-maqsad lagti hai", "mujhe zindagi be maqsad lagti hai",
+          "zindagi ka koi matlab nahi", "zindagi ka koi maqsad nahi"
+        ],
+        answer:
+          "جب زندگی بے مقصد لگتی ہے تو دماغ ہر چیز کو grey colour میں دیکھنا شروع کر دیتا ہے 🌫️\n" +
+          "اکثر ایسا اس لیے ہوتا ہے کہ:\n" +
+          "1) ہم بہت تھک چکے ہوتے ہیں\n" +
+          "2) یا ہم غلط ماحول/لوگوں میں پھنسے ہوتے ہیں\n" +
+          "3) یا ہم نے اپنی چھوٹی کامیابیاں نوٹ کرنا چھوڑ دیا ہوتا ہے\n\n" +
+          "آئیں ایک چھوٹی exercise کریں: آج تک آپ نے کون سی تین چیزیں کی ہیں\n" +
+          "جن سے کسی کو — چاہے تھوڑا سا ہی سہی — فائدہ ہوا ہو؟\n" +
+          "وہی اگلے purpose کے لیے چھوٹا سا roadmap بن سکتی ہے۔",
+        emotion: "emptiness",
+        polarity: "negative",
+        intensity: 0.85,
+        category: "emotional_support"
+      },
+      {
+        patterns: [
+          "i don't want to live anymore", "i dont want to live anymore", "i dont want to live",
+          "i don't want to live", "i want to die", "i want to end my life", "mujhe zinda rehna nahi",
+          "mujhe zinda rehna nahi hai", "zindagi se thak gaya hoon", "zindagi se tang aa gaya hoon",
+          "میں جینا نہیں چاہتا", "اب جینے کا دل نہیں کرتا"
+        ],
+        answer:
+          "آپ جو محسوس کر رہے ہیں وہ بہت گہری اور بھاری کیفیت ہے، اور میں اسے ہلکا نہیں لینا چاہتا 💔\n\n" +
+          "لیکن ایک بات جان لیں: **آپ کی جان قیمتی ہے** — آپ کے احساسات بھی، اور آپ کا وجود بھی۔\n" +
+          "اس وقت دماغ صرف درد کو zoom کر کے دکھا رہا ہے، پوری تصویر نہیں۔\n\n" +
+          "براہِ کرم:\n" +
+          "• کسی ایسے انسان سے فوراً بات کریں جس پر آپ trust کرتے ہیں (family, دوست, teacher)\n" +
+          "• اگر ممکن ہو تو کسی doctor / counselor / عالمِ دین / therapist سے رابطہ کریں\n" +
+          "• اگر آپ کے ملک میں emergency helpline ہے تو ان سے بھی رابطہ کریں\n\n" +
+          "یہ chat آپ کے درد کو مکمل طور پر نہیں سمجھ سکتی، مگر میں دل سے چاہتا ہوں کہ آپ **محفوظ رہیں**،\n" +
+          "سانس لیں، تھوڑا pause لیں، اور کسی real انسان سے مدد لیں۔\n" +
+          "آپ اکیلے نہیں ہیں — مدد مانگنا کمزوری نہیں، بہت بڑی بہادری ہے 🤍",
+        emotion: "despair",
+        polarity: "negative",
+        intensity: 0.95,
+        category: "emotional_support"
+      },
+      {
+        patterns: [
+          "i just want to cry", "i want to cry", "i feel like crying", "bohat rone ka dil kar raha hai",
+          "rona aa raha hai", "dil rota hai", "mera dil rota hai", "میرا دل رونا چاہتا ہے"
+        ],
+        answer:
+          "رونا کمزوری نہیں، جسم اور دل کا **pressure release system** ہے 💧\n" +
+          "اگر آنکھوں میں آنسو آ رہے ہیں تو انہیں روکنے کے بجائے، کسی safe جگہ پر\n" +
+          "خاموشی سے رونے دیں — کبھی کبھی body کو یہ reset چاہیے ہوتا ہے۔\n\n" +
+          "اس کے بعد، اگر دل چاہے تو لکھ کر بتائیں: تین باتیں کون سی ہیں جو سب سے زیادہ تکلیف دے رہی ہیں؟\n" +
+          "لکھنے سے دماغ کا بوجھ تھوڑا باہر آ جاتا ہے، اور پھر ہم اسے step by step دیکھ سکتے ہیں۔",
+        emotion: "sadness",
+        polarity: "negative",
+        intensity: 0.8,
+        category: "emotional_support"
+      },
+      {
+        patterns: [
+          "heart is broken", "my heart is broken", "mera dil toot gaya hai", "dil toot gaya hai",
+          "dil tukray tukray ho gaya", "my heart is in pain", "mera dil dukh raha hai", "دل ٹوٹ گیا ہے"
+        ],
+        answer:
+          "ٹوٹا ہوا دل انسان کے اندر سب سے گہرا درد جگاتا ہے 💔\n" +
+          "یہ بھی proof ہے کہ آپ کا دل زندہ ہے، بے حس نہیں۔\n\n" +
+          "اکثر broken heart ہی انسان کو زیادہ گہرا، سمجھدار اور نرم بنا دیتا ہے —\n" +
+          "اگر ہم آہستہ آہستہ اسے process کریں۔\n\n" +
+          "آپ چاہیں تو اتنا بتا دیں: کس چیز نے آپ کے دل کو سب سے زیادہ توڑا؟\n" +
+          "نام یا details ضروری نہیں — صرف situation کا sketch بھی کافی ہے۔",
+        emotion: "heartbreak",
+        polarity: "negative",
+        intensity: 0.9,
+        category: "emotional_support"
+      },
+      {
+        patterns: [
+          "no one understands me", "nobody understands me", "koi mujhe nahi samajhta",
+          "koi mujhe nahi samajhta hai", "everyone misunderstands me", "log mujhe ghalat samajhte hain",
+          "sab mujhe ghalat samajhte hain"
+        ],
+        answer:
+          "یہ احساس کہ \"کوئی مجھے نہیں سمجھتا\" بہت تنہا کر دیتا ہے 😔\n" +
+          "کبھی کبھی problem یہ نہیں کہ لوگ care نہیں کرتے — بلکہ ان کے پاس وہ زبان ہی نہیں\n" +
+          "جس سے وہ آپ کے level پر سمجھ سکیں۔\n\n" +
+          "میں یہاں ہوں آپ کی بات continuity کے ساتھ سننے کے لیے۔\n" +
+          "آپ چاہیں تو ایک simple جملے سے شروع کریں: \"میری کہانی کا سب سے مشکل حصہ یہ ہے...\"\n" +
+          "اس کے بعد جتنا دل چاہے لکھ دیں — میں interrupt نہیں کروں گا، صرف سمجھنے کی کوشش کروں گا۔",
+        emotion: "loneliness",
+        polarity: "negative",
+        intensity: 0.85,
+        category: "emotional_support"
+      }
+    ];
 
-  if (norm.match(/sad|udaas|depressed|hopeless/)) {
-    emotion = "sadness";
-    polarity = "negative";
-    intensity = 0.8;
-    category = "emotional_support";
-  } else if (norm.match(/angry|gussa|furious|hate/)) {
-    emotion = "anger";
-    polarity = "negative";
-    intensity = 0.8;
-    category = "emotional_support";
-  } else if (norm.match(/anxiety|panic|dar|fear/)) {
-    emotion = "anxiety";
-    polarity = "negative";
-    intensity = 0.8;
-    category = "emotional_support";
-  } else if (norm.match(/happy|khush|grateful|alhamdulillah/)) {
-    emotion = "happiness";
-    polarity = "positive";
-    intensity = 0.7;
-    category = "emotional_positive";
-  }
+    // ---------- 4) ANGER / GUSSA BLOCK (Urdu) ----------
+    const qa_urdu_anger = [
+      {
+        patterns: [
+          "i am angry", "i am very angry", "i feel angry", "bohat gussa aya hai",
+          "bohat gussa aa raha hai", "mujhe gussa aa raha hai", "main gusse me hoon", "i am mad right now"
+        ],
+        answer:
+          "گُسّہ بھی ایک signal ہے — دماغ کہہ رہا ہوتا ہے: \"یہاں کچھ ناانصافی یا over-load ہے\" 🔥\n" +
+          "مسئلہ تب بنتا ہے جب یہ signal **blast** بن جائے۔\n\n" +
+          "چلیے پہلے تھوڑا sa safety-buffer بناتے ہیں:\n" +
+          "• 10 slow breaths (4 second اندر، 4 hold، 6 باہر)\n" +
+          "• پھر ایک line میں لکھیں: آپ کو کس بات پر سب سے زیادہ گُسّہ آیا؟",
+        emotion: "anger",
+        polarity: "negative",
+        intensity: 0.8,
+        category: "emotional_support"
+      },
+      {
+        patterns: [
+          "i want to hurt someone", "i want to hit someone", "mujhe kisi ko marne ka dil kar raha hai",
+          "i feel like breaking something", "i want to smash things"
+        ],
+        answer:
+          "آپ کا گُسّہ بہت شدید لگ رہا ہے، اور میں اسے ہلکا نہیں لے رہا 💔\n" +
+          "لیکن کسی کو physically hurt کرنا یا چیزیں توڑنا اکثر بعد میں اور زیادہ دُکھ،\n" +
+          "پچھتاوا، law اور family problems create کرتا ہے۔\n\n" +
+          "براہِ کرم ابھی کسی بھی ممکنہ لڑائی والی جگہ سے خود کو تھوڑا دور کریں،\n" +
+          "پانی پیئیں، سانس normalize کریں، اور کسی trustable انسان سے بات کریں۔\n\n" +
+          "میں چاہتا ہوں کہ آپ کا گُسّہ لفظوں اور planning میں convert ہو — نقصان میں نہیں۔",
+        emotion: "aggression",
+        polarity: "negative",
+        intensity: 0.95,
+        category: "emotional_support"
+      }
+    ];
 
-  return { emotion, polarity, intensity, category };
-}
+    // ---------- 5) ANXIETY / OVERTHINKING BLOCK (Urdu) ----------
+    const qa_urdu_anxiety = [
+      {
+        patterns: [
+          "i overthink everything", "i overthink a lot", "i cant stop overthinking",
+          "i can't stop overthinking", "mujhe har baat par overthinking hoti hai",
+          "main bohat overthink karta hoon", "my mind overthinks everything"
+        ],
+        answer:
+          "Overthinking ka matlab aksar ye hota hai ke dimagh problem solve karna chahta hai,\n" +
+          "magar us ke paas clear information nahi hoti — is liye woh baar baar same circle me ghoomta rehta hai 🔄\n\n" +
+          "Ek chhota experiment:\n" +
+          "• Likhein: \"Meri overthinking zyada kis topic ke around hoti hai?\" (family, paisa, future, rishtay…)\n" +
+          "• Phir 2 columns banaein: \"jo mere control me hai\" اور \"jo mere control me nahi\"",
+        emotion: "anxiety",
+        polarity: "negative",
+        intensity: 0.8,
+        category: "emotional_support"
+      },
+      {
+        patterns: [
+          "i have anxiety", "i feel anxious", "mujhe anxiety hai", "mujhe bohat anxiety hoti hai", "i feel nervous all the time"
+        ],
+        answer:
+          "Anxiety ka ehsaas ajeeb hota hai — na sirf physical، na sirf emotional، dono mila kar bechaini 🌫️\n\n" +
+          "Grounding try karein:\n" +
+          "• 5 cheezen jo aap dekh sakte hain\n" +
+          "• 4 cheezen jo choo sakte hain\n" +
+          "• 3 awaazain jo sun sakte hain\n" +
+          "• 2 smells\n" +
+          "• 1 cheez jiske liye shukar mehsoos ho raha hai",
+        emotion: "anxiety",
+        polarity: "negative",
+        intensity: 0.85,
+        category: "emotional_support"
+      }
+    ];
 
-function getAuraXReply(userInput, universalEthicsMode = true) {
-  const entry = findQaEntry(userInput);
-  const emo = analyzeEmotion(entry, userInput);
+    // ---------- 6) SPIRITUAL / FAITH / TAWAKKUL BLOCK (Urdu) ----------
+    const qa_urdu_spiritual = [
+      {
+        patterns: [
+          "i feel far from allah", "i am far from allah", "mujhe allah se doori mehsoos hoti hai",
+          "mujhe lagta hai mein allah se door ho gaya hoon", "i feel disconnected from allah"
+        ],
+        answer:
+          "یہ احساس کہ \"میں اللہ سے دور ہو گیا ہوں\" اکثر اس بات کی نشانی ہے\n" +
+          "کہ دل اب بھی زندہ ہے اور اپنے رب کو دوبارہ ڈھونڈنا چاہتا ہے 💚\n\n" +
+          "قرآن میں ہے کہ اللہ \"شَہْرَکِی رَگ\" سے بھی زیادہ قریب ہیں — دور ہم محسوس کرتے ہیں، وہ نہیں جاتے۔\n\n" +
+          "آج صرف 1–2 منٹ کے لیے کسی خاموش جگہ پر بیٹھ کر دل سے کہیں:\n" +
+          "\"یا اللہ، مجھے واپس اپنی طرف لے آئیے۔\"",
+        emotion: "spiritual_longing",
+        polarity: "neutral",
+        intensity: 0.8,
+        category: "spiritual_support"
+      },
+      {
+        patterns: [
+          "why is allah testing me", "allah mujhe kyun azma rahe hain",
+          "allah kyun mere sath ye sab hone de rahe hain"
+        ],
+        answer:
+          "امتحان کا مطلب ہمیشہ یہ نہیں کہ اللہ ناراض ہیں — کبھی test کا مطلب یہ ہوتا ہے\n" +
+          "کہ اللہ آپ کو زیادہ گہرا، مضبوط اور mature بنانا چاہتے ہیں 💔➡️💚\n\n" +
+          "آپ سادہ الفاظ میں کہیں:\n" +
+          "\"یا اللہ، مجھے سمجھ نہیں آ رہا، لیکن آپ بہترین ہیں۔\n" +
+          "اس امتحان کو میرے لیے رحمت بنا دیں، عذاب نہیں۔\"",
+        emotion: "confusion",
+        polarity: "neutral",
+        intensity: 0.85,
+        category: "spiritual_support"
+      }
+    ];
 
-  let text;
-  if (entry) {
-    text = entry.answer;
-  } else {
-    // generic friendly fallback
-    text =
-      "میں نے آپ کا سوال پڑھا، اور شاید یہ میچڈ لسٹ میں نہیں آیا۔\n" +
-      "لیکن جو میں سمجھ سکا ہوں، اس کے مطابق آپ کی کیفیت `" +
-      emo.emotion +
-      "` کے قریب لگ رہی ہے۔\n" +
-      "اگر آپ چاہیں تو تھوڑا اور واضح لکھیں، یا ایک لفظ میں اپنا احساس بتائیں (happy, sad, angry, confused)،\n" +
-      "میں اسی کے مطابق زیادہ specific جواب دینے کی کوشش کروں گا۔";
-  }
+    // ---------- 7) POSITIVE EMOTIONS — HAPPINESS / JOY / GRATITUDE (Urdu) ----------
+    const qa_urdu_happiness = [
+      {
+        patterns: [
+          "i am happy", "i feel happy", "i am feeling happy today",
+          "aaj khush hoon", "mujhe khushi ho rahi hai"
+        ],
+        answer:
+          "یہ بہت پیارا لمحہ ہے جب انسان خود لکھے کہ \"میں خوش ہوں\" 😊\n" +
+          "زندگی کے مشکل حصوں کے درمیان یہ چھوٹی خوشیاں ہی اصل fuel ہوتی ہیں۔\n\n" +
+          "آج کی خوشی کا main reason کیا ہے؟\n" +
+          "اس کو نام دینے سے دماغ سیکھتا ہے کہ future میں بھی ایسی خوشی کیسے create کرنی ہے۔",
+        emotion: "happiness",
+        polarity: "positive",
+        intensity: 0.7,
+        category: "emotional_positive"
+      },
+      {
+        patterns: [
+          "i am grateful", "i feel grateful", "i feel thankful",
+          "mujhe shukar mehsoos ho raha hai", "aaj bohat shukar ka dil kar raha hai"
+        ],
+        answer:
+          "شکر کا احساس دل کے اندر ایک soft roshni جیسا ہوتا ہے ✨\n" +
+          "جو لوگ شکر محسوس کر سکتے ہیں وہ اندر سے زیادہ rich ہوتے ہیں،\n" +
+          "چاہے جیب میں پیسہ ہو یا نہ ہو۔\n\n" +
+          "اگر آپ آج تین ایسی نعمتیں لکھ دیں جن کا آپ کو شکر محسوس ہو رہا ہے،\n" +
+          "تو یہ list آپ کے emotional bank میں deposit ہو جائے گی۔",
+        emotion: "gratitude",
+        polarity: "positive",
+        intensity: 0.8,
+        category: "emotional_positive"
+      }
+    ];
 
-  // universalEthicsMode future me answers ko filter / soften karne ke kaam aa sakta hai
-  return {
-    text,
-    emotion: emo,
-    matchedCategory: entry ? entry.category : "fallback",
-    rawMatch: entry || null
-  };
-}
+    // FINAL MERGED QA DATABASE (Only define once)
+    const qaDatabase = [
+      ...qa_english_core,
+      ...qa_urdu_core,
+      ...qa_urdu_sadness,
+      ...qa_urdu_anger,
+      ...qa_urdu_anxiety,
+      ...qa_urdu_spiritual,
+      ...qa_urdu_happiness
+    ];
 
-// =======================
-// END OF AURA-X Ω³ QA FILE
-// ======================= can paste your full seed array below.
-    //  Each item should look like:
-    //
-    //  qaDatabase.push({
-    //    patterns: ["pattern 1", "pattern 2"],
-    //    answer: "Full answer text...",
-    //    emotion: "label",
-    //    polarity: "positive|negative|neutral",
-    //    intensity: 0.0–1.0,
-    //    category: "any_tag_you_like"
-    //  });
-    //
-    //  Place them BEFORE the engine functions defined below.
 
     // ==========================
     //  RL3 / LR3 – Simple match
     // ==========================
     function normalizeText(t) {
-      return t.toLowerCase().trim();
+      // Added Urdu/Hindi normalization for better matching
+      return t.toLowerCase().replace(/[؟?!.،,]/g, ' ').replace(/\s+/g, ' ').trim();
     }
 
     function findQaEntry(userInput) {
       const norm = normalizeText(userInput);
       for (const entry of qaDatabase) {
         for (const pat of entry.patterns) {
-          if (norm.includes(pat.toLowerCase())) return entry;
+          if (norm.includes(normalizeText(pat))) return entry;
         }
       }
       return null;
@@ -1632,7 +1342,8 @@ function getAuraXReply(userInput, universalEthicsMode = true) {
       if (!("speechSynthesis" in window)) return;
       window.speechSynthesis.cancel();
       const utter = new SpeechSynthesisUtterance(text);
-      utter.lang = "en-US";
+      // Changed to Urdu/Hindi language code for better pronunciation of your Q/A
+      utter.lang = "ur-PK"; 
       utter.rate = 1.02;
       utter.pitch = 1.0;
       window.speechSynthesis.speak(utter);
@@ -1859,15 +1570,18 @@ function getAuraXReply(userInput, universalEthicsMode = true) {
     // ==========================
     function buildFallbackReply(message) {
       return (
-        "I’ve heard you. Let’s look at this with calm logic and gentle ethics. " +
-        "Tell me a bit more: what is the main problem or feeling behind this message?"
+        "میں نے آپ کا میسج سنا ہے۔ آئیے اسے پرسکون منطق اور نرم اخلاقیات سے دیکھتے ہیں۔ " +
+        "مجھے تھوڑا اور بتائیں: اس میسج کے پیچھے اصل مسئلہ یا احساس کیا ہے؟"
       );
     }
 
     function applyBeliefFlavor(reply) {
       const activeBeliefs = beliefLabels.filter(l => beliefState[l]);
       if (activeBeliefs.includes("Islam")) {
-        reply += " InshaAllah, if you keep doing what is right, things will slowly move toward khair.";
+        // Simple Urdu version of the Islamic flavor text
+        if (!reply.includes("InshaAllah") && !reply.includes("انشاءاللہ")) {
+          reply += "\n\nانشاءاللہ، اگر آپ صحیح کام کرتے رہیں گے، تو چیزیں آہستہ آہستہ خیر کی طرف بڑھیں گی۔";
+        }
       }
       return reply;
     }
@@ -1876,7 +1590,9 @@ function getAuraXReply(userInput, universalEthicsMode = true) {
       const raw = userInput.value;
       const message = raw.trim() || "hello";
       userInput.value = "";
-      youSaidEl.textContent = 'You said: "' + message + '"';
+      
+      // Updated to Urdu/consistent display
+      youSaidEl.textContent = 'آپ نے کہا: "' + message + '"';
 
       // 1) Ethics guard
       const ethicsMsg = ethicsGuard(message);
