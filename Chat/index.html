@@ -138,6 +138,7 @@
       font-size: 13px;
       line-height: 1.4;
       color: #e5e7eb;
+      white-space: pre-wrap; /* تاکہ لائن بریک بھی نظر آئیں */
     }
 
     /* ===== Buttons INSIDE card (right side vertical) ===== */
@@ -351,8 +352,8 @@
       </div>
 
       <div id="reactionText">
-        Universal Ethics says: avoid actions that create negative emotions in you or others,
-        and move toward actions that create calm, kindness and positive feelings.
+Universal Ethics says: avoid actions that create negative emotions in you or others,
+and move toward actions that create calm, kindness and positive feelings.
       </div>
 
       <!-- Buttons INSIDE card on right -->
@@ -537,7 +538,7 @@
       const text = input.value.trim();
       if (!text) return;
 
-      // Show floating bubble
+      // اوپر bubble دکھاؤ
       container.innerHTML = "";
       const msg = document.createElement("div");
       msg.className = "sent-message";
@@ -571,23 +572,30 @@
 
       const lower = text.toLowerCase();
       let tone = "neutral";
-      if (lower.match(/sad|upset|angry|fear|tension|stress|anxious|depressed/)) {
+
+      if (lower.match(/sad|upset|angry|fear|tension|stress|anxious|depressed|رو رہا|غمگین/)) {
         tone = "negative";
-      } else if (lower.match(/happy|grateful|hope|excited|peace|shukr|alhamdulillah/)) {
+      } else if (lower.match(/happy|grateful|hope|excited|peace|shukr|alhamdulillah|خوش|شکر/)) {
         tone = "positive";
+      }
+
+      const header = `You said: "${text}"`;
+
+      let toneLine = "";
+      if (tone === "negative") {
+        toneLine =
+          "AURA-X feels some heaviness in your words. Take one very small step that reduces harm or pain — even if it is just pausing, breathing, or speaking kindly to yourself.";
+      } else if (tone === "positive") {
+        toneLine =
+          "Your words already carry some light. Protect this feeling by sharing it wisely and avoiding actions that can damage this positivity.";
+      } else {
+        toneLine =
+          "Your message feels balanced. Notice gently which actions increase calm and which actions increase tension, then move one step toward calm.";
       }
 
       let base =
         "Universal Ethics says: avoid actions that create negative emotions in you or others, " +
         "and gently move toward actions that create calm, kindness and positive feelings.";
-
-      if (tone === "negative") {
-        base += " Right now your text feels a bit heavy. Try one tiny step that reduces harm or hurt, " +
-                "even if it's just pausing, breathing, or talking kindly to yourself.";
-      } else if (tone === "positive") {
-        base += " Your words already carry some light. Protect this feeling by sharing it, " +
-                "thanking the moment, and avoiding anything that can damage this positivity.";
-      }
 
       let extra = "";
       if (settings.beliefEnabled && settings.beliefs.length > 1) {
@@ -595,10 +603,11 @@
         extra =
           " Based on your selected belief mode (" +
           rels.join(", ") +
-          "), you can also reflect on the teachings of those traditions about compassion, patience, and responsibility.";
+          "), you can also reflect on how those traditions talk about compassion, patience and responsibility.";
       }
 
-      reactionEl.textContent = base + extra;
+      const fullReply = `${header}\n\n${toneLine}\n\n${base}${extra}`;
+      reactionEl.textContent = fullReply;
       updateModeLabel();
     }
 
