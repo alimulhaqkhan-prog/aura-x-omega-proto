@@ -20,7 +20,15 @@
       align-items: center;
       justify-content: center;
       overflow: hidden;
+      transition: background 0.6s ease;
     }
+    body.day-mode {
+      background: radial-gradient(circle at 50% 0%, #0f172a 0, #020617 70%);
+    }
+    body.night-mode {
+      background: radial-gradient(circle at 50% 0%, #020617 0, #020617 80%);
+    }
+
     #app {
       position: relative;
       width: 100%;
@@ -39,7 +47,6 @@
     .card {
       width: 100%;
       max-width: 420px;
-      background: radial-gradient(circle at 20% 0%, #1f2937 0, #020617 65%);
       border-radius: 24px;
       padding: 20px 18px 18px;
       box-shadow: 0 24px 60px rgba(0, 0, 0, 0.7);
@@ -47,6 +54,16 @@
       flex-direction: column;
       align-items: center;
       box-sizing: border-box;
+      background: radial-gradient(circle at 20% 0%, #111827 0, #020617 70%);
+      transition: background 0.6s ease, box-shadow 0.6s ease;
+    }
+    body.day-mode .card {
+      background: radial-gradient(circle at 0% 0%, #111827 0, #020617 80%);
+      box-shadow: 0 24px 60px rgba(15, 23, 42, 0.8);
+    }
+    body.night-mode .card {
+      background: radial-gradient(circle at 0% 0%, #020617 0, #020617 75%);
+      box-shadow: 0 28px 70px rgba(0, 0, 0, 0.9);
     }
 
     .header {
@@ -105,9 +122,9 @@
       border-color: #facc15;
     }
     .pill-btn.active {
-      box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.7),
-        0 14px 35px rgba(34, 197, 94, 0.5);
-      border-color: #22c55e;
+      box-shadow: 0 0 0 2px rgba(249, 250, 251, 0.7),
+        0 14px 35px rgba(148, 163, 184, 0.45);
+      border-color: #e5e7eb;
     }
 
     /* ===== Orb (Sun / Moon) ===== */
@@ -124,41 +141,44 @@
       transition: all 0.5s ease;
     }
 
-    /* Sun – warm realistic */
+    /* Sun – warm realistic sunrise */
     .orb.sun {
-      background: radial-gradient(circle at 30% 25%, #fff7cc 0, #fde047 22%,
-          #f97316 55%, #b45309 80%);
+      background:
+        radial-gradient(circle at 30% 25%, #fffdf2 0, #fffbeb 18%, #fde68a 32%,
+          #f97316 62%, #b45309 86%);
       box-shadow:
-        0 0 32px rgba(250, 204, 21, 0.9),
-        0 0 90px rgba(251, 191, 36, 0.7);
+        0 0 26px rgba(250, 204, 21, 0.9),
+        0 0 85px rgba(251, 191, 36, 0.8);
       animation: breathe-sun 5s ease-in-out infinite alternate;
     }
 
-    /* Dynamic full-moon: soft white disc with subtle halo */
+    /* Dynamic full-moon – bluish glow with soft texture */
     .orb.moon-dynamic {
       background:
-        radial-gradient(circle at 30% 25%, #ffffff 0, #f9fafb 22%,
-          #e5e7eb 55%, #d1d5db 70%);
+        radial-gradient(circle at 32% 24%, #ffffff 0, #f9fafb 22%, #e5e7eb 42%,
+          #d1d5db 56%, #9ca3af 74%) ,
+        radial-gradient(circle at 18% 65%, rgba(148, 163, 184, 0.35) 0, transparent 40%),
+        radial-gradient(circle at 70% 30%, rgba(148, 163, 184, 0.45) 0, transparent 45%);
       box-shadow:
-        0 0 30px rgba(248, 250, 252, 0.7),
-        0 0 80px rgba(148, 163, 184, 0.5);
+        0 0 30px rgba(248, 250, 252, 0.8),
+        0 0 95px rgba(125, 211, 252, 0.35);
       animation: breathe-moon 6s ease-in-out infinite alternate;
     }
 
-    /* Static moon – dimmer, no animation */
+    /* Static moon – calm, softer */
     .orb.moon-static {
       background:
-        radial-gradient(circle at 32% 27%, #ffffff 0, #f3f4f6 24%,
-          #d1d5db 60%, #9ca3af 78%);
+        radial-gradient(circle at 34% 26%, #ffffff 0, #f3f4f6 24%, #d1d5db 55%,
+          #9ca3af 76%);
       box-shadow:
-        0 0 16px rgba(248, 250, 252, 0.5),
-        0 0 40px rgba(148, 163, 184, 0.35);
+        0 0 18px rgba(248, 250, 252, 0.6),
+        0 0 45px rgba(148, 163, 184, 0.4);
     }
 
-    /* No body – fade out */
+    /* Empty sky */
     .orb.hidden {
       opacity: 0;
-      transform: scale(0.8);
+      transform: scale(0.82);
       box-shadow: none;
     }
 
@@ -166,28 +186,28 @@
       0% {
         transform: scale(0.97);
         box-shadow:
-          0 0 28px rgba(250, 204, 21, 0.9),
-          0 0 70px rgba(251, 191, 36, 0.7);
+          0 0 22px rgba(250, 204, 21, 0.9),
+          0 0 70px rgba(251, 191, 36, 0.75);
       }
       100% {
         transform: scale(1.02);
         box-shadow:
-          0 0 40px rgba(250, 204, 21, 1),
-          0 0 110px rgba(251, 191, 36, 0.9);
+          0 0 34px rgba(250, 204, 21, 1),
+          0 0 110px rgba(251, 191, 36, 0.95);
       }
     }
     @keyframes breathe-moon {
       0% {
         transform: scale(0.98);
         box-shadow:
-          0 0 26px rgba(248, 250, 252, 0.7),
-          0 0 65px rgba(148, 163, 184, 0.45);
+          0 0 26px rgba(248, 250, 252, 0.75),
+          0 0 70px rgba(148, 163, 184, 0.45);
       }
       100% {
         transform: scale(1.03);
         box-shadow:
-          0 0 36px rgba(248, 250, 252, 0.9),
-          0 0 95px rgba(148, 163, 184, 0.6);
+          0 0 36px rgba(248, 250, 252, 0.95),
+          0 0 105px rgba(148, 163, 184, 0.6);
       }
     }
 
@@ -300,6 +320,7 @@
       color: #9ca3af;
       opacity: 0.85;
       max-width: 420px;
+      text-align: center;
     }
 
     /* ===== Overlays / Modals ===== */
@@ -403,8 +424,8 @@
       color: #9ca3af;
     }
     .llm-option.active {
-      border-color: #38bdf8;
-      box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.9);
+      border-color: #e5e7eb;
+      box-shadow: 0 0 0 1px rgba(229, 231, 235, 0.9);
     }
     .llm-selected {
       margin-top: 10px;
@@ -909,24 +930,31 @@
 
     function applyOrbState() {
       const orb = document.getElementById("auraOrb");
+      if (!orb) return;
+
       orb.classList.remove("sun","moon-dynamic","moon-static","hidden");
+      document.body.classList.remove("day-mode","night-mode");
 
       switch (celestialState) {
         case 0:
           orb.classList.add("sun");
           orb.setAttribute("aria-label","Sun (day mode)");
+          document.body.classList.add("day-mode");
           break;
         case 1:
           orb.classList.add("moon-dynamic");
           orb.setAttribute("aria-label","Full moon (live)");
+          document.body.classList.add("night-mode");
           break;
         case 2:
           orb.classList.add("moon-static");
           orb.setAttribute("aria-label","Moon (calm/static)");
+          document.body.classList.add("night-mode");
           break;
         case 3:
           orb.classList.add("hidden");
           orb.setAttribute("aria-label","No body – deep space");
+          document.body.classList.add("night-mode");
           break;
       }
     }
