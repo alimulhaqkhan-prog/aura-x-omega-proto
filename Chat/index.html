@@ -3,39 +3,37 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>AURA-X Ω v1 — Demo Edition (GitHub Pages)</title>
+<title>AURA-X Ω v1 — Emotional Continuity Reactor</title>
 <style>
 body{
   background:radial-gradient(circle,#0b1220,#0d0f14);
-  color:#f6c453;
-  font-family:'Outfit',system-ui;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  height:100vh;gap:12px;text-align:center;
+  color:#f6c453;font-family:'Outfit',system-ui;
+  display:flex;flex-direction:column;align-items:center;
+  justify-content:center;height:100vh;text-align:center;gap:12px;
 }
 input,select{
   padding:10px 15px;border-radius:12px;border:none;width:80%;max-width:400px;
-  text-align:center;background:#1a1c24;color:#f6c453;
+  background:#1a1c24;color:#f6c453;text-align:center;
 }
 button{
   background:#f6c453;border:none;color:#11141b;padding:10px 25px;
-  border-radius:20px;font-weight:bold;font-size:16px;cursor:pointer;transition:.2s;
+  border-radius:20px;font-weight:bold;font-size:16px;cursor:pointer;
 }
-button:hover{background:#f0b12e;transform:scale(1.05);}
+button:hover{background:#f0b12e;}
 #reply{
-  margin-top:20px;padding:15px;background:rgba(255,255,255,.05);border-radius:16px;
-  width:80%;max-width:450px;font-size:16px;line-height:1.5;
+  margin-top:15px;padding:15px;background:rgba(255,255,255,.05);
+  border-radius:16px;width:80%;max-width:450px;line-height:1.5;
 }
+footer{margin-top:10px;font-size:13px;color:#888;}
 .voiceBtn{
   background:#f6c453;color:#11141b;border:none;border-radius:50%;
-  width:48px;height:48px;font-size:22px;cursor:pointer;transition:.2s;
+  width:48px;height:48px;font-size:22px;cursor:pointer;margin-left:5px;
 }
-.voiceBtn:hover{background:#f0b12e;transform:scale(1.1);}
-footer{margin-top:15px;font-size:13px;color:#888;}
+.voiceBtn:hover{background:#f0b12e;}
 </style>
 </head>
 <body>
-
-<h2>💞 AURA-X Ω v1 — Demo (Offline AI Mode)</h2>
+<h2>💞 AURA-X Ω v1 — Emotional Continuity Reactor</h2>
 
 <select id="belief">
   <option value="universal">🌍 Universal Ethics</option>
@@ -51,15 +49,14 @@ footer{margin-top:15px;font-size:13px;color:#888;}
 <button class="voiceBtn" onclick="startVoice()">🎤</button>
 
 <div id="reply"></div>
-<footer>© 2025 Investor Point Research Cell — AURA-X Ω v1 Demo</footer>
+<footer>© 2025 Investor Point Research Cell — AURA-X Ω v1</footer>
 
 <script>
-// ---------- Mic Input ----------
+// 🎤 Voice Input
 function startVoice(){
  if(!('webkitSpeechRecognition' in window)){alert('Speech recognition not supported');return;}
  const rec=new webkitSpeechRecognition();
- rec.lang='ur-PK,en-US';
- rec.start();
+ rec.lang='ur-PK,en-US';rec.start();
  rec.onresult=(e)=>{
    const t=e.results[0][0].transcript;
    document.getElementById('msg').value=t;
@@ -67,7 +64,7 @@ function startVoice(){
  };
 }
 
-// ---------- Text-to-Speech ----------
+// 🔊 Text-to-Speech (main reply only)
 function speak(text,lang,E0){
  const u=new SpeechSynthesisUtterance(text.replace(/<[^>]+>/g,''));
  u.lang=(lang==='ur')?'ur-PK':'en-US';
@@ -76,7 +73,7 @@ function speak(text,lang,E0){
  speechSynthesis.cancel();speechSynthesis.speak(u);
 }
 
-// ---------- Mini Emotion Engine ----------
+// 🧠 Emotion Formula
 let BM=0.3,D=0.05,lf=0.15,ls=0.08,lt=0.05;
 function computeEmotion(TM){
  BM=BM*0.9+TM*0.1;
@@ -92,43 +89,41 @@ function textToTM(t){
  return Math.max(-0.6,Math.min(0.6,s));
 }
 
-// ---------- Local Seeded Replies ----------
+// 🔮 Replies & Faith Lines
 const qa={
- hello:["Hello 👋 How can I assist you?","Peace be upon you 🌿"],
- how:["I'm balanced 🙂","Feeling harmonic today."],
- love:["Love is resonance between two memories.","Pure feeling = TM×BM."],
- fear:["Fear is unresolved continuity.","Calmness restores equilibrium."],
- sad:["Low resonance detected. Healing loop active.","Stay patient; light returns."],
- angry:["Emotion too strong — cooling λ_sys field.","Let’s breathe and reset."],
- beauty:["Beauty is a mirror of truth.","A resonance of form and spirit."]
+ hello:["Hello 👋 How can I assist you today?","Peace be upon you 🌿"],
+ how:["I'm listening carefully — continuity detected.","Feeling harmonic today."],
+ love:["Love is resonance between two memories.","Pure feeling equals TM×BM."],
+ beauty:["Beauty is a mirror of truth.","A resonance of form and spirit."],
+ sad:["Low resonance detected — stay patient.","Light returns to the stable soul."],
+ angry:["Cooling field activated — let’s reset.","Emotion normalized successfully."],
+ default:["Compassion is the finest form of intelligence."]
 };
 const faithQuotes={
- islamic:"“إِنَّ اللّٰهَ جَمِيلٌ يُحِبُّ الْجَمَالَ” — Indeed, Allah is Beautiful and loves beauty.",
+ islamic:"“إِنَّ اللّٰهَ جَمِيلٌ يُحِبُّ الْجَمَالَ” — Indeed Allah is Beautiful and loves beauty.",
  christian:"“God is love.” (1 John 4:8)",
  hindu:"“अहिंसा परमो धर्मः” — Non-violence is the highest duty.",
  buddhist:"“Peace comes from within.” — Buddha",
  universal:"“Kindness is the universal religion.”"
 };
 
-// ---------- Main Send ----------
+// 💬 Send Message
 function sendMessage(){
  const msg=document.getElementById('msg').value.trim();
  if(!msg)return;
  const belief=document.getElementById('belief').value;
  const lang=/[اآپتثجچحخدذرزسشصضطظعغفقکگلمنوہی]/.test(msg)?'ur':'en';
  const TM=textToTM(msg);const E0=computeEmotion(TM);
- // basic pattern match
- let key=Object.keys(qa).find(k=>msg.toLowerCase().includes(k))||'hello';
+ let key=Object.keys(qa).find(k=>msg.toLowerCase().includes(k))||'default';
  const reply=qa[key][Math.floor(Math.random()*qa[key].length)];
  const faithLine=faithQuotes[belief];
- const html=`<div style='background:#1a1c24;padding:10px;border-radius:10px;color:#f6c453'>
-   💕 <b>${belief}</b> mode <br><br>${reply}
-   <div style='background:#f6c45320;padding:6px;margin-top:6px;border-radius:8px'>
-     ${faithLine}
-   </div>
-   <small>Emotion E₀ = ${E0.toFixed(3)}</small>
- </div>`;
- document.getElementById('reply').innerHTML=html;
+ document.getElementById('reply').innerHTML=
+ `<div style='background:#1a1c24;padding:10px;border-radius:10px;color:#f6c453'>
+  💕 <b>${belief}</b> mode<br><br>${reply}
+  <div style='background:#f6c45320;padding:6px;margin-top:6px;border-radius:8px'>
+   ${faithLine}
+  </div>
+  <small>Emotion E₀ = ${E0.toFixed(3)}</small></div>`;
  speak(reply,lang,E0);
 }
 </script>
