@@ -8,89 +8,109 @@
 body{
   background:radial-gradient(circle,#0b1220,#0d0f14);
   color:#f6c453;font-family:'Outfit',system-ui;
-  display:flex;flex-direction:column;align-items:center;
-  justify-content:center;height:100vh;text-align:center;gap:12px;
+  margin:0;display:flex;flex-direction:column;
+  height:100vh;justify-content:space-between;
 }
-input,select{
-  padding:10px 15px;border-radius:12px;border:none;width:80%;max-width:400px;
-  background:#1a1c24;color:#f6c453;text-align:center;
+header{
+  text-align:center;padding:12px 0;
+  font-size:20px;font-weight:700;
+  color:#f6c453;letter-spacing:.5px;
+}
+main{
+  flex:1;display:flex;flex-direction:column;
+  align-items:center;justify-content:flex-start;
+  overflow-y:auto;padding-top:20px;
+}
+.chat-box{
+  width:80%;max-width:460px;background:rgba(255,255,255,.05);
+  border-radius:16px;padding:15px;margin-bottom:20px;
+  text-align:center;line-height:1.5;
+}
+footer{
+  background:#11141b;padding:12px 0;
+  display:flex;flex-direction:column;align-items:center;gap:10px;
+  border-top:1px solid rgba(255,255,255,.1);
+}
+select,input,button{
+  border:none;border-radius:12px;font-size:15px;
+  padding:10px 15px;
+}
+select{
+  width:80%;max-width:400px;background:#1a1c24;color:#f6c453;text-align:center;
+}
+input{
+  width:80%;max-width:400px;background:#1a1c24;color:#f6c453;text-align:center;
 }
 button{
-  background:#f6c453;border:none;color:#11141b;padding:10px 25px;
-  border-radius:20px;font-weight:bold;font-size:16px;cursor:pointer;
+  background:#f6c453;color:#11141b;font-weight:bold;
+  cursor:pointer;border-radius:20px;transition:.2s;
 }
 button:hover{background:#f0b12e;}
-#reply{
-  margin-top:15px;padding:15px;background:rgba(255,255,255,.05);
-  border-radius:16px;width:80%;max-width:450px;line-height:1.5;
-}
-footer{margin-top:10px;font-size:13px;color:#888;}
 .voiceBtn{
-  background:#f6c453;color:#11141b;border:none;border-radius:50%;
-  width:48px;height:48px;font-size:22px;cursor:pointer;margin-left:5px;
+  background:#f6c453;color:#11141b;border:none;
+  border-radius:50%;width:48px;height:48px;font-size:22px;
 }
 .voiceBtn:hover{background:#f0b12e;}
+#status{font-size:13px;color:#999;text-align:center;margin-bottom:6px;}
 </style>
 </head>
 <body>
-<h2>💞 AURA-X Ω v1 — Emotional Continuity Reactor</h2>
 
-<select id="belief">
-  <option value="universal">🌍 Universal Ethics</option>
-  <option value="islamic">☪️ Islamic</option>
-  <option value="christian">✝️ Christian</option>
-  <option value="hindu">🕉️ Hindu</option>
-  <option value="buddhist">☸️ Buddhist</option>
-</select>
+<header>💕 AURA-X Ω v1 — Emotional Continuity Reactor</header>
 
-<input id="msg" placeholder="Type or speak your message..."
- onkeydown="if(event.key==='Enter'){sendMessage()}">
-<button onclick="sendMessage()">🔘 Send</button>
-<button class="voiceBtn" onclick="startVoice()">🎤</button>
+<main>
+  <div id="reply" class="chat-box">I’m AURA-X Ω. Ready to resonate with you 💫</div>
+  <div id="status">Emotion E₀ = 0.000 | Level 0%</div>
+</main>
 
-<div id="reply"></div>
-<footer>© 2025 Investor Point Research Cell — AURA-X Ω v1</footer>
+<footer>
+  <select id="belief">
+    <option value="universal">🌍 Universal Ethics</option>
+    <option value="islamic">☪️ Islamic</option>
+    <option value="christian">✝️ Christian</option>
+    <option value="hindu">🕉️ Hindu</option>
+    <option value="buddhist">☸️ Buddhist</option>
+  </select>
+
+  <input id="msg" placeholder="Type or speak your message..."
+   onkeydown="if(event.key==='Enter'){sendMessage()}">
+  <div style="display:flex;gap:10px;margin-top:6px;">
+    <button onclick="sendMessage()">🔘 Send</button>
+    <button class="voiceBtn" onclick="startVoice()">🎤</button>
+  </div>
+</footer>
 
 <script>
 // 🎤 Voice Input
 function startVoice(){
  if(!('webkitSpeechRecognition' in window)){alert('Speech recognition not supported');return;}
- const rec=new webkitSpeechRecognition();
- rec.lang='ur-PK,en-US';rec.start();
- rec.onresult=(e)=>{
-   const t=e.results[0][0].transcript;
-   document.getElementById('msg').value=t;
-   sendMessage();
- };
+ const rec = new webkitSpeechRecognition();
+ rec.lang = 'ur-PK,en-US'; rec.start();
+ rec.onresult = (e)=>{document.getElementById('msg').value = e.results[0][0].transcript;sendMessage();};
 }
 
-// 🔊 Text-to-Speech (main reply only)
-function speak(text,lang,E0){
- const u=new SpeechSynthesisUtterance(text.replace(/<[^>]+>/g,''));
- u.lang=(lang==='ur')?'ur-PK':'en-US';
- const abs=Math.abs(E0);
- u.rate=0.9+abs*0.6;u.pitch=1.0+E0*0.6;
- speechSynthesis.cancel();speechSynthesis.speak(u);
+// 🔊 Text-to-Speech
+function speak(text, lang, E0){
+ const u = new SpeechSynthesisUtterance(text.replace(/<[^>]+>/g,'')); 
+ u.lang = (lang==='ur')?'ur-PK':'en-US';
+ const abs = Math.abs(E0);
+ u.rate = 0.9 + abs*0.6; u.pitch = 1.0 + E0*0.6;
+ speechSynthesis.cancel(); speechSynthesis.speak(u);
 }
 
-// 🧠 Emotion Formula
-let BM=0.3,D=0.05,lf=0.15,ls=0.08,lt=0.05;
-function computeEmotion(TM){
- BM=BM*0.9+TM*0.1;
- const val=(TM*BM)-D+lf+ls+lt;
- return Math.tanh(val);
-}
+// 🧮 Formula
+let BM = 0.3, D = 0.05, lf = 0.15, ls = 0.08, lt = 0.05;
+function computeEmotion(TM){ BM = BM*0.9 + TM*0.1; return Math.tanh((TM*BM)-D+lf+ls+lt); }
 function textToTM(t){
- t=t.toLowerCase();let s=0;
- const pos=["happy","good","love","great","peace","thank","hope","smile","خوش","محبت","اچھا"];
- const neg=["sad","angry","hate","bad","tired","lonely","fear","cry","غم","برا","تنہا"];
- pos.forEach(w=>{if(t.includes(w))s+=0.1;});
- neg.forEach(w=>{if(t.includes(w))s-=0.1;});
- return Math.max(-0.6,Math.min(0.6,s));
+ t = t.toLowerCase(); let s = 0;
+ const pos = ["happy","good","love","great","peace","thank","hope","smile","خوش","محبت","اچھا"];
+ const neg = ["sad","angry","hate","bad","tired","lonely","fear","cry","غم","برا","تنہا"];
+ pos.forEach(w=>{if(t.includes(w)) s += 0.1}); neg.forEach(w=>{if(t.includes(w)) s -= 0.1});
+ return Math.max(-0.6, Math.min(0.6, s));
 }
 
-// 🔮 Replies & Faith Lines
-const qa={
+// 🧠 Replies
+const qa = {
  hello:["Hello 👋 How can I assist you today?","Peace be upon you 🌿"],
  how:["I'm listening carefully — continuity detected.","Feeling harmonic today."],
  love:["Love is resonance between two memories.","Pure feeling equals TM×BM."],
@@ -99,7 +119,7 @@ const qa={
  angry:["Cooling field activated — let’s reset.","Emotion normalized successfully."],
  default:["Compassion is the finest form of intelligence."]
 };
-const faithQuotes={
+const faithQuotes = {
  islamic:"“إِنَّ اللّٰهَ جَمِيلٌ يُحِبُّ الْجَمَالَ” — Indeed Allah is Beautiful and loves beauty.",
  christian:"“God is love.” (1 John 4:8)",
  hindu:"“अहिंसा परमो धर्मः” — Non-violence is the highest duty.",
@@ -107,24 +127,22 @@ const faithQuotes={
  universal:"“Kindness is the universal religion.”"
 };
 
-// 💬 Send Message
+// 💬 Send
 function sendMessage(){
- const msg=document.getElementById('msg').value.trim();
- if(!msg)return;
- const belief=document.getElementById('belief').value;
- const lang=/[اآپتثجچحخدذرزسشصضطظعغفقکگلمنوہی]/.test(msg)?'ur':'en';
- const TM=textToTM(msg);const E0=computeEmotion(TM);
- let key=Object.keys(qa).find(k=>msg.toLowerCase().includes(k))||'default';
- const reply=qa[key][Math.floor(Math.random()*qa[key].length)];
- const faithLine=faithQuotes[belief];
- document.getElementById('reply').innerHTML=
- `<div style='background:#1a1c24;padding:10px;border-radius:10px;color:#f6c453'>
-  💕 <b>${belief}</b> mode<br><br>${reply}
-  <div style='background:#f6c45320;padding:6px;margin-top:6px;border-radius:8px'>
-   ${faithLine}
-  </div>
-  <small>Emotion E₀ = ${E0.toFixed(3)}</small></div>`;
- speak(reply,lang,E0);
+ const msg = document.getElementById('msg').value.trim(); if(!msg)return;
+ const belief = document.getElementById('belief').value;
+ const lang = /[اآپتثجچحخدذرزسشصضطظعغفقکگلمنوہی]/.test(msg)?'ur':'en';
+ const TM = textToTM(msg), E0 = computeEmotion(TM);
+ let key = Object.keys(qa).find(k=>msg.toLowerCase().includes(k)) || 'default';
+ const reply = qa[key][Math.floor(Math.random()*qa[key].length)];
+ const faithLine = faithQuotes[belief];
+ const level = Math.round((E0+1)*50);
+ document.getElementById('reply').innerHTML =
+ `<b>💕 ${belief}</b> mode<br><br>${reply}
+ <div style='background:#f6c45320;padding:6px;margin-top:6px;border-radius:8px'>${faithLine}</div>
+ <small>Emotion E₀ = ${E0.toFixed(3)}</small>`;
+ document.getElementById('status').innerHTML = `Emotion Level: ${level}% ${E0>0?"💗":"💔"} (${E0>0?"Positive":"Negative"})`;
+ speak(reply, lang, E0);
 }
 </script>
 </body>
