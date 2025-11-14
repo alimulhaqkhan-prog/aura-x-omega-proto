@@ -96,7 +96,7 @@
 
     .celestial {
       position: relative;
-      width: 140px;      /* 50% smaller than old size */
+      width: 140px;      /* 50% smaller */
       height: 140px;
       border-radius: 50%;
       cursor: pointer;
@@ -159,6 +159,12 @@
       background: radial-gradient(circle, rgba(191,219,254,0.35), transparent 70%);
     }
 
+    /* Empty sky – orb invisible but clickable */
+    .celestial.empty {
+      background: transparent;
+      box-shadow: none;
+    }
+
     /* Floating animation for levitating moon */
     .floating {
       animation: floatOrb 5s ease-in-out infinite;
@@ -170,22 +176,14 @@
       100% { transform: translateY(0); }
     }
 
-    /* ===== Side buttons (left) ===== */
-    .side-column-left,
+    /* ===== Side buttons (right only) ===== */
     .side-column-right {
       position: absolute;
       top: 120px;
+      right: -32px;
       display: flex;
       flex-direction: column;
       gap: 10px;
-    }
-
-    .side-column-left {
-      left: -32px;
-    }
-
-    .side-column-right {
-      right: -32px;
     }
 
     .pill-button {
@@ -476,7 +474,7 @@
       flex-direction: column;
       gap: 4px;
       z-index: 15;
-      min-width: 130px;
+      min-width: 140px;
     }
 
     .menu-panel.visible {
@@ -533,17 +531,11 @@
       <!-- Celestial orb -->
       <div class="celestial-wrapper">
         <div class="celestial-glow sun-glow" id="celestialGlow"></div>
-        <div class="celestial sun" id="celestialOrb" title="Tap to switch sun / moon"></div>
+        <div class="celestial sun" id="celestialOrb" title="Tap to switch sun / moon / empty"></div>
 
-        <!-- Left side buttons -->
-        <div class="side-column-left">
-          <button class="pill-button" id="languageBtn" title="Language placeholder">L</button>
-          <button class="pill-button" id="themeBtn" title="Theme (Day / Night)">T</button>
-        </div>
-
-        <!-- Right side: main menu button -->
+        <!-- Right side: main menu button only -->
         <div class="side-column-right">
-          <button class="pill-button" id="menuBtn" title="Menu">
+          <button class="pill-button" id="menuBtn" title="Options menu">
             <span class="menu-bars"><div></div></span>
           </button>
         </div>
@@ -554,6 +546,10 @@
             <span class="label">Beliefs</span>
             <span class="sub">optional</span>
           </div>
+          <div class="menu-item" id="themeMenuItem">
+            <span class="label">Theme</span>
+            <span class="sub">day / night</span>
+          </div>
           <div class="menu-item" id="voiceMenuItem">
             <span class="label">Voice</span>
             <span class="sub" id="voiceStatus">on</span>
@@ -561,6 +557,10 @@
           <div class="menu-item" id="llmMenuItem">
             <span class="label">LLM</span>
             <span class="sub" id="llmLabel">offline</span>
+          </div>
+          <div class="menu-item" id="languageMenuItem">
+            <span class="label">Language</span>
+            <span class="sub">future</span>
           </div>
           <div class="menu-item" id="aboutMenuItem">
             <span class="label">About</span>
@@ -618,7 +618,7 @@
     </div>
   </div>
 
-  <!-- Theme overlay (T button) -->
+  <!-- Theme overlay (from menu) -->
   <div class="overlay" id="themeOverlay">
     <div class="panel">
       <div class="panel-header">
@@ -633,7 +633,7 @@
         <button class="theme-pill" id="darkThemePill">Dark (night)</button>
       </div>
       <div class="panel-footer">
-        You can still tap the sun/moon orb to cycle through its states.
+        You can still tap the orb to cycle: sun → live moon → calm moon → empty → sun.
       </div>
     </div>
   </div>
@@ -675,30 +675,26 @@
         <em>reduce unnecessary emotional pain, increase calm and kindness.</em>
       </div>
       <div class="panel-footer">
-        Current build: <strong>Offline demo · v0.4 (Sun/Moon)</strong>.
+        Current build: <strong>Offline demo · v0.5 (Sun/Moon loop)</strong>.
       </div>
     </div>
   </div>
 
   <script>
-    // ===== Utility =====
     const $ = (id) => document.getElementById(id);
 
     const celestialOrb = $("celestialOrb");
     const celestialGlow = $("celestialGlow");
-    const youSaidEl = $("youSaid");
-    const assistantTextEl = $("assistantText");
-    const userInput = $("userInput");
-    const sendBtn = $("sendBtn");
-    const themeBtn = $("themeBtn");
+    const card = $("card");
+
     const menuBtn = $("menuBtn");
     const menuPanel = $("menuPanel");
     const beliefsMenuItem = $("beliefsMenuItem");
+    const themeMenuItem = $("themeMenuItem");
     const voiceMenuItem = $("voiceMenuItem");
     const llmMenuItem = $("llmMenuItem");
+    const languageMenuItem = $("languageMenuItem");
     const aboutMenuItem = $("aboutMenuItem");
-    const voiceStatus = $("voiceStatus");
-    const llmLabel = $("llmLabel");
 
     const beliefOverlay = $("beliefOverlay");
     const themeOverlay  = $("themeOverlay");
@@ -713,10 +709,17 @@
 
     const llmChipsContainer = $("llmChips");
     const llmFooter = $("llmFooter");
+    const voiceStatus = $("voiceStatus");
+    const llmLabel = $("llmLabel");
+
+    const youSaidEl = $("youSaid");
+    const assistantTextEl = $("assistantText");
+    const userInput = $("userInput");
+    const sendBtn = $("sendBtn");
 
     // ===== State =====
-    let celestialState = 0; // 0=sun,1=moon floating,2=moon static,3=hidden
-    let currentTheme = "dark"; // "light" | "dark"
+    let celestialState = 0; // 0=sun,1=moon floating,2=moon static,3=empty
+    let currentTheme = "dark";
     let voiceOn = true;
     let beliefState = {
       Natural: true,
@@ -733,6 +736,8 @@
     };
     let llmState = "Offline basic QA only";
 
+    const beliefLabels = Object.keys(beliefState);
+
     // ===== Time-based default theme =====
     (function initThemeByTime () {
       const hour = new Date().getHours();
@@ -745,11 +750,11 @@
       }
     })();
 
-    // ===== Celestial (Sun/Moon) logic =====
+    // ===== Celestial (Sun/Moon/Empty) logic =====
     function setCelestialState(state) {
       celestialState = state;
 
-      celestialOrb.classList.remove("sun", "moon", "floating");
+      celestialOrb.classList.remove("sun", "moon", "floating", "empty");
       celestialGlow.classList.remove("sun-glow", "moon-glow");
 
       if (state === 0) { // Sun
@@ -767,14 +772,15 @@
         celestialOrb.classList.add("moon");
         celestialGlow.classList.add("moon-glow");
         celestialGlow.style.opacity = "0.65";
-      } else { // Hidden
-        celestialOrb.style.display = "none";
+      } else { // 3: Empty sky – orb invisible but clickable
+        celestialOrb.style.display = "flex";
+        celestialOrb.classList.add("empty");
         celestialGlow.style.opacity = "0";
       }
     }
 
     celestialOrb.addEventListener("click", () => {
-      let next = (celestialState + 1) % 4;
+      const next = (celestialState + 1) % 4;
       setCelestialState(next);
     });
 
@@ -782,7 +788,6 @@
     function setTheme(theme, fromTimeInit = false) {
       currentTheme = theme;
       const body = document.body;
-      const card = $("card");
 
       if (theme === "light") {
         body.style.background = "#0f172a";
@@ -790,23 +795,16 @@
           "radial-gradient(circle at top, #1f2937 0%, #020617 45%, #020617 100%)";
         lightThemePill.classList.add("active");
         darkThemePill.classList.remove("active");
-        if (!fromTimeInit) setCelestialState(0); // show sun
+        if (!fromTimeInit) setCelestialState(0);
       } else {
         body.style.background = "#020617";
         card.style.background =
           "radial-gradient(circle at top, #020617 0%, #020617 40%, #020617 100%)";
         darkThemePill.classList.add("active");
         lightThemePill.classList.remove("active");
-        if (!fromTimeInit) setCelestialState(1); // show moon
+        if (!fromTimeInit) setCelestialState(1);
       }
     }
-
-    themeBtn.addEventListener("click", () => {
-      openOverlay(themeOverlay);
-    });
-
-    lightThemePill.addEventListener("click", () => setTheme("light"));
-    darkThemePill.addEventListener("click", () => setTheme("dark"));
 
     // ===== Menu button =====
     menuBtn.addEventListener("click", () => {
@@ -820,8 +818,6 @@
     });
 
     // ===== Beliefs =====
-    const beliefLabels = Object.keys(beliefState);
-
     function renderBeliefChips() {
       beliefChipsContainer.innerHTML = "";
       beliefLabels.forEach(label => {
@@ -830,7 +826,6 @@
         chip.textContent = label;
         chip.addEventListener("click", () => {
           beliefState[label] = !beliefState[label];
-          // Always keep at least one of Natural / Universal Ethics on
           if (!beliefState.Natural && !beliefState["Universal Ethics"]) {
             beliefState["Universal Ethics"] = true;
           }
@@ -852,11 +847,27 @@
       openOverlay(beliefOverlay);
     });
 
+    // ===== Theme menu item =====
+    themeMenuItem.addEventListener("click", () => {
+      menuPanel.classList.remove("visible");
+      openOverlay(themeOverlay);
+    });
+
+    lightThemePill.addEventListener("click", () => setTheme("light"));
+    darkThemePill.addEventListener("click", () => setTheme("dark"));
+
     // ===== Voice toggle =====
-    voiceMenuItem.addEventListener("click", () => {
-      voiceOn = !voiceOn;
+    function updateVoiceUI() {
       voiceStatus.textContent = voiceOn ? "on" : "off";
       voiceMenuItem.classList.toggle("active", voiceOn);
+    }
+
+    voiceMenuItem.addEventListener("click", () => {
+      voiceOn = !voiceOn;
+      if (!voiceOn && window.speechSynthesis) {
+        window.speechSynthesis.cancel();
+      }
+      updateVoiceUI();
       menuPanel.classList.remove("visible");
     });
 
@@ -891,6 +902,12 @@
       openOverlay(llmOverlay);
     });
 
+    // ===== Language (placeholder) =====
+    languageMenuItem.addEventListener("click", () => {
+      menuPanel.classList.remove("visible");
+      // future: language overlay; abhi kuch nahi karta
+    });
+
     // ===== About =====
     aboutMenuItem.addEventListener("click", () => {
       menuPanel.classList.remove("visible");
@@ -915,7 +932,6 @@
       });
     });
 
-    // Close overlay on outside click
     [beliefOverlay, themeOverlay, llmOverlay, aboutOverlay].forEach(overlay => {
       overlay.addEventListener("click", (e) => {
         if (e.target === overlay) {
@@ -933,17 +949,13 @@
 
       const lower = text.toLowerCase();
 
-      if (["hi", "hello", "salam", "asalam", "assalam", "assalamu alaikum"]
+      if (["hi","hello","salam","asalam","assalam","assalamu alaikum"]
         .some(w => lower.includes(w))) {
         return "I’m functioning perfectly, Alhamdulillah 😊 آپ کیسے ہیں؟";
       }
 
       if (lower.includes("how are you")) {
         return "I’m feeling balanced and focused — ready to support you. How are you feeling right now?";
-      }
-
-      if (lower.includes("when")) {
-        return "Emotionally speaking: the right moment is usually when your inner state feels calm enough to decide without fear.";
       }
 
       if (lower.includes("stress") || lower.includes("tension")) {
@@ -954,7 +966,6 @@
         return "Khushi ko share karna sab se behtareen sadaqa hai. Aaj aap ek chhoti si khushi kisi aur tak bhi pohanchayein. 🌱";
       }
 
-      // Generic fallback
       return "I’ve heard you. Let’s look at this with calm logic and gentle ethics together.";
     }
 
@@ -962,7 +973,6 @@
     function speak(text) {
       if (!voiceOn) return;
       if (!("speechSynthesis" in window)) return;
-
       window.speechSynthesis.cancel();
       const utter = new SpeechSynthesisUtterance(text);
       utter.lang = "en-US";
@@ -979,16 +989,15 @@
 
       youSaidEl.textContent = 'You said: "' + message + '"';
 
-      const reply = getBasicReply(message);
-      assistantTextEl.textContent = reply;
-
-      // Very light flavour from beliefs (but always universal ethics first)
+      let reply = getBasicReply(message);
       const activeBeliefs = beliefLabels.filter(l => beliefState[l]);
+
       if (activeBeliefs.includes("Islam") && !reply.includes("Alhamdulillah")) {
-        assistantTextEl.textContent = reply + " InshaAllah, cheezain behtar hongi.";
+        reply = reply + " InshaAllah, cheezain behtar hongi.";
       }
 
-      speak(assistantTextEl.textContent);
+      assistantTextEl.textContent = reply;
+      speak(reply);
     }
 
     sendBtn.addEventListener("click", handleSend);
@@ -997,9 +1006,13 @@
     });
 
     // ===== Initial render =====
-    renderBeliefChips();
-    updateBeliefFooter();
-    renderLlmChips();
+    function init() {
+      renderBeliefChips();
+      updateBeliefFooter();
+      renderLlmChips();
+      updateVoiceUI();
+    }
+    init();
   </script>
 </body>
 </html>
