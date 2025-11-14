@@ -39,15 +39,16 @@
     }
 
     @media (max-height: 720px) {
-      #app {
-        transform: scale(0.82);
-      }
+      #app { transform: 0.82; transform: scale(0.82); }
     }
 
     @media (max-height: 640px) {
-      #app {
-        transform: scale(0.75);
-      }
+      #app { transform: scale(0.75); }
+    }
+
+    /* ===== Utility ===== */
+    .hidden {
+      display: none;
     }
 
     /* ===== Top floating sent text ===== */
@@ -71,7 +72,6 @@
       opacity: 1;
     }
 
-    /* Auto fade only when class added */
     .sent-message.auto-fade {
       animation: fadeOut 2.5s forwards;
     }
@@ -239,19 +239,24 @@
       accent-color: #facc15;
     }
 
-    .hidden {
-      display: none;
-    }
-
     /* ===== Belief Modal ===== */
     .modal {
       position: fixed;
       inset: 0;
       background: rgba(15,23,42,0.75);
-      display: flex;
       align-items: center;
       justify-content: center;
       z-index: 50;
+    }
+
+    /* default: hidden */
+    #beliefModal {
+      display: none;
+    }
+
+    /* visible when .show added */
+    #beliefModal.show {
+      display: flex !important;
     }
 
     .modal-content {
@@ -385,8 +390,8 @@
       </label>
     </div>
 
-    <!-- Belief modal -->
-    <div id="beliefModal" class="modal hidden">
+    <!-- Belief modal (default hidden by CSS) -->
+    <div id="beliefModal" class="modal">
       <div class="modal-content">
         <div class="modal-header">
           <h3>Belief Mode</h3>
@@ -482,7 +487,7 @@
     // ===== Belief modal =====
     function openBeliefModal() {
       const modal = document.getElementById("beliefModal");
-      modal.classList.remove("hidden");
+      modal.classList.add("show");   // CSS se visible hoga
 
       // sync toggle
       const toggle = document.getElementById("beliefEnabledToggle");
@@ -497,7 +502,7 @@
 
     function closeBeliefModal() {
       const modal = document.getElementById("beliefModal");
-      modal.classList.add("hidden");
+      modal.classList.remove("show");
     }
 
     function toggleBeliefEnabled(checkbox) {
@@ -537,7 +542,6 @@
       const text = input.value.trim();
       if (!text) return;
 
-      // show only last sent text
       container.innerHTML = "";
       const msg = document.createElement("div");
       msg.className = "sent-message";
@@ -551,7 +555,6 @@
 
       input.value = "";
 
-      // process emotional advice
       processEmotion(text, settings);
     }
 
@@ -559,7 +562,6 @@
     function processEmotion(text, settings) {
       const reactionEl = document.getElementById("reactionText");
 
-      // basic sentiment hint
       const lower = text.toLowerCase();
       let tone = "neutral";
       if (lower.match(/sad|upset|angry|fear|tension|stress|anxious|depressed/)) {
@@ -568,7 +570,6 @@
         tone = "positive";
       }
 
-      // base universal ethics message
       let base =
         "Universal Ethics says: avoid actions that create negative emotions in you or others, " +
         "and gently move toward actions that create calm, kindness and positive feelings.";
@@ -577,11 +578,10 @@
         base += " Right now your text feels a bit heavy. Try one tiny step that reduces harm or hurt, " +
                 "even if it's just pausing, breathing, or talking kindly to yourself.";
       } else if (tone === "positive") {
-        base += " Your words already carry some light. Try to protect this feeling by sharing it, " +
+        base += " Your words already carry some light. Protect this feeling by sharing it, " +
                 "thanking the moment, and avoiding anything that can damage this positivity.";
       }
 
-      // add belief flavour only if enabled
       let extra = "";
       if (settings.beliefEnabled && settings.beliefs.length > 1) {
         const rels = settings.beliefs.filter(b => b !== "universal");
