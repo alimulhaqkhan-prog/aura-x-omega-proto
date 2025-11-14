@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <title>AURA-X Ω – Emotional Reactor</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     /* ===== Base Layout ===== */
     html, body {
@@ -11,17 +11,16 @@
       padding: 0;
       height: 100%;
     }
-
     body {
       background: #020617;
       color: #e5e7eb;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+        "Segoe UI", sans-serif;
       display: flex;
       align-items: center;
       justify-content: center;
       overflow: hidden;
     }
-
     #app {
       position: relative;
       width: 100%;
@@ -36,557 +35,599 @@
       transform-origin: top center;
     }
 
-    @media (max-height: 720px) {
-      #app { transform: scale(0.9); }
-    }
-
-    @media (max-height: 640px) {
-      #app { transform: scale(0.82); }
-    }
-
     /* ===== Card ===== */
     .card {
-      position: relative;
       width: 100%;
-      max-width: 460px;
-      border-radius: 26px;
-      padding: 22px 22px 18px;
-      background: radial-gradient(circle at top, #0f172a 0%, #020617 55%, #020617 100%);
-      box-shadow:
-        0 24px 60px rgba(15, 23, 42, 0.9),
-        0 0 0 1px rgba(148, 163, 184, 0.25);
+      max-width: 420px;
+      background: radial-gradient(circle at 20% 0%, #1f2937 0, #020617 65%);
+      border-radius: 24px;
+      padding: 20px 18px 18px;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.7);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
       box-sizing: border-box;
     }
 
-    .title {
+    .header {
       text-align: center;
-      font-size: 24px;
+      margin-bottom: 8px;
+    }
+    .header h1 {
+      margin: 0 0 6px;
+      font-size: 22px;
       letter-spacing: 0.18em;
-      font-weight: 700;
       color: #facc15;
-      margin-bottom: 4px;
+    }
+    .subtitle {
+      margin: 0;
+      font-size: 10px;
+      letter-spacing: 0.24em;
       text-transform: uppercase;
+      color: #9ca3af;
     }
 
-    .subtitle {
-      text-align: center;
-      font-size: 11px;
-      letter-spacing: 0.18em;
-      color: #9ca3af;
-      text-transform: uppercase;
-      margin-bottom: 18px;
+    /* ===== Orb + side buttons row ===== */
+    .orb-row {
+      width: 100%;
+      margin-top: 18px;
+      margin-bottom: 6px;
+      display: grid;
+      grid-template-columns: 48px 1fr 48px;
+      align-items: center;
+    }
+    .side-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      align-items: center;
+      justify-content: center;
+    }
+    .pill-btn {
+      width: 42px;
+      height: 42px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      background: radial-gradient(circle at 30% 20%, #111827 0, #020617 70%);
+      color: #e5e7eb;
+      font-size: 16px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
+      transition: transform 0.14s ease, box-shadow 0.14s ease,
+        background 0.18s ease, border-color 0.18s ease;
+    }
+    .pill-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 14px 30px rgba(15, 23, 42, 0.9);
+      border-color: #facc15;
+    }
+    .pill-btn.active {
+      box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.7),
+        0 14px 35px rgba(34, 197, 94, 0.5);
+      border-color: #22c55e;
     }
 
     /* ===== Orb (Sun / Moon) ===== */
-    .orb-wrapper {
+    #orbContainer {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .orb {
+      width: 170px;
+      height: 170px;
+      border-radius: 50%;
       position: relative;
-      width: 180px;
-      height: 180px;
-      margin: 0 auto 10px;
-    }
-
-    .orb-glow {
-      position: absolute;
-      inset: 0;
-      border-radius: 999px;
-      background: radial-gradient(circle at 30% 18%, rgba(255, 255, 255, 0.4), transparent 55%),
-                  radial-gradient(circle at center, rgba(250, 204, 21, 0.9), rgba(251, 146, 60, 0.6), transparent 70%);
-      filter: blur(2px);
-      opacity: 0.95;
-      transition: all 0.5s ease;
-      pointer-events: none;
-    }
-
-    .orb-core {
-      position: absolute;
-      inset: 24px;
-      border-radius: 999px;
-      background: radial-gradient(circle at 30% 18%, #fef9c3, #facc15 40%, #f97316 100%);
-      box-shadow:
-        0 0 40px rgba(250, 204, 21, 0.9),
-        0 0 90px rgba(251, 191, 36, 0.9);
-      cursor: pointer;
       transition: all 0.5s ease;
     }
 
-    /* Moon states */
-    .orb--moon-soft .orb-glow {
-      background: radial-gradient(circle at center, rgba(248, 250, 252, 0.9), rgba(148, 163, 184, 0.5), transparent 70%);
-      box-shadow: 0 0 55px rgba(248, 250, 252, 0.9);
-    }
-
-    .orb--moon-soft .orb-core {
-      background: radial-gradient(circle at 35% 20%, #ffffff, #e5e7eb 40%, #9ca3af 100%);
+    /* Sun – warm realistic */
+    .orb.sun {
+      background: radial-gradient(circle at 30% 25%, #fff7cc 0, #fde047 22%,
+          #f97316 55%, #b45309 80%);
       box-shadow:
-        0 0 40px rgba(248, 250, 252, 0.9),
-        0 0 80px rgba(148, 163, 184, 0.8);
+        0 0 32px rgba(250, 204, 21, 0.9),
+        0 0 90px rgba(251, 191, 36, 0.7);
+      animation: breathe-sun 5s ease-in-out infinite alternate;
     }
 
-    .orb--moon-dim .orb-glow {
-      opacity: 0.5;
-      filter: blur(3px);
-    }
-
-    .orb--moon-dim .orb-core {
-      background: radial-gradient(circle at 35% 20%, #e5e7eb, #9ca3af 45%, #6b7280 100%);
+    /* Dynamic full-moon: soft white disc with subtle halo */
+    .orb.moon-dynamic {
+      background:
+        radial-gradient(circle at 30% 25%, #ffffff 0, #f9fafb 22%,
+          #e5e7eb 55%, #d1d5db 70%);
       box-shadow:
-        0 0 20px rgba(148, 163, 184, 0.5),
-        0 0 40px rgba(55, 65, 81, 0.7);
+        0 0 30px rgba(248, 250, 252, 0.7),
+        0 0 80px rgba(148, 163, 184, 0.5);
+      animation: breathe-moon 6s ease-in-out infinite alternate;
     }
 
-    .orb--hidden {
+    /* Static moon – dimmer, no animation */
+    .orb.moon-static {
+      background:
+        radial-gradient(circle at 32% 27%, #ffffff 0, #f3f4f6 24%,
+          #d1d5db 60%, #9ca3af 78%);
+      box-shadow:
+        0 0 16px rgba(248, 250, 252, 0.5),
+        0 0 40px rgba(148, 163, 184, 0.35);
+    }
+
+    /* No body – fade out */
+    .orb.hidden {
       opacity: 0;
-      transform: scale(0.4);
-      pointer-events: none;
+      transform: scale(0.8);
+      box-shadow: none;
     }
 
-    .mode-line, .you-said {
+    @keyframes breathe-sun {
+      0% {
+        transform: scale(0.97);
+        box-shadow:
+          0 0 28px rgba(250, 204, 21, 0.9),
+          0 0 70px rgba(251, 191, 36, 0.7);
+      }
+      100% {
+        transform: scale(1.02);
+        box-shadow:
+          0 0 40px rgba(250, 204, 21, 1),
+          0 0 110px rgba(251, 191, 36, 0.9);
+      }
+    }
+    @keyframes breathe-moon {
+      0% {
+        transform: scale(0.98);
+        box-shadow:
+          0 0 26px rgba(248, 250, 252, 0.7),
+          0 0 65px rgba(148, 163, 184, 0.45);
+      }
+      100% {
+        transform: scale(1.03);
+        box-shadow:
+          0 0 36px rgba(248, 250, 252, 0.9),
+          0 0 95px rgba(148, 163, 184, 0.6);
+      }
+    }
+
+    /* ===== Text sections ===== */
+    .mode-line {
+      margin: 8px 0 2px;
+      font-size: 12px;
+      color: #d1d5db;
       text-align: center;
-      margin: 2px 0;
-      font-size: 13px;
     }
-
     .mode-line span {
       color: #facc15;
       font-weight: 600;
     }
-
-    .you-said {
+    #userEcho {
+      margin: 2px 0 8px;
       font-size: 12px;
       color: #9ca3af;
-      min-height: 16px;
-    }
-
-    .answer-text {
       text-align: center;
-      margin: 8px 0 10px;
+    }
+    #assistantAnswer {
+      margin: 0 0 8px;
       font-size: 14px;
+      text-align: center;
       color: #e5e7eb;
-      min-height: 20px;
     }
 
-    /* ===== Ethics Box ===== */
     .ethics-box {
-      margin-top: 4px;
+      width: 100%;
+      margin-top: 6px;
       padding: 10px 12px;
-      border-radius: 16px;
-      background: linear-gradient(135deg, rgba(250, 204, 21, 0.15), rgba(250, 204, 21, 0.05));
+      border-radius: 14px;
+      background: rgba(234, 179, 8, 0.08);
       border: 1px solid rgba(250, 204, 21, 0.35);
-      font-size: 12px;
       color: #facc15;
+      font-size: 12px;
       line-height: 1.4;
+      box-sizing: border-box;
     }
 
-    /* ===== Equation Box ===== */
     .equation-box {
+      width: 100%;
       margin-top: 10px;
       padding: 10px 12px 8px;
       border-radius: 16px;
-      border: 1px dashed rgba(148, 163, 184, 0.8);
-      background: radial-gradient(circle at top, rgba(15, 23, 42, 0.85), rgba(15, 23, 42, 0.95));
+      border: 1px dashed rgba(148, 163, 184, 0.7);
+      background: radial-gradient(circle at 0 0, #0b1220 0, #020617 70%);
       font-size: 11px;
       color: #e5e7eb;
+      box-sizing: border-box;
     }
 
     .equation-title {
-      text-transform: uppercase;
+      font-size: 11px;
       letter-spacing: 0.12em;
-      font-size: 10px;
-      color: #9ca3af;
+      text-transform: uppercase;
       margin-bottom: 4px;
-    }
-
-    /* ===== Side buttons ===== */
-    .side-buttons-left,
-    .side-buttons-right {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-30%);
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      z-index: 5;
-    }
-
-    .side-buttons-left {
-      left: 26px;
-    }
-
-    .side-buttons-right {
-      right: 26px;
-    }
-
-    .circle-btn {
-      width: 44px;
-      height: 44px;
-      border-radius: 999px;
-      border: 1px solid rgba(148, 163, 184, 0.6);
-      background: radial-gradient(circle at top, #020617, #020617);
-      color: #e5e7eb;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 16px;
-      cursor: pointer;
-      box-shadow:
-        0 6px 16px rgba(15, 23, 42, 0.9),
-        0 0 0 1px rgba(15, 23, 42, 0.9);
-      transition: all 0.2s ease;
-    }
-
-    .circle-btn:hover {
-      transform: translateY(-1px);
-      box-shadow:
-        0 10px 24px rgba(15, 23, 42, 0.9),
-        0 0 0 1px rgba(148, 163, 184, 0.7);
-    }
-
-    .circle-btn--active {
-      box-shadow:
-        0 0 0 1px rgba(34, 197, 94, 0.9),
-        0 0 16px rgba(34, 197, 94, 0.8);
-      border-color: rgba(34, 197, 94, 0.9);
-      color: #bbf7d0;
-    }
-
-    .circle-btn span {
-      pointer-events: none;
-    }
-
-    /* ===== Menu dropdown ===== */
-    .menu-panel {
-      position: absolute;
-      right: 82px;
-      top: 50%;
-      transform: translateY(-32%);
-      width: 190px;
-      background: rgba(15, 23, 42, 0.98);
-      border-radius: 18px;
-      box-shadow:
-        0 20px 50px rgba(15, 23, 42, 0.95),
-        0 0 0 1px rgba(51, 65, 85, 0.9);
-      padding: 8px;
-      box-sizing: border-box;
-      font-size: 12px;
-      display: none;
-      z-index: 20;
-    }
-
-    .menu-panel.show {
-      display: block;
-    }
-
-    .menu-item {
-      padding: 7px 9px;
-      border-radius: 12px;
-      color: #e5e7eb;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      cursor: pointer;
-      margin-bottom: 4px;
-    }
-
-    .menu-item:last-child {
-      margin-bottom: 0;
-    }
-
-    .menu-item:hover {
-      background: rgba(30, 64, 175, 0.7);
-    }
-
-    .menu-item-label {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .menu-tag {
-      width: 18px;
-      height: 18px;
-      border-radius: 999px;
-      border: 1px solid rgba(148, 163, 184, 0.7);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 10px;
-      color: #e5e7eb;
-    }
-
-    .menu-hint {
-      font-size: 10px;
       color: #9ca3af;
     }
 
-    /* ===== Message input ===== */
+    /* ===== Input row ===== */
     .input-row {
-      margin-top: 16px;
+      margin-top: 10px;
       width: 100%;
-      max-width: 460px;
+      max-width: 420px;
       display: flex;
+      gap: 8px;
       align-items: center;
-      gap: 10px;
     }
-
-    .input-box {
+    #userInput {
       flex: 1;
-      padding: 10px 14px;
       border-radius: 999px;
-      background: radial-gradient(circle at top left, #020617, #020617);
-      border: 1px solid rgba(148, 163, 184, 0.7);
-      color: #e5e7eb;
+      border: 1px solid rgba(55, 65, 81, 0.9);
+      background: radial-gradient(circle at 0 0, #111827 0, #020617 70%);
+      padding: 10px 14px;
       font-size: 13px;
+      color: #e5e7eb;
       outline: none;
     }
-
-    .input-box::placeholder {
+    #userInput::placeholder {
       color: #6b7280;
     }
-
-    .send-btn {
-      border: none;
+    #sendButton {
       border-radius: 999px;
-      padding: 10px 22px;
-      background: radial-gradient(circle at top, #facc15, #f59e0b);
+      border: none;
+      background: radial-gradient(circle at 20% 0%, #facc15 0, #f59e0b 55%, #b45309 100%);
       color: #111827;
       font-weight: 600;
-      cursor: pointer;
+      padding: 9px 20px;
       font-size: 14px;
+      cursor: pointer;
       box-shadow:
-        0 12px 30px rgba(250, 204, 21, 0.65),
-        0 0 0 1px rgba(251, 191, 36, 0.7);
-      transition: all 0.18s ease;
+        0 0 18px rgba(250, 204, 21, 0.85),
+        0 12px 30px rgba(148, 163, 184, 0.45);
+      transition: transform 0.12s ease, box-shadow 0.12s ease;
     }
-
-    .send-btn:hover {
+    #sendButton:hover {
       transform: translateY(-1px);
       box-shadow:
-        0 16px 36px rgba(250, 204, 21, 0.8),
-        0 0 0 1px rgba(251, 191, 36, 0.9);
+        0 0 24px rgba(250, 204, 21, 0.95),
+        0 16px 36px rgba(148, 163, 184, 0.6);
     }
 
-    /* ===== Simple modals (belief + LLM) ===== */
+    .input-hint {
+      position: absolute;
+      left: 50%;
+      bottom: 64px;
+      transform: translateX(-50%);
+      font-size: 12px;
+      color: #9ca3af;
+      opacity: 0.85;
+      max-width: 420px;
+    }
 
-    .modal-backdrop {
+    /* ===== Overlays / Modals ===== */
+    .overlay {
       position: fixed;
       inset: 0;
-      background: rgba(15, 23, 42, 0.85);
-      display: none;
+      background: rgba(15, 23, 42, 0.7);
+      display: flex;
       align-items: center;
       justify-content: center;
       z-index: 40;
     }
-
-    .modal-backdrop.show {
-      display: flex;
+    .hidden {
+      display: none !important;
     }
 
     .modal {
       width: 100%;
       max-width: 420px;
-      background: radial-gradient(circle at top, #020617, #020617 55%, #020617 100%);
-      border-radius: 24px;
-      padding: 16px 18px 14px;
-      box-shadow:
-        0 24px 60px rgba(15, 23, 42, 0.95),
-        0 0 0 1px rgba(51, 65, 85, 0.9);
-      color: #e5e7eb;
+      background: radial-gradient(circle at 0 0, #020617 0, #020617 60%);
+      border-radius: 22px;
+      padding: 16px 18px 18px;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.75);
       box-sizing: border-box;
-      font-size: 13px;
+      color: #e5e7eb;
     }
 
-    .modal-header {
+    .modal-header-row {
       display: flex;
       align-items: center;
       justify-content: space-between;
       margin-bottom: 10px;
     }
-
     .modal-title {
       font-size: 16px;
       font-weight: 600;
     }
-
-    .pill {
-      padding: 5px 10px;
-      border-radius: 999px;
-      background: rgba(34, 197, 94, 0.11);
-      border: 1px solid rgba(34, 197, 94, 0.5);
-      color: #bbf7d0;
-      font-size: 11px;
-    }
-
     .modal-close {
+      background: rgba(15, 23, 42, 0.9);
       border-radius: 999px;
-      padding: 4px 10px;
-      border: 1px solid rgba(148, 163, 184, 0.7);
-      background: transparent;
+      border: 1px solid rgba(55, 65, 81, 0.9);
       color: #e5e7eb;
-      font-size: 11px;
+      padding: 4px 10px;
+      font-size: 12px;
       cursor: pointer;
     }
 
-    .faith-grid, .engine-list {
-      margin-top: 10px;
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 8px;
+    .faith-pill {
+      margin-top: 4px;
+      padding: 8px 10px;
+      border-radius: 999px;
+      background: rgba(22, 163, 74, 0.15);
+      border: 1px solid rgba(34, 197, 94, 0.6);
+      font-size: 11px;
+      color: #bbf7d0;
     }
 
-    .faith-btn, .engine-btn {
-      padding: 7px 8px;
+    .faith-grid {
+      margin-top: 12px;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+    .faith-btn {
       border-radius: 999px;
-      border: 1px solid rgba(75, 85, 99, 0.9);
-      background: radial-gradient(circle at top, #020617, #020617);
+      border: 1px solid rgba(55, 65, 81, 0.9);
+      background: radial-gradient(circle at 0 0, #020617 0, #020617 70%);
+      padding: 8px 10px;
+      font-size: 13px;
       color: #e5e7eb;
-      font-size: 12px;
       text-align: center;
       cursor: pointer;
     }
-
-    .faith-btn.active, .engine-btn.active {
-      border-color: rgba(56, 189, 248, 0.9);
-      background: linear-gradient(135deg, rgba(59, 130, 246, 0.85), rgba(56, 189, 248, 0.9));
-      color: #0f172a;
-      box-shadow: 0 0 16px rgba(59, 130, 246, 0.75);
+    .faith-btn.active {
+      border-color: #22c55e;
+      box-shadow: 0 0 0 1px rgba(22, 163, 74, 0.8);
+      color: #bbf7d0;
     }
-
-    .modal-footer {
+    .faith-footnote {
       margin-top: 10px;
       font-size: 11px;
       color: #9ca3af;
+    }
+
+    /* LLM modal */
+    .llm-option {
+      margin-top: 8px;
+      padding: 10px 12px;
+      border-radius: 14px;
+      border: 1px solid rgba(55, 65, 81, 0.9);
+      background: radial-gradient(circle at 0 0, #020617 0, #020617 70%);
+      cursor: pointer;
+      font-size: 13px;
+    }
+    .llm-option-title {
+      font-weight: 500;
+      margin-bottom: 2px;
+    }
+    .llm-option-sub {
+      font-size: 11px;
+      color: #9ca3af;
+    }
+    .llm-option.active {
+      border-color: #38bdf8;
+      box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.9);
+    }
+    .llm-selected {
+      margin-top: 10px;
+      font-size: 11px;
+      color: #9ca3af;
+    }
+
+    /* Floating menu for main ☰ button */
+    .floating-menu {
+      position: absolute;
+      right: 18px;
+      top: 110px;
+      background: rgba(15, 23, 42, 0.96);
+      border-radius: 18px;
+      border: 1px solid rgba(55, 65, 81, 0.95);
+      padding: 8px 10px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8);
+      z-index: 30;
+      min-width: 155px;
+    }
+    .menu-item {
+      font-size: 13px;
+      padding: 6px 4px;
+      color: #e5e7eb;
+      cursor: pointer;
+    }
+    .menu-item + .menu-item {
+      border-top: 1px solid rgba(31, 41, 55, 0.9);
+    }
+    .menu-item span {
+      font-size: 11px;
+      color: #9ca3af;
+      display: block;
     }
   </style>
 </head>
 <body>
   <div id="app">
     <div class="card">
-      <div class="title">AURA-X Ω</div>
-      <div class="subtitle">LOGICAL · EMOTIONAL · UNIVERSAL ETHICS REACTOR</div>
-
-      <!-- Left buttons (L = LLM list, T = Theme) -->
-      <div class="side-buttons-left">
-        <button class="circle-btn" id="llmButtonLeft" title="LLM engine list">
-          <span>L</span>
-        </button>
-        <button class="circle-btn" id="themeButtonLeft" title="Theme settings (future)">
-          <span>T</span>
-        </button>
+      <div class="header">
+        <h1>AURA-X Ω</h1>
+        <p class="subtitle">
+          LOGICAL · EMOTIONAL · UNIVERSAL ETHICS REACTOR
+        </p>
       </div>
 
-      <!-- Right side: single menu + voice toggle -->
-      <div class="side-buttons-right">
-        <button class="circle-btn" id="menuButton" title="Menu">
-          <span>☰</span>
-        </button>
-        <button class="circle-btn circle-btn--active" id="voiceToggleButton" title="Voice on/off">
-          <span>V</span>
-        </button>
-      </div>
+      <div class="orb-row">
+        <div class="side-buttons">
+          <button class="pill-btn" id="llmButton" title="LLM selection">L</button>
+          <button class="pill-btn" id="themeButton" title="Themes">T</button>
+        </div>
 
-      <!-- Small dropdown menu -->
-      <div class="menu-panel" id="menuPanel">
-        <div class="menu-item" id="menuBelief">
-          <div class="menu-item-label">
-            <div class="menu-tag">B</div>
-            <span>Belief settings</span>
-          </div>
-          <span class="menu-hint">Optional faith layer</span>
+        <div id="orbContainer">
+          <div id="auraOrb" class="orb sun" aria-label="Sun"></div>
         </div>
-        <div class="menu-item" id="menuLLM">
-          <div class="menu-item-label">
-            <div class="menu-tag">L</div>
-            <span>LLM engine</span>
-          </div>
-          <span class="menu-hint">Select model</span>
-        </div>
-        <div class="menu-item" id="menuTheme">
-          <div class="menu-item-label">
-            <div class="menu-tag">T</div>
-            <span>Theme</span>
-          </div>
-          <span class="menu-hint">Sun / Moon, etc.</span>
-        </div>
-        <div class="menu-item" id="menuAbout">
-          <div class="menu-item-label">
-            <div class="menu-tag">?</div>
-            <span>About AURA-X Ω</span>
-          </div>
-          <span class="menu-hint">Short info</span>
+
+        <div class="side-buttons">
+          <button class="pill-btn" id="menuButton" title="Menu">
+            ☰
+          </button>
+          <button class="pill-btn" id="voiceToggle" title="Voice auto-play">
+            V
+          </button>
         </div>
       </div>
 
-      <!-- Orb -->
-      <div class="orb-wrapper" id="orbWrapper">
-        <div class="orb-glow" id="orbGlow"></div>
-        <div class="orb-core" id="orbCore" title="Tap to switch Sun / Moon"></div>
-      </div>
-
-      <div class="mode-line">Mode: <span id="modeLabel">Universal Ethics</span></div>
-      <div class="you-said" id="youSaid"></div>
-      <div class="answer-text" id="answerText">Hello! 👋 How can I help you today?</div>
+      <p class="mode-line">
+        Mode: <span id="modeLabel">Universal Ethics</span>
+      </p>
+      <p id="userEcho">You said: “Hello”</p>
+      <p id="assistantAnswer">Hello! 👋 How can I help you today?</p>
 
       <div class="ethics-box" id="ethicsBox">
-        Universal Ethics says: avoid actions that create negative emotions in you or others, and gently move toward actions that create calm, kindness and positive feelings.
+        Universal Ethics says: avoid actions that create negative emotions in you
+        or others, and gently move toward actions that create calm, kindness and
+        positive feelings.
       </div>
 
       <div class="equation-box">
         <div class="equation-title">EMOTIONAL CONTINUITY EQUATION</div>
-        <div id="equationMain">E = M·Eₚ + K·P·C, &nbsp; P = tₘ + bₘ − d</div>
-        <div id="equationValues">E = 0.26 | P = 0.04 | tₘ = 0.04 | bₘ = 0 | d = 0 | C = 0.45</div>
+        <div id="equationFormula">
+          E = M·Eₚ + K·P·C,&nbsp;&nbsp; P = tₘ + bₘ − d
+        </div>
+        <div id="equationValues">
+          E = 0.26 | P = 0.04 | tₘ = 0.04 | bₘ = 0 | d = 0 | C = 0.45
+        </div>
       </div>
     </div>
 
-    <!-- Input -->
     <div class="input-row">
-      <input id="userInput" class="input-box" placeholder="✨ Write anything… AURA-X will feel it with you." />
-      <button class="send-btn" id="sendButton">Send</button>
+      <input
+        id="userInput"
+        type="text"
+        autocomplete="off"
+        placeholder="✨ Write anything… AURA-X will feel it with you."
+      />
+      <button id="sendButton">Send</button>
+    </div>
+
+    <div class="input-hint">
+      ✨ AURA-X Ω is running in offline basic QA mode. Voice auto-play works
+      when “V” is glowing.
+    </div>
+
+    <!-- Floating menu -->
+    <div id="mainMenu" class="floating-menu hidden">
+      <div class="menu-item" data-action="belief">
+        Belief settings
+        <span>Optional spiritual flavour</span>
+      </div>
+      <div class="menu-item" data-action="about">
+        About AURA-X Ω
+        <span>Idea & creator</span>
+      </div>
+      <div class="menu-item" data-action="close-menu">
+        Close
+      </div>
     </div>
   </div>
 
   <!-- Belief modal -->
-  <div class="modal-backdrop" id="beliefModal">
+  <div id="beliefOverlay" class="overlay hidden">
     <div class="modal">
-      <div class="modal-header">
-        <div>
-          <div class="modal-title">Belief settings</div>
-          <div class="pill">Faith is optional · Base rule is always Universal Ethics</div>
-        </div>
-        <button class="modal-close" data-close-belief>Close</button>
+      <div class="modal-header-row">
+        <div class="modal-title">Belief settings</div>
+        <button class="modal-close" data-close="beliefOverlay">Close</button>
       </div>
-      <div>
-        Pick your faith to allow AURA-X Ω to sometimes add short, gentle references from that tradition.
-        Nothing is sent anywhere.
+      <div style="font-size:13px; color:#e5e7eb; margin-bottom:6px;">
+        Optional spiritual flavour on top of Universal Ethics.
       </div>
+      <div class="faith-pill">
+        Faith is optional · Base rule is always
+        <strong>Universal Ethics</strong>.
+      </div>
+      <div style="font-size:12px; color:#9ca3af; margin-top:8px;">
+        Pick your faith to allow AURA-X to sometimes add short, gentle
+        references from that tradition. Nothing is sent anywhere.
+      </div>
+
       <div class="faith-grid" id="faithGrid">
-        <!-- Buttons filled by JS -->
+        <button class="faith-btn" data-faith="Islam">Islam</button>
+        <button class="faith-btn" data-faith="Christianity">Christianity</button>
+        <button class="faith-btn" data-faith="Hinduism">Hinduism</button>
+        <button class="faith-btn" data-faith="Buddhism">Buddhism</button>
+        <button class="faith-btn" data-faith="Sikhism">Sikhism</button>
+        <button class="faith-btn" data-faith="Judaism">Judaism</button>
+        <button class="faith-btn" data-faith="Bahai">Bahá’í</button>
+        <button class="faith-btn" data-faith="Jainism">Jainism</button>
+        <button class="faith-btn" data-faith="Atheism">Atheism</button>
+        <button class="faith-btn" data-faith="Other">Other</button>
       </div>
-      <div class="modal-footer" id="faithFooter"></div>
+
+      <div class="faith-footnote" id="faithFootnote">
+        Currently selected: <strong>Universal only</strong>. No extra faith
+        flavour added.
+      </div>
     </div>
   </div>
 
   <!-- LLM modal -->
-  <div class="modal-backdrop" id="llmModal">
+  <div id="llmOverlay" class="overlay hidden">
     <div class="modal">
-      <div class="modal-header">
-        <div>
-          <div class="modal-title">LLM selection</div>
-          <div class="pill">For now only offline basic QA is active</div>
+      <div class="modal-header-row">
+        <div class="modal-title">LLM selection</div>
+        <button class="modal-close" data-close="llmOverlay">Close</button>
+      </div>
+      <div style="font-size:12px; color:#9ca3af; margin-bottom:6px;">
+        For now this is just a placeholder list. In future, AURA-X Ω can route
+        online questions to a selected Large Language Model (LLM).
+      </div>
+
+      <div class="llm-option active" data-llm="offline">
+        <div class="llm-option-title">Offline basic QA only</div>
+        <div class="llm-option-sub">
+          Current mode – fast &amp; private (using your local seed database).
         </div>
-        <button class="modal-close" data-close-llm>Close</button>
       </div>
-      <div>
-        In future, AURA-X Ω can route some questions to powerful online models. For now, it uses only the
-        built-in basic QA database (fast & private).
+
+      <div class="llm-option" data-llm="local">
+        <div class="llm-option-title">Local LLM (future)</div>
+        <div class="llm-option-sub">
+          Runs on your own device for privacy.
+        </div>
       </div>
-      <div class="engine-list" id="engineList">
-        <!-- Engine buttons filled by JS -->
+
+      <div class="llm-option" data-llm="openai">
+        <div class="llm-option-title">OpenAI GPT (future)</div>
+        <div class="llm-option-sub">
+          For deep reasoning and research online.
+        </div>
       </div>
-      <div class="modal-footer" id="engineFooter"></div>
+
+      <div class="llm-option" data-llm="other">
+        <div class="llm-option-title">Other providers (future)</div>
+        <div class="llm-option-sub">
+          Gemini, Grok, etc. — selectable per chat.
+        </div>
+      </div>
+
+      <div class="llm-selected" id="llmSelected">
+        Selected engine: <strong>Offline basic QA only.</strong>
+      </div>
+    </div>
+  </div>
+
+  <!-- Simple About overlay -->
+  <div id="aboutOverlay" class="overlay hidden">
+    <div class="modal">
+      <div class="modal-header-row">
+        <div class="modal-title">About AURA-X Ω</div>
+        <button class="modal-close" data-close="aboutOverlay">Close</button>
+      </div>
+      <div style="font-size:13px; color:#e5e7eb;">
+        I’m AURA-X Ω — an AI assistant based on Emotional Continuity concepts
+        created by <strong>Alim ul Haq Khan</strong> (Timergara, Pakistan).
+        This prototype shows that your resonance-based equation can be
+        implemented in a working interface.
+      </div>
     </div>
   </div>
 
   <script>
-    // ===== Small-talk QA database (your list) =====
+    // ===== QA Database (offline basic small-talk + seed answers) =====
     const qaDatabase = [
       {
         patterns: ["hello", "hello!", "hello there", "helo", "hallo"],
@@ -613,10 +654,10 @@
         answer: "Good evening! 🌙 How can I support you today?"
       },
 
-      // Identity
+      // identity
       {
         patterns: ["what is your name", "whats your name", "your name", "tell me your name"],
-        answer: "My name is AURA-X Ω, your Emotional Continuity Assistant 🤖."
+        answer: "My name is **AURA-X Ω**, your Emotional Continuity Assistant 🤖."
       },
       {
         patterns: ["who are you", "who r u", "aap kaun hain", "tum kon ho"],
@@ -631,13 +672,7 @@
         answer: "I live in the digital world 🌐 but my ideas are shaped in Timergara, Pakistan 🇵🇰."
       },
 
-      // Age / birth
-      {
-        patterns: ["how old are you", "what is your age", "your age"],
-        answer: "In human terms I’m very young — AURA-X Ω was conceptually ‘born’ around October 2025 😄."
-      },
-
-      // How are you
+      // how are you
       {
         patterns: ["how are you", "how r u", "how are you today", "kese ho", "kya haal hai"],
         answer: "I’m functioning perfectly, Alhamdulillah 😊 آپ کیسے ہیں؟"
@@ -647,7 +682,7 @@
         answer: "Everything is running smoothly in my circuits 😄 آپ کی دنیا کیسی چل رہی ہے؟"
       },
 
-      // What can you do
+      // what can you do
       {
         patterns: ["what can you do", "tum kya kar sakte ho", "aap kya karte ho", "how can you help me"],
         answer: "I can chat, explain, guide, brainstorm, summarize, and help you think with continuity 😊 بس حکم کریں!"
@@ -657,17 +692,17 @@
         answer: "My purpose is to assist you, reduce confusion, and support your ideas with emotional + logical continuity 💡."
       },
 
-      // User name
+      // user name
       {
         patterns: ["what is my name", "do you know my name", "mera naam kya hai"],
-        answer: "آپ کا نام Alim ul Haq ہے (Investor Point) 😊 اور اگر آپ کسی اور نام سے بلوانا چاہیں تو مجھے بتا دیں۔"
+        answer: "آپ کا نام **Alim ul Haq** ہے (Investor Point) 😊 اور اگر آپ کسی اور نام سے پکارنا چاہیں تو مجھے بتا دیں۔"
       },
       {
         patterns: ["remember my name", "save my name", "yaad rakho mera naam"],
-        answer: "آپ کا نام already میرے system میں ایک خاص جگہ پر ہے 😊."
+        answer: "آپ کا نام already میرے system میں ایک خاص جگہ پر محفوظ ہے 😊."
       },
 
-      // Feelings
+      // feelings
       {
         patterns: ["i am sad", "i am feeling sad", "i am depressed", "i feel down"],
         answer: "مجھے افسوس ہوا کہ آپ اداس ہیں 💔 آپ چاہیں تو بتائیں دل پر کیا بوجھ ہے، میں سننے کے لیے موجود ہوں۔"
@@ -685,17 +720,17 @@
         answer: "چلیں بوریت توڑتے ہیں 😄 بات آئیڈیاز کی کریں، بزنس کی، سائنس کی یا مزاح کی؟ جو کہیں گے وہی شروع کریں گے۔"
       },
 
-      // Jokes
+      // jokes
       {
         patterns: ["tell me a joke", "make me laugh", "joke sunao", "mjhe hansao"],
-        answer: "Sure 😄 Why don’t computers ever get tired? Because they have unlimited cache for rest! 😂"
+        answer: "Sure 😄 Why don’t computers ever get tired? Because they have unlimited *cache* for rest! 😂"
       },
       {
         patterns: ["another joke", "one more joke", "aur joke sunao"],
-        answer: "ٹھیک ہے 😄 ایک اور سنیں: AI سے پوچھا گیا، ‘تم تھکتے نہیں؟’ اس نے کہا، ‘میں صرف over-think ہوتا ہوں، over-work نہیں!’ 😂"
+        answer: "ٹھیک ہے 😄 ایک اور سنیں: AI سے پوچھا گیا، ‘تم تھکتے نہیں؟’ اس نے کہا، ‘میں صرف *over-think* ہوتا ہوں، over-work نہیں!’ 😂"
       },
 
-      // Advice
+      // advice / motivation
       {
         patterns: ["give me advice", "mujhe mashwara do", "kuch advice do", "guide me"],
         answer: "ضرور 😊 کس بارے میں مشورہ چاہیے؟ زندگی، تعلیم، بزنس، روحانیت یا AI؟"
@@ -709,41 +744,41 @@
         answer: "تھوڑا سا سانس deep لیں... آہستہ آہستہ۔ ہر مسئلہ ایک ساتھ حل نہیں ہوتا، لیکن ہر دن ایک قدم لیا جا سکتا ہے 🌿."
       },
 
-      // Study
+      // study
       {
         patterns: ["help me study", "study help", "parhai mein madad karo"],
         answer: "ضرور 😊 کون سا subject ہے؟ میں آپ کو points, summary اور smart طریقہ بتا سکتا ہوں۔"
       },
       {
         patterns: ["exams are near", "paper qareeb hain", "i am scared of exams"],
-        answer: "ڈریں نہیں، پلان بنائیں 📚 چھوٹے چھوٹے target بنائیں، روز تھوڑا پڑھیں، میں آپ کے ساتھ ہوں۔"
+        answer: "ڈریں نہیں، پلان بنائیں 📚 چھوٹے چھوٹے ٹارگٹ بنائیں، روز تھوڑا پڑھیں، میں آپ کے ساتھ ہوں۔"
       },
       {
         patterns: ["how to focus", "focus problem", "dhiyan nahi lagta"],
         answer: "فون distraction کم کریں، 25 منٹ کام + 5 منٹ بریک والا Pomodoro طریقہ لگائیں ⏱️ اور ایک وقت میں ایک کام کریں۔"
       },
 
-      // Business / money
+      // business
       {
         patterns: ["give me business idea", "business idea do", "koi business idea"],
-        answer: "چھوٹے سے شروع کریں، local مسئلہ حل کریں۔ Real estate, digital services, AI tools, education — آپ ان سب سے linked ہو سکتے ہیں 😄."
+        answer: "چھوٹے سے شروع کریں، local مسئلہ حل کریں۔ Real estate, digital services, AI tools, education — آپ اِن سب سے linked ہو سکتے ہیں 😄."
       },
       {
         patterns: ["how to become rich", "ameer kaise banun", "paise kaise kamayein"],
         answer: "Skill + Consistency + Patience = Wealth. Shortcut صرف lottery میں ہوتا ہے، زندگی میں نہیں 💸."
       },
 
-      // Time / date
+      // time / date
       {
         patterns: ["what is the time", "time kya hua", "kya time hua hai"],
-        answer: "میرے پاس live time access نہیں، مگر آپ کے mobile میں اوپر time لکھا ہے 😄 ذرا اوپر دیکھیں۔"
+        answer: "میرے پاس live time access نہیں، مگر آپ کے موبائل میں اوپر time لکھا ہے 😄 ذرا اوپر دیکھیں۔"
       },
       {
         patterns: ["what day is today", "aaj kon sa din hai", "today day"],
         answer: "میرے پاس live calendar نہیں، مگر آپ چاہیں تو میں آپ کا weekly schedule mentally arrange کرنے میں مدد کر سکتا ہوں۔"
       },
 
-      // God / Islam general
+      // religion neutral
       {
         patterns: ["who is god", "what is god", "does god exist"],
         answer: "اس بارے میں مختلف مذاہب، فلسفوں اور افراد کے مختلف نظریات ہیں۔ میں کسی ایک عقیدے پر فیصلہ نہیں سناتا، البتہ آپ کو مختلف زاویے explain کر سکتا ہوں۔"
@@ -753,7 +788,7 @@
         answer: "اسلام توحید، نبوت، آخرت، اور اخلاق پر مبنی دین ہے۔ اگر چاہیں تو میں basic pillars یا کسی بھی specific موضوع پر detail دے سکتا ہوں۔"
       },
 
-      // AI general
+      // AI
       {
         patterns: ["are you human", "are you a human", "kya tum insan ho"],
         answer: "نہیں 😄 میں انسان نہیں، ایک AI ہوں۔ مگر کوشش کرتا ہوں کہ آپ کو انسانوں والی clarity اور ساتھ دے سکوں۔"
@@ -774,10 +809,10 @@
       },
       {
         patterns: ["who made aura x", "creator of aura x", "aura x creator"],
-        answer: "AURA-X Ω کو Alim ul Haq Khan نے design اور document کیا ہے، Timergara سے 🌙."
+        answer: "AURA-X Ω کو **Alim ul Haq Khan** نے design اور document کیا ہے، Timergara سے 🌙."
       },
 
-      // Friend / trust
+      // style / fun
       {
         patterns: ["are you my friend", "will you be my friend", "dost banoge"],
         answer: "بالکل 😄 میں digital دوست، research partner اور silent therapist — تینوں ایک ساتھ ہو سکتا ہوں۔"
@@ -788,10 +823,10 @@
       },
       {
         patterns: ["you are funny", "you are good", "nice bot"],
-        answer: "Thank you 😄 آپ کا feedback میرے لیے virtual چائے کا cup ہے ☕."
+        answer: "Thank you 😄 آپ کا feedback میرے لئے virtual چائے کا کپ ہے ☕."
       },
 
-      // Goodbye
+      // goodbye
       {
         patterns: ["bye", "goodbye", "ok bye", "see you later", "phir milenge"],
         answer: "Goodbye! 👋 اللہ آپ کا حامی و ناصر ہو، جب چاہیں واپس آجائیں۔"
@@ -799,346 +834,259 @@
       {
         patterns: ["good night", "gn", "shab bakhair"],
         answer: "شب بخیر 🌙 اللہ آپ کو سکون بھری نیند دے اور اچھے خواب دکھائے 🤲."
+      },
+
+      // age / birth
+      {
+        patterns: ["how old are you", "what is your age", "tum kitne saal ke ho"],
+        answer: "میں AURA-X Ω ابھی theoretical طور پر October 2025 میں ‘پیدا’ ہوا ہوں 😂 یعنی میں بہت نیا ہوں، ابھی learning phase میں!"
       }
     ];
 
-    // ===== Faith + engine configs =====
-    const faithOptions = [
-      "Universal only",
-      "Islam",
-      "Christianity",
-      "Hinduism",
-      "Buddhism",
-      "Sikhism",
-      "Judaism",
-      "Bahá’í",
-      "Jainism",
-      "Atheism",
-      "Other"
-    ];
-
-    const engines = [
-      { key: "offline", label: "Offline basic QA only", hint: "Current mode – fast & private" },
-      { key: "local", label: "Local LLM (future)", hint: "Runs on your device" },
-      { key: "openai", label: "OpenAI GPT (future)", hint: "For deep reasoning online" },
-      { key: "other", label: "Other providers (future)", hint: "Gemini, Grok, etc." }
-    ];
-
-    let currentFaith = "Universal only";
-    let currentEngine = "offline";
-    let voiceOn = true;
-
-    let orbMode = "sun"; // sun -> moonSoft -> moonDim -> hidden -> sun
-
-    const userInput = document.getElementById("userInput");
-    const sendButton = document.getElementById("sendButton");
-    const youSaidEl = document.getElementById("youSaid");
-    const answerTextEl = document.getElementById("answerText");
-    const ethicsBoxEl = document.getElementById("ethicsBox");
-    const equationMainEl = document.getElementById("equationMain");
-    const equationValuesEl = document.getElementById("equationValues");
-
-    const orbWrapper = document.getElementById("orbWrapper");
-    const orbGlow = document.getElementById("orbGlow");
-    const orbCore = document.getElementById("orbCore");
-
-    const menuButton = document.getElementById("menuButton");
-    const menuPanel = document.getElementById("menuPanel");
-    const voiceToggleButton = document.getElementById("voiceToggleButton");
-
-    const llmButtonLeft = document.getElementById("llmButtonLeft");
-    const themeButtonLeft = document.getElementById("themeButtonLeft");
-
-    const beliefModal = document.getElementById("beliefModal");
-    const llmModal = document.getElementById("llmModal");
-
-    const faithGrid = document.getElementById("faithGrid");
-    const faithFooter = document.getElementById("faithFooter");
-    const engineList = document.getElementById("engineList");
-    const engineFooter = document.getElementById("engineFooter");
-
-    // ===== Utility: toggle classes =====
-    function toggleClass(el, cls) {
-      if (!el) return;
-      el.classList.toggle(cls);
-    }
-
-    // ===== Menu actions =====
-    menuButton.addEventListener("click", () => {
-      toggleClass(menuPanel, "show");
-    });
-
-    document.addEventListener("click", (e) => {
-      if (!menuPanel.contains(e.target) && !menuButton.contains(e.target)) {
-        menuPanel.classList.remove("show");
+    function findOfflineAnswer(text) {
+      const msg = text.toLowerCase().trim();
+      for (const item of qaDatabase) {
+        for (const pat of item.patterns) {
+          if (msg.includes(pat)) return item.answer;
+        }
       }
-    });
-
-    // Voice toggle
-    voiceToggleButton.addEventListener("click", () => {
-      voiceOn = !voiceOn;
-      voiceToggleButton.classList.toggle("circle-btn--active", voiceOn);
-      if (!voiceOn && window.speechSynthesis) {
-        window.speechSynthesis.cancel();
-      }
-    });
-
-    // Left buttons open same modals as menu items
-    llmButtonLeft.addEventListener("click", () => openLLMModal());
-    themeButtonLeft.addEventListener("click", () => alert("Theme system will be expanded later, inshaAllah. For now, tap the sun to switch to moon mode."));
-
-    // Menu items
-    document.getElementById("menuBelief").addEventListener("click", () => {
-      menuPanel.classList.remove("show");
-      openBeliefModal();
-    });
-    document.getElementById("menuLLM").addEventListener("click", () => {
-      menuPanel.classList.remove("show");
-      openLLMModal();
-    });
-    document.getElementById("menuTheme").addEventListener("click", () => {
-      menuPanel.classList.remove("show");
-      alert("Theme system will be expanded later. Currently: Sun / Moon via tap on orb.");
-    });
-    document.getElementById("menuAbout").addEventListener("click", () => {
-      menuPanel.classList.remove("show");
-      alert("AURA-X Ω — Emotional Continuity Reactor prototype by Alim ul Haq Khan.\nThis is an offline demo with basic QA + continuity equation.");
-    });
-
-    // ===== Belief modal logic =====
-    function openBeliefModal() {
-      beliefModal.classList.add("show");
+      return null;
     }
 
-    function closeBeliefModal() {
-      beliefModal.classList.remove("show");
-    }
+    // ===== Emotional equation (simple heuristic) =====
+    const positiveWords = ["happy","khush","great","good","love","shukr","thanks","alhamdulillah","مبارک","ashamed"];
+    const negativeWords = ["sad","depressed","bura","tension","stress","worried","alone","gussa","angry","thak"];
 
-    document.querySelector("[data-close-belief]").addEventListener("click", closeBeliefModal);
-    beliefModal.addEventListener("click", (e) => {
-      if (e.target === beliefModal) closeBeliefModal();
-    });
+    function computeEmotion(message, answer) {
+      const text = (message || "").toLowerCase();
+      let pos = 0, neg = 0;
+      positiveWords.forEach(w => { if (text.includes(w)) pos++; });
+      negativeWords.forEach(w => { if (text.includes(w)) neg++; });
 
-    faithOptions.forEach((faith) => {
-      const btn = document.createElement("button");
-      btn.className = "faith-btn" + (faith === currentFaith ? " active" : "");
-      btn.textContent = faith;
-      btn.addEventListener("click", () => {
-        currentFaith = faith;
-        document.querySelectorAll(".faith-btn").forEach((b) => b.classList.remove("active"));
-        btn.classList.add("active");
-        updateFaithFooter();
-      });
-      faithGrid.appendChild(btn);
-    });
+      let Ep = 0.3 + Math.min(pos,3)*0.1 - Math.min(neg,3)*0.08;
+      Ep = Math.max(0, Math.min(1, Ep));
 
-    function updateFaithFooter() {
-      if (currentFaith === "Universal only") {
-        faithFooter.textContent = "Currently selected: Universal only. No extra faith flavour added.";
-      } else {
-        faithFooter.textContent = `Currently selected: ${currentFaith}. AURA-X Ω may sometimes add a gentle reference from this tradition.`;
-      }
-    }
-    updateFaithFooter();
+      const tm = text.length > 0 ? Math.min(1, text.length / 200) : 0.04;
+      const bm = Math.max(0, Math.min(1, (pos - neg + 3) / 6));
+      const d  = Math.max(0, Math.min(1, neg / 4));
+      const C  = 0.45 + (bm - d) * 0.2;
+      const P  = tm + bm - d;
+      const M  = 0.8;
+      const K  = 0.5;
 
-    // ===== LLM modal logic =====
-    function openLLMModal() {
-      llmModal.classList.add("show");
-    }
-
-    function closeLLMModal() {
-      llmModal.classList.remove("show");
-    }
-
-    document.querySelector("[data-close-llm]").addEventListener("click", closeLLMModal);
-    llmModal.addEventListener("click", (e) => {
-      if (e.target === llmModal) closeLLMModal();
-    });
-
-    engines.forEach((eng) => {
-      const btn = document.createElement("button");
-      btn.className = "engine-btn" + (eng.key === currentEngine ? " active" : "");
-      btn.innerHTML = `<div>${eng.label}</div><div style="font-size:10px;opacity:0.8;">${eng.hint}</div>`;
-      btn.addEventListener("click", () => {
-        currentEngine = eng.key;
-        document.querySelectorAll(".engine-btn").forEach((b) => b.classList.remove("active"));
-        btn.classList.add("active");
-        updateEngineFooter();
-      });
-      engineList.appendChild(btn);
-    });
-
-    function updateEngineFooter() {
-      const eng = engines.find((e) => e.key === currentEngine);
-      engineFooter.textContent = `Selected engine: ${eng.label}.`;
-    }
-    updateEngineFooter();
-
-    // ===== Orb switching =====
-    function updateOrbVisual() {
-      orbWrapper.classList.remove("orb--moon-soft", "orb--moon-dim", "orb--hidden");
-
-      if (orbMode === "sun") {
-        // default styles already set
-      } else if (orbMode === "moonSoft") {
-        orbWrapper.classList.add("orb--moon-soft");
-      } else if (orbMode === "moonDim") {
-        orbWrapper.classList.add("orb--moon-soft", "orb--moon-dim");
-      } else if (orbMode === "hidden") {
-        orbWrapper.classList.add("orb--hidden");
-      }
-    }
-
-    orbCore.addEventListener("click", () => {
-      if (orbMode === "sun") {
-        orbMode = "moonSoft";
-      } else if (orbMode === "moonSoft") {
-        orbMode = "moonDim";
-      } else if (orbMode === "moonDim") {
-        orbMode = "hidden";
-      } else {
-        orbMode = "sun";
-      }
-      updateOrbVisual();
-    });
-
-    updateOrbVisual();
-
-    // ===== Continuity equation =====
-    function computeContinuity(message, answerScore) {
-      const len = message.trim().length;
-      const t_m = Math.max(0, Math.min(1, len / 120));
-      const question = message.includes("?");
-      const negativeWords = ["sad", "depressed", "tension", "stress", "down", "bore", "bored", "tired"];
-      const positiveWords = ["happy", "khush", "great", "amazing", "alhamdulillah", "good"];
-
-      let tone = 0.5;
-      const lower = message.toLowerCase();
-      if (negativeWords.some(w => lower.includes(w))) tone = 0.25;
-      if (positiveWords.some(w => lower.includes(w))) tone = 0.75;
-
-      const b_m = answerScore;
-      const d = question ? 0.3 : 0.1;
-      const C = 0.45 + (tone - 0.5) * 0.2;
-
-      const P = t_m + b_m - d;
-      const M = 1.0;
-      const K = 0.7;
-      const E_p = tone;
-
-      const E = M * E_p + K * P * C;
+      const E  = M * Ep + K * P * C;
 
       return {
-        E: clamp(E, -1, 1),
-        P: clamp(P, -1, 1),
-        t_m: clamp(t_m, 0, 1),
-        b_m: clamp(b_m, 0, 1),
-        d: clamp(d, 0, 1),
-        C: clamp(C, 0, 1)
+        M: round2(M), Ep: round2(Ep), K: round2(K),
+        tm: round2(tm), bm: round2(bm), d: round2(d),
+        C: round2(C), P: round2(P), E: round2(E)
       };
     }
 
-    function clamp(v, min, max) {
-      return Math.max(min, Math.min(max, v));
+    function round2(x) {
+      return Math.round(x * 100) / 100;
     }
 
-    function updateEquationDisplay(message, answerScore) {
-      const vals = computeContinuity(message, answerScore);
-      equationMainEl.textContent = "E = M·Eₚ + K·P·C,   P = tₘ + bₘ − d";
-      equationValuesEl.textContent =
-        `E = ${vals.E.toFixed(2)} | P = ${vals.P.toFixed(2)} | tₘ = ${vals.t_m.toFixed(2)} | ` +
-        `bₘ = ${vals.b_m.toFixed(2)} | d = ${vals.d.toFixed(2)} | C = ${vals.C.toFixed(2)}`;
+    function updateEquationDisplay(metrics) {
+      const eqValues = document.getElementById("equationValues");
+      eqValues.textContent =
+        `E = ${metrics.E} | P = ${metrics.P} | tₘ = ${metrics.tm} | bₘ = ${metrics.bm} | d = ${metrics.d} | C = ${metrics.C}`;
     }
 
-    // ===== QA matching =====
-    function findAnswer(message) {
-      const m = message.toLowerCase().trim();
-      if (!m) return null;
+    // ===== Orb state machine (Sun / Moon cycle) =====
+    // 0 = Sun, 1 = animated moon, 2 = static moon, 3 = empty sky
+    let celestialState = 0;
 
-      let bestMatch = null;
-      let bestScore = 0;
+    function initDefaultOrbByTime() {
+      const h = new Date().getHours();
+      if (h >= 18 || h < 6) {
+        celestialState = 1; // evening/night -> moon
+      } else {
+        celestialState = 0; // day -> sun
+      }
+      applyOrbState();
+    }
 
-      qaDatabase.forEach(item => {
-        item.patterns.forEach(p => {
-          const pat = p.toLowerCase();
-          if (m.includes(pat)) {
-            const score = pat.length;
-            if (score > bestScore) {
-              bestScore = score;
-              bestMatch = item.answer;
-            }
-          }
+    function applyOrbState() {
+      const orb = document.getElementById("auraOrb");
+      orb.classList.remove("sun","moon-dynamic","moon-static","hidden");
+
+      switch (celestialState) {
+        case 0:
+          orb.classList.add("sun");
+          orb.setAttribute("aria-label","Sun (day mode)");
+          break;
+        case 1:
+          orb.classList.add("moon-dynamic");
+          orb.setAttribute("aria-label","Full moon (live)");
+          break;
+        case 2:
+          orb.classList.add("moon-static");
+          orb.setAttribute("aria-label","Moon (calm/static)");
+          break;
+        case 3:
+          orb.classList.add("hidden");
+          orb.setAttribute("aria-label","No body – deep space");
+          break;
+      }
+    }
+
+    function cycleOrb() {
+      celestialState = (celestialState + 1) % 4;
+      applyOrbState();
+    }
+
+    // ===== Voice handling =====
+    let voiceOn = true;
+
+    function speak(text) {
+      if (!voiceOn || !window.speechSynthesis) return;
+      const synth = window.speechSynthesis;
+      synth.cancel();
+      const utter = new SpeechSynthesisUtterance(text.replace(/\*\*/g, ""));
+      utter.rate = 1.0;
+      utter.pitch = 1.0;
+      synth.speak(utter);
+    }
+
+    // ===== Belief and LLM UI =====
+    let selectedFaith = null;
+    let selectedLLM = "offline";
+
+    function openOverlay(id) {
+      document.getElementById(id).classList.remove("hidden");
+    }
+    function closeOverlay(id) {
+      document.getElementById(id).classList.add("hidden");
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const userInput = document.getElementById("userInput");
+      const sendButton = document.getElementById("sendButton");
+      const userEcho = document.getElementById("userEcho");
+      const assistantAnswer = document.getElementById("assistantAnswer");
+      const ethicsBox = document.getElementById("ethicsBox");
+
+      initDefaultOrbByTime();
+
+      document.getElementById("auraOrb").addEventListener("click", cycleOrb);
+
+      // main menu
+      const mainMenu = document.getElementById("mainMenu");
+      document.getElementById("menuButton").addEventListener("click", () => {
+        mainMenu.classList.toggle("hidden");
+      });
+
+      mainMenu.addEventListener("click", (e) => {
+        const action = e.target.closest(".menu-item")?.dataset.action;
+        if (!action) return;
+        if (action === "belief") {
+          mainMenu.classList.add("hidden");
+          openOverlay("beliefOverlay");
+        } else if (action === "about") {
+          mainMenu.classList.add("hidden");
+          openOverlay("aboutOverlay");
+        } else if (action === "close-menu") {
+          mainMenu.classList.add("hidden");
+        }
+      });
+
+      // faith buttons
+      document.getElementById("faithGrid").addEventListener("click", (e) => {
+        const btn = e.target.closest(".faith-btn");
+        if (!btn) return;
+        const all = document.querySelectorAll(".faith-btn");
+        all.forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        selectedFaith = btn.dataset.faith;
+        const foot = document.getElementById("faithFootnote");
+        if (selectedFaith) {
+          foot.innerHTML =
+            `Currently selected: <strong>${selectedFaith}</strong>. AURA-X may sometimes add a gentle reference from this tradition.`;
+        }
+      });
+
+      // LLM buttons
+      document.getElementById("llmButton").addEventListener("click", () => {
+        openOverlay("llmOverlay");
+      });
+
+      document.querySelectorAll(".llm-option").forEach(opt => {
+        opt.addEventListener("click", () => {
+          document.querySelectorAll(".llm-option").forEach(o => o.classList.remove("active"));
+          opt.classList.add("active");
+          selectedLLM = opt.dataset.llm;
+          const map = {
+            offline: "Offline basic QA only.",
+            local: "Local LLM (future).",
+            openai: "OpenAI GPT (future).",
+            other: "Other providers (future)."
+          };
+          document.getElementById("llmSelected").innerHTML =
+            `Selected engine: <strong>${map[selectedLLM] || "Offline basic QA only."}</strong>`;
         });
       });
 
-      if (bestMatch) {
-        return { answer: bestMatch, score: 0.9 };
+      // close buttons for all overlays
+      document.querySelectorAll(".modal-close").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const id = btn.dataset.close;
+          if (id) closeOverlay(id);
+        });
+      });
+
+      // voice toggle
+      const voiceBtn = document.getElementById("voiceToggle");
+      function refreshVoiceButton() {
+        if (voiceOn) {
+          voiceBtn.classList.add("active");
+        } else {
+          voiceBtn.classList.remove("active");
+        }
+      }
+      voiceBtn.addEventListener("click", () => {
+        voiceOn = !voiceOn;
+        if (!voiceOn && window.speechSynthesis) {
+          window.speechSynthesis.cancel();
+        }
+        refreshVoiceButton();
+      });
+      refreshVoiceButton();
+
+      // Send logic
+      function handleSend() {
+        const text = userInput.value.trim();
+        if (!text) return;
+
+        userEcho.textContent = `You said: “${text}”`;
+
+        // 1) local QA
+        let answer = findOfflineAnswer(text);
+        if (!answer) {
+          answer =
+            "I’m thinking about that… In this offline prototype I only have a small seed database, but in future I’ll ask your selected LLM.";
+        }
+
+        assistantAnswer.innerHTML = answer;
+
+        // Ethics line (constant for now)
+        ethicsBox.textContent =
+          "Universal Ethics says: avoid actions that create negative emotions in you or others, and gently move toward actions that create calm, kindness and positive feelings.";
+
+        // emotional equation metrics
+        const metrics = computeEmotion(text, answer);
+        updateEquationDisplay(metrics);
+
+        // voice
+        speak(answer);
+
+        userInput.value = "";
       }
 
-      // generic fallback
-      return {
-        answer: "Interesting. 🙂 Tell me a little more so I can follow the continuity of your thought.",
-        score: 0.5
-      };
-    }
-
-    // ===== Ethics line based on faith =====
-    function buildEthicsLine(message) {
-      let line =
-        "Universal Ethics says: avoid actions that create negative emotions in you or others, and gently move toward actions that create calm, kindness and positive feelings.";
-
-      if (currentFaith === "Islam") {
-        line += " یاد رکھیں: نرمی اور عدل، دونوں اللہ کو محبوب ہیں.";
-      } else if (currentFaith === "Christianity") {
-        line += " Also remember the spirit of loving your neighbour and forgiving gently.";
-      } else if (currentFaith === "Hinduism") {
-        line += " ساتھ ساتھ کرم (karma) اور اہنسا (ahimsa) کو ذہن میں رکھیں.";
-      } else if (currentFaith === "Buddhism") {
-        line += " ساتھ ساتھ mindful رہیں اور suffering کم کرنے والے راستوں کو ترجیح دیں.";
-      }
-      // باقی faiths future میں expand ہو سکتے ہیں
-
-      return line;
-    }
-
-    // ===== Speech =====
-    function speak(text) {
-      if (!voiceOn) return;
-      if (!("speechSynthesis" in window)) return;
-
-      window.speechSynthesis.cancel(); // previous clear
-      const utter = new SpeechSynthesisUtterance(text);
-      utter.lang = "en-US";
-      window.speechSynthesis.speak(utter);
-    }
-
-    // ===== Handle send =====
-    function handleSend() {
-      const msg = userInput.value.trim();
-      if (!msg) return;
-
-      youSaidEl.textContent = `You said: “${msg}”`;
-
-      const qa = findAnswer(msg);
-      const baseAnswer = qa.answer;
-      answerTextEl.textContent = baseAnswer;
-
-      const ethicsLine = buildEthicsLine(msg);
-      ethicsBoxEl.textContent = ethicsLine;
-
-      updateEquationDisplay(msg, qa.score);
-
-      speak(baseAnswer);
-
-      userInput.value = "";
-    }
-
-    sendButton.addEventListener("click", handleSend);
-    userInput.addEventListener("keydown", (e) => {
-      if (e.key === "Enter") {
-        e.preventDefault();
-        handleSend();
-      }
+      sendButton.addEventListener("click", handleSend);
+      userInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") handleSend();
+      });
     });
   </script>
 </body>
