@@ -112,6 +112,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      cursor: pointer;
     }
 
     .aura-core {
@@ -121,12 +122,41 @@
       background: radial-gradient(circle, #facc15, #f97316);
       box-shadow: 0 0 25px rgba(250,204,21,0.9);
       animation: pulseSun 3.5s infinite ease-in-out;
+      transition: all 0.35s ease;
     }
 
     @keyframes pulseSun {
       0%   { transform: scale(1);   filter: brightness(1); }
       50%  { transform: scale(1.08); filter: brightness(1.4); }
       100% { transform: scale(1);   filter: brightness(1); }
+    }
+
+    /* Moon animated */
+    .aura-core.moon {
+      background: radial-gradient(circle, #e5e7eb, #60a5fa);
+      box-shadow: 0 0 22px rgba(96,165,250,0.9);
+      animation: pulseMoon 4s infinite ease-in-out;
+    }
+
+    @keyframes pulseMoon {
+      0%   { transform: scale(0.95); filter: brightness(0.9); }
+      50%  { transform: scale(1.05); filter: brightness(1.25); }
+      100% { transform: scale(0.95); filter: brightness(0.9); }
+    }
+
+    /* Moon static / dim */
+    .aura-core.moon-static {
+      animation: none;
+      filter: brightness(0.7);
+      box-shadow: 0 0 10px rgba(148,163,184,0.7);
+    }
+
+    /* Hidden */
+    .aura-core.hidden {
+      animation: none;
+      opacity: 0;
+      transform: scale(0.1);
+      box-shadow: none;
     }
 
     .mode-indicator {
@@ -160,57 +190,37 @@
       text-align: left;
     }
 
-    /* ===== Right side column: Emotion bar + buttons ===== */
+    /* ===== Math Box ===== */
+    .math-box {
+      margin-top: 8px;
+      padding: 6px 8px;
+      border-radius: 10px;
+      background: rgba(15,23,42,0.9);
+      border: 1px dashed rgba(148,163,184,0.7);
+      font-size: 11px;
+      text-align: left;
+      color: #cbd5e1;
+    }
+
+    .math-box-title {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #9ca3af;
+      margin-bottom: 2px;
+    }
+
+    .math-formula {
+      font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 11px;
+    }
+
+    /* ===== Right side buttons only ===== */
     .card-side-column {
       position: absolute;
       top: 50%;
       right: 14px;
       transform: translateY(-50%);
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .emotion-column {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .emotion-label {
-      font-size: 10px;
-      color: #e5e7eb;
-      background: rgba(15,23,42,0.9);
-      padding: 2px 6px;
-      border-radius: 999px;
-      border: 1px solid rgba(148,163,184,0.5);
-    }
-
-    .emotion-bar {
-      width: 6px;
-      height: 110px;
-      border-radius: 999px;
-      background: linear-gradient(180deg, #ef4444, #facc15, #22c55e);
-      padding: 2px;
-      box-shadow: 0 0 14px rgba(250,204,21,0.7);
-      display: flex;
-      align-items: flex-end;
-      justify-content: center;
-      overflow: hidden;
-    }
-
-    .emotion-bar-fill {
-      width: 100%;
-      border-radius: 999px;
-      background: linear-gradient(180deg, #22c55e, #facc15);
-      height: 50%;
-      filter: brightness(0.9);
-      transition: height 0.5s ease, filter 0.5s ease;
-    }
-
-    .button-column {
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -427,8 +437,8 @@
       <h1 class="title">AURA-X Ω</h1>
       <p class="subtitle">Logical • Emotional • Universal Ethics Reactor</p>
 
-      <div class="aura-circle">
-        <div class="aura-core"></div>
+      <div id="auraCircle" class="aura-circle">
+        <div id="auraCore" class="aura-core"></div>
       </div>
 
       <div class="mode-indicator">
@@ -444,19 +454,21 @@
         and gently move toward actions that create calm, kindness and positive feelings.
       </div>
 
-      <!-- Right side: emotion bar + buttons (side by side) -->
+      <div id="mathBox" class="math-box">
+        <div class="math-box-title">Emotional Continuity Equation</div>
+        <div class="math-formula">
+          E = M·Eₚ + K·P·C,&nbsp;&nbsp; P = tₘ + bₘ − d<br />
+          <span id="mathValues">
+            E = 0.226 | P = 0.00 | tₘ = 0 | bₘ = 0.00 | d = 0.00 | C = 0.50
+          </span>
+        </div>
+      </div>
+
+      <!-- Right side buttons -->
       <div class="card-side-column">
-        <div class="emotion-column">
-          <div id="emotionLabel" class="emotion-label">E = 0.226</div>
-          <div id="emotionBar" class="emotion-bar">
-            <div id="emotionFill" class="emotion-bar-fill"></div>
-          </div>
-        </div>
-        <div class="button-column">
-          <button class="icon-btn settings-btn" onclick="toggleSettings()">⚙️</button>
-          <button class="icon-btn belief-btn" onclick="openBeliefModal()"><span>B</span></button>
-          <button id="voiceBtn" class="icon-btn voice-btn" onclick="toggleVoiceMode()"><span>V</span></button>
-        </div>
+        <button class="icon-btn settings-btn" onclick="toggleSettings()">⚙️</button>
+        <button class="icon-btn belief-btn" onclick="openBeliefModal()"><span>B</span></button>
+        <button id="voiceBtn" class="icon-btn voice-btn" onclick="toggleVoiceMode()"><span>V</span></button>
       </div>
     </div>
 
@@ -568,12 +580,35 @@
       voiceAuto: false
     };
 
-    // ===== AURA-X Emotional State (simplified reactor) =====
+    // ===== AURA-X Emotional State (reactor) =====
     let E = 0.226;    // emotion level (0..1)
     let C = 0.5;      // continuity factor (0..1)
     let lastTone = "neutral";
     const M = 0.9;    // memory decay
     const K = 0.12;   // reaction gain
+
+    // ===== Aura visual state (sun / moon cycle) =====
+    // 0 = sun, 1 = animated moon, 2 = static moon, 3 = hidden
+    let auraState = 0;
+
+    function cycleAuraVisual() {
+      const core = document.getElementById("auraCore");
+      auraState = (auraState + 1) % 4;
+
+      core.classList.remove("moon", "moon-static", "hidden");
+
+      if (auraState === 0) {
+        // default sun (no extra class)
+      } else if (auraState === 1) {
+        core.classList.add("moon");
+      } else if (auraState === 2) {
+        core.classList.add("moon", "moon-static");
+      } else if (auraState === 3) {
+        core.classList.add("hidden");
+      }
+    }
+
+    document.getElementById("auraCircle").addEventListener("click", cycleAuraVisual);
 
     // ===== Offline Basic QA Database =====
     const qaDatabase = [
@@ -789,7 +824,6 @@
       }
     ];
 
-    // ===== Helper: basic QA match =====
     function findBasicAnswer(userMessage) {
       const msg = userMessage.toLowerCase().trim();
       for (const item of qaDatabase) {
@@ -878,7 +912,7 @@
       }
     }
 
-    // ===== Main send =====
+    // ===== Send =====
     function sendMessage() {
       const input = document.getElementById("userInput");
       const text = input.value.trim();
@@ -889,7 +923,6 @@
       handleMessage(text);
     }
 
-    // Enter key support
     document.addEventListener("keydown", (e) => {
       if (e.key === "Enter") {
         const active = document.activeElement;
@@ -900,38 +933,59 @@
       }
     });
 
-    // ===== Emotion Update Helpers =====
-    function updateEmotionFromTone(tone) {
-      let P = 0;
-      if (tone === "negative") P = -1;
-      else if (tone === "positive") P = 1;
+    // ===== Emotion update & math panel =====
+    function updateMathPanel(tm, bm, d, P) {
+      const el = document.getElementById("mathValues");
+      if (!el) return;
+      el.textContent =
+        "E = " + E.toFixed(3) +
+        " | P = " + P.toFixed(2) +
+        " | tₘ = " + tm.toFixed(2) +
+        " | bₘ = " + bm.toFixed(2) +
+        " | d = " + d.toFixed(2) +
+        " | C = " + C.toFixed(2);
+    }
 
+    function updateEmotionFromTone(tone) {
+      // tₘ: tone of message (-1,0,1)
+      let tm = 0;
+      if (tone === "negative") tm = -1;
+      else if (tone === "positive") tm = 1;
+
+      // bₘ: belief modifier
+      let bm = 0;
+      if (settings.beliefEnabled && settings.beliefs.length > 1) {
+        bm = 0.25;
+      }
+
+      // d: disruption / distance from previous tone
+      let d = 0;
+      if (tone === lastTone) {
+        d = 0.10;
+      } else {
+        d = 0.30;
+      }
+
+      // continuity C
       if (tone === lastTone && tone !== "neutral") {
         C = Math.min(1, C + 0.05);
       } else {
         C = Math.max(0.25, C - 0.05);
       }
 
-      E = E * M + P * K * C;
+      // P = tₘ + bₘ - d
+      const P = tm + bm - d;
+
+      // E_new = M·E_prev + K·P·C
+      E = E * M + K * P * C;
       if (E < 0) E = 0;
       if (E > 1) E = 1;
 
       lastTone = tone;
-      updateEmotionBar();
+      updateMathPanel(tm, bm, d, P);
     }
 
-    function updateEmotionBar() {
-      const fill = document.getElementById("emotionFill");
-      const label = document.getElementById("emotionLabel");
-      if (!fill || !label) return;
-
-      const percent = 15 + E * 75; // 15–90%
-      fill.style.height = percent + "%";
-      fill.style.filter = `brightness(${0.6 + E})`;
-      label.textContent = "E = " + E.toFixed(3);
-    }
-
-    // ===== Handle message (QA + emotional) =====
+    // ===== Handle message =====
     function handleMessage(text) {
       const basic = findBasicAnswer(text);
       if (basic) {
@@ -958,7 +1012,6 @@
       document.getElementById("ethicsBox").textContent = text;
     }
 
-    // ===== Emotional reply =====
     function buildEmotionalReply(text) {
       const lower = text.toLowerCase();
       let tone = "neutral";
@@ -1018,8 +1071,8 @@
       window.speechSynthesis.speak(u);
     }
 
-    // init bar once
-    updateEmotionBar();
+    // init math panel once
+    updateMathPanel(0, 0, 0, 0);
   </script>
 </body>
 </html>
