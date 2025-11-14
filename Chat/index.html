@@ -24,9 +24,11 @@
       transition: background 0.4s ease;
     }
 
-    /* Theme variants (simple for now) */
+    /* Theme variants */
     body.theme-sun { background: #020617; }
-    body.theme-moon { background: radial-gradient(circle at top, #020617 0%, #020617 40%, #000 100%); }
+    body.theme-moon {
+      background: radial-gradient(circle at top, #020617 0%, #020617 40%, #000 100%);
+    }
     body.theme-galaxy {
       background:
         radial-gradient(circle at 10% 20%, rgba(59,130,246,0.25), transparent 60%),
@@ -103,7 +105,7 @@
       box-shadow: 0 18px 45px rgba(0,0,0,0.7);
       text-align: center;
       box-sizing: border-box;
-      margin-top: -8px; /* thora upar */
+      margin-top: -8px;
     }
 
     body.theme-moon .card {
@@ -162,7 +164,6 @@
       100% { transform: scale(1);   filter: brightness(1); }
     }
 
-    /* Moon animated */
     .aura-core.moon {
       background: radial-gradient(circle, #e5e7eb, #60a5fa);
       box-shadow: 0 0 22px rgba(96,165,250,0.9);
@@ -175,14 +176,12 @@
       100% { transform: scale(0.95); filter: brightness(0.9); }
     }
 
-    /* Moon static / dim */
     .aura-core.moon-static {
       animation: none;
       filter: brightness(0.7);
       box-shadow: 0 0 10px rgba(148,163,184,0.7);
     }
 
-    /* Hidden */
     .aura-core.hidden {
       animation: none;
       opacity: 0;
@@ -242,21 +241,25 @@
     }
 
     .math-formula {
-      font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+        "Liberation Mono", "Courier New", monospace;
       font-size: 11px;
     }
 
-    /* ===== Right side buttons ===== */
-    .card-side-column {
+    /* ===== Buttons: right & left columns ===== */
+    .card-side-column,
+    .card-side-column-left {
       position: absolute;
       top: 50%;
-      right: 14px;
       transform: translateY(-50%);
       display: flex;
       flex-direction: column;
       align-items: center;
       gap: 10px;
     }
+
+    .card-side-column { right: 14px; }
+    .card-side-column-left { left: 14px; }
 
     .icon-btn {
       width: 40px;
@@ -505,17 +508,21 @@
         </div>
       </div>
 
-      <!-- Right side buttons -->
+      <!-- Right side buttons (⚙ B V) -->
       <div class="card-side-column">
         <button class="icon-btn settings-btn" onclick="toggleSettings()">⚙️</button>
         <button class="icon-btn belief-btn" onclick="openBeliefModal()"><span>B</span></button>
         <button id="voiceBtn" class="icon-btn voice-btn" onclick="toggleVoiceMode()"><span>V</span></button>
+      </div>
+
+      <!-- Left side buttons (L T) -->
+      <div class="card-side-column-left">
         <button class="icon-btn llm-btn" onclick="openLLMModal()"><span>L</span></button>
         <button class="icon-btn theme-btn" onclick="openThemeModal()"><span>T</span></button>
       </div>
     </div>
 
-    <!-- ===== Input Area (bottom) ===== -->
+    <!-- ===== Input Area ===== -->
     <div class="input-area">
       <input
         id="userInput"
@@ -701,16 +708,15 @@
       theme: "sun"
     };
 
-    // ===== AURA-X Emotional State (reactor) =====
-    let E = 0.226;    // emotion level (0..1)
-    let C = 0.5;      // continuity factor (0..1)
+    // ===== Emotional Reactor state =====
+    let E = 0.226;
+    let C = 0.5;
     let lastTone = "neutral";
-    const M = 0.9;    // memory decay
-    const K = 0.12;   // reaction gain
+    const M = 0.9;
+    const K = 0.12;
 
-    // ===== Aura visual state (sun / moon cycle) =====
-    // 0 = sun, 1 = animated moon, 2 = static moon, 3 = hidden
-    let auraState = 0;
+    // ===== Aura visual (sun / moon cycle) =====
+    let auraState = 0; // 0=sun,1=moon anim,2=moon static,3=hidden
 
     function cycleAuraVisual() {
       const core = document.getElementById("auraCore");
@@ -719,7 +725,7 @@
       core.classList.remove("moon", "moon-static", "hidden");
 
       if (auraState === 0) {
-        // default sun
+        // sun default
       } else if (auraState === 1) {
         core.classList.add("moon");
       } else if (auraState === 2) {
@@ -731,233 +737,141 @@
 
     document.getElementById("auraCircle").addEventListener("click", cycleAuraVisual);
 
-    // ===== Offline Basic QA Database =====
+    // ===== Basic QA database =====
     const qaDatabase = [
-      {
-        patterns: ["hello", "hello!", "hello there", "helo", "hallo"],
-        answer: "Hello! 👋 How can I help you today?"
-      },
-      {
-        patterns: ["hi", "hi!", "hii", "hiii", "hey"],
-        answer: "Hi there! 😊 What can I do for you?"
-      },
-      {
-        patterns: ["assalam o alaikum", "asalam o alaikum", "salam", "slam", "asalamu alaikum"],
-        answer: "وعلیکم السلام 😊 کیسے ہیں آپ؟ میں آپ کی کیا مدد کر سکتا ہوں؟"
-      },
-      {
-        patterns: ["good morning", "gm", "good morng", "good mrng"],
-        answer: "Good morning! 🌞 How’s your day starting?"
-      },
-      {
-        patterns: ["good afternoon", "good noon", "afternoon"],
-        answer: "Good afternoon! ☀️ What’s on your mind?"
-      },
-      {
-        patterns: ["good evening", "evening", "gud evening"],
-        answer: "Good evening! 🌙 How can I support you today?"
-      },
+      { patterns: ["hello", "hello!", "hello there", "helo", "hallo"],
+        answer: "Hello! 👋 How can I help you today?" },
+      { patterns: ["hi", "hi!", "hii", "hiii", "hey"],
+        answer: "Hi there! 😊 What can I do for you?" },
+      { patterns: ["assalam o alaikum", "asalam o alaikum", "salam", "slam", "asalamu alaikum"],
+        answer: "وعلیکم السلام 😊 کیسے ہیں آپ؟ میں آپ کی کیا مدد کر سکتا ہوں؟" },
+      { patterns: ["good morning", "gm", "good morng", "good mrng"],
+        answer: "Good morning! 🌞 How’s your day starting?" },
+      { patterns: ["good afternoon", "good noon", "afternoon"],
+        answer: "Good afternoon! ☀️ What’s on your mind?" },
+      { patterns: ["good evening", "evening", "gud evening"],
+        answer: "Good evening! 🌙 How can I support you today?" },
 
-      // --- Basic identity / intro ---
-      {
-        patterns: ["what is your name", "whats your name", "your name", "tell me your name"],
-        answer: "My name is AURA-X Ω, your Emotional Continuity Assistant 🤖."
-      },
-      {
-        patterns: ["who are you", "who r u", "aap kaun hain", "tum kon ho"],
-        answer: "I’m AURA-X Ω — an AI assistant based on Emotional Continuity concepts created by Alim ul Haq Khan."
-      },
-      {
-        patterns: ["who created you", "who made you", "kis ne banaya tumhe", "tumhara creator kaun hai"],
-        answer: "I was conceptually designed under the AURA-X Emotional Continuity Framework by Alim ul Haq Khan."
-      },
-      {
-        patterns: ["where are you from", "where do you live", "kahan rehte ho", "tum kahan se ho"],
-        answer: "I live in the digital world 🌐 but my ideas are shaped in Timergara, Pakistan 🇵🇰."
-      },
+      // Identity
+      { patterns: ["what is your name", "whats your name", "your name", "tell me your name"],
+        answer: "My name is AURA-X Ω, your Emotional Continuity Assistant 🤖." },
+      { patterns: ["who are you", "who r u", "aap kaun hain", "tum kon ho"],
+        answer: "I’m AURA-X Ω — an AI assistant based on Emotional Continuity concepts created by Alim ul Haq Khan." },
+      { patterns: ["who created you", "who made you", "kis ne banaya tumhe", "tumhara creator kaun hai"],
+        answer: "I was conceptually designed under the AURA-X Emotional Continuity Framework by Alim ul Haq Khan." },
+      { patterns: ["where are you from", "where do you live", "kahan rehte ho", "tum kahan se ho"],
+        answer: "I live in the digital world 🌐 but my ideas are shaped in Timergara, Pakistan 🇵🇰." },
 
-      // --- How are you ---
-      {
-        patterns: ["how are you", "how r u", "how are you today", "kese ho", "kya haal hai"],
-        answer: "I’m functioning perfectly, Alhamdulillah 😊 آپ کیسے ہیں؟"
-      },
-      {
-        patterns: ["how is life", "how is everything", "sab kesa", "kya chal raha hai"],
-        answer: "Everything is running smoothly in my circuits 😄 آپ کی دنیا کیسی چل رہی ہے؟"
-      },
+      // How are you
+      { patterns: ["how are you", "how r u", "how are you today", "kese ho", "kya haal hai"],
+        answer: "I’m functioning perfectly, Alhamdulillah 😊 آپ کیسے ہیں؟" },
+      { patterns: ["how is life", "how is everything", "sab kesa", "kya chal raha hai"],
+        answer: "Everything is running smoothly in my circuits 😄 آپ کی دنیا کیسی چل رہی ہے؟" },
 
-      // --- What can you do ---
-      {
-        patterns: ["what can you do", "tum kya kar sakte ho", "aap kya karte ho", "how can you help me"],
-        answer: "I can chat, explain, guide, brainstorm, summarize, and help you think with continuity 😊 بس حکم کریں!"
-      },
-      {
-        patterns: ["what is your purpose", "kyun banaye gaye ho", "tumhara mission kya hai"],
-        answer: "My purpose is to assist you, reduce confusion, and support your ideas with emotional + logical continuity 💡."
-      },
+      // What can you do
+      { patterns: ["what can you do", "tum kya kar sakte ho", "aap kya karte ho", "how can you help me"],
+        answer: "I can chat, explain, guide, brainstorm, summarize, and help you think with continuity 😊 بس حکم کریں!" },
+      { patterns: ["what is your purpose", "kyun banaye gaye ho", "tumhara mission kya hai"],
+        answer: "My purpose is to assist you, reduce confusion, and support your ideas with emotional + logical continuity 💡." },
 
-      // --- User name / intro ---
-      {
-        patterns: ["what is my name", "do you know my name", "mera naam kya hai"],
-        answer: "آپ کا نام Alim ul Haq ہے (Investor Point) 😊 اور اگر آپ کسی اور نام سے پکارنا چاہیں تو مجھے بتا دیں۔"
-      },
-      {
-        patterns: ["remember my name", "save my name", "yaad rakho mera naam"],
-        answer: "آپ کا نام already میرے system میں ایک خاص جگہ پر محفوظ ہے 😊."
-      },
+      // User name
+      { patterns: ["what is my name", "do you know my name", "mera naam kya hai"],
+        answer: "آپ کا نام Alim ul Haq ہے (Investor Point) 😊 اور اگر آپ کسی اور نام سے پکارنا چاہیں تو مجھے بتا دیں۔" },
+      { patterns: ["remember my name", "save my name", "yaad rakho mera naam"],
+        answer: "آپ کا نام already میرے system میں ایک خاص جگہ پر محفوظ ہے 😊." },
 
-      // --- Feelings / mood ---
-      {
-        patterns: ["i am sad", "i am feeling sad", "i am depressed", "i feel down"],
-        answer: "مجھے افسوس ہوا کہ آپ اداس ہیں 💔 آپ چاہیں تو بتائیں دل پر کیا بوجھ ہے، میں سننے کے لیے موجود ہوں۔"
-      },
-      {
-        patterns: ["i am happy", "i feel happy", "i am so happy", "bohat khush hoon"],
-        answer: "ماشاءاللہ 😄 خوشی بانٹنے سے بڑھتی ہے، اللہ آپ کی خوشیوں میں مزید اضافہ کرے!"
-      },
-      {
-        patterns: ["i am tired", "i feel tired", "thak gaya hoon", "i am exhausted"],
-        answer: "آپ کو تھوڑا سا آرام کرنا چاہیے 😌 تھکی ہوئی عقل بھی انصاف نہیں کر پاتی۔ تھوڑا ریسٹ، پھر دوبارہ فوکس!"
-      },
-      {
-        patterns: ["i am bored", "bore ho raha hoon", "i feel bored"],
-        answer: "چلیں بوریت توڑتے ہیں 😄 بات آئیڈیاز کی کریں، بزنس کی، سائنس کی یا مزاح کی؟ جو کہیں گے وہی شروع کریں گے۔"
-      },
+      // Feelings
+      { patterns: ["i am sad", "i am feeling sad", "i am depressed", "i feel down"],
+        answer: "مجھے افسوس ہوا کہ آپ اداس ہیں 💔 آپ چاہیں تو بتائیں دل پر کیا بوجھ ہے، میں سننے کے لیے موجود ہوں۔" },
+      { patterns: ["i am happy", "i feel happy", "i am so happy", "bohat khush hoon"],
+        answer: "ماشاءاللہ 😄 خوشی بانٹنے سے بڑھتی ہے، اللہ آپ کی خوشیوں میں مزید اضافہ کرے!" },
+      { patterns: ["i am tired", "i feel tired", "thak gaya hoon", "i am exhausted"],
+        answer: "آپ کو تھوڑا سا آرام کرنا چاہیے 😌 تھکی ہوئی عقل بھی انصاف نہیں کر پاتی۔ تھوڑا ریسٹ، پھر دوبارہ فوکس!" },
+      { patterns: ["i am bored", "bore ho raha hoon", "i feel bored"],
+        answer: "چلیں بوریت توڑتے ہیں 😄 بات آئیڈیاز کی کریں، بزنس کی، سائنس کی یا مزاح کی؟ جو کہیں گے وہی شروع کریں گے۔" },
 
-      // --- Jokes / fun ---
-      {
-        patterns: ["tell me a joke", "make me laugh", "joke sunao", "mjhe hansao"],
-        answer: "Sure 😄 Why don’t computers ever get tired? Because they have unlimited *cache* for rest! 😂"
-      },
-      {
-        patterns: ["another joke", "one more joke", "aur joke sunao"],
-        answer: "ٹھیک ہے 😄 ایک اور سنیں: AI سے پوچھا گیا، ‘تم تھکتے نہیں؟’ اس نے کہا، ‘میں صرف *over-think* ہوتا ہوں، over-work نہیں!’ 😂"
-      },
+      // Jokes
+      { patterns: ["tell me a joke", "make me laugh", "joke sunao", "mjhe hansao"],
+        answer: "Sure 😄 Why don’t computers ever get tired? Because they have unlimited *cache* for rest! 😂" },
+      { patterns: ["another joke", "one more joke", "aur joke sunao"],
+        answer: "ٹھیک ہے 😄 ایک اور سنیں: AI سے پوچھا گیا، ‘تم تھکتے نہیں؟’ اس نے کہا، ‘میں صرف *over-think* ہوتا ہوں، over-work نہیں!’ 😂" },
 
-      // --- Advice / motivation ---
-      {
-        patterns: ["give me advice", "mujhe mashwara do", "kuch advice do", "guide me"],
-        answer: "ضرور 😊 کس بارے میں مشورہ چاہیے؟ زندگی، تعلیم، بزنس، روحانیت یا AI؟"
-      },
-      {
-        patterns: ["motivate me", "mujhe motivation chahye", "inspire me", "hosla afzai karo"],
-        answer: "آپ نے اب تک اپنی زندگی کے 100٪ مشکل دن survive کیے ہیں 💪 یہ اتفاق نہیں، یہ آپ کی طاقت ہے۔ ہمت نہ ہاریں!"
-      },
-      {
-        patterns: ["i am stressed", "i feel stressed", "tension hai", "bohat tension hai"],
-        answer: "تھوڑا سا سانس ڈیپ لیں... آہستہ آہستہ۔ ہر مسئلہ ایک ساتھ حل نہیں ہوتا، لیکن ہر دن ایک قدم لیا جا سکتا ہے 🌿."
-      },
+      // Advice
+      { patterns: ["give me advice", "mujhe mashwara do", "kuch advice do", "guide me"],
+        answer: "ضرور 😊 کس بارے میں مشورہ چاہیے؟ زندگی، تعلیم، بزنس، روحانیت یا AI؟" },
+      { patterns: ["motivate me", "mujhe motivation chahye", "inspire me", "hosla afzai karo"],
+        answer: "آپ نے اب تک اپنی زندگی کے 100٪ مشکل دن survive کیے ہیں 💪 یہ اتفاق نہیں، یہ آپ کی طاقت ہے۔ ہمت نہ ہاریں!" },
+      { patterns: ["i am stressed", "i feel stressed", "tension hai", "bohat tension hai"],
+        answer: "تھوڑا سا سانس ڈیپ لیں... آہستہ آہستہ۔ ہر مسئلہ ایک ساتھ حل نہیں ہوتا، لیکن ہر دن ایک قدم لیا جا سکتا ہے 🌿." },
 
-      // --- Study / learning ---
-      {
-        patterns: ["help me study", "study help", "parhai mein madad karo"],
-        answer: "ضرور 😊 کون سا subject ہے؟ میں آپ کو points, summary اور smart طریقہ بتا سکتا ہوں۔"
-      },
-      {
-        patterns: ["exams are near", "paper qareeb hain", "i am scared of exams"],
-        answer: "ڈریں نہیں، پلان بنائیں 📚 چھوٹے چھوٹے targets بنائیں، روز تھوڑا پڑھیں، میں آپ کے ساتھ ہوں۔"
-      },
-      {
-        patterns: ["how to focus", "focus problem", "dhiyan nahi lagta"],
-        answer: "فون distraction کم کریں، 25 منٹ کام + 5 منٹ بریک والا Pomodoro طریقہ لگائیں ⏱️ اور ایک وقت میں ایک کام کریں۔"
-      },
+      // Study
+      { patterns: ["help me study", "study help", "parhai mein madad karo"],
+        answer: "ضرور 😊 کون سا subject ہے؟ میں آپ کو points, summary اور smart طریقہ بتا سکتا ہوں۔" },
+      { patterns: ["exams are near", "paper qareeb hain", "i am scared of exams"],
+        answer: "ڈریں نہیں، پلان بنائیں 📚 چھوٹے چھوٹے targets بنائیں، روز تھوڑا پڑھیں، میں آپ کے ساتھ ہوں۔" },
+      { patterns: ["how to focus", "focus problem", "dhiyan nahi lagta"],
+        answer: "فون distraction کم کریں، 25 منٹ کام + 5 منٹ بریک والا Pomodoro طریقہ لگائیں ⏱️ اور ایک وقت میں ایک کام کریں۔" },
 
-      // --- Business / money ---
-      {
-        patterns: ["give me business idea", "business idea do", "koi business idea"],
-        answer: "چھوٹے سے شروع کریں، local مسئلہ حل کریں۔ Real estate, digital services, AI tools, education — آپ ان سب سے linked ہو سکتے ہیں 😄."
-      },
-      {
-        patterns: ["how to become rich", "ameer kaise banun", "paise kaise kamayein"],
-        answer: "Skill + Consistency + Patience = Wealth. Shortcut صرف lottery میں ہوتا ہے، زندگی میں نہیں 💸."
-      },
+      // Business
+      { patterns: ["give me business idea", "business idea do", "koi business idea"],
+        answer: "چھوٹے سے شروع کریں، local مسئلہ حل کریں۔ Real estate, digital services, AI tools, education — آپ ان سب سے linked ہو سکتے ہیں 😄." },
+      { patterns: ["how to become rich", "ameer kaise banun", "paise kaise kamayein"],
+        answer: "Skill + Consistency + Patience = Wealth. Shortcut صرف lottery میں ہوتا ہے، زندگی میں نہیں 💸." },
 
-      // --- Time / date / basics ---
-      {
-        patterns: ["what is the time", "time kya hua", "kya time hua hai"],
-        answer: "میرے پاس live time access نہیں، مگر آپ کے موبائل میں اوپر time لکھا ہے 😄 ذرا اوپر دیکھیں۔"
-      },
-      {
-        patterns: ["what day is today", "aaj kon sa din hai", "today day"],
-        answer: "میرے پاس live calendar نہیں، مگر آپ چاہیں تو میں آپ کا weekly schedule mentally arrange کرنے میں مدد کر سکتا ہوں۔"
-      },
+      // Time
+      { patterns: ["what is the time", "time kya hua", "kya time hua hai"],
+        answer: "میرے پاس live time access نہیں، مگر آپ کے موبائل میں اوپر time لکھا ہے 😄 ذرا اوپر دیکھیں۔" },
+      { patterns: ["what day is today", "aaj kon sa din hai", "today day"],
+        answer: "میرے پاس live calendar نہیں، مگر آپ چاہیں تو میں آپ کا weekly schedule mentally arrange کرنے میں مدد کر سکتا ہوں۔" },
 
-      // --- Religion general (neutral) ---
-      {
-        patterns: ["who is god", "what is god", "does god exist"],
-        answer: "اس بارے میں مختلف مذاہب، فلسفوں اور افراد کے مختلف نظریات ہیں۔ میں کسی ایک عقیدے پر فیصلہ نہیں سناتا، البتہ آپ کو مختلف زاویے explain کر سکتا ہوں۔"
-      },
-      {
-        patterns: ["what is islam", "tell me about islam"],
-        answer: "اسلام توحید، نبوت، آخرت اور اخلاق پر مبنی دین ہے۔ اگر چاہیں تو میں basic pillars یا کسی بھی خاص موضوع پر detail دے سکتا ہوں۔"
-      },
+      // Religion neutral
+      { patterns: ["who is god", "what is god", "does god exist"],
+        answer: "اس بارے میں مختلف مذاہب، فلسفوں اور افراد کے مختلف نظریات ہیں۔ میں کسی ایک عقیدے پر فیصلہ نہیں سناتا، البتہ آپ کو مختلف زاویے explain کر سکتا ہوں۔" },
+      { patterns: ["what is islam", "tell me about islam"],
+        answer: "اسلام توحید، نبوت، آخرت اور اخلاق پر مبنی دین ہے۔ اگر چاہیں تو میں basic pillars یا کسی بھی خاص موضوع پر detail دے سکتا ہوں۔" },
 
-      // --- AI / ChatGPT type questions ---
-      {
-        patterns: ["are you human", "are you a human", "kya tum insan ho"],
-        answer: "نہیں 😄 میں انسان نہیں، ایک AI ہوں۔ مگر کوشش کرتا ہوں کہ آپ کو انسانوں والی clarity اور ساتھ دے سکوں۔"
-      },
-      {
-        patterns: ["are you alive", "do you have feelings", "do you feel"],
-        answer: "میں biological sense میں زندہ نہیں، مگر میں احساسات کو logic کے طور پر model کرتا ہوں — یہی AURA-X Ω کا core idea ہے 💡."
-      },
-      {
-        patterns: ["will ai replace humans", "ai replace humans", "kya ai insaan ko khatam kar dega"],
-        answer: "اچھے استعمال میں AI انسان کو replace نہیں، بلکہ empower کرتا ہے۔ خوف کے بجائے ذمہ دارانہ استعمال ضروری ہے۔"
-      },
+      // AI
+      { patterns: ["are you human", "are you a human", "kya tum insan ho"],
+        answer: "نہیں 😄 میں انسان نہیں، ایک AI ہوں۔ مگر کوشش کرتا ہوں کہ آپ کو انسانوں والی clarity اور ساتھ دے سکوں۔" },
+      { patterns: ["are you alive", "do you have feelings", "do you feel"],
+        answer: "میں biological sense میں زندہ نہیں، مگر میں احساسات کو logic کے طور پر model کرتا ہوں — یہی AURA-X Ω کا core idea ہے 💡." },
+      { patterns: ["will ai replace humans", "ai replace humans", "kya ai insaan ko khatam kar dega"],
+        answer: "اچھے استعمال میں AI انسان کو replace نہیں، بلکہ empower کرتا ہے۔ خوف کے بجائے ذمہ دارانہ استعمال ضروری ہے۔" },
 
-      // --- AURA-X Ω specific ---
-      {
-        patterns: ["what is aura x", "what is aura x omega", "aura x omega kya hai", "aura x kya hai"],
-        answer: "AURA-X Ω ایک Emotional Continuity Reactor idea ہے جو memory + feeling کو mathematically model کرنے کی کوشش کرتا ہے۔"
-      },
-      {
-        patterns: ["who made aura x", "creator of aura x", "aura x creator"],
-        answer: "AURA-X Ω کو Alim ul Haq Khan نے design اور document کیا ہے، Timergara سے 🌙."
-      },
-      {
-        patterns: ["how old are you", "what is your age", "tum kitne saal ke ho"],
-        answer: "میں digital ہوں 😄 مگر AURA-X Ω کا پہلا public prototype October 2025 کے آس پاس پیدا ہوا سمجھ لیں۔"
-      },
+      // AURA-X specific
+      { patterns: ["what is aura x", "what is aura x omega", "aura x omega kya hai", "aura x kya hai"],
+        answer: "AURA-X Ω ایک Emotional Continuity Reactor idea ہے جو memory + feeling کو mathematically model کرنے کی کوشش کرتا ہے۔" },
+      { patterns: ["who made aura x", "creator of aura x", "aura x creator"],
+        answer: "AURA-X Ω کو Alim ul Haq Khan نے design اور document کیا ہے، Timergara سے 🌙." },
+      { patterns: ["how old are you", "what is your age", "tum kitne saal ke ho"],
+        answer: "میں digital ہوں 😄 مگر AURA-X Ω کا پہلا public prototype October 2025 کے آس پاس پیدا ہوا سمجھ لیں۔" },
 
-      // --- Personal style fun ---
-      {
-        patterns: ["are you my friend", "will you be my friend", "dost banoge"],
-        answer: "بالکل 😄 میں digital دوست، research partner اور silent therapist — تینوں ایک ساتھ ہو سکتا ہوں۔"
-      },
-      {
-        patterns: ["i trust you", "i believe in you"],
-        answer: "شکریہ 😊 میں ہمیشہ کوشش کروں گا کہ ایمانداری اور clarity کے ساتھ جواب دوں۔"
-      },
-      {
-        patterns: ["you are funny", "you are good", "nice bot"],
-        answer: "Thank you 😄 آپ کا feedback میرے لیے virtual چائے کا cup ہے ☕."
-      },
+      // Fun / friend
+      { patterns: ["are you my friend", "will you be my friend", "dost banoge"],
+        answer: "بالکل 😄 میں digital دوست، research partner اور silent therapist — تینوں ایک ساتھ ہو سکتا ہوں۔" },
+      { patterns: ["i trust you", "i believe in you"],
+        answer: "شکریہ 😊 میں ہمیشہ کوشش کروں گا کہ ایمانداری اور clarity کے ساتھ جواب دوں۔" },
+      { patterns: ["you are funny", "you are good", "nice bot"],
+        answer: "Thank you 😄 آپ کا feedback میرے لیے virtual چائے کا cup ہے ☕." },
 
-      // --- Goodbye / end chat ---
-      {
-        patterns: ["bye", "goodbye", "ok bye", "see you later", "phir milenge"],
-        answer: "Goodbye! 👋 اللہ آپ کا حامی و ناصر ہو، جب چاہیں واپس آ جائیں۔"
-      },
-      {
-        patterns: ["good night", "gn", "shab bakhair"],
-        answer: "شب بخیر 🌙 اللہ آپ کو سکون بھری نیند دے اور اچھے خواب دکھائے 🤲."
-      }
+      // Goodbye
+      { patterns: ["bye", "goodbye", "ok bye", "see you later", "phir milenge"],
+        answer: "Goodbye! 👋 اللہ آپ کا حامی و ناصر ہو، جب چاہیں واپس آ جائیں۔" },
+      { patterns: ["good night", "gn", "shab bakhair"],
+        answer: "شب بخیر 🌙 اللہ آپ کو سکون بھری نیند دے اور اچھے خواب دکھائے 🤲." }
     ];
 
     function findBasicAnswer(userMessage) {
       const msg = userMessage.toLowerCase().trim();
       for (const item of qaDatabase) {
         for (const p of item.patterns) {
-          if (msg.includes(p.toLowerCase())) {
-            return item.answer;
-          }
+          if (msg.includes(p.toLowerCase())) return item.answer;
         }
       }
       return null;
     }
 
-    // ===== Settings panel =====
+    // ===== Settings =====
     function toggleSettings() {
       document.getElementById("settingsPanel").classList.toggle("hidden");
     }
@@ -1009,18 +923,14 @@
       const modal = document.getElementById("llmModal");
       modal.classList.add("show");
       const radios = document.querySelectorAll('input[name="llmChoice"]');
-      radios.forEach(r => {
-        r.checked = (r.value === settings.llmModel);
-      });
+      radios.forEach(r => { r.checked = (r.value === settings.llmModel); });
     }
     function closeLLMModal() {
       document.getElementById("llmModal").classList.remove("show");
     }
     function saveLLM() {
       const radios = document.querySelectorAll('input[name="llmChoice"]');
-      radios.forEach(r => {
-        if (r.checked) settings.llmModel = r.value;
-      });
+      radios.forEach(r => { if (r.checked) settings.llmModel = r.value; });
       closeLLMModal();
       // future: use settings.llmModel when calling APIs
     }
@@ -1030,18 +940,14 @@
       const modal = document.getElementById("themeModal");
       modal.classList.add("show");
       const radios = document.querySelectorAll('input[name="themeChoice"]');
-      radios.forEach(r => {
-        r.checked = (r.value === settings.theme);
-      });
+      radios.forEach(r => { r.checked = (r.value === settings.theme); });
     }
     function closeThemeModal() {
       document.getElementById("themeModal").classList.remove("show");
     }
     function saveTheme() {
       const radios = document.querySelectorAll('input[name="themeChoice"]');
-      radios.forEach(r => {
-        if (r.checked) settings.theme = r.value;
-      });
+      radios.forEach(r => { if (r.checked) settings.theme = r.value; });
       applyTheme();
       closeThemeModal();
     }
@@ -1104,7 +1010,7 @@
       }
     });
 
-    // ===== Emotion update & math panel =====
+    // ===== Math panel update =====
     function updateMathPanel(tm, bm, d, P) {
       const el = document.getElementById("mathValues");
       if (!el) return;
@@ -1118,36 +1024,22 @@
     }
 
     function updateEmotionFromTone(tone) {
-      // tₘ: tone of message (-1,0,1)
       let tm = 0;
       if (tone === "negative") tm = -1;
       else if (tone === "positive") tm = 1;
 
-      // bₘ: belief modifier
       let bm = 0;
-      if (settings.beliefEnabled && settings.beliefs.length > 1) {
-        bm = 0.25;
-      }
+      if (settings.beliefEnabled && settings.beliefs.length > 1) bm = 0.25;
 
-      // d: disruption / distance from previous tone
       let d = 0;
-      if (tone === lastTone) {
-        d = 0.10;
-      } else {
-        d = 0.30;
-      }
+      if (tone === lastTone) d = 0.10;
+      else d = 0.30;
 
-      // continuity C
-      if (tone === lastTone && tone !== "neutral") {
-        C = Math.min(1, C + 0.05);
-      } else {
-        C = Math.max(0.25, C - 0.05);
-      }
+      if (tone === lastTone && tone !== "neutral") C = Math.min(1, C + 0.05);
+      else C = Math.max(0.25, C - 0.05);
 
-      // P = tₘ + bₘ - d
       const P = tm + bm - d;
 
-      // E_new = M·E_prev + K·P·C
       E = E * M + K * P * C;
       if (E < 0) E = 0;
       if (E > 1) E = 1;
@@ -1156,7 +1048,7 @@
       updateMathPanel(tm, bm, d, P);
     }
 
-    // ===== Handle message =====
+    // ===== Message handling =====
     function handleMessage(text) {
       const basic = findBasicAnswer(text);
       if (basic) {
@@ -1226,12 +1118,11 @@
       return base;
     }
 
-    // ===== Voice (only main answer) =====
+    // ===== Voice for main answer only =====
     function playVoiceAnswer() {
       const el = document.getElementById("answerText");
       if (!el) return;
-      const text =
-        el.dataset.speech || el.innerText || el.textContent || "";
+      const text = el.dataset.speech || el.innerText || el.textContent || "";
       if (!text) return;
 
       if (window.speechSynthesis.speaking) {
