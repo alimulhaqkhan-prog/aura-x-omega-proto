@@ -20,7 +20,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      overflow: hidden; /* no scroll */
+      overflow: hidden;
     }
 
     #app {
@@ -38,17 +38,10 @@
       transform-origin: top center;
     }
 
-    @media (max-height: 720px) {
-      #app { transform: scale(0.82); }
-    }
+    @media (max-height: 720px) { #app { transform: scale(0.82); } }
+    @media (max-height: 640px) { #app { transform: scale(0.75); } }
 
-    @media (max-height: 640px) {
-      #app { transform: scale(0.75); }
-    }
-
-    .hidden {
-      display: none;
-    }
+    .hidden { display: none; }
 
     /* ===== Top floating sent text ===== */
     #messageContainer {
@@ -174,7 +167,7 @@
       opacity: 0.85;
     }
 
-    /* Right side button stack */
+    /* Right side vertical button bar */
     .button-stack {
       display: flex;
       flex-direction: column;
@@ -195,12 +188,6 @@
       white-space: nowrap;
     }
 
-    .icon-row {
-      display: flex;
-      gap: 4px;
-      justify-content: center;
-    }
-
     .settings-btn,
     .belief-btn,
     .voice-btn {
@@ -216,20 +203,9 @@
       justify-content: center;
     }
 
-    .settings-btn {
-      background: rgba(148,163,184,0.3);
-      color: #e5e7eb;
-    }
-
-    .belief-btn {
-      background: rgba(96,165,250,0.35);
-      color: #e5e7eb;
-    }
-
-    .voice-btn {
-      background: rgba(52,211,153,0.35);
-      color: #e5e7eb;
-    }
+    .settings-btn { background: rgba(148,163,184,0.3); color: #e5e7eb; }
+    .belief-btn   { background: rgba(96,165,250,0.35); color: #e5e7eb; }
+    .voice-btn    { background: rgba(52,211,153,0.35); color: #e5e7eb; }
 
     /* ===== Settings Panel ===== */
     .settings-panel {
@@ -260,9 +236,7 @@
       margin-bottom: 4px;
     }
 
-    .setting-row input {
-      accent-color: #facc15;
-    }
+    .setting-row input { accent-color: #facc15; }
 
     /* ===== Belief Modal ===== */
     .modal {
@@ -272,9 +246,7 @@
       z-index: 50;
     }
 
-    #beliefModal {
-      display: none;
-    }
+    #beliefModal { display: none; }
 
     #beliefModal.show {
       display: flex !important;
@@ -345,9 +317,7 @@
       cursor: pointer;
     }
 
-    .belief-row input {
-      accent-color: #4ade80;
-    }
+    .belief-row input { accent-color: #4ade80; }
 
     .modal-save {
       width: 100%;
@@ -364,10 +334,8 @@
 </head>
 <body>
   <div id="app">
-    <!-- Top floating last sent text -->
     <div id="messageContainer"></div>
 
-    <!-- Main Reactor Card -->
     <div class="card">
       <h1 class="title">AURA-X Ω</h1>
       <p class="subtitle">Logical • Emotional • Universal Ethics Reactor</p>
@@ -386,7 +354,7 @@
       </div>
     </div>
 
-    <!-- Input + buttons (textbox left, buttons right) -->
+    <!-- Input + right-side vertical buttons -->
     <div class="input-area">
       <input
         id="userInput"
@@ -397,11 +365,9 @@
 
       <div class="button-stack">
         <button class="send-btn" onclick="sendMessage()">Send</button>
-        <div class="icon-row">
-          <button class="settings-btn" onclick="toggleSettings()">⚙️</button>
-          <button class="belief-btn" onclick="openBeliefModal()">☯</button>
-          <button class="voice-btn" onclick="playVoiceAnswer()">🔊</button>
-        </div>
+        <button class="settings-btn" onclick="toggleSettings()">⚙️</button>
+        <button class="belief-btn" onclick="openBeliefModal()">☯</button>
+        <button class="voice-btn" onclick="playVoiceAnswer()">🔊</button>
       </div>
     </div>
 
@@ -501,7 +467,6 @@
       beliefs: ["universal"]
     };
 
-    // ===== Settings panel =====
     function toggleSettings() {
       const panel = document.getElementById("settingsPanel");
       panel.classList.toggle("hidden");
@@ -584,7 +549,7 @@
       processEmotion(text, settings);
     }
 
-    // Enter key sends message
+    // Enter key sends
     document.addEventListener("keydown", (e) => {
       if (e.key === "Enter") {
         const active = document.activeElement;
@@ -633,7 +598,7 @@
       updateModeLabel();
     }
 
-    // ===== Voice: read reaction text =====
+    // ===== Voice answer =====
     function playVoiceAnswer() {
       const reactionEl = document.getElementById("reactionText");
       if (!reactionEl) return;
@@ -646,7 +611,7 @@
       }
 
       const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = "en-US"; // بعد میں Urdu یا mix بھی کر سکتے ہیں
+      utterance.lang = "en-US";
       window.speechSynthesis.speak(utterance);
     }
   </script>
