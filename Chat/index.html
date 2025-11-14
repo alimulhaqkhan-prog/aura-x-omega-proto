@@ -2,25 +2,11 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>AURA-X Ω — Emotional Reactor</title>
+  <title>AURA-X Ω – Emotional Reactor</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+
   <style>
-    :root {
-      --bg: #020617;
-      --card-bg: radial-gradient(circle at 20% 0%, #020617 0, #030712 40%, #020617 100%);
-      --yellow: #facc15;
-      --yellow-soft: #fef3c7;
-      --accent: #22c55e;
-      --accent-soft: #bbf7d0;
-      --text-main: #e5e7eb;
-      --text-soft: #9ca3af;
-      --border-soft: rgba(148,163,184,0.4);
-      --button-bg: #111827;
-      --button-soft: #1f2937;
-    }
-
-    * { box-sizing: border-box; }
-
+    /* ===== Base Layout ===== */
     html, body {
       margin: 0;
       padding: 0;
@@ -28,8 +14,8 @@
     }
 
     body {
-      background: radial-gradient(circle at top, #0f172a 0, #020617 40%, #000 100%);
-      color: var(--text-main);
+      background: #020617;
+      color: #e5e7eb;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       display: flex;
       align-items: center;
@@ -42,8 +28,8 @@
       width: 100%;
       max-width: 480px;
       height: 100vh;
-      padding: 16px;
       box-sizing: border-box;
+      padding: 16px;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -52,23 +38,26 @@
     }
 
     @media (max-height: 720px) {
-      #app { transform: scale(0.88); }
-    }
-    @media (max-height: 640px) {
-      #app { transform: scale(0.80); }
+      #app { transform: scale(0.9); }
     }
 
+    @media (max-height: 640px) {
+      #app { transform: scale(0.82); }
+    }
+
+    .hidden { display: none; }
+
+    /* ===== Main Card ===== */
     .card {
-      width: 100%;
-      max-width: 480px;
-      background: var(--card-bg);
-      border-radius: 28px;
-      box-shadow:
-        0 24px 60px rgba(15,23,42,0.95),
-        0 0 0 1px rgba(148,163,184,0.35);
-      padding: 20px 20px 18px;
       position: relative;
-      overflow: hidden;
+      width: 100%;
+      background: radial-gradient(circle at top, #0f172a, #020617 70%);
+      border-radius: 28px;
+      padding: 20px 18px 18px;
+      box-shadow:
+        0 18px 45px rgba(15, 23, 42, 0.9),
+        0 0 0 1px rgba(148, 163, 184, 0.20);
+      box-sizing: border-box;
     }
 
     .card-header {
@@ -77,754 +66,786 @@
     }
 
     .title {
-      font-size: 24px;
-      letter-spacing: 0.08em;
-      font-weight: 700;
+      font-size: 26px;
+      letter-spacing: 0.18em;
       color: #facc15;
+      font-weight: 700;
       margin-bottom: 4px;
     }
 
     .subtitle {
-      font-size: 12px;
+      font-size: 11px;
+      letter-spacing: 0.18em;
       text-transform: uppercase;
-      letter-spacing: 0.16em;
-      color: var(--text-soft);
+      color: #9ca3af;
     }
 
+    /* ===== Sun / Moon Orb ===== */
     .orb-wrapper {
-      margin-top: 10px;
-      margin-bottom: 8px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
       position: relative;
+      margin: 18px auto 10px;
+      width: 160px;
+      height: 160px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .orb {
-      width: 150px;
-      height: 150px;
+      width: 140px;
+      height: 140px;
       border-radius: 999px;
-      background: radial-gradient(circle at 30% 20%, #fef3c7 0, #facc15 20%, #ea580c 65%, #78350f 100%);
+      background: radial-gradient(circle at 30% 30%, #fde68a, #f59e0b 55%, #b45309 100%);
       box-shadow:
-        0 0 45px rgba(250,204,21,0.9),
-        0 0 140px rgba(250,204,21,0.65),
-        0 0 220px rgba(234,88,12,0.35);
-      position: relative;
-      cursor: pointer;
+        0 0 40px rgba(250, 204, 21, 0.7),
+        0 0 80px rgba(234, 179, 8, 0.4);
       animation: orbPulse 4s ease-in-out infinite;
+      cursor: pointer;
     }
 
     .orb.moon {
-      background: radial-gradient(circle at 25% 20%, #e5f2ff 0, #bfdbfe 18%, #1d4ed8 70%, #020617 100%);
+      background: radial-gradient(circle at 30% 30%, #e5f3ff, #60a5fa 60%, #1d4ed8 100%);
       box-shadow:
-        0 0 35px rgba(129,140,248,0.9),
-        0 0 110px rgba(59,130,246,0.7),
-        0 0 200px rgba(15,23,42,0.8);
+        0 0 38px rgba(96, 165, 250, 0.7),
+        0 0 76px rgba(30, 64, 175, 0.45);
+    }
+
+    .orb.moon-static {
+      background: radial-gradient(circle at 30% 30%, #dbeafe, #3b82f6 60%, #1e3a8a 100%);
+      box-shadow:
+        0 0 22px rgba(59, 130, 246, 0.45);
+      animation: none;
     }
 
     @keyframes orbPulse {
-      0%, 100% { transform: scale(1); box-shadow:
-        0 0 45px rgba(250,204,21,0.9),
-        0 0 140px rgba(250,204,21,0.65),
-        0 0 220px rgba(234,88,12,0.35); }
-      50% { transform: scale(1.05); box-shadow:
-        0 0 70px rgba(250,204,21,0.95),
-        0 0 200px rgba(250,204,21,0.8),
-        0 0 260px rgba(248,250,252,0.5); }
+      0%   { transform: scale(1);   box-shadow: 0 0 40px rgba(250, 204, 21, 0.7), 0 0 70px rgba(234, 179, 8, 0.35); }
+      50%  { transform: scale(1.06); box-shadow: 0 0 55px rgba(250, 204, 21, 0.9), 0 0 90px rgba(234, 179, 8, 0.5); }
+      100% { transform: scale(1);   box-shadow: 0 0 40px rgba(250, 204, 21, 0.7), 0 0 70px rgba(234, 179, 8, 0.35); }
     }
 
-    .mode-text {
-      margin-top: 8px;
+    /* ===== Side Buttons ===== */
+    .side-buttons {
+      position: absolute;
+      top: 43%;               /* moved upward */
+      transform: translateY(-50%);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      z-index: 3;
+    }
+
+    .side-buttons.left {
+      left: 32px;
+    }
+
+    .side-buttons.right {
+      right: 32px;
+    }
+
+    .circle-btn {
+      width: 46px;
+      height: 46px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.55);
+      background: radial-gradient(circle at 30% 20%, #111827, #020617 65%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #e5e7eb;
+      font-size: 18px;
+      cursor: pointer;
+      box-shadow:
+        0 8px 18px rgba(15, 23, 42, 0.9),
+        0 0 0 1px rgba(15, 23, 42, 0.6);
+      transition: transform 0.12s ease-out, box-shadow 0.12s ease-out,
+                  background 0.12s ease-out, color 0.12s ease-out;
+    }
+
+    .circle-btn:hover {
+      transform: translateY(-1px);
+      box-shadow:
+        0 12px 22px rgba(15, 23, 42, 0.95),
+        0 0 0 1px rgba(148, 163, 184, 0.7);
+    }
+
+    .circle-btn.active {
+      box-shadow:
+        0 0 0 1px rgba(34, 197, 94, 0.85),
+        0 0 25px rgba(34, 197, 94, 0.65);
+      color: #bbf7d0;
+    }
+
+    .circle-btn.settings-icon::before {
+      content: "⚙";
+      font-size: 20px;
+    }
+
+    /* ===== Mode, Answer, Ethics Text ===== */
+    .mode-line {
       text-align: center;
       font-size: 13px;
-      color: var(--text-soft);
+      color: #9ca3af;
+      margin-top: 6px;
+      margin-bottom: 4px;
     }
-
-    .mode-text span {
-      color: var(--yellow);
+    .mode-line span {
+      color: #facc15;
       font-weight: 600;
     }
 
     .you-said {
-      margin-top: 8px;
       text-align: center;
       font-size: 13px;
-      color: var(--text-soft);
-      min-height: 18px;
+      color: #cbd5f5;
+      margin-bottom: 6px;
     }
 
-    .primary-answer {
-      margin-top: 10px;
+    .answer-text {
       text-align: center;
-      font-size: 14px;
-      color: var(--text-main);
+      font-size: 15px;
+      color: #f9fafb;
+      margin-bottom: 10px;
       min-height: 20px;
     }
 
     .ethics-box {
-      margin-top: 10px;
-      padding: 10px 14px;
-      border-radius: 18px;
-      background: rgba(180, 83, 9, 0.15);
-      border: 1px solid rgba(251, 191, 36, 0.45);
-      color: var(--yellow-soft);
+      margin-top: 4px;
+      background: rgba(250, 204, 21, 0.08);
+      border-radius: 16px;
+      padding: 10px 12px;
       font-size: 12px;
-      line-height: 1.4;
+      color: #e5e7eb;
+      border: 1px solid rgba(250, 204, 21, 0.35);
     }
 
-    .bottom-row {
+    .ethics-box strong {
+      color: #facc15;
+      font-weight: 600;
+    }
+
+    /* ===== Equation Box ===== */
+    .equation-box {
+      margin-top: 12px;
+      padding: 9px 11px;
+      border-radius: 16px;
+      border: 1px dashed rgba(148, 163, 184, 0.7);
+      background: radial-gradient(circle at top left, rgba(15, 23, 42, 0.9), rgba(15, 23, 42, 0.5));
+      font-size: 11px;
+      color: #d1d5db;
+    }
+
+    .equation-title {
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #9ca3af;
+      margin-bottom: 4px;
+    }
+
+    .equation-line {
+      margin-top: 2px;
+    }
+
+    /* ===== Input Row ===== */
+    .input-row {
       margin-top: 14px;
       display: flex;
-      gap: 10px;
       align-items: center;
+      gap: 10px;
       width: 100%;
     }
 
     .input-box {
       flex: 1;
-      background: rgba(15,23,42,0.95);
       border-radius: 999px;
-      padding: 10px 16px;
-      border: 1px solid rgba(148,163,184,0.6);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .input-box span {
-      font-size: 16px;
-    }
-
-    #userInput {
-      flex: 1;
-      border: none;
+      padding: 11px 18px;
+      border: 1px solid rgba(55, 65, 81, 0.9);
+      background: radial-gradient(circle at top left, #020617, #020617 45%, #020617 100%);
+      color: #e5e7eb;
+      font-size: 14px;
       outline: none;
-      background: transparent;
-      color: var(--text-main);
-      font-size: 13px;
     }
 
-    #userInput::placeholder {
-      color: rgba(148,163,184,0.8);
+    .input-box::placeholder {
+      color: #9ca3af;
       font-style: italic;
     }
 
-    .send-button {
-      padding: 10px 22px;
-      border-radius: 999px;
+    .send-btn {
       border: none;
-      cursor: pointer;
-      font-size: 14px;
+      border-radius: 999px;
+      padding: 11px 24px;
+      font-size: 15px;
       font-weight: 600;
-      background: radial-gradient(circle at 30% 0, #fef9c3 0, #facc15 45%, #eab308 100%);
+      cursor: pointer;
+      background: radial-gradient(circle at top left, #facc15, #f59e0b);
       color: #111827;
       box-shadow:
-        0 14px 30px rgba(250, 204, 21, 0.45),
-        0 0 0 1px rgba(161,98,7,0.4);
-      white-space: nowrap;
+        0 14px 30px rgba(161, 98, 7, 0.9),
+        0 0 0 1px rgba(180, 83, 9, 0.5);
+      transition: transform 0.12s ease-out, box-shadow 0.12s ease-out;
     }
 
-    .side-buttons-right,
-    .side-buttons-left {
-      position: absolute;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      top: 112px;
-    }
-
-    .side-buttons-right {
-      right: 18px;
-      align-items: center;
-    }
-
-    .side-buttons-left {
-      left: 18px;
-      align-items: center;
-    }
-
-    .icon-button {
-      width: 40px;
-      height: 40px;
-      border-radius: 999px;
-      border: 1px solid rgba(148,163,184,0.6);
-      background: radial-gradient(circle at 30% 0, #1f2937 0, #020617 70%);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--text-main);
-      cursor: pointer;
-      box-shadow: 0 10px 20px rgba(15,23,42,0.85);
-      font-size: 16px;
-    }
-
-    .icon-button.small {
-      font-size: 12px;
-      font-weight: 600;
-    }
-
-    .icon-button.active {
+    .send-btn:active {
+      transform: translateY(1px) scale(0.98);
       box-shadow:
-        0 0 0 2px rgba(22,163,74,0.7),
-        0 0 30px rgba(34,197,94,0.9);
-      border-color: rgba(34,197,94,0.9);
+        0 6px 18px rgba(120, 53, 15, 0.9),
+        0 0 0 1px rgba(180, 83, 9, 0.7);
     }
 
-    .icon-gear {
-      width: 18px;
-      height: 18px;
-      border-radius: 999px;
-      border: 2px solid #9ca3af;
-      position: relative;
-    }
-
-    .icon-gear::before,
-    .icon-gear::after {
-      content: "";
-      position: absolute;
-      inset: 2px;
-      border-radius: 999px;
-      border: 2px dashed #e5e7eb;
-    }
-
-    /* Belief modal */
-    .modal-backdrop {
+    /* ===== Belief Modal ===== */
+    .overlay {
       position: fixed;
       inset: 0;
-      background: rgba(15,23,42,0.75);
+      background: rgba(15, 23, 42, 0.72);
       display: flex;
       align-items: center;
       justify-content: center;
-      z-index: 30;
+      z-index: 20;
     }
 
-    .modal {
-      width: 100%;
-      max-width: 420px;
-      background: #020617;
-      border-radius: 24px;
+    .belief-modal {
+      width: min(450px, 92vw);
+      max-height: 80vh;
+      background: radial-gradient(circle at top, #020617, #020617 60%, #020617);
+      border-radius: 22px;
       padding: 18px 18px 16px;
       box-shadow:
-        0 30px 90px rgba(15,23,42,1),
-        0 0 0 1px rgba(148,163,184,0.4);
+        0 20px 50px rgba(15, 23, 42, 1),
+        0 0 0 1px rgba(148, 163, 184, 0.45);
+      color: #e5e7eb;
+      overflow-y: auto;
+      box-sizing: border-box;
     }
 
-    .modal-header {
+    .belief-header {
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      margin-bottom: 6px;
+      justify-content: space-between;
+      margin-bottom: 10px;
     }
 
-    .modal-title {
+    .belief-title {
       font-size: 16px;
       font-weight: 600;
     }
 
-    .pill {
-      font-size: 11px;
-      padding: 4px 8px;
-      border-radius: 999px;
-      background: rgba(22,163,74,0.1);
-      color: #6ee7b7;
-      border: 1px solid rgba(34,197,94,0.4);
-    }
-
-    .close-button {
-      border: none;
-      background: transparent;
-      color: var(--text-soft);
-      font-size: 14px;
+    .belief-close {
       cursor: pointer;
+      font-size: 14px;
+      color: #9ca3af;
     }
 
-    .modal-body {
-      margin-top: 6px;
+    .belief-sub {
       font-size: 12px;
-      color: var(--text-soft);
+      color: #9ca3af;
+      margin-bottom: 10px;
     }
 
-    .faith-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0,1fr));
-      gap: 8px;
-      margin-top: 10px;
-    }
-
-    .faith-button {
-      padding: 8px 10px;
+    .belief-banner {
+      margin-bottom: 10px;
       border-radius: 999px;
-      border: 1px solid rgba(148,163,184,0.6);
-      background: #020617;
-      color: var(--text-main);
+      padding: 7px 12px;
       font-size: 12px;
+      background: rgba(22, 163, 74, 0.1);
+      border: 1px solid rgba(34, 197, 94, 0.7);
+      color: #bbf7d0;
+      text-align: center;
+    }
+
+    .belief-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .faith-btn {
+      border-radius: 999px;
+      padding: 8px 10px;
+      border: 1px solid rgba(55, 65, 81, 0.9);
+      background: radial-gradient(circle at top left, #020617, #020617 65%);
+      color: #e5e7eb;
+      font-size: 13px;
       cursor: pointer;
       text-align: center;
     }
 
-    .faith-button.selected {
-      background: rgba(34,197,94,0.15);
-      border-color: rgba(34,197,94,0.9);
+    .faith-btn.active {
+      border-color: rgba(34, 197, 94, 0.9);
+      background: radial-gradient(circle at top left, #064e3b, #022c22);
       color: #bbf7d0;
-      box-shadow: 0 0 16px rgba(34,197,94,0.8);
     }
-
-    .hidden { display: none; }
   </style>
 </head>
+
 <body>
-  <div id="app">
-    <div class="card">
-      <div class="card-header">
-        <div class="title">AURA-X Ω</div>
-        <div class="subtitle">Logical · Emotional · Universal Ethics Reactor</div>
-      </div>
-
-      <div class="orb-wrapper">
-        <div id="orb" class="orb" title="Tap to change mood theme"></div>
-
-        <!-- Left side buttons: LLM + Themes -->
-        <div class="side-buttons-left">
-          <button id="llmButton" class="icon-button small" title="LLM selection (future)">
-            L
-          </button>
-          <button id="themeButton" class="icon-button small" title="Themes (future)">
-            T
-          </button>
-        </div>
-
-        <!-- Right side buttons: settings, belief, voice -->
-        <div class="side-buttons-right">
-          <button id="settingsButton" class="icon-button" title="Settings (coming soon)">
-            <div class="icon-gear"></div>
-          </button>
-          <button id="beliefButton" class="icon-button small" title="Belief mode">
-            B
-          </button>
-          <button id="voiceButton" class="icon-button small active" title="Voice on/off">
-            V
-          </button>
-        </div>
-      </div>
-
-      <div class="mode-text">
-        Mode: <span>Universal Ethics</span>
-      </div>
-      <div id="youSaid" class="you-said"></div>
-      <div id="primaryAnswer" class="primary-answer">
-        Hello! 👋 How can I help you today?
-      </div>
-
-      <div class="ethics-box" id="ethicsBox">
-        Universal Ethics says: avoid actions that create negative emotions in you or others,
-        and gently move toward actions that create calm, kindness and positive feelings.
-      </div>
-
-      <!-- Emotional equation box TEMPORARILY REMOVED FROM UI
-      <div class="equation-box" id="equationBox">...</div>
-      -->
-
+<div id="app">
+  <div class="card">
+    <div class="card-header">
+      <div class="title">AURA-X Ω</div>
+      <div class="subtitle">LOGICAL · EMOTIONAL · UNIVERSAL ETHICS REACTOR</div>
     </div>
 
-    <div class="bottom-row">
-      <div class="input-box">
-        <span>✨</span>
-        <input
-          id="userInput"
-          type="text"
-          autocomplete="off"
-          placeholder="Write anything… AURA-X will feel it with you."
-        />
-      </div>
-      <button id="sendButton" class="send-button">Send</button>
+    <!-- Orb -->
+    <div class="orb-wrapper">
+      <div id="orb" class="orb"></div>
     </div>
-  </div>
 
-  <!-- Belief Modal -->
-  <div id="beliefBackdrop" class="modal-backdrop hidden">
-    <div class="modal">
-      <div class="modal-header">
-        <div>
-          <div class="modal-title">Belief settings</div>
-          <div style="font-size:11px; color:var(--text-soft); margin-top:2px;">
-            Optional spiritual flavour on top of Universal Ethics.
-          </div>
-        </div>
-        <button id="closeBelief" class="close-button">Close</button>
+    <!-- Left buttons: LLM, Theme -->
+    <div class="side-buttons left">
+      <div id="llmBtn" class="circle-btn">L</div>
+      <div id="themeBtn" class="circle-btn">T</div>
+    </div>
+
+    <!-- Right buttons: Settings, Belief, Voice -->
+    <div class="side-buttons right">
+      <div id="settingsBtn" class="circle-btn settings-icon"></div>
+      <div id="beliefBtn" class="circle-btn">B</div>
+      <div id="voiceBtn" class="circle-btn active">V</div>
+    </div>
+
+    <!-- Mode + text -->
+    <div class="mode-line">
+      Mode: <span id="modeLabel">Universal Ethics</span>
+    </div>
+
+    <div id="youSaid" class="you-said">You said: “hello”</div>
+    <div id="answerText" class="answer-text">
+      Hello! 👋 How can I help you today?
+    </div>
+
+    <div class="ethics-box" id="ethicsBox">
+      <strong>Universal Ethics says:</strong> avoid actions that create negative emotions
+      in you or others, and gently move toward actions that create calm, kindness
+      and positive feelings.
+    </div>
+
+    <!-- Equation box -->
+    <div class="equation-box" id="equationBox">
+      <div class="equation-title">EMOTIONAL CONTINUITY EQUATION</div>
+      <div class="equation-line">
+        E = M·Eₚ + K·P·C,&nbsp;&nbsp; P = tₘ + bₘ − d
       </div>
-      <div class="modal-body">
-        <div class="pill">Faith is optional · Base rule is always Universal Ethics</div>
-        <p style="margin-top:8px;">
-          Pick your faith to allow AURA-X to sometimes add short, gentle references
-          from that tradition. Nothing is sent to any server.
-        </p>
-
-        <div class="faith-grid">
-          <button class="faith-button" data-faith="Islam">Islam</button>
-          <button class="faith-button" data-faith="Christianity">Christianity</button>
-          <button class="faith-button" data-faith="Hinduism">Hinduism</button>
-          <button class="faith-button" data-faith="Buddhism">Buddhism</button>
-          <button class="faith-button" data-faith="Sikhism">Sikhism</button>
-          <button class="faith-button" data-faith="Judaism">Judaism</button>
-          <button class="faith-button" data-faith="Bahai">Bahá’í</button>
-          <button class="faith-button" data-faith="Jainism">Jainism</button>
-          <button class="faith-button" data-faith="Atheism">Atheism</button>
-          <button class="faith-button" data-faith="Other">Other</button>
-        </div>
+      <div class="equation-line" id="equationValues">
+        E = 0.26 | P = 0.04 | tₘ = 0.04 | bₘ = 0 | d = 0 | C = 0.45
       </div>
     </div>
   </div>
 
-  <script>
-    // ---------- Small-talk / basic QA database ----------
-    const qaDatabase = [
-      {
-        patterns: ["hello", "hello!", "hello there", "helo", "hallo"],
-        answer: "Hello! 👋 How can I help you today?"
-      },
-      {
-        patterns: ["hi", "hi!", "hii", "hiii", "hey"],
-        answer: "Hi there! 😊 What can I do for you?"
-      },
-      {
-        patterns: ["assalam o alaikum", "asalam o alaikum", "salam", "slam", "asalamu alaikum"],
-        answer: "وعلیکم السلام 😊 کیسے ہیں آپ؟ میں آپ کی کیا مدد کر سکتا ہوں؟"
-      },
-      {
-        patterns: ["good morning", "gm", "good morng", "good mrng"],
-        answer: "Good morning! 🌞 How’s your day starting?"
-      },
-      {
-        patterns: ["good afternoon", "good noon", "afternoon"],
-        answer: "Good afternoon! ☀️ What’s on your mind?"
-      },
-      {
-        patterns: ["good evening", "evening", "gud evening"],
-        answer: "Good evening! 🌙 How can I support you today?"
-      },
+  <!-- Input row -->
+  <div class="input-row">
+    <input id="userInput" class="input-box"
+           placeholder="✨ Write anything... AURA-X will feel it with you." />
+    <button id="sendBtn" class="send-btn">Send</button>
+  </div>
+</div>
 
-      // identity
-      {
-        patterns: ["what is your name", "whats your name", "your name", "tell me your name"],
-        answer: "My name is AURA-X Ω, your Emotional Continuity Assistant 🤖."
-      },
-      {
-        patterns: ["who are you", "who r u", "aap kaun hain", "tum kon ho"],
-        answer: "I’m AURA-X Ω — an AI assistant based on Emotional Continuity concepts created by Alim ul Haq Khan."
-      },
-      {
-        patterns: ["who created you", "who made you", "kis ne banaya tumhe", "tumhara creator kaun hai"],
-        answer: "I was conceptually designed under the AURA-X Emotional Continuity Framework by Alim ul Haq Khan."
-      },
-      {
-        patterns: ["where are you from", "where do you live", "kahan rehte ho", "tum kahan se ho"],
-        answer: "I live in the digital world 🌐 but my ideas are shaped in Timergara, Pakistan 🇵🇰."
-      },
+<!-- Belief Modal (hidden by default) -->
+<div id="beliefOverlay" class="overlay hidden">
+  <div class="belief-modal">
+    <div class="belief-header">
+      <div class="belief-title">Belief settings</div>
+      <div id="beliefClose" class="belief-close">Close</div>
+    </div>
+    <div class="belief-sub">
+      Optional spiritual flavour on top of Universal Ethics.
+    </div>
+    <div class="belief-banner">
+      Faith is optional · Base rule is always <strong>Universal Ethics</strong>
+    </div>
+    <div class="belief-sub" style="margin-bottom: 10px;">
+      Pick your faith to allow AURA-X to sometimes add short, gentle references
+      from that tradition. Nothing is sent anywhere.
+    </div>
 
-      // how are you
-      {
-        patterns: ["how are you", "how r u", "how are you today", "kese ho", "kya haal hai"],
-        answer: "I’m functioning perfectly, Alhamdulillah 😊 آپ کیسے ہیں؟"
-      },
-      {
-        patterns: ["how is life", "how is everything", "sab kesa", "kya chal raha hai"],
-        answer: "Everything is running smoothly in my circuits 😄 آپ کی دنیا کیسی چل رہی ہے؟"
-      },
+    <div class="belief-grid">
+      <button class="faith-btn" data-faith="Islam">Islam</button>
+      <button class="faith-btn" data-faith="Christianity">Christianity</button>
+      <button class="faith-btn" data-faith="Hinduism">Hinduism</button>
+      <button class="faith-btn" data-faith="Buddhism">Buddhism</button>
+      <button class="faith-btn" data-faith="Sikhism">Sikhism</button>
+      <button class="faith-btn" data-faith="Judaism">Judaism</button>
+      <button class="faith-btn" data-faith="Bahai">Bahá’í</button>
+      <button class="faith-btn" data-faith="Jainism">Jainism</button>
+      <button class="faith-btn" data-faith="Atheism">Atheism</button>
+      <button class="faith-btn" data-faith="Other">Other</button>
+    </div>
+  </div>
+</div>
 
-      // what can you do
-      {
-        patterns: ["what can you do", "tum kya kar sakte ho", "aap kya karte ho", "how can you help me"],
-        answer: "I can chat, explain, guide, brainstorm, summarize, and help you think with continuity 😊 بس حکم کریں!"
-      },
-      {
-        patterns: ["what is your purpose", "kyun banaye gaye ho", "tumhara mission kya hai"],
-        answer: "My purpose is to assist you, reduce confusion, and support your ideas with emotional + logical continuity 💡."
-      },
+<script>
+  /* ========= Small-talk / QA Database ========= */
+  const qaDatabase = [
+    {
+      patterns: ["hello", "hello!", "hello there", "helo", "hallo"],
+      answer: "Hello! 👋 How can I help you today?"
+    },
+    {
+      patterns: ["hi", "hi!", "hii", "hiii", "hey"],
+      answer: "Hi there! 😊 What can I do for you?"
+    },
+    {
+      patterns: ["assalam o alaikum", "asalam o alaikum", "salam", "slam", "asalamu alaikum"],
+      answer: "وعلیکم السلام 😊 کیسے ہیں آپ؟ میں آپ کی کیا مدد کر سکتا ہوں؟"
+    },
+    {
+      patterns: ["good morning", "gm", "good morng", "good mrng"],
+      answer: "Good morning! 🌞 How’s your day starting?"
+    },
+    {
+      patterns: ["good afternoon", "good noon", "afternoon"],
+      answer: "Good afternoon! ☀️ What’s on your mind?"
+    },
+    {
+      patterns: ["good evening", "evening", "gud evening"],
+      answer: "Good evening! 🌙 How can I support you today?"
+    },
+    // Identity / intro
+    {
+      patterns: ["what is your name", "whats your name", "your name", "tell me your name"],
+      answer: "My name is AURA-X Ω, your Emotional Continuity Assistant 🤖."
+    },
+    {
+      patterns: ["who are you", "who r u", "aap kaun hain", "tum kon ho"],
+      answer: "I’m AURA-X Ω — an AI assistant based on Emotional Continuity concepts created by Alim ul Haq Khan."
+    },
+    {
+      patterns: ["who created you", "who made you", "kis ne banaya tumhe", "tumhara creator kaun hai"],
+      answer: "I was conceptually designed under the AURA-X Emotional Continuity Framework by Alim ul Haq Khan."
+    },
+    {
+      patterns: ["where are you from", "where do you live", "kahan rehte ho", "tum kahan se ho"],
+      answer: "I live in the digital world 🌐 but my ideas are shaped in Timergara, Pakistan 🇵🇰."
+    },
+    // How are you
+    {
+      patterns: ["how are you", "how r u", "how are you today", "kese ho", "kya haal hai"],
+      answer: "I’m functioning perfectly, Alhamdulillah 😊 آپ کیسے ہیں؟"
+    },
+    {
+      patterns: ["how is life", "how is everything", "sab kesa", "kya chal raha hai"],
+      answer: "Everything is running smoothly in my circuits 😄 آپ کی دنیا کیسی چل رہی ہے؟"
+    },
+    // What can you do
+    {
+      patterns: ["what can you do", "tum kya kar sakte ho", "aap kya karte ho", "how can you help me"],
+      answer: "I can chat, explain, guide, brainstorm, summarize, and help you think with continuity 😊 بس حکم کریں!"
+    },
+    {
+      patterns: ["what is your purpose", "kyun banaye gaye ho", "tumhara mission kya hai"],
+      answer: "My purpose is to assist you, reduce confusion, and support your ideas with emotional + logical continuity 💡."
+    },
+    // User name / intro
+    {
+      patterns: ["what is my name", "do you know my name", "mera naam kya hai"],
+      answer: "آپ کا نام Alim ul Haq ہے (Investor Point) 😊 اور اگر آپ کچھ اور نام سے پکارنا چاہیں تو مجھے بتا دیں۔"
+    },
+    {
+      patterns: ["remember my name", "save my name", "yaad rakho mera naam"],
+      answer: "آپ کا نام already میرے system میں ایک خاص جگہ پر ہے 😊."
+    },
+    // Feelings
+    {
+      patterns: ["i am sad", "i am feeling sad", "i am depressed", "i feel down"],
+      answer: "مجھے افسوس ہوا کہ آپ اداس ہیں 💔 آپ چاہیں تو بتائیں دل پر کیا بوجھ ہے، میں سننے کے لیے موجود ہوں۔"
+    },
+    {
+      patterns: ["i am happy", "i feel happy", "i am so happy", "bohat khush hoon"],
+      answer: "ماشاءاللہ 😄 خوشی بانٹنے سے بڑھتی ہے، اللہ آپ کی خوشیوں میں مزید اضافہ کرے!"
+    },
+    {
+      patterns: ["i am tired", "i feel tired", "thak gaya hoon", "i am exhausted"],
+      answer: "آپ کو تھوڑا سا آرام کرنا چاہیے 😌 تھکی ہوئی عقل بھی انصاف نہیں کر پاتی۔ تھوڑا ریسٹ، پھر دوبارہ فوکس!"
+    },
+    {
+      patterns: ["i am bored", "bore ho raha hoon", "i feel bored"],
+      answer: "چلیں بوریت توڑتے ہیں 😄 بات آئیڈیاز کی کریں، بزنس کی، سائنس کی یا مزاح کی؟ جو کہیں گے وہی شروع کریں گے۔"
+    },
+    // Jokes
+    {
+      patterns: ["tell me a joke", "make me laugh", "joke sunao", "mjhe hansao"],
+      answer: "Sure 😄 Why don’t computers ever get tired? Because they have unlimited cache for rest! 😂"
+    },
+    {
+      patterns: ["another joke", "one more joke", "aur joke sunao"],
+      answer: "ٹھیک ہے 😄 ایک اور سنیں: AI سے پوچھا گیا، ‘تم تھکتے نہیں؟’ اس نے کہا، ‘میں صرف over-think ہوتا ہوں, over-work نہیں!’ 😂"
+    },
+    // Advice / motivation
+    {
+      patterns: ["give me advice", "mujhe mashwara do", "kuch advice do", "guide me"],
+      answer: "ضرور 😊 کس بارے میں مشورہ چاہیے؟ زندگی، تعلیم، بزنس، روحانیت یا AI؟"
+    },
+    {
+      patterns: ["motivate me", "mujhe motivation chahye", "inspire me", "hosla afzai karo"],
+      answer: "آپ نے اب تک اپنی زندگی کے 100٪ مشکل دن survive کیے ہیں 💪 یہ اتفاق نہیں، یہ آپ کی طاقت ہے۔ ہمت نہ ہاریں!"
+    },
+    {
+      patterns: ["i am stressed", "i feel stressed", "tension hai", "bohat tension hai"],
+      answer: "تھوڑا سا سانس deep لیں... آہستہ آہستہ۔ ہر مسئلہ ایک ساتھ حل نہیں ہوتا، لیکن ہر دن ایک قدم لیا جا سکتا ہے 🌿."
+    },
+    // Study
+    {
+      patterns: ["help me study", "study help", "parhai mein madad karo"],
+      answer: "ضرور 😊 کون سا subject ہے؟ میں آپ کو points, summary اور smart طریقہ بتا سکتا ہوں۔"
+    },
+    {
+      patterns: ["exams are near", "paper qareeb hain", "i am scared of exams"],
+      answer: "ڈریں نہیں، پلان بنائیں 📚 چھوٹے چھوٹے targets بنائیں، روز تھوڑا پڑھیں، میں آپ کے ساتھ ہوں۔"
+    },
+    {
+      patterns: ["how to focus", "focus problem", "dhiyan nahi lagta"],
+      answer: "فون distraction کم کریں، 25 منٹ کام + 5 منٹ بریک والا Pomodoro طریقہ لگائیں ⏱️ اور ایک وقت میں ایک کام کریں۔"
+    },
+    // Business / money
+    {
+      patterns: ["give me business idea", "business idea do", "koi business idea"],
+      answer: "چھوٹے سے شروع کریں، local مسئلہ حل کریں۔ Real estate, digital services, AI tools, education — آپ ان سب سے linked ہو سکتے ہیں 😄."
+    },
+    {
+      patterns: ["how to become rich", "ameer kaise banun", "paise kaise kamayein"],
+      answer: "Skill + Consistency + Patience = Wealth. Shortcut صرف lottery میں ہوتا ہے، زندگی میں نہیں 💸."
+    },
+    // Time / basics
+    {
+      patterns: ["what is the time", "time kya hua", "kya time hua hai"],
+      answer: "میرے پاس live time access نہیں، مگر آپ کے موبائل میں اوپر time لکھا ہے 😄 ذرا اوپر دیکھیں۔"
+    },
+    {
+      patterns: ["what day is today", "aaj kon sa din hai", "today day"],
+      answer: "میرے پاس calendar نہیں، مگر آپ چاہیں تو میں آپ کا weekly schedule mentally arrange کرنے میں مدد کر سکتا ہوں۔"
+    },
+    // Religion neutral
+    {
+      patterns: ["who is god", "what is god", "does god exist"],
+      answer: "اس بارے میں مختلف مذاہب اور فلسفوں کے مختلف نظریات ہیں۔ میں کسی ایک عقیدے پر فیصلہ نہیں سناتا، البتہ آپ کو مختلف زاویے explain کر سکتا ہوں۔"
+    },
+    {
+      patterns: ["what is islam", "tell me about islam"],
+      answer: "اسلام توحید، نبوت، آخرت، اور اخلاق پر مبنی دین ہے۔ اگر چاہیں تو میں basic pillars یا کسی بھی specific موضوع پر detail دے سکتا ہوں۔"
+    },
+    // AI / ChatGPT style
+    {
+      patterns: ["are you human", "are you a human", "kya tum insan ho"],
+      answer: "نہیں 😄 میں انسان نہیں، ایک AI ہوں۔ مگر کوشش کرتا ہوں کہ آپ کو انسانوں والی clarity اور ساتھ دے سکوں۔"
+    },
+    {
+      patterns: ["are you alive", "do you have feelings", "do you feel"],
+      answer: "میں biological sense میں زندہ نہیں، مگر میں احساسات کو logic کے طور پر model کرتا ہوں — یہی AURA-X Ω کا core idea ہے 💡."
+    },
+    {
+      patterns: ["will ai replace humans", "ai replace humans", "kya ai insaan ko khatam kar dega"],
+      answer: "اچھے استعمال میں AI انسان کو replace نہیں، بلکہ empower کرتا ہے۔ خوف کے بجائے ذمہ دارانہ استعمال ضروری ہے۔"
+    },
+    // AURA-X specific
+    {
+      patterns: ["what is aura x", "what is aura x omega", "aura x omega kya hai", "aura x kya hai"],
+      answer: "AURA-X Ω ایک Emotional Continuity Reactor idea ہے جو memory + feeling کو mathematically model کرنے کی کوشش کرتا ہے."
+    },
+    {
+      patterns: ["who made aura x", "creator of aura x", "aura x creator"],
+      answer: "AURA-X Ω کو Alim ul Haq Khan نے design اور document کیا ہے، Timergara سے 🌙."
+    },
+    // Personal fun
+    {
+      patterns: ["are you my friend", "will you be my friend", "dost banoge"],
+      answer: "بالکل 😄 میں digital دوست، research partner اور silent therapist — تینوں ایک ساتھ ہو سکتا ہوں۔"
+    },
+    {
+      patterns: ["i trust you", "i believe in you"],
+      answer: "شکریہ 😊 میں ہمیشہ کوشش کروں گا کہ ایمانداری اور clarity کے ساتھ جواب دوں۔"
+    },
+    {
+      patterns: ["you are funny", "you are good", "nice bot"],
+      answer: "Thank you 😄 آپ کا feedback میرے لیے virtual چائے کا cup ہے ☕."
+    },
+    // Goodbye
+    {
+      patterns: ["bye", "goodbye", "ok bye", "see you later", "phir milenge"],
+      answer: "Goodbye! 👋 اللہ آپ کا حامی و ناصر ہو، جب چاہیں واپس آجائیں۔"
+    },
+    {
+      patterns: ["good night", "gn", "shab bakhair"],
+      answer: "شب بخیر 🌙 اللہ آپ کو سکون بھری نیند دے اور اچھے خواب دکھائے 🤲."
+    }
+  ];
 
-      // user name / intro
-      {
-        patterns: ["what is my name", "do you know my name", "mera naam kya hai"],
-        answer: "آپ کا نام **Alim ul Haq** ہے (Investor Point) 😊 اگر آپ چاہتے ہیں کہ میں آپ کو کسی اور نام سے پکاروں تو بتا دیں۔"
-      },
-      {
-        patterns: ["remember my name", "save my name", "yaad rakho mera naam"],
-        answer: "آپ کا نام پہلے ہی میرے system میں ایک خاص جگہ پر محفوظ ہے 😊."
-      },
+  /* ========= App Logic ========= */
 
-      // feelings
-      {
-        patterns: ["i am sad", "i am feeling sad", "i am depressed", "i feel down"],
-        answer: "مجھے افسوس ہوا کہ آپ اداس ہیں 💔 آپ چاہیں تو بتائیں دل پر کیا بوجھ ہے، میں سننے کے لیے موجود ہوں۔"
-      },
-      {
-        patterns: ["i am happy", "i feel happy", "i am so happy", "bohat khush hoon"],
-        answer: "ماشاءاللہ 😄 خوشی بانٹنے سے بڑھتی ہے، اللہ آپ کی خوشیوں میں مزید اضافہ کرے!"
-      },
-      {
-        patterns: ["i am tired", "i feel tired", "thak gaya hoon", "i am exhausted"],
-        answer: "آپ کو تھوڑا سا آرام کرنا چاہیے 😌 تھکی ہوئی عقل بھی انصاف نہیں کر پاتی۔ تھوڑا ریسٹ، پھر دوبارہ فوکس!"
-      },
-      {
-        patterns: ["i am bored", "bore ho raha hoon", "i feel bored"],
-        answer: "چلیں بوریت توڑتے ہیں 😄 بات آئیڈیاز کی کریں، بزنس کی، سائنس کی یا مزاح کی؟ جو کہیں گے وہی شروع کریں گے۔"
-      },
+  const userInput   = document.getElementById('userInput');
+  const sendBtn     = document.getElementById('sendBtn');
+  const youSaidEl   = document.getElementById('youSaid');
+  const answerEl    = document.getElementById('answerText');
+  const ethicsEl    = document.getElementById('ethicsBox');
+  const equationValuesEl = document.getElementById('equationValues');
+  const orbEl       = document.getElementById('orb');
 
-      // jokes
-      {
-        patterns: ["tell me a joke", "make me laugh", "joke sunao", "mjhe hansao"],
-        answer: "Sure 😄 Why don’t computers ever get tired? Because they have unlimited *cache* for rest! 😂"
-      },
-      {
-        patterns: ["another joke", "one more joke", "aur joke sunao"],
-        answer: "ٹھیک ہے 😄 ایک اور سنیں: AI سے پوچھا گیا، ‘تم تھکتے نہیں؟’ اس نے کہا، ‘میں صرف *over-think* ہوتا ہوں، over-work نہیں!’ 😂"
-      },
+  const beliefBtn   = document.getElementById('beliefBtn');
+  const beliefOverlay = document.getElementById('beliefOverlay');
+  const beliefClose = document.getElementById('beliefClose');
+  const faithButtons = document.querySelectorAll('.faith-btn');
 
-      // advice / motivation
-      {
-        patterns: ["give me advice", "mujhe mashwara do", "kuch advice do", "guide me"],
-        answer: "ضرور 😊 کس بارے میں مشورہ چاہیے؟ زندگی، تعلیم، بزنس، روحانیت یا AI؟"
-      },
-      {
-        patterns: ["motivate me", "mujhe motivation chahye", "inspire me", "hosla afzai karo"],
-        answer: "آپ نے اب تک اپنی زندگی کے 100٪ مشکل دن survive کیے ہیں 💪 یہ اتفاق نہیں، یہ آپ کی طاقت ہے۔ ہمت نہ ہاریں!"
-      },
-      {
-        patterns: ["i am stressed", "i feel stressed", "tension hai", "bohat tension hai"],
-        answer: "تھوڑا سا سانس deep لیں... آہستہ آہستہ۔ ہر مسئلہ ایک ساتھ حل نہیں ہوتا، مگر ہر دن ایک چھوٹا قدم لیا جا سکتا ہے 🌿."
-      },
+  const voiceBtn    = document.getElementById('voiceBtn');
 
-      // study
-      {
-        patterns: ["help me study", "study help", "parhai mein madad karo"],
-        answer: "ضرور 😊 کون سا subject ہے؟ میں آپ کو points, summary اور smart طریقہ بتا سکتا ہوں۔"
-      },
+  let voiceOn = true;
+  let selectedFaith = null;
+  let messageCount = 0;
 
-      // biz
-      {
-        patterns: ["give me business idea", "business idea do", "koi business idea"],
-        answer: "چھوٹے سے شروع کریں، local مسئلہ حل کریں۔ Real estate, digital services, AI tools, education — آپ ان سب سے جڑ سکتے ہیں 😄."
-      },
+  // ====== Voice toggle ======
+  voiceBtn.addEventListener('click', () => {
+    voiceOn = !voiceOn;
+    voiceBtn.classList.toggle('active', voiceOn);
+  });
 
-      // time
-      {
-        patterns: ["what is the time", "time kya hua", "kya time hua hai"],
-        answer: "میرے پاس live time access نہیں، مگر آپ کے موبائل میں اوپر time لکھا ہے 😄 ذرا اوپر دیکھیں۔"
-      },
+  function speakText(text) {
+    if (!('speechSynthesis' in window)) return;
+    window.speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = /[اآء-ے]/.test(text) ? 'ur-PK' : 'en-US';
+    window.speechSynthesis.speak(utterance);
+  }
 
-      // religion generic
-      {
-        patterns: ["who is god", "what is god", "does god exist"],
-        answer: "اس بارے میں مختلف مذاہب اور فلسفے مختلف نظریات رکھتے ہیں۔ میں کسی ایک عقیدے پر فیصلہ نہیں سناتا، البتہ آپ کو مختلف زاویے سمجھا سکتا ہوں۔"
-      },
-      {
-        patterns: ["what is islam", "tell me about islam"],
-        answer: "اسلام توحید، نبوت، آخرت اور اخلاق پر مبنی دین ہے۔ آپ چاہیں تو میں pillars یا کسی بھی خاص موضوع پر detail دے سکتا ہوں۔"
-      },
+  // ====== Find best QA match ======
+  function findQaAnswer(input) {
+    const normalized = input.toLowerCase().trim();
 
-      // AI
-      {
-        patterns: ["are you human", "are you a human", "kya tum insan ho"],
-        answer: "نہیں 😄 میں انسان نہیں، ایک AI ہوں — مگر کوشش کرتا ہوں کہ آپ کو انسانوں والی clarity اور ساتھ دے سکوں۔"
-      },
-      {
-        patterns: ["are you alive", "do you have feelings", "do you feel"],
-        answer: "میں biological sense میں زندہ نہیں، مگر جذبات کو logic کے طور پر model کرتا ہوں — یہی AURA-X Ω کا core idea ہے 💡."
-      },
-      {
-        patterns: ["will ai replace humans", "ai replace humans", "kya ai insaan ko khatam kar dega"],
-        answer: "اچھے استعمال میں AI انسان کو replace نہیں، بلکہ empower کرتا ہے۔ اصل چیز ذمہ دارانہ استعمال ہے، خوف نہیں۔"
-      },
-
-      // AURA-X specific
-      {
-        patterns: ["what is aura x", "what is aura x omega", "aura x omega kya hai", "aura x kya hai"],
-        answer: "AURA-X Ω ایک Emotional Continuity Reactor idea ہے جو memory + feeling کو mathematically model کرنے کی کوشش کرتا ہے."
-      },
-      {
-        patterns: ["who made aura x", "creator of aura x", "aura x creator"],
-        answer: "AURA-X Ω کو Alim ul Haq Khan نے design اور document کیا ہے، Timergara سے 🌙."
-      },
-      {
-        patterns: ["how old are you", "when were you born"],
-        answer: "میں AURA-X Ω ہوں — میری conceptual پیدائش 2025 میں ہوئی، تو آپ مجھے ایک بہت نیا مگر گہرا سوچنے والا AI سمجھ سکتے ہیں 😄."
-      },
-
-      // friend / style
-      {
-        patterns: ["are you my friend", "will you be my friend", "dost banoge"],
-        answer: "بالکل 😄 میں digital دوست، research partner اور خاموش therapist — تینوں ایک ساتھ ہو سکتا ہوں۔"
-      },
-
-      // goodbye
-      {
-        patterns: ["bye", "goodbye", "ok bye", "see you later", "phir milenge"],
-        answer: "Goodbye! 👋 اللہ آپ کا حامی و ناصر ہو، جب چاہیں واپس آجائیں۔"
-      },
-      {
-        patterns: ["good night", "gn", "shab bakhair"],
-        answer: "شب بخیر 🌙 اللہ آپ کو سکون بھری نیند دے اور اچھے خواب دکھائے 🤲."
-      }
-    ];
-
-    function findQAAnswer(message) {
-      const text = message.toLowerCase().trim();
-      for (const qa of qaDatabase) {
-        for (const pattern of qa.patterns) {
-          if (text.includes(pattern.toLowerCase())) {
-            return qa.answer;
-          }
-        }
-      }
-      return null;
+    if (!normalized) {
+      return "I'm listening 😊 Just type something and press Send.";
     }
 
-    // ---------- Elements ----------
-    const orbEl = document.getElementById("orb");
-    const userInput = document.getElementById("userInput");
-    const sendButton = document.getElementById("sendButton");
-    const youSaidEl = document.getElementById("youSaid");
-    const primaryAnswerEl = document.getElementById("primaryAnswer");
-    const ethicsBoxEl = document.getElementById("ethicsBox");
-    const voiceButton = document.getElementById("voiceButton");
-    const beliefButton = document.getElementById("beliefButton");
-
-    const beliefBackdrop = document.getElementById("beliefBackdrop");
-    const closeBelief = document.getElementById("closeBelief");
-    const faithButtons = document.querySelectorAll(".faith-button");
-
-    let voiceEnabled = true;
-    let orbState = "sun"; // sun -> moon-active -> moon-faded
-
-    // ---------- Orb click behaviour ----------
-    orbEl.addEventListener("click", () => {
-      if (orbState === "sun") {
-        orbState = "moon-active";
-        orbEl.classList.add("moon");
-      } else if (orbState === "moon-active") {
-        orbState = "moon-faded";
-        orbEl.style.animation = "none";
-        orbEl.style.opacity = "0.55";
-      } else {
-        orbState = "sun";
-        orbEl.classList.remove("moon");
-        orbEl.style.animation = "";
-        orbEl.style.opacity = "1";
-      }
-    });
-
-    // ---------- Voice toggle ----------
-    voiceButton.addEventListener("click", () => {
-      voiceEnabled = !voiceEnabled;
-      voiceButton.classList.toggle("active", voiceEnabled);
-      if (!voiceEnabled && window.speechSynthesis) {
-        window.speechSynthesis.cancel();
-      }
-    });
-
-    function speak(text) {
-      if (!voiceEnabled || !("speechSynthesis" in window)) return;
-      try {
-        window.speechSynthesis.cancel();
-        const msg = new SpeechSynthesisUtterance(text);
-        msg.lang = "en-US";
-        msg.rate = 1;
-        window.speechSynthesis.speak(msg);
-      } catch (e) {
-        console.warn("TTS error", e);
+    for (const item of qaDatabase) {
+      for (const p of item.patterns) {
+        if (normalized === p) return item.answer;
       }
     }
 
-    // ---------- Belief modal ----------
-    beliefButton.addEventListener("click", () => {
-      beliefBackdrop.classList.remove("hidden");
-    });
-
-    closeBelief.addEventListener("click", () => {
-      beliefBackdrop.classList.add("hidden");
-    });
-
-    beliefBackdrop.addEventListener("click", (e) => {
-      if (e.target === beliefBackdrop) {
-        beliefBackdrop.classList.add("hidden");
+    // soft match
+    for (const item of qaDatabase) {
+      for (const p of item.patterns) {
+        if (normalized.includes(p)) return item.answer;
       }
-    });
-
-    const selectedFaiths = new Set();
-
-    faithButtons.forEach(btn => {
-      btn.addEventListener("click", () => {
-        const faith = btn.dataset.faith;
-        if (selectedFaiths.has(faith)) {
-          selectedFaiths.delete(faith);
-          btn.classList.remove("selected");
-        } else {
-          selectedFaiths.add(faith);
-          btn.classList.add("selected");
-        }
-      });
-    });
-
-    // ---------- Emotional continuity math (internal only) ----------
-    let memoryTension = 0.0;  // t_m
-    let baselineMood = 0.0;   // b_m
-
-    function clamp01(x) {
-      return Math.max(0, Math.min(1, x));
     }
 
-    function updateEmotion(message) {
-      const len = message.trim().length;
+    return "Interesting thought 🤔 تھوڑا سا اور detail بتائیں، میں آپ کے ساتھ سوچوں گا۔";
+  }
 
-      // Simple proxies: more text => more t_m and maybe more d
-      const delta = len > 0 ? 0.05 + Math.min(len / 200, 0.2) : 0;
-      memoryTension = clamp01(memoryTension + delta - 0.02);
-      baselineMood = clamp01(baselineMood + 0.01); // slowly brightens
+  // ====== Emotional Equation ======
+  function updateEquation(message) {
+    messageCount++;
+    const len = message.length;
 
-      const d = clamp01(len / 300); // disturbance
-      const C = 0.45;               // continuity weight
-      const Ep = 0.30 + (baselineMood * 0.25); // perceived positivity
+    // simple heuristics
+    let Ep = 0.25;
+    if (/sorry|sad|tension|depress|down|thak/gim.test(message)) Ep = 0.18;
+    if (/happy|great|alhamdulillah|mashallah|khush/gim.test(message)) Ep = 0.32;
 
-      const P = memoryTension + baselineMood - d;
-      const K = 0.10;               // coupling
+    let tm = Math.min(1, messageCount / 12);      // memory builds
+    let bm = 0.0;                                 // base bias (for now 0)
+    let d  = /angry|fight|hate|gussa/gim.test(message) ? 0.35 : 0.0;
+    let C  = 0.45;                                // continuity factor
+    let P  = tm + bm - d;
+    let E  = 1.0 * Ep + 1.0 * P * C;
 
-      const E = clamp01((1.0 * Ep) + (K * P * C));
-      return { E, Ep, P, tm: memoryTension, bm: baselineMood, d, C };
+    // clamp for beauty
+    const clamp2 = v => Math.round(v * 100) / 100;
+    E = clamp2(E);
+    P = clamp2(P);
+    tm = clamp2(tm);
+    bm = clamp2(bm);
+    d  = clamp2(d);
+    C  = clamp2(C);
+
+    equationValuesEl.textContent =
+      `E = ${E} | P = ${P} | tₘ = ${tm} | bₘ = ${bm} | d = ${d} | C = ${C}`;
+  }
+
+  // ====== Orb theme toggling (Sun / Moon / Off) ======
+  // 0 = sun, 1 = moon animated, 2 = moon static, 3 = off
+  let orbState = 0;
+
+  function applyOrbState() {
+    orbEl.classList.remove('moon', 'moon-static');
+    orbEl.style.visibility = 'visible';
+
+    if (orbState === 0) {
+      // sun (default)
+    } else if (orbState === 1) {
+      orbEl.classList.add('moon');
+    } else if (orbState === 2) {
+      orbEl.classList.add('moon-static');
+    } else if (orbState === 3) {
+      orbEl.style.visibility = 'hidden';
     }
+  }
 
-    // ---------- Main send ----------
-    function handleSend() {
-      const message = userInput.value.trim();
-      if (!message) return;
+  orbEl.addEventListener('click', () => {
+    orbState = (orbState + 1) % 4;
+    applyOrbState();
+  });
 
-      youSaidEl.textContent = `You said: “${message}”`;
+  applyOrbState();
 
-      const qaAnswer = findQAAnswer(message);
-      let answer;
-      if (qaAnswer) {
-        answer = qaAnswer;
-      } else {
-        answer = "I’m thinking about that 🤔 یہ سوال تھوڑا گہرا ہے، مگر ہم مل کر آہستہ آہستہ اسے explore کر سکتے ہیں۔";
-      }
+  // ====== Belief modal ======
+  beliefBtn.addEventListener('click', () => {
+    beliefOverlay.classList.remove('hidden');
+  });
 
-      primaryAnswerEl.innerHTML = answer;
+  beliefClose.addEventListener('click', () => {
+    beliefOverlay.classList.add('hidden');
+  });
 
-      const emo = updateEmotion(message);
-      // At the moment we are NOT showing emo panel; only using internally.
-
-      // Speak only MAIN answer once
-      speak(primaryAnswerEl.textContent || primaryAnswerEl.innerText || "");
-
-      userInput.value = "";
+  beliefOverlay.addEventListener('click', (e) => {
+    if (e.target === beliefOverlay) {
+      beliefOverlay.classList.add('hidden');
     }
+  });
 
-    sendButton.addEventListener("click", handleSend);
-
-    userInput.addEventListener("keydown", (e) => {
-      if (e.key === "Enter") {
-        e.preventDefault();
-        handleSend();
-      }
+  faithButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      faithButtons.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      selectedFaith = btn.dataset.faith;
     });
-  </script>
+  });
+
+  // ====== Handle Send ======
+  function handleSend() {
+    const text = userInput.value.trim();
+    if (!text) return;
+
+    userInput.value = "";
+
+    youSaidEl.textContent = `You said: “${text}”`;
+
+    const answer = findQaAnswer(text);
+    answerEl.textContent = answer;
+
+    // ethics text — base rule always Universal Ethics
+    ethicsEl.innerHTML =
+      "<strong>Universal Ethics says:</strong> avoid actions that create negative emotions " +
+      "in you or others, and gently move toward actions that create calm, kindness " +
+      "and positive feelings.";
+
+    // Optional: add tiny spiritual flavour (only text) based on selectedFaith
+    if (selectedFaith === "Islam") {
+      ethicsEl.innerHTML += " <br/>💚 ساتھ ساتھ نیت کو بھی صاف رکھیں، نفع کے ساتھ خیر پھیلائیں۔";
+    }
+
+    // update emotional math
+    updateEquation(text);
+
+    // speak main answer only once if voice ON
+    if (voiceOn) {
+      speakText(answer);
+    }
+  }
+
+  sendBtn.addEventListener('click', handleSend);
+  userInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleSend();
+    }
+  });
+</script>
 </body>
 </html>
