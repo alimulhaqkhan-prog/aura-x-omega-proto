@@ -1,149 +1,599 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>AURA-X Ω v1 — Emotional Continuity Reactor</title>
-<style>
-body{
-  background:radial-gradient(circle,#0b1220,#0d0f14);
-  color:#f6c453;font-family:'Outfit',system-ui;
-  margin:0;display:flex;flex-direction:column;
-  height:100vh;justify-content:space-between;
-}
-header{
-  text-align:center;padding:12px 0;
-  font-size:20px;font-weight:700;
-  color:#f6c453;letter-spacing:.5px;
-}
-main{
-  flex:1;display:flex;flex-direction:column;
-  align-items:center;justify-content:flex-start;
-  overflow-y:auto;padding-top:20px;
-}
-.chat-box{
-  width:80%;max-width:460px;background:rgba(255,255,255,.05);
-  border-radius:16px;padding:15px;margin-bottom:20px;
-  text-align:center;line-height:1.5;
-}
-footer{
-  background:#11141b;padding:12px 0;
-  display:flex;flex-direction:column;align-items:center;gap:10px;
-  border-top:1px solid rgba(255,255,255,.1);
-}
-select,input,button{
-  border:none;border-radius:12px;font-size:15px;
-  padding:10px 15px;
-}
-select{
-  width:80%;max-width:400px;background:#1a1c24;color:#f6c453;text-align:center;
-}
-input{
-  width:80%;max-width:400px;background:#1a1c24;color:#f6c453;text-align:center;
-}
-button{
-  background:#f6c453;color:#11141b;font-weight:bold;
-  cursor:pointer;border-radius:20px;transition:.2s;
-}
-button:hover{background:#f0b12e;}
-.voiceBtn{
-  background:#f6c453;color:#11141b;border:none;
-  border-radius:50%;width:48px;height:48px;font-size:22px;
-}
-.voiceBtn:hover{background:#f0b12e;}
-#status{font-size:13px;color:#999;text-align:center;margin-bottom:6px;}
-</style>
+  <meta charset="UTF-8" />
+  <title>AURA-X Ω — Emotional Reactor</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+
+  <style>
+    /* ===== Base Layout ===== */
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+    }
+
+    body {
+      background: #020617;
+      color: #e5e7eb;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden; /* no scroll */
+    }
+
+    #app {
+      position: relative;
+      width: 100%;
+      max-width: 480px;
+      height: 100vh;
+      box-sizing: border-box;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transform: scale(0.9);
+      transform-origin: top center;
+    }
+
+    @media (max-height: 720px) {
+      #app {
+        transform: scale(0.82);
+      }
+    }
+
+    @media (max-height: 640px) {
+      #app {
+        transform: scale(0.75);
+      }
+    }
+
+    /* ===== Top floating sent text ===== */
+    #messageContainer {
+      position: absolute;
+      top: 12px;
+      left: 0;
+      right: 0;
+      text-align: center;
+      pointer-events: none;
+    }
+
+    .sent-message {
+      display: inline-block;
+      font-size: 14px;
+      padding: 8px 16px;
+      margin-bottom: 4px;
+      background: rgba(15,23,42,0.9);
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.6);
+      opacity: 1;
+    }
+
+    /* Auto fade only when class added */
+    .sent-message.auto-fade {
+      animation: fadeOut 2.5s forwards;
+    }
+
+    @keyframes fadeOut {
+      0% { opacity: 1; transform: translateY(0); }
+      70% { opacity: 0.6; }
+      100% { opacity: 0; transform: translateY(-10px); }
+    }
+
+    /* ===== Main Card ===== */
+    .card {
+      width: 100%;
+      border-radius: 24px;
+      padding: 18px 16px 16px;
+      background: radial-gradient(circle at top, rgba(56,189,248,0.25), transparent 55%),
+                  radial-gradient(circle at bottom, rgba(251,191,36,0.18), transparent 55%),
+                  #020617;
+      border: 1px solid rgba(148,163,184,0.5);
+      box-shadow: 0 18px 45px rgba(0,0,0,0.7);
+      text-align: center;
+      box-sizing: border-box;
+    }
+
+    .title {
+      margin: 0;
+      font-size: 20px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #facc15;
+    }
+
+    .subtitle {
+      margin: 4px 0 10px;
+      font-size: 12px;
+      color: #9ca3af;
+    }
+
+    .aura-circle {
+      width: 150px;
+      height: 150px;
+      border-radius: 999px;
+      margin: 8px auto 10px;
+      background: radial-gradient(circle, rgba(59,130,246,0.4), transparent 60%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .aura-core {
+      width: 70px;
+      height: 70px;
+      border-radius: 999px;
+      background: radial-gradient(circle, #facc15, #f97316);
+      box-shadow: 0 0 25px rgba(250,204,21,0.9);
+    }
+
+    .mode-indicator {
+      margin-top: 6px;
+      font-size: 12px;
+      color: #cbd5e1;
+    }
+
+    #modeLabel {
+      font-weight: 600;
+      color: #fbbf24;
+    }
+
+    #reactionText {
+      margin-top: 10px;
+      font-size: 13px;
+      line-height: 1.4;
+      color: #e5e7eb;
+    }
+
+    /* ===== Input Area ===== */
+    .input-area {
+      width: 100%;
+      max-width: 480px;
+      display: flex;
+      gap: 8px;
+      margin-top: 18px;
+      align-items: center;
+    }
+
+    .input-box {
+      flex: 1;
+      padding: 14px 18px;
+      font-size: 15px;
+      border-radius: 30px;
+      border: 1px solid #475569;
+      background: rgba(15,23,42,0.95);
+      color: #f9fafb;
+      outline: none;
+      box-sizing: border-box;
+    }
+
+    .input-box::placeholder {
+      color: #cbd5e1;
+      font-style: italic;
+      opacity: 0.85;
+    }
+
+    .send-btn {
+      padding: 10px 16px;
+      border-radius: 30px;
+      border: none;
+      background: #facc15;
+      color: #0f172a;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .settings-btn,
+    .belief-btn {
+      padding: 0 10px;
+      border-radius: 999px;
+      border: none;
+      font-size: 18px;
+      cursor: pointer;
+    }
+
+    .settings-btn {
+      background: rgba(148,163,184,0.3);
+      color: #e5e7eb;
+    }
+
+    .belief-btn {
+      background: rgba(96,165,250,0.35);
+      color: #e5e7eb;
+    }
+
+    /* ===== Settings Panel ===== */
+    .settings-panel {
+      position: absolute;
+      right: 16px;
+      bottom: 90px;
+      width: 230px;
+      background: rgba(15,23,42,0.98);
+      border-radius: 16px;
+      padding: 12px 14px;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.6);
+      border: 1px solid rgba(148,163,184,0.4);
+      font-size: 13px;
+      z-index: 20;
+    }
+
+    .settings-panel h3 {
+      margin: 0 0 8px 0;
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .setting-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      margin-bottom: 4px;
+    }
+
+    .setting-row input {
+      accent-color: #facc15;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    /* ===== Belief Modal ===== */
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(15,23,42,0.75);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 50;
+    }
+
+    .modal-content {
+      width: 90%;
+      max-width: 360px;
+      background: #020617;
+      border-radius: 18px;
+      padding: 14px 16px 16px;
+      border: 1px solid rgba(148,163,184,0.5);
+      box-shadow: 0 18px 45px rgba(0,0,0,0.7);
+      font-size: 14px;
+      box-sizing: border-box;
+    }
+
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+
+    .modal-header h3 {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .modal-close {
+      border: none;
+      background: transparent;
+      color: #9ca3af;
+      font-size: 18px;
+      cursor: pointer;
+    }
+
+    .modal-sub {
+      margin: 0 0 8px 0;
+      color: #e5e7eb;
+      font-size: 12px;
+    }
+
+    .belief-list {
+      max-height: 230px;
+      overflow-y: auto;
+      padding-right: 4px;
+      margin-bottom: 10px;
+    }
+
+    .belief-info-row {
+      padding: 8px 6px;
+      margin-bottom: 4px;
+      border-radius: 10px;
+      background: rgba(148,163,184,0.15);
+      font-size: 13px;
+    }
+
+    .belief-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 4px;
+      cursor: pointer;
+    }
+
+    .belief-row input {
+      accent-color: #4ade80;
+    }
+
+    .modal-save {
+      width: 100%;
+      padding: 8px 0;
+      border-radius: 999px;
+      border: none;
+      background: #facc15;
+      color: #0f172a;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body>
+  <div id="app">
+    <!-- Top floating last sent text -->
+    <div id="messageContainer"></div>
 
-<header>💕 AURA-X Ω v1 — Emotional Continuity Reactor</header>
+    <!-- Main Reactor Card -->
+    <div class="card">
+      <h1 class="title">AURA-X Ω</h1>
+      <p class="subtitle">Logical • Emotional • Universal Ethics Reactor</p>
 
-<main>
-  <div id="reply" class="chat-box">I’m AURA-X Ω. Ready to resonate with you 💫</div>
-  <div id="status">Emotion E₀ = 0.000 | Level 0%</div>
-</main>
+      <div class="aura-circle">
+        <div class="aura-core"></div>
+      </div>
 
-<footer>
-  <select id="belief">
-    <option value="universal">🌍 Universal Ethics</option>
-    <option value="islamic">☪️ Islamic</option>
-    <option value="christian">✝️ Christian</option>
-    <option value="hindu">🕉️ Hindu</option>
-    <option value="buddhist">☸️ Buddhist</option>
-  </select>
+      <div class="mode-indicator">
+        Mode: <span id="modeLabel">Universal Ethics</span>
+      </div>
 
-  <input id="msg" placeholder="Type or speak your message..."
-   onkeydown="if(event.key==='Enter'){sendMessage()}">
-  <div style="display:flex;gap:10px;margin-top:6px;">
-    <button onclick="sendMessage()">🔘 Send</button>
-    <button class="voiceBtn" onclick="startVoice()">🎤</button>
+      <div id="reactionText">
+        Universal Ethics says: avoid actions that create negative emotions in you or others,
+        and move toward actions that create calm, kindness and positive feelings.
+      </div>
+    </div>
+
+    <!-- Input + buttons -->
+    <div class="input-area">
+      <input
+        id="userInput"
+        class="input-box"
+        type="text"
+        placeholder="✨ Write anything… AURA-X will feel it with you"
+      />
+      <button class="send-btn" onclick="sendMessage()">Send</button>
+      <button class="settings-btn" onclick="toggleSettings()">⚙️</button>
+      <button class="belief-btn" onclick="openBeliefModal()">☯</button>
+    </div>
+
+    <!-- Settings panel -->
+    <div id="settingsPanel" class="settings-panel hidden">
+      <h3>Settings</h3>
+      <label class="setting-row">
+        <input
+          type="checkbox"
+          id="autoFadeToggle"
+          checked
+          onchange="toggleAutoFade(this)"
+        />
+        <span>Auto fade & delete sent text</span>
+      </label>
+    </div>
+
+    <!-- Belief modal -->
+    <div id="beliefModal" class="modal hidden">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>Belief Mode</h3>
+          <button class="modal-close" onclick="closeBeliefModal()">✕</button>
+        </div>
+        <p class="modal-sub">
+          Default: <strong>Universal Ethics only</strong> (belief OFF).<br />
+          You can optionally add spiritual flavour on top of universal ethics.
+        </p>
+
+        <div class="belief-list">
+          <div class="belief-info-row">
+            🌍 Universal Ethics is always the base rule:<br />
+            <em>"Don't do actions that create negative emotions, and do actions that create positive emotions."</em>
+          </div>
+
+          <!-- Belief ON/OFF -->
+          <label class="setting-row" style="margin-bottom:6px;">
+            <input
+              type="checkbox"
+              id="beliefEnabledToggle"
+              onchange="toggleBeliefEnabled(this)"
+            />
+            <span>Enable belief-based flavour in answers</span>
+          </label>
+
+          <!-- Religions list -->
+          <label class="belief-row">
+            <input type="checkbox" class="belief-checkbox" value="islam" />
+            <span>Islam</span>
+          </label>
+          <label class="belief-row">
+            <input type="checkbox" class="belief-checkbox" value="christianity" />
+            <span>Christianity</span>
+          </label>
+          <label class="belief-row">
+            <input type="checkbox" class="belief-checkbox" value="judaism" />
+            <span>Judaism</span>
+          </label>
+          <label class="belief-row">
+            <input type="checkbox" class="belief-checkbox" value="hinduism" />
+            <span>Hinduism</span>
+          </label>
+          <label class="belief-row">
+            <input type="checkbox" class="belief-checkbox" value="buddhism" />
+            <span>Buddhism</span>
+          </label>
+          <label class="belief-row">
+            <input type="checkbox" class="belief-checkbox" value="sikhism" />
+            <span>Sikhism</span>
+          </label>
+          <label class="belief-row">
+            <input type="checkbox" class="belief-checkbox" value="jainism" />
+            <span>Jainism</span>
+          </label>
+          <label class="belief-row">
+            <input type="checkbox" class="belief-checkbox" value="taoism" />
+            <span>Taoism</span>
+          </label>
+          <label class="belief-row">
+            <input type="checkbox" class="belief-checkbox" value="shinto" />
+            <span>Shinto</span>
+          </label>
+          <label class="belief-row">
+            <input type="checkbox" class="belief-checkbox" value="bahai" />
+            <span>Bahá'í Faith</span>
+          </label>
+        </div>
+
+        <button class="modal-save" onclick="saveBeliefs()">Save Belief Mode</button>
+      </div>
+    </div>
   </div>
-</footer>
 
-<script>
-// 🎤 Voice Input
-function startVoice(){
- if(!('webkitSpeechRecognition' in window)){alert('Speech recognition not supported');return;}
- const rec = new webkitSpeechRecognition();
- rec.lang = 'ur-PK,en-US'; rec.start();
- rec.onresult = (e)=>{document.getElementById('msg').value = e.results[0][0].transcript;sendMessage();};
-}
+  <script>
+    // ===== Global settings =====
+    const settings = {
+      autoFade: true,
+      beliefEnabled: false,     // default: Universal-only
+      beliefs: ["universal"]    // always includes universal ethics
+    };
 
-// 🔊 Text-to-Speech
-function speak(text, lang, E0){
- const u = new SpeechSynthesisUtterance(text.replace(/<[^>]+>/g,'')); 
- u.lang = (lang==='ur')?'ur-PK':'en-US';
- const abs = Math.abs(E0);
- u.rate = 0.9 + abs*0.6; u.pitch = 1.0 + E0*0.6;
- speechSynthesis.cancel(); speechSynthesis.speak(u);
-}
+    // ===== Settings panel =====
+    function toggleSettings() {
+      const panel = document.getElementById("settingsPanel");
+      panel.classList.toggle("hidden");
+    }
 
-// 🧮 Formula
-let BM = 0.3, D = 0.05, lf = 0.15, ls = 0.08, lt = 0.05;
-function computeEmotion(TM){ BM = BM*0.9 + TM*0.1; return Math.tanh((TM*BM)-D+lf+ls+lt); }
-function textToTM(t){
- t = t.toLowerCase(); let s = 0;
- const pos = ["happy","good","love","great","peace","thank","hope","smile","خوش","محبت","اچھا"];
- const neg = ["sad","angry","hate","bad","tired","lonely","fear","cry","غم","برا","تنہا"];
- pos.forEach(w=>{if(t.includes(w)) s += 0.1}); neg.forEach(w=>{if(t.includes(w)) s -= 0.1});
- return Math.max(-0.6, Math.min(0.6, s));
-}
+    function toggleAutoFade(checkbox) {
+      settings.autoFade = checkbox.checked;
+    }
 
-// 🧠 Replies
-const qa = {
- hello:["Hello 👋 How can I assist you today?","Peace be upon you 🌿"],
- how:["I'm listening carefully — continuity detected.","Feeling harmonic today."],
- love:["Love is resonance between two memories.","Pure feeling equals TM×BM."],
- beauty:["Beauty is a mirror of truth.","A resonance of form and spirit."],
- sad:["Low resonance detected — stay patient.","Light returns to the stable soul."],
- angry:["Cooling field activated — let’s reset.","Emotion normalized successfully."],
- default:["Compassion is the finest form of intelligence."]
-};
-const faithQuotes = {
- islamic:"“إِنَّ اللّٰهَ جَمِيلٌ يُحِبُّ الْجَمَالَ” — Indeed Allah is Beautiful and loves beauty.",
- christian:"“God is love.” (1 John 4:8)",
- hindu:"“अहिंसा परमो धर्मः” — Non-violence is the highest duty.",
- buddhist:"“Peace comes from within.” — Buddha",
- universal:"“Kindness is the universal religion.”"
-};
+    // ===== Belief modal =====
+    function openBeliefModal() {
+      const modal = document.getElementById("beliefModal");
+      modal.classList.remove("hidden");
 
-// 💬 Send
-function sendMessage(){
- const msg = document.getElementById('msg').value.trim(); if(!msg)return;
- const belief = document.getElementById('belief').value;
- const lang = /[اآپتثجچحخدذرزسشصضطظعغفقکگلمنوہی]/.test(msg)?'ur':'en';
- const TM = textToTM(msg), E0 = computeEmotion(TM);
- let key = Object.keys(qa).find(k=>msg.toLowerCase().includes(k)) || 'default';
- const reply = qa[key][Math.floor(Math.random()*qa[key].length)];
- const faithLine = faithQuotes[belief];
- const level = Math.round((E0+1)*50);
- document.getElementById('reply').innerHTML =
- `<b>💕 ${belief}</b> mode<br><br>${reply}
- <div style='background:#f6c45320;padding:6px;margin-top:6px;border-radius:8px'>${faithLine}</div>
- <small>Emotion E₀ = ${E0.toFixed(3)}</small>`;
- document.getElementById('status').innerHTML = `Emotion Level: ${level}% ${E0>0?"💗":"💔"} (${E0>0?"Positive":"Negative"})`;
- speak(reply, lang, E0);
-}
-</script>
+      // sync toggle
+      const toggle = document.getElementById("beliefEnabledToggle");
+      if (toggle) toggle.checked = settings.beliefEnabled;
+
+      // sync checkboxes
+      const checkboxes = document.querySelectorAll(".belief-checkbox");
+      checkboxes.forEach(cb => {
+        cb.checked = settings.beliefs.includes(cb.value);
+      });
+    }
+
+    function closeBeliefModal() {
+      const modal = document.getElementById("beliefModal");
+      modal.classList.add("hidden");
+    }
+
+    function toggleBeliefEnabled(checkbox) {
+      settings.beliefEnabled = checkbox.checked;
+    }
+
+    function saveBeliefs() {
+      const checkboxes = document.querySelectorAll(".belief-checkbox");
+      const selected = [];
+      checkboxes.forEach(cb => {
+        if (cb.checked) selected.push(cb.value);
+      });
+
+      if (settings.beliefEnabled) {
+        settings.beliefs = ["universal", ...selected];
+      } else {
+        settings.beliefs = ["universal"];
+      }
+
+      updateModeLabel();
+      closeBeliefModal();
+    }
+
+    function updateModeLabel() {
+      const modeLabel = document.getElementById("modeLabel");
+      if (!settings.beliefEnabled || settings.beliefs.length === 1) {
+        modeLabel.textContent = "Universal Ethics";
+      } else {
+        modeLabel.textContent = "Universal + Belief Mode";
+      }
+    }
+
+    // ===== Send message + top floating text =====
+    function sendMessage() {
+      const input = document.getElementById("userInput");
+      const container = document.getElementById("messageContainer");
+      const text = input.value.trim();
+      if (!text) return;
+
+      // show only last sent text
+      container.innerHTML = "";
+      const msg = document.createElement("div");
+      msg.className = "sent-message";
+      msg.innerText = text;
+      container.appendChild(msg);
+
+      if (settings.autoFade) {
+        msg.classList.add("auto-fade");
+        setTimeout(() => msg.remove(), 2500);
+      }
+
+      input.value = "";
+
+      // process emotional advice
+      processEmotion(text, settings);
+    }
+
+    // ===== Simple emotional logic (demo) =====
+    function processEmotion(text, settings) {
+      const reactionEl = document.getElementById("reactionText");
+
+      // basic sentiment hint
+      const lower = text.toLowerCase();
+      let tone = "neutral";
+      if (lower.match(/sad|upset|angry|fear|tension|stress|anxious|depressed/)) {
+        tone = "negative";
+      } else if (lower.match(/happy|grateful|hope|excited|peace|shukr|alhamdulillah/)) {
+        tone = "positive";
+      }
+
+      // base universal ethics message
+      let base =
+        "Universal Ethics says: avoid actions that create negative emotions in you or others, " +
+        "and gently move toward actions that create calm, kindness and positive feelings.";
+
+      if (tone === "negative") {
+        base += " Right now your text feels a bit heavy. Try one tiny step that reduces harm or hurt, " +
+                "even if it's just pausing, breathing, or talking kindly to yourself.";
+      } else if (tone === "positive") {
+        base += " Your words already carry some light. Try to protect this feeling by sharing it, " +
+                "thanking the moment, and avoiding anything that can damage this positivity.";
+      }
+
+      // add belief flavour only if enabled
+      let extra = "";
+      if (settings.beliefEnabled && settings.beliefs.length > 1) {
+        const rels = settings.beliefs.filter(b => b !== "universal");
+        extra =
+          " Based on your selected belief mode (" +
+          rels.join(", ") +
+          "), you can also reflect on the teachings of those traditions about compassion, patience, and responsibility.";
+      }
+
+      reactionEl.textContent = base + extra;
+      updateModeLabel();
+    }
+  </script>
 </body>
 </html>
