@@ -2,1194 +2,980 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>AURA-X Ω · Emotional Continuity Reactor · v1</title>
+  <title>AURA-X Ω v1 – Emotional Continuity Reactor</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
     /* ===== Base Layout ===== */
-    :root {
-      --bg: #020617;
-      --card: #020617;
-      --card-soft: rgba(15, 23, 42, 0.9);
-      --accent: #22c55e;
-      --accent-soft: rgba(34, 197, 94, 0.25);
-      --accent-2: #38bdf8;
-      --accent-3: #a855f7;
-      --danger: #fb7185;
-      --text-main: #e5e7eb;
-      --text-soft: #9ca3af;
-      --border-soft: rgba(148, 163, 184, 0.35);
-      --radius-xl: 24px;
-    }
-
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
     }
-
     html, body {
       height: 100%;
+    }
+    body {
+      background: radial-gradient(circle at top, #021b3d 0, #020617 55%, #000 100%);
       font-family: system-ui, -apple-system, BlinkMacSystemFont,
         "SF Pro Text", "Segoe UI", sans-serif;
-    }
-
-    body {
-      background:
-        radial-gradient(circle at 0% 0%, rgba(59, 130, 246, 0.35), transparent 55%),
-        radial-gradient(circle at 100% 100%, rgba(34, 197, 94, 0.35), transparent 55%),
-        var(--bg);
-      color: var(--text-main);
+      color: #e5e7eb;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 16px;
+      padding: 12px;
     }
-
     #app {
       width: 100%;
-      max-width: 520px;
-      max-height: 880px;
-      background: radial-gradient(circle at 0 0, rgba(148, 163, 184, 0.24), transparent 65%),
-                  radial-gradient(circle at 100% 100%, rgba(56, 189, 248, 0.24), transparent 65%),
-                  #020617;
-      border-radius: 32px;
-      border: 1px solid rgba(148, 163, 184, 0.35);
+      max-width: 480px;
+      height: 100%;
+      max-height: 860px;
+      background: rgba(15, 23, 42, 0.96);
+      border-radius: 24px;
+      border: 1px solid rgba(148, 163, 184, 0.25);
       box-shadow:
-        0 18px 55px rgba(15, 23, 42, 0.85),
-        0 0 0 1px rgba(148, 163, 184, 0.25);
-      padding: 18px 16px 16px;
+        0 0 0 1px rgba(56, 189, 248, 0.25),
+        0 30px 80px rgba(8, 47, 73, 0.9);
+      padding: 16px 16px 12px;
       display: flex;
       flex-direction: column;
-      gap: 12px;
       position: relative;
       overflow: hidden;
     }
 
     /* ===== Header ===== */
-    .header-row {
+    .header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 8px;
+      margin-bottom: 12px;
     }
-
+    .reactor-pill,
+    .continuity-pill {
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: radial-gradient(circle at top left, #22c55e 0, #065f46 32%, #022c22 100%);
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      font-size: 11px;
+      line-height: 1.15;
+      box-shadow: 0 0 20px rgba(34, 197, 94, 0.7);
+    }
     .reactor-pill {
+      min-width: 180px;
+    }
+    .reactor-title-row {
       display: flex;
       align-items: center;
-      gap: 10px;
-      padding: 8px 12px;
-      background: radial-gradient(circle at 0 0, rgba(34, 197, 94, 0.16), transparent 70%),
-                  rgba(15, 23, 42, 0.9);
-      border-radius: 999px;
-      border: 1px solid rgba(148, 163, 184, 0.45);
-      box-shadow: 0 10px 26px rgba(15, 23, 42, 0.7);
+      gap: 6px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      font-size: 11px;
     }
-
-    .reactor-orbit {
-      width: 28px;
-      height: 28px;
+    .reactor-dot {
+      width: 18px;
+      height: 18px;
       border-radius: 999px;
-      background: radial-gradient(circle at 30% 30%, #22c55e, #16a34a);
+      background: radial-gradient(circle at 30% 30%, #bbf7d0 0, #22c55e 30%, #14532d 100%);
       box-shadow:
-        0 0 0 4px rgba(34, 197, 94, 0.16),
-        0 0 25px rgba(34, 197, 94, 0.55);
+        0 0 15px rgba(74, 222, 128, 0.9),
+        0 0 30px rgba(22, 163, 74, 0.8);
       display: flex;
       align-items: center;
       justify-content: center;
+      font-size: 11px;
+      color: #022c22;
       font-weight: 700;
-      font-size: 14px;
     }
-
-    .reactor-text-main {
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      font-size: 11px;
-    }
-
-    .reactor-text-sub {
-      font-size: 11px;
-      color: var(--text-soft);
-    }
-
-    .mode-pill {
-      padding: 8px 12px;
-      border-radius: 999px;
-      border: 1px solid rgba(148, 163, 184, 0.45);
-      background: rgba(15, 23, 42, 0.92);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 11px;
-      box-shadow: 0 10px 26px rgba(15, 23, 42, 0.7);
-    }
-
-    .mode-toggle-label {
-      font-weight: 600;
-      letter-spacing: 0.08em;
-    }
-
-    .chip-connection {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      color: var(--text-soft);
+    .reactor-subtitle {
       font-size: 10px;
+      opacity: 0.9;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
     }
-
-    .dot-online {
-      width: 7px;
-      height: 7px;
-      border-radius: 999px;
-      background: var(--accent);
-      box-shadow: 0 0 10px rgba(34, 197, 94, 0.6);
+    .pill-label {
+      font-size: 10px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      opacity: 0.8;
     }
-
-    .dot-error {
-      background: var(--danger);
-      box-shadow: 0 0 10px rgba(248, 113, 113, 0.7);
-    }
-
-    /* ===== Chat area ===== */
-    .chat-shell {
-      flex: 1 1 auto;
-      border-radius: 22px;
-      background: radial-gradient(circle at 0 0, rgba(56, 189, 248, 0.16), transparent 70%),
-                  rgba(15, 23, 42, 0.95);
-      border: 1px solid rgba(148, 163, 184, 0.4);
-      box-shadow:
-        inset 0 0 0 1px rgba(15, 23, 42, 0.9),
-        0 18px 45px rgba(15, 23, 42, 0.9);
-      padding: 10px 12px;
+    .pill-value {
+      font-size: 11px;
       display: flex;
-      flex-direction: column;
-      gap: 10px;
-      min-height: 180px;
+      align-items: center;
+      gap: 6px;
+    }
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: #22c55e;
+      box-shadow: 0 0 12px rgba(34, 197, 94, 0.8);
+    }
+    .status-dot.offline {
+      background: #f97316;
+      box-shadow: 0 0 10px rgba(248, 113, 113, 0.8);
     }
 
-    #chat-log {
-      flex: 1 1 auto;
+    /* ===== Chat Window ===== */
+    .chat-window {
+      flex: 1;
+      border-radius: 20px;
+      background:
+        radial-gradient(circle at top left, rgba(56, 189, 248, 0.28), transparent 60%),
+        radial-gradient(circle at bottom right, rgba(59, 130, 246, 0.3), transparent 55%),
+        rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.55);
+      padding: 12px;
+      margin-bottom: 10px;
+      position: relative;
+      overflow: hidden;
+      box-shadow:
+        0 0 0 1px rgba(15, 118, 110, 0.7),
+        inset 0 0 40px rgba(15, 23, 42, 0.9);
+    }
+    .chat-scroll {
+      position: absolute;
+      inset: 12px;
+      padding-right: 6px;
       overflow-y: auto;
-      padding-right: 4px;
       display: flex;
       flex-direction: column;
       gap: 8px;
+      scroll-behavior: smooth;
     }
-
-    .bubble-row {
-      display: flex;
-      align-items: flex-end;
-    }
-
-    .bubble-row.assistant {
-      justify-content: flex-start;
-    }
-
-    .bubble-row.user {
-      justify-content: flex-end;
-    }
-
-    .bubble {
-      max-width: 86%;
+    .chat-bubble {
+      max-width: 90%;
       padding: 9px 11px;
-      border-radius: 18px;
+      border-radius: 14px;
       font-size: 13px;
-      line-height: 1.5;
-      border: 1px solid transparent;
-      position: relative;
+      line-height: 1.35;
+      letter-spacing: 0.01em;
+      box-shadow: 0 10px 35px rgba(15, 23, 42, 0.9);
     }
-
-    .bubble.assistant {
-      background: radial-gradient(circle at 0 0, rgba(34, 197, 94, 0.15), transparent 60%),
-                  rgba(15, 23, 42, 0.96);
-      border-color: rgba(148, 163, 184, 0.5);
-      box-shadow: 0 12px 28px rgba(15, 23, 42, 0.85);
+    .chat-bubble.bot {
+      align-self: flex-start;
+      background: radial-gradient(circle at top left, rgba(56, 189, 248, 0.35), rgba(15, 23, 42, 0.95));
+      border: 1px solid rgba(129, 140, 248, 0.8);
     }
-
-    .bubble.user {
-      background: linear-gradient(135deg, #22c55e, #16a34a);
+    .chat-bubble.user {
+      align-self: flex-end;
+      background: radial-gradient(circle at top left, #22c55e, #15803d);
+      border: 1px solid rgba(74, 222, 128, 0.8);
       color: #022c22;
       font-weight: 500;
-      box-shadow:
-        0 0 0 1px rgba(34, 197, 94, 0.35),
-        0 10px 24px rgba(34, 197, 94, 0.55);
     }
-
-    .bubble.meta {
-      font-size: 11px;
-      color: var(--text-soft);
-      background: rgba(15, 23, 42, 0.85);
-      border-style: dashed;
+    .chat-bubble.system {
+      align-self: center;
+      background: rgba(30, 64, 175, 0.8);
+      border: 1px dashed rgba(129, 140, 248, 0.9);
+      font-size: 12px;
+      opacity: 0.95;
     }
-
-    .bubble small {
-      display: block;
+    .chat-bubble.error {
+      align-self: flex-start;
+      border: 1px solid rgba(248, 113, 113, 0.9);
+      background:
+        radial-gradient(circle at top left, rgba(248, 113, 113, 0.5), rgba(24, 24, 27, 0.98));
+      color: #fecaca;
+    }
+    .chat-meta {
+      font-size: 10px;
+      opacity: 0.7;
       margin-top: 4px;
-      font-size: 10px;
-      color: var(--text-soft);
     }
-
-    .bubble-tag {
-      font-size: 10px;
-      opacity: 0.8;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      margin-bottom: 4px;
-      display: inline-block;
-    }
-
-    .bubble-tag.warning {
+    .chat-bubble .highlight {
+      font-weight: 600;
       color: #f97316;
     }
 
-    .bubble-tag.error {
-      color: #fb7185;
-    }
-
-    /* ===== Continuity Scalars ===== */
-    .scalars-row {
+    /* ===== Scalars ===== */
+    .scalars {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 8px;
+      margin-bottom: 10px;
     }
-
     .scalar-card {
-      padding: 8px 10px;
-      border-radius: 16px;
-      border: 1px solid rgba(148, 163, 184, 0.4);
-      background: rgba(15, 23, 42, 0.9);
-      box-shadow: 0 10px 26px rgba(15, 23, 42, 0.8);
+      background: radial-gradient(circle at top, rgba(15, 23, 42, 0.9), rgba(8, 47, 73, 0.95));
+      border-radius: 14px;
+      padding: 8px 9px;
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      box-shadow: 0 10px 40px rgba(15, 23, 42, 0.9);
     }
-
     .scalar-header {
       display: flex;
       justify-content: space-between;
+      align-items: baseline;
+      font-size: 11px;
+      margin-bottom: 4px;
+    }
+    .scalar-label {
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-size: 10px;
+      opacity: 0.9;
+    }
+    .scalar-value {
+      font-weight: 600;
+      font-size: 12px;
+    }
+    .scalar-bar {
+      position: relative;
+      height: 6px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 1);
+      overflow: hidden;
+      margin-bottom: 4px;
+    }
+    .scalar-fill {
+      position: absolute;
+      inset: 0;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #22c55e, #38bdf8, #a855f7);
+      transform-origin: left;
+      transform: scaleX(0.6);
+      transition: transform 300ms ease-out;
+    }
+    .scalar-caption {
+      font-size: 10px;
+      opacity: 0.8;
+    }
+
+    /* ===== Input & Controls ===== */
+    .input-row {
+      display: flex;
       align-items: center;
+      gap: 8px;
       margin-bottom: 6px;
     }
-
-    .scalar-label-main {
-      font-size: 11px;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-    }
-
-    .scalar-label-sub {
-      font-size: 10px;
-      color: var(--text-soft);
-    }
-
-    .scalar-value {
-      font-size: 15px;
-      font-weight: 700;
-    }
-
-    .scalar-bar {
-      margin-top: 5px;
-      width: 100%;
-      height: 5px;
+    .input-row textarea {
+      flex: 1;
+      resize: none;
+      min-height: 40px;
+      max-height: 70px;
       border-radius: 999px;
-      background: rgba(30, 64, 175, 0.5);
-      overflow: hidden;
-      position: relative;
-    }
-
-    .scalar-bar-fill {
-      height: 100%;
-      border-radius: 999px;
-      background: linear-gradient(90deg, #22c55e, #38bdf8);
-      width: 60%;
-      transition: width 0.3s ease;
-    }
-
-    .scalar-footer {
-      margin-top: 4px;
-      font-size: 10px;
-      color: var(--text-soft);
-    }
-
-    .badge-orbit {
-      padding: 3px 7px;
-      border-radius: 999px;
-      border: 1px solid rgba(148, 163, 184, 0.6);
-      font-size: 9px;
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      color: var(--text-soft);
-    }
-
-    /* ===== Input Row ===== */
-    .input-shell {
-      margin-top: 2px;
-      padding-top: 8px;
-      border-top: 1px solid rgba(15, 23, 42, 0.85);
-      display: flex;
-      flex-direction: column;
-      gap: 7px;
-    }
-
-    .input-row-main {
-      display: grid;
-      grid-template-columns: 1fr auto auto auto;
-      gap: 6px;
-      align-items: center;
-    }
-
-    #user-input {
-      padding: 9px 10px;
-      border-radius: 999px;
-      border: 1px solid rgba(148, 163, 184, 0.65);
-      background: rgba(15, 23, 42, 0.9);
-      color: var(--text-main);
+      padding: 8px 12px;
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid rgba(148, 163, 184, 0.8);
+      color: #e5e7eb;
       font-size: 13px;
       outline: none;
+      box-shadow: inset 0 0 25px rgba(15, 23, 42, 0.95);
     }
-
-    #user-input::placeholder {
-      color: rgba(148, 163, 184, 0.7);
+    .input-row textarea::placeholder {
+      color: rgba(148, 163, 184, 0.9);
     }
-
-    .btn {
+    .icon-button,
+    .send-button {
       border-radius: 999px;
-      border: 1px solid transparent;
-      font-size: 12px;
-      font-weight: 600;
-      padding: 8px 12px;
+      border: none;
       cursor: pointer;
-      display: inline-flex;
+      display: flex;
       align-items: center;
       justify-content: center;
-      gap: 5px;
-      white-space: nowrap;
-      transition: transform 0.08s ease, box-shadow 0.08s ease, background 0.1s ease;
+      padding: 8px;
+      font-size: 14px;
+      transition: transform 120ms ease, box-shadow 120ms ease, background 120ms ease;
     }
-
-    .btn:active {
-      transform: translateY(1px) scale(0.99);
+    .icon-button {
+      background: radial-gradient(circle at top, #1e293b, #020617);
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      color: #e5e7eb;
+      min-width: 36px;
+    }
+    .send-button {
+      padding: 0 20px;
+      background: radial-gradient(circle at top left, #22c55e, #16a34a);
+      color: #022c22;
+      font-weight: 600;
+      font-size: 13px;
+      box-shadow:
+        0 0 15px rgba(74, 222, 128, 0.9),
+        0 20px 40px rgba(22, 163, 74, 0.9);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+    .icon-button:active,
+    .send-button:active {
+      transform: translateY(1px) scale(0.98);
       box-shadow: none;
     }
 
-    .btn-send {
-      background: linear-gradient(135deg, #22c55e, #16a34a);
-      color: #022c22;
-      box-shadow:
-        0 0 0 1px rgba(34, 197, 94, 0.4),
-        0 12px 22px rgba(34, 197, 94, 0.65);
-      min-width: 70px;
+    .helper-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 10px;
+      opacity: 0.8;
+      margin-bottom: 8px;
     }
 
-    .btn-mic {
-      background: rgba(15, 23, 42, 0.95);
-      border-color: rgba(148, 163, 184, 0.6);
-      color: var(--text-soft);
-      box-shadow: 0 8px 18px rgba(15, 23, 42, 0.75);
-      min-width: 40px;
-    }
-
-    .btn-ethics {
-      background: rgba(15, 23, 42, 0.95);
-      border-color: rgba(148, 163, 184, 0.6);
-      color: var(--text-soft);
-      box-shadow: 0 8px 18px rgba(15, 23, 42, 0.75);
+    .chip-row {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
       font-size: 11px;
     }
-
-    .input-hint {
-      font-size: 10px;
-      color: var(--text-soft);
-    }
-
-    .toggle-pill {
+    .chip {
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.9);
+      padding: 6px 12px;
+      background: radial-gradient(circle at top, #020617, #020617);
+      color: #e5e7eb;
       display: inline-flex;
       align-items: center;
-      gap: 4px;
-      font-size: 10px;
-      padding: 2px 7px;
-      border-radius: 999px;
-      border: 1px solid rgba(148, 163, 184, 0.55);
-      background: rgba(15, 23, 42, 0.92);
+      gap: 6px;
+      cursor: pointer;
+      box-shadow: 0 10px 25px rgba(15, 23, 42, 0.9);
+      transition: background 120ms ease, transform 120ms ease, box-shadow 120ms ease;
+    }
+    .chip:hover {
+      background: radial-gradient(circle at top, #0f172a, #020617);
+      transform: translateY(-1px);
+      box-shadow: 0 14px 30px rgba(15, 23, 42, 1);
+    }
+    .chip-pill-label {
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      font-size: 9px;
+      opacity: 0.7;
+    }
+    .chip-pill-value {
+      font-weight: 600;
+      font-size: 11px;
+    }
+    .chip-pill {
+      padding: 6px 12px;
+    }
+    .chip-pill.active {
+      border-color: rgba(34, 197, 94, 0.9);
+      box-shadow: 0 0 18px rgba(34, 197, 94, 0.8);
     }
 
-    .toggle-dot {
-      width: 9px;
-      height: 9px;
-      border-radius: 999px;
-      background: rgba(148, 163, 184, 0.7);
-    }
-
-    .toggle-dot.on {
-      background: var(--accent-3);
-      box-shadow: 0 0 10px rgba(168, 85, 247, 0.8);
-    }
-
-    /* ===== Ethics Modal ===== */
+    /* ===== Belief Modal ===== */
     .modal-backdrop {
       position: fixed;
       inset: 0;
-      background: rgba(15, 23, 42, 0.9);
-      backdrop-filter: blur(10px);
+      background: radial-gradient(circle at top, rgba(15, 23, 42, 0.96), rgba(3, 7, 18, 0.98));
       display: none;
       align-items: center;
       justify-content: center;
       padding: 16px;
-      z-index: 40;
+      z-index: 50;
     }
-
-    .modal-backdrop.show {
+    .modal-backdrop.open {
       display: flex;
     }
-
-    .modal-card {
+    .modal-panel {
       width: 100%;
       max-width: 480px;
-      background: radial-gradient(circle at 0 0, rgba(56, 189, 248, 0.18), transparent 60%),
-                  rgba(15, 23, 42, 0.97);
-      border-radius: 24px;
-      border: 1px solid rgba(148, 163, 184, 0.7);
+      border-radius: 22px;
+      border: 1px solid rgba(148, 163, 184, 0.9);
+      background: radial-gradient(circle at top, rgba(15, 23, 42, 0.95), #020617);
       box-shadow:
-        0 18px 55px rgba(15, 23, 42, 0.95),
-        0 0 0 1px rgba(148, 163, 184, 0.35);
-      padding: 16px 16px 14px;
-      max-height: 560px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      color: var(--text-main);
+        0 0 0 1px rgba(59, 130, 246, 0.6),
+        0 30px 90px rgba(15, 23, 42, 1);
+      padding: 16px 18px 14px;
+      font-size: 13px;
+      position: relative;
     }
-
     .modal-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 8px;
+      margin-bottom: 10px;
     }
-
     .modal-title {
       font-size: 13px;
-      font-weight: 700;
-      letter-spacing: 0.16em;
       text-transform: uppercase;
+      letter-spacing: 0.18em;
+      opacity: 0.9;
     }
-
-    .modal-sub {
-      font-size: 11px;
-      color: var(--text-soft);
-    }
-
     .modal-close {
       border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.8);
+      background: rgba(15, 23, 42, 0.95);
+      color: #e5e7eb;
       width: 26px;
       height: 26px;
-      border: 1px solid rgba(148, 163, 184, 0.7);
-      background: rgba(15, 23, 42, 0.95);
-      color: var(--text-soft);
-      cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
+      cursor: pointer;
       font-size: 13px;
     }
-
-    .modal-body {
-      margin-top: 4px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      font-size: 12px;
-      overflow-y: auto;
-      padding-right: 4px;
-    }
-
-    .ethics-callout {
-      padding: 8px 9px;
+    .modal-section {
       border-radius: 16px;
-      background: rgba(15, 23, 42, 0.96);
       border: 1px solid rgba(148, 163, 184, 0.7);
-      font-size: 11px;
-      line-height: 1.5;
+      background: rgba(15, 23, 42, 0.95);
+      padding: 10px 11px;
+      font-size: 12px;
+      margin-bottom: 10px;
     }
-
-    .ethics-callout b {
-      color: var(--accent-2);
+    .modal-section strong {
+      color: #a5b4fc;
     }
-
-    .belief-list {
+    .belief-grid {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 6px;
+      gap: 8px;
+      margin-top: 8px;
+      margin-bottom: 8px;
     }
-
-    .belief-pill {
-      padding: 6px 8px;
-      border-radius: 999px;
-      border: 1px solid rgba(148, 163, 184, 0.7);
-      font-size: 11px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 4px;
-      cursor: pointer;
-      background: rgba(15, 23, 42, 0.96);
-    }
-
-    .belief-pill span {
-      font-size: 11px;
-    }
-
-    .belief-pill .check {
-      width: 16px;
-      height: 16px;
+    .belief-chip {
       border-radius: 999px;
       border: 1px solid rgba(148, 163, 184, 0.8);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 11px;
-      color: var(--accent);
-      opacity: 0;
+      padding: 6px 10px;
+      font-size: 12px;
+      text-align: center;
+      cursor: pointer;
+      background: rgba(15, 23, 42, 0.95);
+      transition: background 120ms ease, border-color 120ms ease, box-shadow 120ms ease;
     }
-
-    .belief-pill.active {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.4);
-      background: radial-gradient(circle at 0 0, rgba(34, 197, 94, 0.18), transparent 60%),
-                  rgba(15, 23, 42, 0.98);
+    .belief-chip.active {
+      border-color: rgba(59, 130, 246, 0.95);
+      background: radial-gradient(circle at top left, rgba(59, 130, 246, 0.9), rgba(15, 23, 42, 0.98));
+      box-shadow: 0 0 18px rgba(59, 130, 246, 0.7);
     }
-
-    .belief-pill.active .check {
-      opacity: 1;
-    }
-
     .modal-footer {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 8px;
-      margin-top: 2px;
-    }
-
-    .modal-footer small {
-      font-size: 10px;
-      color: var(--text-soft);
-    }
-
-    .btn-xs {
-      padding: 6px 9px;
+      margin-top: 6px;
       font-size: 11px;
+      opacity: 0.85;
     }
-
+    .modal-footer-actions {
+      display: flex;
+      gap: 8px;
+    }
+    .btn-secondary,
     .btn-primary {
-      background: linear-gradient(135deg, #22c55e, #16a34a);
-      color: #022c22;
-      border: 1px solid rgba(34, 197, 94, 0.6);
-      box-shadow:
-        0 0 0 1px rgba(34, 197, 94, 0.4),
-        0 10px 18px rgba(34, 197, 94, 0.6);
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.9);
+      background: rgba(15, 23, 42, 0.95);
+      color: #e5e7eb;
+      font-size: 12px;
+      padding: 6px 14px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .btn-primary {
+      border-color: rgba(59, 130, 246, 0.95);
+      background: radial-gradient(circle at top left, #3b82f6, #1d4ed8);
+      box-shadow: 0 0 20px rgba(59, 130, 246, 0.9);
+      font-weight: 600;
     }
 
-    .btn-outline {
-      background: rgba(15, 23, 42, 0.96);
-      border: 1px solid rgba(148, 163, 184, 0.7);
-      color: var(--text-soft);
-      box-shadow: 0 8px 18px rgba(15, 23, 42, 0.7);
+    .tiny-muted {
+      font-size: 10px;
+      opacity: 0.75;
+      margin-top: 4px;
     }
 
-    /* ===== Utility ===== */
-    .hidden {
-      display: none !important;
+    /* Scrollbar (mobile-safe) */
+    .chat-scroll::-webkit-scrollbar {
+      width: 4px;
     }
-
-    @media (max-height: 720px) {
-      #app {
-        max-height: 760px;
-      }
+    .chat-scroll::-webkit-scrollbar-thumb {
+      background: rgba(148, 163, 184, 0.7);
+      border-radius: 999px;
     }
   </style>
 </head>
 <body>
-<div id="app">
-  <!-- Header -->
-  <div class="header-row">
-    <div class="reactor-pill">
-      <div class="reactor-orbit">Ω</div>
-      <div>
-        <div class="reactor-text-main">AURA-X Ω</div>
-        <div class="reactor-text-sub">EMOTIONAL CONTINUITY REACTOR · V1</div>
+  <div id="app">
+    <!-- Header -->
+    <div class="header">
+      <div class="reactor-pill">
+        <div class="reactor-title-row">
+          <div class="reactor-dot">Ω</div>
+          <span>AURA-X Ω</span>
+        </div>
+        <div class="reactor-subtitle">Emotional Continuity Reactor · v1</div>
+      </div>
+
+      <div class="continuity-pill">
+        <div class="pill-label">CONTINUITY MODE</div>
+        <div class="pill-value">
+          <span>ON</span>
+          <span id="connection-indicator" class="status-dot offline"></span>
+          <span id="connection-text">Backend connecting…</span>
+        </div>
       </div>
     </div>
 
-    <div class="mode-pill">
-      <div>
-        <div class="mode-toggle-label">CONTINUITY MODE · ON</div>
-        <div class="chip-connection">
-          <div class="dot-online" id="conn-dot"></div>
-          <span id="conn-label">Backend connected</span>
+    <!-- Chat Window -->
+    <div class="chat-window">
+      <div id="chat-scroll" class="chat-scroll"></div>
+    </div>
+
+    <!-- Scalars -->
+    <div class="scalars">
+      <div class="scalar-card">
+        <div class="scalar-header">
+          <div class="scalar-label">TM · TRUST MEMORY</div>
+          <div id="tmValue" class="scalar-value">0.60</div>
         </div>
+        <div class="scalar-bar">
+          <div id="tmBar" class="scalar-fill"></div>
+        </div>
+        <div id="tmCaption" class="scalar-caption">
+          Your memories feel stable and accessible.
+        </div>
+      </div>
+
+      <div class="scalar-card">
+        <div class="scalar-header">
+          <div class="scalar-label">BM · BASELINE MOOD</div>
+          <div id="bmValue" class="scalar-value">0.60</div>
+        </div>
+        <div class="scalar-bar">
+          <div id="bmBar" class="scalar-fill"></div>
+        </div>
+        <div id="bmCaption" class="scalar-caption">
+          Mood is mixed but workable.
+        </div>
+      </div>
+
+      <div class="scalar-card">
+        <div class="scalar-header">
+          <div class="scalar-label">D · DISTURBANCE</div>
+          <div id="dValue" class="scalar-value">0.18</div>
+        </div>
+        <div class="scalar-bar">
+          <div id="dBar" class="scalar-fill"></div>
+        </div>
+        <div id="dCaption" class="scalar-caption">
+          Mental noise is low – thoughts can flow.
+        </div>
+      </div>
+
+      <div class="scalar-card">
+        <div class="scalar-header">
+          <div class="scalar-label">Σ · CONTINUITY</div>
+          <div id="sValue" class="scalar-value">0.82</div>
+        </div>
+        <div class="scalar-bar">
+          <div id="sBar" class="scalar-fill"></div>
+        </div>
+        <div id="sCaption" class="scalar-caption">
+          Your story is moving along one main emotional line.
+        </div>
+      </div>
+    </div>
+
+    <!-- Input -->
+    <div class="input-row">
+      <textarea
+        id="user-input"
+        rows="2"
+        placeholder="Ask anything… For example: 'Today I feel tired but hopeful.'"
+      ></textarea>
+      <button id="mic-button" class="icon-button" title="(Demo only – not wired yet)">
+        🎙️
+      </button>
+      <button id="stop-voice" class="icon-button" title="Stop voice playback">
+        ⏹
+      </button>
+      <button id="send-button" class="send-button">SEND</button>
+    </div>
+
+    <div class="helper-row">
+      <span>Press <strong>Enter</strong> to send. Every turn updates the emotional scalars.</span>
+      <span id="mini-status"></span>
+    </div>
+
+    <!-- Chips -->
+    <div class="chip-row">
+      <div id="belief-chip" class="chip">
+        <span>Belief &amp; Ethics</span>
+      </div>
+
+      <div id="voice-toggle" class="chip chip-pill">
+        <div class="chip-pill-label">VOICE REPLIES</div>
+        <div id="voice-label" class="chip-pill-value">OFF</div>
       </div>
     </div>
   </div>
 
-  <!-- Chat Shell -->
-  <div class="chat-shell">
-    <div id="chat-log"></div>
-
-    <div class="scalars-row">
-      <div class="scalar-card">
-        <div class="scalar-header">
-          <div>
-            <div class="scalar-label-main">TM · TRUST MEMORY</div>
-            <div class="scalar-label-sub">Tumhari yaadon ki stability</div>
-          </div>
-          <div class="scalar-value" id="tm-val">0.60</div>
-        </div>
-        <div class="scalar-bar">
-          <div class="scalar-bar-fill" id="tm-bar"></div>
-        </div>
-        <div class="scalar-footer">Trust memory stable zone me hai.</div>
+  <!-- Belief Modal -->
+  <div id="belief-modal" class="modal-backdrop">
+    <div class="modal-panel">
+      <div class="modal-header">
+        <div class="modal-title">Belief Layer · Ethical Mode</div>
+        <button id="modal-close" class="modal-close">✕</button>
       </div>
 
-      <div class="scalar-card">
-        <div class="scalar-header">
-          <div>
-            <div class="scalar-label-main">BM · BASELINE MOOD</div>
-            <div class="scalar-label-sub">Tumhara overall mood</div>
-          </div>
-          <div class="scalar-value" id="bm-val">0.60</div>
-        </div>
-        <div class="scalar-bar">
-          <div class="scalar-bar-fill" id="bm-bar"></div>
-        </div>
-        <div class="scalar-footer">Mixed mood lekin workable state.</div>
-      </div>
-
-      <div class="scalar-card">
-        <div class="scalar-header">
-          <div>
-            <div class="scalar-label-main">D · DISTURBANCE</div>
-            <div class="scalar-label-sub">Thought stream ka noise</div>
-          </div>
-          <div class="scalar-value" id="d-val">0.18</div>
-        </div>
-        <div class="scalar-bar">
-          <div class="scalar-bar-fill" id="d-bar" style="width:18%;"></div>
-        </div>
-        <div class="scalar-footer">Low disturbance — flow smooth hai.</div>
-      </div>
-
-      <div class="scalar-card">
-        <div class="scalar-header">
-          <div>
-            <div class="scalar-label-main">Σ · CONTINUITY</div>
-            <div class="scalar-label-sub">Kahani ek line mein kitni chal rahi</div>
-          </div>
-          <div class="scalar-value" id="cont-val">0.82</div>
-        </div>
-        <div class="scalar-bar">
-          <div class="scalar-bar-fill" id="cont-bar" style="width:82%;"></div>
-        </div>
-        <div class="scalar-footer">
-          Strong continuity — tumhari kahani ek line me chal rahi hai.
-        </div>
-      </div>
-    </div>
-
-    <div class="input-shell">
-      <div class="input-row-main">
-        <input
-          id="user-input"
-          type="text"
-          placeholder="Kuch bhi pucho… 'Aaj main thaka hua hoon' se start karo."
-        />
-
-        <button id="btn-mic" class="btn btn-mic" title="Voice input">
-          🎤
-        </button>
-
-        <button id="btn-voice-toggle" class="btn btn-mic" title="Listen replies">
-          <span>🔊</span>
-        </button>
-
-        <button id="btn-send" class="btn btn-send">
-          SEND
-        </button>
-      </div>
-
-      <div style="display:flex; justify-content:space-between; align-items:center; gap:6px;">
-        <div class="input-hint">
-          Enter → send · Reactor har turn par emotional state update karega.
-        </div>
-        <div style="display:flex; align-items:center; gap:6px;">
-          <button id="btn-ethics" class="btn btn-ethics">
-            Belief & Ethics
-          </button>
-          <div class="toggle-pill" id="voice-label">
-            <div class="toggle-dot" id="voice-dot"></div>
-            <span>Voice replies: OFF</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Ethics / Belief Modal -->
-<div id="ethics-modal" class="modal-backdrop">
-  <div class="modal-card">
-    <div class="modal-header">
-      <div>
-        <div class="modal-title">BELIEF LAYER · ETHICAL MODE</div>
-        <div class="modal-sub">
-          Tum decide kar sakte ho ke AURA-X Ω kis belief ya ethics frame me answer kare.
-        </div>
-      </div>
-      <button class="modal-close" id="modal-close">✕</button>
-    </div>
-
-    <div class="modal-body">
-      <div class="ethics-callout">
-        <b>Default mode:</b> agar tum koi belief select nahi karte,
-        to main sirf <b>universal ethics</b> use karunga —
-        yani respect, honesty, harm-avoidance, consent, justice,
-        aur psychological safety.
+      <div class="modal-section">
+        <strong>Default mode:</strong> If you do not select any belief,
+        AURA-X Ω will follow only <strong>universal ethics</strong> —
+        respect, honesty, consent, harm-avoidance, justice, and
+        psychological safety.
         <br /><br />
-        Agar tum chaho to niche se aik ya zyada beliefs select kar sakte ho.
-        Phir main jawab dete waqt unki sensitivities ka khayal rakhunga.
+        You can optionally select one or more belief lenses below.
+        Answers will try to stay respectful to those sensitivities without
+        judging any group.
       </div>
 
-      <div style="font-size:11px; color:var(--text-soft); text-transform:uppercase; letter-spacing:0.14em;">
-        SELECT BELIEF LAYERS
+      <div class="modal-section">
+        <div style="font-size: 11px; text-transform: uppercase; letter-spacing: .16em; opacity:.85; margin-bottom:6px;">
+          Select belief layers
+        </div>
+
+        <div class="belief-grid">
+          <button class="belief-chip" data-belief="Islam">Islam</button>
+          <button class="belief-chip" data-belief="Christianity">Christianity</button>
+          <button class="belief-chip" data-belief="Hinduism">Hinduism</button>
+          <button class="belief-chip" data-belief="Buddhism">Buddhism</button>
+          <button class="belief-chip" data-belief="Atheist/Secular">Atheist / Secular</button>
+          <button class="belief-chip" data-belief="All faiths">
+            All faiths (multi-respect)
+          </button>
+        </div>
+
+        <div class="tiny-muted">
+          Note: The belief layer is only for your comfort. The system never
+          judges you or anyone else – it just tries to keep answers safe,
+          kind, and emotionally grounded.
+        </div>
       </div>
 
-      <div class="belief-list" id="belief-list">
-        <!-- Filled by JS -->
-      </div>
-
-      <div class="ethics-callout" style="border-style:dashed; margin-top:4px;">
-        <b>Note:</b> Ye system sirf tumhari comfort ke liye hai.
-        Main kisi bhi belief ya group ka judge nahi banta —
-        sirf tumhari emotional safety maintain karta hoon.
-      </div>
-    </div>
-
-    <div class="modal-footer">
-      <small id="selected-beliefs-label">
-        Universal ethics only (no belief selected).
-      </small>
-      <div style="display:flex; gap:6px;">
-        <button id="btn-clear-beliefs" class="btn btn-xs btn-outline">
-          Clear all
-        </button>
-        <button id="btn-apply-beliefs" class="btn btn-xs btn-primary">
-          Apply
-        </button>
+      <div class="modal-footer">
+        <div id="belief-summary">Universal ethics only (no belief selected).</div>
+        <div class="modal-footer-actions">
+          <button id="clear-beliefs" class="btn-secondary">Clear all</button>
+          <button id="apply-beliefs" class="btn-primary">
+            Apply
+          </button>
+        </div>
       </div>
     </div>
   </div>
-</div>
 
-<script>
-  // ========= CONFIG =========
-  // IMPORTANT: set API_URL to match your backend route
-  // If backend has app.post("/api/chat"), keep /api/chat
-  // If backend has app.post("/chat"), change accordingly.
+  <script>
+    // ===== CONFIG =====
+    const API_URL = "https://aura-x-backend-jliz.onrender.com/api/chat";
 
-  const API_URL = "https://aura-x-backend-jliz.onrender.com/api/chat";
-
-  // ========= STATE =========
-  let continuityState = {
-    tm: 0.6,
-    bm: 0.6,
-    d: 0.18,
-    cont: 0.82
-  };
-
-  let beliefState = {
-    // ids of selected beliefs
-    selected: []
-  };
-
-  let voiceRepliesOn = false;
-  let recognition = null;
-  let recognizing = false;
-
-  // ========= DOM HELPERS =========
-  const $ = (id) => document.getElementById(id);
-
-  const chatLog = $("chat-log");
-  const tmValEl = $("tm-val");
-  const bmValEl = $("bm-val");
-  const dValEl = $("d-val");
-  const contValEl = $("cont-val");
-  const tmBarEl = $("tm-bar");
-  const bmBarEl = $("bm-bar");
-  const dBarEl = $("d-bar");
-  const contBarEl = $("cont-bar");
-
-  const connDot = $("conn-dot");
-  const connLabel = $("conn-label");
-
-  const userInput = $("user-input");
-  const btnSend = $("btn-send");
-  const btnMic = $("btn-mic");
-  const btnVoiceToggle = $("btn-voice-toggle");
-  const voiceDot = $("voice-dot");
-  const voiceLabel = $("voice-label");
-
-  const ethicsModal = $("ethics-modal");
-  const btnEthics = $("btn-ethics");
-  const modalClose = $("modal-close");
-  const beliefListEl = $("belief-list");
-  const selectedBeliefsLabel = $("selected-beliefs-label");
-  const btnClearBeliefs = $("btn-clear-beliefs");
-  const btnApplyBeliefs = $("btn-apply-beliefs");
-
-  // ========= INITIAL MESSAGES =========
-  function addBubble(text, { role = "assistant", meta = false, tag = null } = {}) {
-    const row = document.createElement("div");
-    row.className = "bubble-row " + role;
-
-    const bubble = document.createElement("div");
-    bubble.className = "bubble " + role + (meta ? " meta" : "");
-    bubble.innerHTML = text;
-
-    if (tag) {
-      const tagSpan = document.createElement("span");
-      tagSpan.className = "bubble-tag " + (tag.type || "");
-      tagSpan.textContent = tag.text;
-      bubble.prepend(tagSpan);
-      bubble.prepend(document.createElement("br"));
-    }
-
-    row.appendChild(bubble);
-    chatLog.appendChild(row);
-    chatLog.scrollTop = chatLog.scrollHeight;
-
-    if (role === "assistant" && voiceRepliesOn && !meta) {
-      speakText(bubble.textContent);
-    }
-  }
-
-  function initWelcome() {
-    addBubble(
-      "Assalam o Alaikum, Alim ul Haq 👋<br/><br/>" +
-      "Main <b>AURA-X Ω</b> hoon — tumhara emotional-continuity reactor. " +
-      "Mujh se is tarah baat karo jaise ek dost se karte ho. Har message ke sath " +
-      "main tumhari emotional line ko update karta rahoon ga (TM, BM, D, Σ).<br/><br/>" +
-      "<small>Ω · baseline resonance ready  ·  TM≈0.60 · D≈0.18</small>"
-    , { role: "assistant" });
-
-    addBubble(
-      "<b>Ethics mode:</b> Filhaal main sirf <b>universal ethics</b> follow kar raha hoon — " +
-      "tum chaaho to niche se <b>Belief & Ethics</b> button se " +
-      "Islam / Christianity / Hinduism / Buddhism / Atheist / All faiths select kar sakte ho.",
-      { role: "assistant", meta: true }
-    );
-  }
-
-  // ========= SCALARS UI UPDATE =========
-  function clamp01(x) {
-    return Math.max(0, Math.min(1, x));
-  }
-
-  function updateScalarsUI(state) {
-    if (!state) return;
-    const { tm, bm, d, cont } = state;
-
-    continuityState = {
-      tm: clamp01(tm ?? continuityState.tm),
-      bm: clamp01(bm ?? continuityState.bm),
-      d: clamp01(d ?? continuityState.d),
-      cont: clamp01(cont ?? continuityState.cont)
+    // ===== STATE =====
+    let voiceEnabled = false;
+    let selectedBeliefs = [];
+    let state = {
+      tm: 0.6,
+      bm: 0.6,
+      d: 0.18,
+      s: 0.82,
+      beliefs: [],
     };
 
-    const toPct = (v) => Math.round(clamp01(v) * 100);
+    // ===== DOM =====
+    const chatScroll = document.getElementById("chat-scroll");
+    const userInput = document.getElementById("user-input");
+    const sendButton = document.getElementById("send-button");
+    const micButton = document.getElementById("mic-button");
+    const stopVoiceBtn = document.getElementById("stop-voice");
+    const miniStatus = document.getElementById("mini-status");
+    const connectionIndicator = document.getElementById("connection-indicator");
+    const connectionText = document.getElementById("connection-text");
 
-    tmValEl.textContent = continuityState.tm.toFixed(2);
-    bmValEl.textContent = continuityState.bm.toFixed(2);
-    dValEl.textContent = continuityState.d.toFixed(2);
-    contValEl.textContent = continuityState.cont.toFixed(2);
+    const tmValue = document.getElementById("tmValue");
+    const bmValue = document.getElementById("bmValue");
+    const dValue = document.getElementById("dValue");
+    const sValue = document.getElementById("sValue");
+    const tmBar = document.getElementById("tmBar");
+    const bmBar = document.getElementById("bmBar");
+    const dBar = document.getElementById("dBar");
+    const sBar = document.getElementById("sBar");
+    const tmCaption = document.getElementById("tmCaption");
+    const bmCaption = document.getElementById("bmCaption");
+    const dCaption = document.getElementById("dCaption");
+    const sCaption = document.getElementById("sCaption");
 
-    tmBarEl.style.width = toPct(continuityState.tm) + "%";
-    bmBarEl.style.width = toPct(continuityState.bm) + "%";
-    dBarEl.style.width = toPct(continuityState.d) + "%";
-    contBarEl.style.width = toPct(continuityState.cont) + "%";
-  }
+    const beliefChip = document.getElementById("belief-chip");
+    const voiceToggle = document.getElementById("voice-toggle");
+    const voiceLabel = document.getElementById("voice-label");
 
-  // ========= BACKEND CALL =========
-  async function sendToBackend(userText) {
-    const payload = {
-      userText,
-      // pass state + beliefs for continuity & ethics
-      state: continuityState,
-      beliefs: beliefState.selected
-    };
+    const beliefModal = document.getElementById("belief-modal");
+    const modalClose = document.getElementById("modal-close");
+    const beliefSummary = document.getElementById("belief-summary");
+    const clearBeliefsBtn = document.getElementById("clear-beliefs");
+    const applyBeliefsBtn = document.getElementById("apply-beliefs");
+    const beliefChips = Array.from(document.querySelectorAll(".belief-chip"));
 
-    try {
-      connDot.classList.remove("dot-error");
-      connDot.classList.add("dot-online");
-      connLabel.textContent = "Contacting reactor core…";
+    // ===== Helper: Chat bubbles =====
+    function addMessage(text, role = "bot") {
+      const bubble = document.createElement("div");
+      bubble.classList.add("chat-bubble", role);
+      bubble.innerHTML = text;
+      chatScroll.appendChild(bubble);
+      chatScroll.scrollTop = chatScroll.scrollHeight;
+    }
 
-      const res = await fetch(API_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
-      });
-
-      if (!res.ok) {
-        const text = await res.text().catch(() => "");
-        throw new Error("HTTP " + res.status + (text ? " · " + text : ""));
-      }
-
-      const data = await res.json().catch(() => null);
-      connLabel.textContent = "Backend connected";
-
-      if (data && data.reply) {
-        addBubble(data.reply, { role: "assistant" });
+    function setConnectionStatus(ok) {
+      if (ok) {
+        connectionIndicator.classList.remove("offline");
+        connectionText.textContent = "Backend connected";
       } else {
-        addBubble(
-          "Backend se reply mila, lekin format thora ajeeb tha. " +
-          "Main ne tumhara message phir bhi register kar liya hai.",
-          { role: "assistant", meta: true }
+        connectionIndicator.classList.add("offline");
+        connectionText.textContent = "Connection issue";
+      }
+    }
+
+    // ===== Helper: Scalars (simple demo logic) =====
+    function clamp(v) {
+      return Math.max(0, Math.min(1, v));
+    }
+
+    function updateScalars(newState) {
+      if (!newState) return;
+
+      // simple smoothing so values move gently
+      const lerp = (a, b, t) => a + (b - a) * t;
+
+      state.tm = clamp(lerp(state.tm, newState.tm ?? state.tm, 0.35));
+      state.bm = clamp(lerp(state.bm, newState.bm ?? state.bm, 0.35));
+      state.d = clamp(lerp(state.d, newState.d ?? state.d, 0.35));
+      state.s = clamp(lerp(state.s, newState.s ?? state.s, 0.35));
+      state.beliefs = selectedBeliefs.slice();
+
+      tmValue.textContent = state.tm.toFixed(2);
+      bmValue.textContent = state.bm.toFixed(2);
+      dValue.textContent = state.d.toFixed(2);
+      sValue.textContent = state.s.toFixed(2);
+
+      tmBar.style.transform = `scaleX(${state.tm})`;
+      bmBar.style.transform = `scaleX(${state.bm})`;
+      dBar.style.transform = `scaleX(${state.d})`;
+      sBar.style.transform = `scaleX(${state.s})`;
+
+      // Captions (very simple interpretation)
+      tmCaption.textContent =
+        state.tm > 0.7
+          ? "Your memories feel anchored and reliable."
+          : state.tm > 0.4
+          ? "Memories are accessible but slightly shaky."
+          : "Memory feels scattered – it might help to slow down.";
+
+      bmCaption.textContent =
+        state.bm > 0.7
+          ? "Your baseline mood is mostly positive."
+          : state.bm > 0.4
+          ? "Your mood is mixed but functional."
+          : "Mood is low – we will keep the tone gentle.";
+
+      dCaption.textContent =
+        state.d < 0.3
+          ? "Mental noise is low – thoughts can flow clearly."
+          : state.d < 0.6
+          ? "There is some disturbance – we will keep answers structured."
+          : "High disturbance – short and grounded replies may help.";
+
+      sCaption.textContent =
+        state.s > 0.7
+          ? "Your story is following one main emotional line."
+          : state.s > 0.4
+          ? "Your emotional storyline is branching in a few directions."
+          : "Continuity is low – different feelings are pulling in many directions.";
+    }
+
+    // ===== Voice =====
+    function updateVoiceChip() {
+      if (voiceEnabled) {
+        voiceLabel.textContent = "ON";
+        voiceToggle.classList.add("active");
+      } else {
+        voiceLabel.textContent = "OFF";
+        voiceToggle.classList.remove("active");
+      }
+    }
+
+    function speakText(text) {
+      if (!voiceEnabled) return;
+      if (!("speechSynthesis" in window)) {
+        addMessage(
+          "⚠️ Voice playback is not supported in this browser. You can keep using text normally.",
+          "system"
         );
+        voiceEnabled = false;
+        updateVoiceChip();
+        return;
       }
 
-      if (data && data.state) {
-        updateScalarsUI(data.state);
-      }
-    } catch (err) {
-      console.error(err);
-      connDot.classList.remove("dot-online");
-      connDot.classList.add("dot-error");
-      connLabel.textContent = "Connection issue";
-
-      addBubble(
-        "⚠️ Backend se connection me masla aaya.<br/>" +
-        "Check karo: <b>API_URL</b> sahi hai ya Render instance sleep se wake hua hai ya nahi.<br/><br/>" +
-        "<small>" + (err.message || "Unknown error") + "</small>",
-        { role: "assistant", meta: true, tag: { text: "HTTP ERROR", type: "error" } }
-      );
-    }
-  }
-
-  // ========= SEND HANDLER =========
-  async function handleSend() {
-    const text = (userInput.value || "").trim();
-    if (!text) return;
-
-    addBubble(text, { role: "user" });
-    userInput.value = "";
-    userInput.focus();
-
-    await sendToBackend(text);
-  }
-
-  btnSend.addEventListener("click", handleSend);
-  userInput.addEventListener("keydown", (e) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      handleSend();
-    }
-  });
-
-  // ========= VOICE: SPEECH-TO-TEXT =========
-  function initSpeechRecognition() {
-    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (!SR) return null;
-
-    const rec = new SR();
-    rec.lang = "ur-PK"; // Urdu / mix
-    rec.continuous = false;
-    rec.interimResults = false;
-
-    rec.onstart = () => {
-      recognizing = true;
-      btnMic.textContent = "🎙️";
-      btnMic.style.boxShadow = "0 0 18px rgba(34,197,94,0.8)";
-    };
-
-    rec.onend = () => {
-      recognizing = false;
-      btnMic.textContent = "🎤";
-      btnMic.style.boxShadow = "";
-    };
-
-    rec.onresult = (event) => {
-      const last = event.results[event.results.length - 1];
-      if (last && last[0]) {
-        const transcript = last[0].transcript.trim();
-        if (transcript) {
-          if (userInput.value) {
-            userInput.value += " " + transcript;
-          } else {
-            userInput.value = transcript;
-          }
-        }
-      }
-    };
-
-    rec.onerror = (e) => {
-      console.error("Speech error", e);
-      recognizing = false;
-      btnMic.textContent = "🎤";
-      btnMic.style.boxShadow = "";
-      addBubble(
-        "Voice input me thora masla aa gaya (browser permission / device issue). " +
-        "Tum normal typing se continue kar sakte ho.",
-        { role: "assistant", meta: true }
-      );
-    };
-
-    return rec;
-  }
-
-  recognition = initSpeechRecognition();
-
-  btnMic.addEventListener("click", () => {
-    if (!recognition) {
-      addBubble(
-        "Tumhare browser / device me Web Speech API available nahi lag rahi. " +
-        "Main phir bhi emotional continuity track karta rahoon ga — sirf voice input band rahega.",
-        { role: "assistant", meta: true }
-      );
-      return;
+      window.speechSynthesis.cancel();
+      const utter = new SpeechSynthesisUtterance(text);
+      utter.lang = "en-US";
+      utter.rate = 1;
+      utter.pitch = 1;
+      window.speechSynthesis.speak(utter);
     }
 
-    if (recognizing) {
-      recognition.stop();
-    } else {
-      try {
-        recognition.start();
-      } catch (e) {
-        console.warn(e);
-      }
-    }
-  });
-
-  // ========= VOICE: TTS (LISTEN TO REPLIES) =========
-  function speakText(text) {
-    if (!("speechSynthesis" in window)) return;
-    const utter = new SpeechSynthesisUtterance(text);
-    utter.lang = "ur-PK";
-    window.speechSynthesis.speak(utter);
-  }
-
-  function updateVoiceToggleUI() {
-    if (voiceRepliesOn) {
-      voiceDot.classList.add("on");
-      voiceLabel.querySelector("span").textContent = "Voice replies: ON";
-    } else {
-      voiceDot.classList.remove("on");
-      voiceLabel.querySelector("span").textContent = "Voice replies: OFF";
+    stopVoiceBtn.addEventListener("click", () => {
       if ("speechSynthesis" in window) {
         window.speechSynthesis.cancel();
       }
-    }
-  }
-
-  btnVoiceToggle.addEventListener("click", () => {
-    voiceRepliesOn = !voiceRepliesOn;
-    updateVoiceToggleUI();
-  });
-
-  // ========= BELIEF / ETHICS UI =========
-  const BELIEFS = [
-    { id: "islam", label: "Islam" },
-    { id: "christianity", label: "Christianity" },
-    { id: "hinduism", label: "Hinduism" },
-    { id: "buddhism", label: "Buddhism" },
-    { id: "atheist", label: "Atheist / Secular" },
-    { id: "all-faiths", label: "All faiths (multi-respect)" }
-  ];
-
-  function renderBeliefPills() {
-    beliefListEl.innerHTML = "";
-    BELIEFS.forEach((b) => {
-      const pill = document.createElement("button");
-      pill.type = "button";
-      pill.className = "belief-pill";
-      pill.dataset.id = b.id;
-
-      const label = document.createElement("span");
-      label.textContent = b.label;
-
-      const check = document.createElement("div");
-      check.className = "check";
-      check.textContent = "✓";
-
-      pill.appendChild(label);
-      pill.appendChild(check);
-
-      if (beliefState.selected.includes(b.id)) {
-        pill.classList.add("active");
-      }
-
-      pill.addEventListener("click", () => {
-        const idx = beliefState.selected.indexOf(b.id);
-        if (idx === -1) {
-          beliefState.selected.push(b.id);
-          pill.classList.add("active");
-        } else {
-          beliefState.selected.splice(idx, 1);
-          pill.classList.remove("active");
-        }
-        updateSelectedBeliefsLabel();
-      });
-
-      beliefListEl.appendChild(pill);
     });
-  }
 
-  function updateSelectedBeliefsLabel() {
-    if (!beliefState.selected.length) {
-      selectedBeliefsLabel.textContent =
-        "Universal ethics only (no belief selected).";
-    } else {
-      const names = BELIEFS
-        .filter((b) => beliefState.selected.includes(b.id))
-        .map((b) => b.label)
-        .join(", ");
-      selectedBeliefsLabel.textContent =
-        "Selected belief layers: " + names;
+    voiceToggle.addEventListener("click", () => {
+      voiceEnabled = !voiceEnabled;
+      updateVoiceChip();
+    });
+
+    // ===== Belief modal logic =====
+    function openBeliefModal() {
+      beliefModal.classList.add("open");
     }
-  }
+    function closeBeliefModal() {
+      beliefModal.classList.remove("open");
+    }
 
-  function openEthicsModal() {
-    renderBeliefPills();
-    updateSelectedBeliefsLabel();
-    ethicsModal.classList.add("show");
-  }
+    beliefChip.addEventListener("click", openBeliefModal);
+    modalClose.addEventListener("click", closeBeliefModal);
 
-  function closeEthicsModal() {
-    ethicsModal.classList.remove("show");
-  }
+    beliefChips.forEach((chip) => {
+      chip.addEventListener("click", () => {
+        const value = chip.dataset.belief;
+        if (selectedBeliefs.includes(value)) {
+          selectedBeliefs = selectedBeliefs.filter((b) => b !== value);
+          chip.classList.remove("active");
+        } else {
+          selectedBeliefs.push(value);
+          chip.classList.add("active");
+        }
+      });
+    });
 
-  btnEthics.addEventListener("click", openEthicsModal);
-  modalClose.addEventListener("click", closeEthicsModal);
+    clearBeliefsBtn.addEventListener("click", () => {
+      selectedBeliefs = [];
+      beliefChips.forEach((c) => c.classList.remove("active"));
+      beliefSummary.textContent = "Universal ethics only (no belief selected).";
+    });
 
-  ethicsModal.addEventListener("click", (e) => {
-    if (e.target === ethicsModal) closeEthicsModal();
-  });
+    applyBeliefsBtn.addEventListener("click", () => {
+      if (selectedBeliefs.length === 0) {
+        beliefSummary.textContent = "Universal ethics only (no belief selected).";
+      } else {
+        beliefSummary.textContent = `Universal ethics + ${selectedBeliefs.join(
+          ", "
+        )}.`;
+      }
+      closeBeliefModal();
+    });
 
-  btnClearBeliefs.addEventListener("click", () => {
-    beliefState.selected = [];
-    renderBeliefPills();
-    updateSelectedBeliefsLabel();
-  });
+    // ===== Sending messages =====
+    async function sendMessage() {
+      const text = userInput.value.trim();
+      if (!text) return;
 
-  btnApplyBeliefs.addEventListener("click", () => {
-    closeEthicsModal();
-    addBubble(
-      "Belief + ethics layer updated. Ab main jawab dete waqt " +
-      (beliefState.selected.length
-        ? "in selected beliefs ka khayal rakhunga."
-        : "sirf universal ethics follow karunga."),
-      { role: "assistant", meta: true }
-    );
-  });
+      userInput.value = "";
+      addMessage(text, "user");
+      miniStatus.textContent = "Thinking…";
+      setConnectionStatus(true);
 
-  // ========= INIT =========
-  initWelcome();
-  updateScalarsUI(continuityState);
-  updateVoiceToggleUI();
-</script>
+      try {
+        const payload = {
+          userText: text,
+          state: {
+            tm: state.tm,
+            bm: state.bm,
+            d: state.d,
+            s: state.s,
+            beliefs: selectedBeliefs,
+          },
+        };
+
+        const res = await fetch(API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+
+        if (!res.ok) {
+          setConnectionStatus(false);
+          const msg = await res.text();
+          addMessage(
+            `<span class="highlight">HTTP ERROR</span> · The backend returned ${res.status}.<div class="chat-meta">Message from server: ${msg}</div>`,
+            "error"
+          );
+          miniStatus.textContent = "";
+          return;
+        }
+
+        const data = await res.json();
+        const replyText = data.replyText || data.message || JSON.stringify(data);
+        addMessage(replyText, "bot");
+        speakText(replyText);
+
+        if (data.state) {
+          updateScalars(data.state);
+        } else {
+          // slight neutral drift if backend does not send state
+          updateScalars({
+            tm: state.tm,
+            bm: state.bm,
+            d: clamp(state.d * 0.98),
+            s: clamp(state.s * 1.01),
+          });
+        }
+
+        miniStatus.textContent = "";
+      } catch (err) {
+        console.error(err);
+        setConnectionStatus(false);
+        addMessage(
+          `<span class="highlight">Connection error.</span> Please check that the API_URL is correct and your Render instance is awake.`,
+          "error"
+        );
+        miniStatus.textContent = "";
+      }
+    }
+
+    sendButton.addEventListener("click", sendMessage);
+    userInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault();
+        sendMessage();
+      }
+    });
+
+    micButton.addEventListener("click", () => {
+      addMessage(
+        "🎙️ Voice input is not wired yet in this prototype. For now, please type your message.",
+        "system"
+      );
+    });
+
+    // ===== Initial welcome message =====
+    function init() {
+      addMessage(
+        "Assalam o Alaikum, Alim ul Haq 👋<br><br>" +
+          "I am <strong>AURA-X Ω</strong>, your emotional-continuity reactor. " +
+          "Talk to me the same way you would talk to a close friend. " +
+          "With every message, I will update a small emotional line for you: " +
+          "<strong>TM</strong> (Trust Memory), <strong>BM</strong> (Baseline Mood), " +
+          "<strong>D</strong> (Disturbance), and <strong>Σ</strong> (Continuity).<br><br>" +
+          "<span class='chat-meta'>Ω · baseline resonance ready · TM≈0.60 · D≈0.18</span>",
+        "bot"
+      );
+
+      addMessage(
+        "<strong>Ethics mode:</strong> For now I am using only universal ethics – " +
+          "respect, honesty, consent, harm-avoidance, justice, and emotional safety. " +
+          "If you wish, open the <strong>Belief &amp; Ethics</strong> panel below " +
+          "and select one or more belief lenses.",
+        "bot"
+      );
+
+      updateScalars(state);
+      updateVoiceChip();
+      setConnectionStatus(true);
+    }
+
+    init();
+  </script>
 </body>
 </html>
