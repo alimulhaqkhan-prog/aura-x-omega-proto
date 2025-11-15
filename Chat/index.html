@@ -11,11 +11,13 @@
       margin: 0;
       padding: 0;
     }
+
     html, body {
       height: 100%;
     }
+
     body {
-      background: radial-gradient(circle at top, #021b3d 0, #020617 55%, #000 100%);
+      background: radial-gradient(circle at top, #021b3d 0, #020617 60%, #000 100%);
       font-family: system-ui, -apple-system, BlinkMacSystemFont,
         "SF Pro Text", "Segoe UI", sans-serif;
       color: #e5e7eb;
@@ -24,6 +26,7 @@
       justify-content: center;
       padding: 12px;
     }
+
     #app {
       width: 100%;
       max-width: 480px;
@@ -35,7 +38,6 @@
       box-shadow:
         0 0 0 1px rgba(56, 189, 248, 0.25),
         0 30px 80px rgba(8, 47, 73, 0.9);
-      padding: 16px 16px 12px;
       display: flex;
       flex-direction: column;
       position: relative;
@@ -47,935 +49,1136 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 12px;
+      padding: 10px 14px 6px;
+      gap: 8px;
     }
-    .reactor-pill,
-    .continuity-pill {
+
+    .pill {
       padding: 8px 14px;
       border-radius: 999px;
-      background: radial-gradient(circle at top left, #22c55e 0, #065f46 32%, #022c22 100%);
+      background: radial-gradient(circle at top left, #22c55e 0, #065f46 35%, #022c22 100%);
       display: flex;
       flex-direction: column;
       gap: 2px;
       font-size: 11px;
-      line-height: 1.15;
-      box-shadow: 0 0 20px rgba(34, 197, 94, 0.7);
+      line-height: 1.2;
+      box-shadow: 0 0 20px rgba(34, 197, 94, 0.45);
+      border: 1px solid rgba(34, 197, 94, 0.65);
+      min-width: 190px;
     }
-    .reactor-pill {
-      min-width: 180px;
-    }
-    .reactor-title-row {
+
+    .pill-title {
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
       display: flex;
       align-items: center;
       gap: 6px;
-      font-weight: 600;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      font-size: 11px;
     }
-    .reactor-dot {
+
+    .pill-title span.icon {
       width: 18px;
       height: 18px;
       border-radius: 999px;
-      background: radial-gradient(circle at 30% 30%, #bbf7d0 0, #22c55e 30%, #14532d 100%);
-      box-shadow:
-        0 0 15px rgba(74, 222, 128, 0.9),
-        0 0 30px rgba(22, 163, 74, 0.8);
-      display: flex;
+      background: radial-gradient(circle at 30% 30%, #bbf7d0 0, #22c55e 40%, #14532d 100%);
+      display: inline-flex;
       align-items: center;
       justify-content: center;
       font-size: 11px;
       color: #022c22;
-      font-weight: 700;
+      box-shadow: 0 0 18px rgba(74, 222, 128, 0.85);
     }
-    .reactor-subtitle {
-      font-size: 10px;
-      opacity: 0.9;
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-    }
-    .pill-label {
-      font-size: 10px;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      opacity: 0.8;
-    }
-    .pill-value {
+
+    .pill-sub {
+      opacity: 0.85;
       font-size: 11px;
+      color: #cbd5f5;
+    }
+
+    .pill-secondary {
+      background: radial-gradient(circle at top left, #0ea5e9 0, #0369a1 40%, #020617 100%);
+      border-color: rgba(56, 189, 248, 0.75);
+      box-shadow: 0 0 20px rgba(56, 189, 248, 0.50);
+    }
+
+    .status-row {
       display: flex;
       align-items: center;
       gap: 6px;
+      font-size: 11px;
+      color: #e5e7eb;
+      opacity: 0.9;
     }
+
     .status-dot {
       width: 8px;
       height: 8px;
       border-radius: 999px;
-      background: #22c55e;
+      background: #16a34a;
       box-shadow: 0 0 12px rgba(34, 197, 94, 0.8);
     }
-    .status-dot.offline {
+
+    .status-dot.error {
       background: #f97316;
-      box-shadow: 0 0 10px rgba(248, 113, 113, 0.8);
+      box-shadow: 0 0 12px rgba(249, 115, 22, 0.75);
     }
 
-    /* ===== Chat Window ===== */
-    .chat-window {
+    /* ===== Chat Area ===== */
+    .chat-shell {
       flex: 1;
-      border-radius: 20px;
-      background:
-        radial-gradient(circle at top left, rgba(56, 189, 248, 0.28), transparent 60%),
-        radial-gradient(circle at bottom right, rgba(59, 130, 246, 0.3), transparent 55%),
-        rgba(15, 23, 42, 0.9);
-      border: 1px solid rgba(148, 163, 184, 0.55);
-      padding: 12px;
-      margin-bottom: 10px;
-      position: relative;
-      overflow: hidden;
+      margin: 2px 14px 10px;
+      border-radius: 24px;
+      background: radial-gradient(circle at top, rgba(15, 23, 42, 0.98), rgba(15, 23, 42, 0.96));
+      border: 1px solid rgba(148, 163, 184, 0.40);
       box-shadow:
-        0 0 0 1px rgba(15, 118, 110, 0.7),
-        inset 0 0 40px rgba(15, 23, 42, 0.9);
-    }
-    .chat-scroll {
-      position: absolute;
-      inset: 12px;
-      padding-right: 6px;
-      overflow-y: auto;
+        inset 0 0 0 1px rgba(15, 23, 42, 0.8),
+        0 26px 60px rgba(15, 23, 42, 0.9);
+      padding: 10px 10px 8px;
       display: flex;
       flex-direction: column;
       gap: 8px;
-      scroll-behavior: smooth;
-    }
-    .chat-bubble {
-      max-width: 90%;
-      padding: 9px 11px;
-      border-radius: 14px;
-      font-size: 13px;
-      line-height: 1.35;
-      letter-spacing: 0.01em;
-      box-shadow: 0 10px 35px rgba(15, 23, 42, 0.9);
-    }
-    .chat-bubble.bot {
-      align-self: flex-start;
-      background: radial-gradient(circle at top left, rgba(56, 189, 248, 0.35), rgba(15, 23, 42, 0.95));
-      border: 1px solid rgba(129, 140, 248, 0.8);
-    }
-    .chat-bubble.user {
-      align-self: flex-end;
-      background: radial-gradient(circle at top left, #22c55e, #15803d);
-      border: 1px solid rgba(74, 222, 128, 0.8);
-      color: #022c22;
-      font-weight: 500;
-    }
-    .chat-bubble.system {
-      align-self: center;
-      background: rgba(30, 64, 175, 0.8);
-      border: 1px dashed rgba(129, 140, 248, 0.9);
-      font-size: 12px;
-      opacity: 0.95;
-    }
-    .chat-bubble.error {
-      align-self: flex-start;
-      border: 1px solid rgba(248, 113, 113, 0.9);
-      background:
-        radial-gradient(circle at top left, rgba(248, 113, 113, 0.5), rgba(24, 24, 27, 0.98));
-      color: #fecaca;
-    }
-    .chat-meta {
-      font-size: 10px;
-      opacity: 0.7;
-      margin-top: 4px;
-    }
-    .chat-bubble .highlight {
-      font-weight: 600;
-      color: #f97316;
-    }
-
-    /* ===== Scalars ===== */
-    .scalars {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 8px;
-      margin-bottom: 10px;
-    }
-    .scalar-card {
-      background: radial-gradient(circle at top, rgba(15, 23, 42, 0.9), rgba(8, 47, 73, 0.95));
-      border-radius: 14px;
-      padding: 8px 9px;
-      border: 1px solid rgba(148, 163, 184, 0.5);
-      box-shadow: 0 10px 40px rgba(15, 23, 42, 0.9);
-    }
-    .scalar-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      font-size: 11px;
-      margin-bottom: 4px;
-    }
-    .scalar-label {
-      font-weight: 600;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      font-size: 10px;
-      opacity: 0.9;
-    }
-    .scalar-value {
-      font-weight: 600;
-      font-size: 12px;
-    }
-    .scalar-bar {
       position: relative;
-      height: 6px;
-      border-radius: 999px;
-      background: rgba(15, 23, 42, 1);
       overflow: hidden;
-      margin-bottom: 4px;
-    }
-    .scalar-fill {
-      position: absolute;
-      inset: 0;
-      border-radius: 999px;
-      background: linear-gradient(90deg, #22c55e, #38bdf8, #a855f7);
-      transform-origin: left;
-      transform: scaleX(0.6);
-      transition: transform 300ms ease-out;
-    }
-    .scalar-caption {
-      font-size: 10px;
-      opacity: 0.8;
     }
 
-    /* ===== Input & Controls ===== */
-    .input-row {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 6px;
-    }
-    .input-row textarea {
+    .chat-scroll {
       flex: 1;
-      resize: none;
-      min-height: 40px;
-      max-height: 70px;
-      border-radius: 999px;
-      padding: 8px 12px;
-      background: rgba(15, 23, 42, 0.95);
-      border: 1px solid rgba(148, 163, 184, 0.8);
-      color: #e5e7eb;
-      font-size: 13px;
-      outline: none;
-      box-shadow: inset 0 0 25px rgba(15, 23, 42, 0.95);
-    }
-    .input-row textarea::placeholder {
-      color: rgba(148, 163, 184, 0.9);
-    }
-    .icon-button,
-    .send-button {
-      border-radius: 999px;
-      border: none;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 8px;
-      font-size: 14px;
-      transition: transform 120ms ease, box-shadow 120ms ease, background 120ms ease;
-    }
-    .icon-button {
-      background: radial-gradient(circle at top, #1e293b, #020617);
-      border: 1px solid rgba(148, 163, 184, 0.7);
-      color: #e5e7eb;
-      min-width: 36px;
-    }
-    .send-button {
-      padding: 0 20px;
-      background: radial-gradient(circle at top left, #22c55e, #16a34a);
-      color: #022c22;
-      font-weight: 600;
-      font-size: 13px;
-      box-shadow:
-        0 0 15px rgba(74, 222, 128, 0.9),
-        0 20px 40px rgba(22, 163, 74, 0.9);
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-    }
-    .icon-button:active,
-    .send-button:active {
-      transform: translateY(1px) scale(0.98);
-      box-shadow: none;
+      overflow-y: auto;
+      padding-right: 4px;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(148, 163, 184, 0.7) transparent;
     }
 
-    .helper-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 10px;
-      opacity: 0.8;
-      margin-bottom: 8px;
-    }
-
-    .chip-row {
-      display: flex;
-      justify-content: flex-end;
-      gap: 8px;
-      font-size: 11px;
-    }
-    .chip {
-      border-radius: 999px;
-      border: 1px solid rgba(148, 163, 184, 0.9);
-      padding: 6px 12px;
-      background: radial-gradient(circle at top, #020617, #020617);
-      color: #e5e7eb;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      cursor: pointer;
-      box-shadow: 0 10px 25px rgba(15, 23, 42, 0.9);
-      transition: background 120ms ease, transform 120ms ease, box-shadow 120ms ease;
-    }
-    .chip:hover {
-      background: radial-gradient(circle at top, #0f172a, #020617);
-      transform: translateY(-1px);
-      box-shadow: 0 14px 30px rgba(15, 23, 42, 1);
-    }
-    .chip-pill-label {
-      text-transform: uppercase;
-      letter-spacing: 0.14em;
-      font-size: 9px;
-      opacity: 0.7;
-    }
-    .chip-pill-value {
-      font-weight: 600;
-      font-size: 11px;
-    }
-    .chip-pill {
-      padding: 6px 12px;
-    }
-    .chip-pill.active {
-      border-color: rgba(34, 197, 94, 0.9);
-      box-shadow: 0 0 18px rgba(34, 197, 94, 0.8);
-    }
-
-    /* ===== Belief Modal ===== */
-    .modal-backdrop {
-      position: fixed;
-      inset: 0;
-      background: radial-gradient(circle at top, rgba(15, 23, 42, 0.96), rgba(3, 7, 18, 0.98));
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 16px;
-      z-index: 50;
-    }
-    .modal-backdrop.open {
-      display: flex;
-    }
-    .modal-panel {
-      width: 100%;
-      max-width: 480px;
-      border-radius: 22px;
-      border: 1px solid rgba(148, 163, 184, 0.9);
-      background: radial-gradient(circle at top, rgba(15, 23, 42, 0.95), #020617);
-      box-shadow:
-        0 0 0 1px rgba(59, 130, 246, 0.6),
-        0 30px 90px rgba(15, 23, 42, 1);
-      padding: 16px 18px 14px;
-      font-size: 13px;
-      position: relative;
-    }
-    .modal-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 10px;
-    }
-    .modal-title {
-      font-size: 13px;
-      text-transform: uppercase;
-      letter-spacing: 0.18em;
-      opacity: 0.9;
-    }
-    .modal-close {
-      border-radius: 999px;
-      border: 1px solid rgba(148, 163, 184, 0.8);
-      background: rgba(15, 23, 42, 0.95);
-      color: #e5e7eb;
-      width: 26px;
-      height: 26px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      font-size: 13px;
-    }
-    .modal-section {
-      border-radius: 16px;
-      border: 1px solid rgba(148, 163, 184, 0.7);
-      background: rgba(15, 23, 42, 0.95);
-      padding: 10px 11px;
-      font-size: 12px;
-      margin-bottom: 10px;
-    }
-    .modal-section strong {
-      color: #a5b4fc;
-    }
-    .belief-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 8px;
-      margin-top: 8px;
-      margin-bottom: 8px;
-    }
-    .belief-chip {
-      border-radius: 999px;
-      border: 1px solid rgba(148, 163, 184, 0.8);
-      padding: 6px 10px;
-      font-size: 12px;
-      text-align: center;
-      cursor: pointer;
-      background: rgba(15, 23, 42, 0.95);
-      transition: background 120ms ease, border-color 120ms ease, box-shadow 120ms ease;
-    }
-    .belief-chip.active {
-      border-color: rgba(59, 130, 246, 0.95);
-      background: radial-gradient(circle at top left, rgba(59, 130, 246, 0.9), rgba(15, 23, 42, 0.98));
-      box-shadow: 0 0 18px rgba(59, 130, 246, 0.7);
-    }
-    .modal-footer {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-top: 6px;
-      font-size: 11px;
-      opacity: 0.85;
-    }
-    .modal-footer-actions {
-      display: flex;
-      gap: 8px;
-    }
-    .btn-secondary,
-    .btn-primary {
-      border-radius: 999px;
-      border: 1px solid rgba(148, 163, 184, 0.9);
-      background: rgba(15, 23, 42, 0.95);
-      color: #e5e7eb;
-      font-size: 12px;
-      padding: 6px 14px;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-    }
-    .btn-primary {
-      border-color: rgba(59, 130, 246, 0.95);
-      background: radial-gradient(circle at top left, #3b82f6, #1d4ed8);
-      box-shadow: 0 0 20px rgba(59, 130, 246, 0.9);
-      font-weight: 600;
-    }
-
-    .tiny-muted {
-      font-size: 10px;
-      opacity: 0.75;
-      margin-top: 4px;
-    }
-
-    /* Scrollbar (mobile-safe) */
     .chat-scroll::-webkit-scrollbar {
-      width: 4px;
+      width: 6px;
     }
     .chat-scroll::-webkit-scrollbar-thumb {
       background: rgba(148, 163, 184, 0.7);
       border-radius: 999px;
     }
+
+    .bubble {
+      padding: 10px 12px;
+      border-radius: 14px;
+      font-size: 12px;
+      line-height: 1.4;
+      margin-bottom: 8px;
+      max-width: 88%;
+      box-shadow: 0 14px 35px rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(30, 64, 175, 0.35);
+      position: relative;
+    }
+
+    .bubble-assistant {
+      background: radial-gradient(circle at top left, #0f172a, #020617 70%);
+      align-self: flex-start;
+    }
+
+    .bubble-user {
+      background: radial-gradient(circle at top right, #22c55e, #15803d 55%, #052e16 100%);
+      color: #052e16;
+      align-self: flex-end;
+      border-color: rgba(34, 197, 94, 0.6);
+    }
+
+    .bubble-user span {
+      color: #022c22;
+    }
+
+    .bubble-meta {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 10px;
+      opacity: 0.7;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .bubble-error {
+      border-color: rgba(248, 113, 113, 0.7);
+      background: radial-gradient(circle at top left, #450a0a, #020617 70%);
+      color: #fecaca;
+    }
+
+    .bubble small.code {
+      display: block;
+      margin-top: 4px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 10px;
+      opacity: 0.8;
+    }
+
+    /* ===== Scalars ===== */
+    .scalars-row {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+      padding: 2px 1px 0;
+    }
+
+    .scalar-card {
+      background: radial-gradient(circle at top, #020617, #020617 60%, #000 100%);
+      border-radius: 14px;
+      padding: 8px 8px 6px;
+      border: 1px solid rgba(30, 64, 175, 0.5);
+      box-shadow: 0 12px 30px rgba(15, 23, 42, 0.9);
+      font-size: 11px;
+    }
+
+    .scalar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 4px;
+      color: #c7d2fe;
+    }
+
+    .scalar-name span {
+      opacity: 0.8;
+    }
+
+    .scalar-value {
+      font-size: 13px;
+      font-weight: 600;
+      color: #e5e7eb;
+      margin-bottom: 4px;
+    }
+
+    .scalar-bar {
+      width: 100%;
+      height: 5px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.9);
+      overflow: hidden;
+      margin-bottom: 4px;
+      border: 1px solid rgba(30, 64, 175, 0.7);
+    }
+
+    .scalar-bar-fill {
+      height: 100%;
+      border-radius: 999px;
+      background: linear-gradient(to right, #22c55e, #22d3ee, #a855f7);
+    }
+
+    .scalar-caption {
+      font-size: 10px;
+      color: #9ca3af;
+      min-height: 26px;
+    }
+
+    /* ===== Input Row ===== */
+    .input-shell {
+      margin-top: 8px;
+      padding-top: 6px;
+      border-top: 1px solid rgba(30, 64, 175, 0.6);
+    }
+
+    .input-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .input-box {
+      flex: 1;
+      padding: 8px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.55);
+      background: radial-gradient(circle at top, #020617, #020617 60%, #000 100%);
+      color: #e5e7eb;
+      font-size: 12px;
+      outline: none;
+    }
+
+    .input-box::placeholder {
+      color: #6b7280;
+    }
+
+    .icon-button {
+      width: 34px;
+      height: 34px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      background: radial-gradient(circle at top, #020617, #020617 60%, #000 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      color: #e5e7eb;
+      cursor: pointer;
+      box-shadow: 0 10px 26px rgba(15, 23, 42, 0.9);
+    }
+
+    .icon-button:active {
+      transform: translateY(1px);
+    }
+
+    .send-button {
+      padding: 0 18px;
+      height: 34px;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      background: radial-gradient(circle at top right, #22c55e 0, #16a34a 45%, #14532d 100%);
+      color: #022c22;
+      font-weight: 600;
+      font-size: 12px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      box-shadow:
+        0 0 0 1px rgba(22, 163, 74, 0.85),
+        0 12px 30px rgba(34, 197, 94, 0.9);
+    }
+
+    .send-button:active {
+      transform: translateY(1px);
+      box-shadow:
+        0 0 0 1px rgba(22, 163, 74, 0.8),
+        0 6px 18px rgba(34, 197, 94, 0.6);
+    }
+
+    .input-hint {
+      margin-top: 3px;
+      font-size: 10px;
+      color: #9ca3af;
+    }
+
+    .bottom-row {
+      margin-top: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .pill-button {
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      padding: 6px 14px;
+      font-size: 11px;
+      background: radial-gradient(circle at top, #020617, #020617 60%, #000 100%);
+      color: #e5e7eb;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .pill-button.small {
+      padding: 5px 10px;
+      font-size: 10px;
+    }
+
+    .pill-button-toggle-on {
+      border-color: rgba(34, 197, 94, 0.85);
+      background: radial-gradient(circle at top, #15803d, #052e16 70%);
+      color: #bbf7d0;
+      box-shadow: 0 0 16px rgba(34, 197, 94, 0.65);
+    }
+
+    .pill-button-toggle-off {
+      border-color: rgba(148, 163, 184, 0.8);
+      background: radial-gradient(circle at top, #020617, #020617 60%, #000 100%);
+      color: #e5e7eb;
+      opacity: 0.9;
+    }
+
+    /* ===== Belief Modal ===== */
+    .modal-backdrop {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at top, rgba(15, 23, 42, 0.96), rgba(3, 7, 18, 0.98));
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 14px;
+      z-index: 20;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal-panel {
+      width: 100%;
+      max-width: 450px;
+      max-height: 100%;
+      border-radius: 20px;
+      background: radial-gradient(circle at top, #020617, #020617 60%, #000 100%);
+      border: 1px solid rgba(56, 189, 248, 0.55);
+      box-shadow:
+        0 0 0 1px rgba(30, 64, 175, 0.75),
+        0 26px 80px rgba(15, 23, 42, 0.96);
+      padding: 14px 14px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      overflow: hidden;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .modal-title {
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: #bfdbfe;
+    }
+
+    .modal-subtitle {
+      font-size: 11px;
+      color: #9ca3af;
+    }
+
+    .modal-close {
+      width: 26px;
+      height: 26px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.8);
+      background: radial-gradient(circle at top, #020617, #020617 60%, #000 100%);
+      color: #e5e7eb;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .modal-body {
+      font-size: 11px;
+      color: #e5e7eb;
+      overflow-y: auto;
+      padding-right: 4px;
+      scrollbar-width: thin;
+    }
+
+    .modal-body p {
+      margin-bottom: 6px;
+    }
+
+    .belief-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin: 8px 0 4px;
+    }
+
+    .chip {
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.8);
+      font-size: 11px;
+      cursor: pointer;
+      background: radial-gradient(circle at top, #020617, #020617 60%, #000 100%);
+      color: #e5e7eb;
+    }
+
+    .chip.selected {
+      border-color: rgba(56, 189, 248, 0.9);
+      background: radial-gradient(circle at top left, #0ea5e9, #1e293b 70%);
+      color: #e0f2fe;
+      box-shadow: 0 0 18px rgba(56, 189, 248, 0.75);
+    }
+
+    .modal-note {
+      font-size: 10px;
+      color: #9ca3af;
+      margin-top: 6px;
+    }
+
+    .modal-footer {
+      margin-top: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .modal-footer .summary {
+      font-size: 10px;
+      color: #9ca3af;
+    }
+
+    .modal-footer-buttons {
+      display: flex;
+      gap: 6px;
+    }
+
+    .btn {
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.8);
+      padding: 6px 12px;
+      font-size: 11px;
+      background: radial-gradient(circle at top, #020617, #020617 60%, #000 100%);
+      color: #e5e7eb;
+      cursor: pointer;
+    }
+
+    .btn-primary {
+      border-color: rgba(56, 189, 248, 0.9);
+      background: radial-gradient(circle at top right, #0ea5e9, #0369a1 60%, #020617 100%);
+      color: #e0f2fe;
+      box-shadow: 0 0 16px rgba(56, 189, 248, 0.65);
+    }
+
+    .btn-secondary {
+      border-style: dashed;
+    }
+
+    /* ===== Toast ===== */
+    .toast {
+      position: absolute;
+      left: 50%;
+      bottom: 74px;
+      transform: translateX(-50%);
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid rgba(148, 163, 184, 0.8);
+      font-size: 10px;
+      color: #e5e7eb;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease-out, transform 0.25s ease-out;
+      z-index: 30;
+      white-space: nowrap;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translate(-50%, -4px);
+    }
+
+    /* ===== Footer meta ===== */
+    .engine-meta {
+      position: absolute;
+      bottom: 4px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 9px;
+      color: #6b7280;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      pointer-events: none;
+    }
+
+    @media (max-height: 720px) {
+      #app {
+        max-height: 760px;
+      }
+      .scalar-caption {
+        min-height: 20px;
+      }
+    }
   </style>
 </head>
 <body>
-  <div id="app">
-    <!-- Header -->
-    <div class="header">
-      <div class="reactor-pill">
-        <div class="reactor-title-row">
-          <div class="reactor-dot">Ω</div>
-          <span>AURA-X Ω</span>
-        </div>
-        <div class="reactor-subtitle">Emotional Continuity Reactor · v1</div>
+<div id="app">
+  <!-- Header -->
+  <div class="header">
+    <div class="pill reactor-pill">
+      <div class="pill-title">
+        <span class="icon">Ω</span>
+        <span>AURA-X Ω</span>
       </div>
-
-      <div class="continuity-pill">
-        <div class="pill-label">CONTINUITY MODE</div>
-        <div class="pill-value">
-          <span>ON</span>
-          <span id="connection-indicator" class="status-dot offline"></span>
-          <span id="connection-text">Backend connecting…</span>
-        </div>
+      <div class="pill-sub">Emotional Continuity Reactor · v1</div>
+    </div>
+    <div class="pill pill-secondary continuity-pill">
+      <div class="pill-title">
+        <span>CONTINUITY MODE · <span id="cont-mode-label">ON</span></span>
+      </div>
+      <div class="status-row">
+        <span id="status-dot" class="status-dot error"></span>
+        <span id="status-text">Connection issue</span>
       </div>
     </div>
+  </div>
 
-    <!-- Chat Window -->
-    <div class="chat-window">
-      <div id="chat-scroll" class="chat-scroll"></div>
+  <!-- Chat + Scalars -->
+  <div class="chat-shell">
+    <div id="toast" class="toast">Toast</div>
+
+    <div id="chat-scroll" class="chat-scroll">
+      <!-- Intro bubble -->
+      <div class="bubble bubble-assistant">
+        <span class="bubble-meta">AURA-X Ω · Emotional continuity reactor</span>
+        <div>
+          Hello, <strong>Alim ul Haq</strong> 👋<br/><br/>
+          I am <strong>AURA-X Ω</strong> – your emotional-continuity reactor.
+          Talk to me the way you talk to a close friend. With every message
+          I will update your emotional continuity line (TM, BM, D, Σ).
+          <br/><br/>
+          Ethics mode: For now I am using only <strong>universal ethics</strong> –
+          respect, honesty, consent, harm-avoidance, justice, and emotional safety.
+          If you wish, open the <strong>Belief &amp; Ethics</strong> panel
+          below and select one or more belief lenses.
+          <br/><br/>
+          Ω · baseline resonance ready · TM≈0.60 · D≈0.18
+        </div>
+      </div>
     </div>
 
     <!-- Scalars -->
-    <div class="scalars">
+    <div class="scalars-row">
       <div class="scalar-card">
         <div class="scalar-header">
-          <div class="scalar-label">TM · TRUST MEMORY</div>
-          <div id="tmValue" class="scalar-value">0.60</div>
+          <div class="scalar-name">TM · <span>TRUST MEMORY</span></div>
+          <div id="tm-value" class="scalar-value">0.60</div>
         </div>
         <div class="scalar-bar">
-          <div id="tmBar" class="scalar-fill"></div>
+          <div id="tm-bar" class="scalar-bar-fill" style="width:60%"></div>
         </div>
-        <div id="tmCaption" class="scalar-caption">
-          Your memories feel stable and accessible.
+        <div id="tm-caption" class="scalar-caption">
+          Memories are accessible but slightly shaky.
         </div>
       </div>
-
       <div class="scalar-card">
         <div class="scalar-header">
-          <div class="scalar-label">BM · BASELINE MOOD</div>
-          <div id="bmValue" class="scalar-value">0.60</div>
+          <div class="scalar-name">BM · <span>BASELINE MOOD</span></div>
+          <div id="bm-value" class="scalar-value">0.60</div>
         </div>
         <div class="scalar-bar">
-          <div id="bmBar" class="scalar-fill"></div>
+          <div id="bm-bar" class="scalar-bar-fill" style="width:60%"></div>
         </div>
-        <div id="bmCaption" class="scalar-caption">
-          Mood is mixed but workable.
+        <div id="bm-caption" class="scalar-caption">
+          Your mood is mixed but functional.
         </div>
       </div>
-
       <div class="scalar-card">
         <div class="scalar-header">
-          <div class="scalar-label">D · DISTURBANCE</div>
-          <div id="dValue" class="scalar-value">0.18</div>
+          <div class="scalar-name">D · <span>DISTURBANCE</span></div>
+          <div id="d-value" class="scalar-value">0.18</div>
         </div>
         <div class="scalar-bar">
-          <div id="dBar" class="scalar-fill"></div>
+          <div id="d-bar" class="scalar-bar-fill" style="width:18%"></div>
         </div>
-        <div id="dCaption" class="scalar-caption">
-          Mental noise is low – thoughts can flow.
+        <div id="d-caption" class="scalar-caption">
+          Mental noise is low – thoughts can flow clearly.
         </div>
       </div>
-
       <div class="scalar-card">
         <div class="scalar-header">
-          <div class="scalar-label">Σ · CONTINUITY</div>
-          <div id="sValue" class="scalar-value">0.82</div>
+          <div class="scalar-name">Σ · <span>CONTINUITY</span></div>
+          <div id="cont-value" class="scalar-value">0.82</div>
         </div>
         <div class="scalar-bar">
-          <div id="sBar" class="scalar-fill"></div>
+          <div id="cont-bar" class="scalar-bar-fill" style="width:82%"></div>
         </div>
-        <div id="sCaption" class="scalar-caption">
-          Your story is moving along one main emotional line.
+        <div id="cont-caption" class="scalar-caption">
+          Your story is following one main emotional line.
         </div>
       </div>
     </div>
 
     <!-- Input -->
-    <div class="input-row">
-      <textarea
-        id="user-input"
-        rows="2"
-        placeholder="Ask anything… For example: 'Today I feel tired but hopeful.'"
-      ></textarea>
-      <button id="mic-button" class="icon-button" title="(Demo only – not wired yet)">
-        🎙️
-      </button>
-      <button id="stop-voice" class="icon-button" title="Stop voice playback">
-        ⏹
-      </button>
-      <button id="send-button" class="send-button">SEND</button>
-    </div>
-
-    <div class="helper-row">
-      <span>Press <strong>Enter</strong> to send. Every turn updates the emotional scalars.</span>
-      <span id="mini-status"></span>
-    </div>
-
-    <!-- Chips -->
-    <div class="chip-row">
-      <div id="belief-chip" class="chip">
-        <span>Belief &amp; Ethics</span>
+    <div class="input-shell">
+      <div class="input-row">
+        <input
+          id="user-input"
+          class="input-box"
+          type="text"
+          placeholder="Ask anything… For example: 'Today I feel tired but hopeful.'"
+        />
+        <button id="mic-btn" class="icon-button" title="Voice input (coming soon)">
+          🎙
+        </button>
+        <button id="stop-voice-btn" class="icon-button" title="Stop speaking">
+          ⏹
+        </button>
+        <button id="send-btn" class="send-button">SEND</button>
+      </div>
+      <div class="input-hint">
+        Press <strong>Enter</strong> to send.
+        Every turn updates the emotional scalars.
       </div>
 
-      <div id="voice-toggle" class="chip chip-pill">
-        <div class="chip-pill-label">VOICE REPLIES</div>
-        <div id="voice-label" class="chip-pill-value">OFF</div>
+      <div class="bottom-row">
+        <button id="belief-btn" class="pill-button">
+          Belief &amp; Ethics
+        </button>
+        <button id="voice-toggle" class="pill-button small pill-button-toggle-off">
+          VOICE REPLIES: OFF
+        </button>
       </div>
     </div>
   </div>
 
-  <!-- Belief Modal -->
+  <!-- Belief & Ethics Modal -->
   <div id="belief-modal" class="modal-backdrop">
     <div class="modal-panel">
       <div class="modal-header">
-        <div class="modal-title">Belief Layer · Ethical Mode</div>
-        <button id="modal-close" class="modal-close">✕</button>
+        <div>
+          <div class="modal-title">BELIEF LAYER · ETHICAL MODE</div>
+          <div class="modal-subtitle">
+            You can decide which belief or ethics frame AURA-X Ω should
+            respect while answering.
+          </div>
+        </div>
+        <button id="belief-close" class="modal-close">✕</button>
       </div>
+      <div class="modal-body">
+        <p>
+          <strong>Default mode:</strong> If you do not select any belief,
+          I will use <strong>universal ethics only</strong> – respect,
+          honesty, consent, harm-avoidance, justice, and emotional safety.
+        </p>
+        <p>
+          If you wish, you can select one or more belief lenses below.
+          I will not preach or argue. I will only <em>protect your comfort
+          zone</em> and avoid content that is disrespectful to your lens.
+        </p>
 
-      <div class="modal-section">
-        <strong>Default mode:</strong> If you do not select any belief,
-        AURA-X Ω will follow only <strong>universal ethics</strong> —
-        respect, honesty, consent, harm-avoidance, justice, and
-        psychological safety.
-        <br /><br />
-        You can optionally select one or more belief lenses below.
-        Answers will try to stay respectful to those sensitivities without
-        judging any group.
-      </div>
-
-      <div class="modal-section">
-        <div style="font-size: 11px; text-transform: uppercase; letter-spacing: .16em; opacity:.85; margin-bottom:6px;">
-          Select belief layers
+        <p style="margin-top:8px; font-size:11px; color:#a5b4fc;">
+          Select belief lenses:
+        </p>
+        <div id="belief-chips" class="belief-chips">
+          <div class="chip" data-belief="islam">Islam</div>
+          <div class="chip" data-belief="christianity">Christianity</div>
+          <div class="chip" data-belief="hinduism">Hinduism</div>
+          <div class="chip" data-belief="buddhism">Buddhism</div>
+          <div class="chip" data-belief="atheist">Atheist / Secular</div>
+          <div class="chip" data-belief="all">All faiths (multi-respect)</div>
         </div>
 
-        <div class="belief-grid">
-          <button class="belief-chip" data-belief="Islam">Islam</button>
-          <button class="belief-chip" data-belief="Christianity">Christianity</button>
-          <button class="belief-chip" data-belief="Hinduism">Hinduism</button>
-          <button class="belief-chip" data-belief="Buddhism">Buddhism</button>
-          <button class="belief-chip" data-belief="Atheist/Secular">Atheist / Secular</button>
-          <button class="belief-chip" data-belief="All faiths">
-            All faiths (multi-respect)
-          </button>
-        </div>
+        <p class="modal-note">
+          Note: This system exists only for your emotional safety.
+          I never judge you or any group. I simply align my answers with
+          your chosen lens while still following universal ethics.
+        </p>
 
-        <div class="tiny-muted">
-          Note: The belief layer is only for your comfort. The system never
-          judges you or anyone else – it just tries to keep answers safe,
-          kind, and emotionally grounded.
-        </div>
+        <p class="modal-note">
+          Internal engine stack (for information only): AEC · CRM · PMCM ·
+          LR³ · RL³ · AURA-X Ω resonance equation
+          <span style="font-family:ui-monospace;">E = f(TM, BM, D, Σ, t)</span>.
+        </p>
       </div>
-
       <div class="modal-footer">
-        <div id="belief-summary">Universal ethics only (no belief selected).</div>
-        <div class="modal-footer-actions">
-          <button id="clear-beliefs" class="btn-secondary">Clear all</button>
-          <button id="apply-beliefs" class="btn-primary">
-            Apply
-          </button>
+        <div id="belief-summary" class="summary">
+          Universal ethics only (no belief selected).
+        </div>
+        <div class="modal-footer-buttons">
+          <button id="belief-clear" class="btn btn-secondary">Clear all</button>
+          <button id="belief-apply" class="btn btn-primary">Apply</button>
         </div>
       </div>
     </div>
   </div>
 
-  <script>
-    // ===== CONFIG =====
-    const API_URL = "https://aura-x-backend-jliz.onrender.com/api/chat";
+  <div class="engine-meta">
+    AURA-X Ω · Emotional Continuity Reactor · Prototype v1
+  </div>
+</div>
 
-    // ===== STATE =====
-    let voiceEnabled = false;
-    let selectedBeliefs = [];
-    let state = {
-      tm: 0.6,
-      bm: 0.6,
-      d: 0.18,
-      s: 0.82,
-      beliefs: [],
+<script>
+  // ===== Configuration =====
+  // IMPORTANT: confirm your exact Render URL here.
+  // If your instance URL is slightly different, edit the base part only.
+  const API_URL = "https://aura-x-backend-jliz.onrender.com/api/aura-x-chat";
+
+  // ===== State =====
+  const state = {
+    tm: 0.6,
+    bm: 0.6,
+    d: 0.18,
+    cont: 0.82,
+    e0: 0.0,
+  };
+
+  let beliefMode = "universal"; // or: islam, christianity, hinduism, buddhism, atheist, all
+  let pendingBeliefSelection = new Set();
+  let voiceEnabled = false;
+  let isSpeaking = false;
+  let messages = [
+    {
+      role: "assistant",
+      content:
+        "Intro message already shown in UI. Internal log starts from here.",
+    },
+  ];
+
+  // ===== DOM Elements =====
+  const chatScroll = document.getElementById("chat-scroll");
+  const userInput = document.getElementById("user-input");
+  const sendBtn = document.getElementById("send-btn");
+  const micBtn = document.getElementById("mic-btn");
+  const stopVoiceBtn = document.getElementById("stop-voice-btn");
+  const statusDot = document.getElementById("status-dot");
+  const statusText = document.getElementById("status-text");
+  const voiceToggle = document.getElementById("voice-toggle");
+  const toastEl = document.getElementById("toast");
+
+  const tmValue = document.getElementById("tm-value");
+  const bmValue = document.getElementById("bm-value");
+  const dValue = document.getElementById("d-value");
+  const contValue = document.getElementById("cont-value");
+  const tmBar = document.getElementById("tm-bar");
+  const bmBar = document.getElementById("bm-bar");
+  const dBar = document.getElementById("d-bar");
+  const contBar = document.getElementById("cont-bar");
+  const tmCaption = document.getElementById("tm-caption");
+  const bmCaption = document.getElementById("bm-caption");
+  const dCaption = document.getElementById("d-caption");
+  const contCaption = document.getElementById("cont-caption");
+
+  // Belief modal elements
+  const beliefBtn = document.getElementById("belief-btn");
+  const beliefModal = document.getElementById("belief-modal");
+  const beliefClose = document.getElementById("belief-close");
+  const beliefClear = document.getElementById("belief-clear");
+  const beliefApply = document.getElementById("belief-apply");
+  const beliefSummary = document.getElementById("belief-summary");
+  const beliefChips = document.querySelectorAll(".chip");
+
+  // ===== Helpers =====
+  function showToast(message, ms = 2400) {
+    toastEl.textContent = message;
+    toastEl.classList.add("show");
+    setTimeout(() => {
+      toastEl.classList.remove("show");
+    }, ms);
+  }
+
+  function setConnectionStatus(ok) {
+    if (ok) {
+      statusDot.classList.remove("error");
+      statusText.textContent = "Backend connected";
+    } else {
+      statusDot.classList.add("error");
+      statusText.textContent = "Connection issue";
+    }
+  }
+
+  function clamp01(x) {
+    return Math.max(0, Math.min(1, x));
+  }
+
+  function updateScalars(newState) {
+    if (!newState) return;
+
+    state.tm = clamp01(newState.tm ?? state.tm);
+    state.bm = clamp01(newState.bm ?? state.bm);
+    state.d = clamp01(newState.d ?? state.d);
+    state.cont = clamp01(newState.cont ?? state.cont);
+    if (typeof newState.e0 === "number") state.e0 = newState.e0;
+
+    const toPct = (v) => Math.round(clamp01(v) * 100);
+
+    tmValue.textContent = state.tm.toFixed(2);
+    bmValue.textContent = state.bm.toFixed(2);
+    dValue.textContent = state.d.toFixed(2);
+    contValue.textContent = state.cont.toFixed(2);
+
+    tmBar.style.width = toPct(state.tm) + "%";
+    bmBar.style.width = toPct(state.bm) + "%";
+    dBar.style.width = toPct(state.d) + "%";
+    contBar.style.width = toPct(state.cont) + "%";
+
+    // Simple captions based on ranges
+    tmCaption.textContent =
+      state.tm > 0.75
+        ? "Trust memory feels very stable and accessible."
+        : state.tm > 0.45
+        ? "Memories are accessible but slightly shaky."
+        : "Memory feels fragile – we will move slowly and gently.";
+
+    bmCaption.textContent =
+      state.bm > 0.75
+        ? "Overall mood is warm and hopeful."
+        : state.bm > 0.45
+        ? "Your mood is mixed but functional."
+        : "Mood is heavy. I will keep answers softer and more protective.";
+
+    dCaption.textContent =
+      state.d < 0.25
+        ? "Mental noise is low – thoughts can flow clearly."
+        : state.d < 0.55
+        ? "Some disturbance present – we will keep things paced and grounded."
+        : "High disturbance – we will keep the conversation slow, gentle, and safe.";
+
+    contCaption.textContent =
+      state.cont > 0.75
+        ? "Your story is following one main emotional line."
+        : state.cont > 0.45
+        ? "Continuity is mixed – a few parallel threads are active."
+        : "Continuity is scattered – we will reconnect your narrative step by step.";
+  }
+
+  function appendBubble(role, content, opts = {}) {
+    const bubble = document.createElement("div");
+    bubble.classList.add("bubble");
+    if (role === "assistant") {
+      bubble.classList.add("bubble-assistant");
+    } else if (role === "user") {
+      bubble.classList.add("bubble-user");
+    }
+
+    if (opts.error) {
+      bubble.classList.add("bubble-error");
+    }
+
+    const meta = document.createElement("span");
+    meta.className = "bubble-meta";
+
+    if (opts.error) {
+      meta.textContent = "HTTP ERROR · " + (opts.meta || "");
+    } else if (role === "assistant") {
+      meta.textContent =
+        "AURA-X Ω · " + (opts.meta || "Continuity-aware response");
+    } else {
+      meta.textContent = "You";
+    }
+
+    const body = document.createElement("div");
+    body.innerHTML = content;
+
+    bubble.appendChild(meta);
+    bubble.appendChild(body);
+
+    if (opts.code) {
+      const small = document.createElement("small");
+      small.className = "code";
+      small.textContent = opts.code;
+      bubble.appendChild(small);
+    }
+
+    chatScroll.appendChild(bubble);
+    chatScroll.scrollTop = chatScroll.scrollHeight;
+  }
+
+  async function speak(text) {
+    if (!voiceEnabled) return;
+    if (!("speechSynthesis" in window)) {
+      showToast("Voice not supported in this browser.");
+      return;
+    }
+    try {
+      window.speechSynthesis.cancel();
+      const utter = new SpeechSynthesisUtterance(text);
+      utter.rate = 1.0;
+      utter.pitch = 1.02;
+      utter.onstart = () => {
+        isSpeaking = true;
+      };
+      utter.onend = () => {
+        isSpeaking = false;
+      };
+      window.speechSynthesis.speak(utter);
+    } catch (e) {
+      console.error("TTS error", e);
+      showToast("Could not start voice – browser blocked it.");
+    }
+  }
+
+  function stopSpeaking() {
+    if ("speechSynthesis" in window) {
+      window.speechSynthesis.cancel();
+      isSpeaking = false;
+    }
+  }
+
+  // ===== Belief Modal Logic =====
+  function openBeliefModal() {
+    pendingBeliefSelection = new Set(
+      beliefMode === "universal" ? [] : beliefMode.split(",")
+    );
+    beliefChips.forEach((chip) => {
+      const val = chip.dataset.belief;
+      if (pendingBeliefSelection.has(val)) chip.classList.add("selected");
+      else chip.classList.remove("selected");
+    });
+    updateBeliefSummaryText(pendingBeliefSelection, beliefSummary);
+    beliefModal.classList.add("open");
+  }
+
+  function closeBeliefModal() {
+    beliefModal.classList.remove("open");
+  }
+
+  function updateBeliefSummaryText(set, summaryEl) {
+    if (!set || set.size === 0) {
+      summaryEl.textContent = "Universal ethics only (no belief selected).";
+      return;
+    }
+    const labels = {
+      islam: "Islam",
+      christianity: "Christianity",
+      hinduism: "Hinduism",
+      buddhism: "Buddhism",
+      atheist: "Atheist / Secular",
+      all: "All faiths (multi-respect)",
     };
+    const list = Array.from(set).map((k) => labels[k] || k);
+    summaryEl.textContent = "Active lenses: " + list.join(", ");
+  }
 
-    // ===== DOM =====
-    const chatScroll = document.getElementById("chat-scroll");
-    const userInput = document.getElementById("user-input");
-    const sendButton = document.getElementById("send-button");
-    const micButton = document.getElementById("mic-button");
-    const stopVoiceBtn = document.getElementById("stop-voice");
-    const miniStatus = document.getElementById("mini-status");
-    const connectionIndicator = document.getElementById("connection-indicator");
-    const connectionText = document.getElementById("connection-text");
-
-    const tmValue = document.getElementById("tmValue");
-    const bmValue = document.getElementById("bmValue");
-    const dValue = document.getElementById("dValue");
-    const sValue = document.getElementById("sValue");
-    const tmBar = document.getElementById("tmBar");
-    const bmBar = document.getElementById("bmBar");
-    const dBar = document.getElementById("dBar");
-    const sBar = document.getElementById("sBar");
-    const tmCaption = document.getElementById("tmCaption");
-    const bmCaption = document.getElementById("bmCaption");
-    const dCaption = document.getElementById("dCaption");
-    const sCaption = document.getElementById("sCaption");
-
-    const beliefChip = document.getElementById("belief-chip");
-    const voiceToggle = document.getElementById("voice-toggle");
-    const voiceLabel = document.getElementById("voice-label");
-
-    const beliefModal = document.getElementById("belief-modal");
-    const modalClose = document.getElementById("modal-close");
-    const beliefSummary = document.getElementById("belief-summary");
-    const clearBeliefsBtn = document.getElementById("clear-beliefs");
-    const applyBeliefsBtn = document.getElementById("apply-beliefs");
-    const beliefChips = Array.from(document.querySelectorAll(".belief-chip"));
-
-    // ===== Helper: Chat bubbles =====
-    function addMessage(text, role = "bot") {
-      const bubble = document.createElement("div");
-      bubble.classList.add("chat-bubble", role);
-      bubble.innerHTML = text;
-      chatScroll.appendChild(bubble);
-      chatScroll.scrollTop = chatScroll.scrollHeight;
-    }
-
-    function setConnectionStatus(ok) {
-      if (ok) {
-        connectionIndicator.classList.remove("offline");
-        connectionText.textContent = "Backend connected";
+  beliefChips.forEach((chip) => {
+    chip.addEventListener("click", () => {
+      const val = chip.dataset.belief;
+      if (pendingBeliefSelection.has(val)) {
+        pendingBeliefSelection.delete(val);
+        chip.classList.remove("selected");
       } else {
-        connectionIndicator.classList.add("offline");
-        connectionText.textContent = "Connection issue";
+        // allow multi-select but if "all" chosen, clear others
+        if (val === "all") {
+          pendingBeliefSelection.clear();
+          beliefChips.forEach((c) => c.classList.remove("selected"));
+        } else {
+          pendingBeliefSelection.delete("all");
+          const allChip = document.querySelector('.chip[data-belief="all"]');
+          if (allChip) allChip.classList.remove("selected");
+        }
+        pendingBeliefSelection.add(val);
+        chip.classList.add("selected");
       }
+      updateBeliefSummaryText(pendingBeliefSelection, beliefSummary);
+    });
+  });
+
+  beliefBtn.addEventListener("click", openBeliefModal);
+  beliefClose.addEventListener("click", closeBeliefModal);
+
+  beliefClear.addEventListener("click", () => {
+    pendingBeliefSelection.clear();
+    beliefChips.forEach((chip) => chip.classList.remove("selected"));
+    updateBeliefSummaryText(pendingBeliefSelection, beliefSummary);
+  });
+
+  beliefApply.addEventListener("click", () => {
+    if (pendingBeliefSelection.size === 0) {
+      beliefMode = "universal";
+    } else {
+      beliefMode = Array.from(pendingBeliefSelection).join(",");
     }
+    updateBeliefSummaryText(
+      beliefMode === "universal" ? new Set() : pendingBeliefSelection,
+      beliefSummary
+    );
+    closeBeliefModal();
+    showToast("Belief & ethics preferences updated.");
+  });
 
-    // ===== Helper: Scalars (simple demo logic) =====
-    function clamp(v) {
-      return Math.max(0, Math.min(1, v));
+  beliefModal.addEventListener("click", (e) => {
+    if (e.target === beliefModal) closeBeliefModal();
+  });
+
+  // ===== Voice Toggle =====
+  voiceToggle.addEventListener("click", () => {
+    voiceEnabled = !voiceEnabled;
+    if (voiceEnabled) {
+      voiceToggle.classList.remove("pill-button-toggle-off");
+      voiceToggle.classList.add("pill-button-toggle-on");
+      voiceToggle.textContent = "VOICE REPLIES: ON";
+      showToast("Voice replies enabled.");
+    } else {
+      voiceToggle.classList.add("pill-button-toggle-off");
+      voiceToggle.classList.remove("pill-button-toggle-on");
+      voiceToggle.textContent = "VOICE REPLIES: OFF";
+      stopSpeaking();
+      showToast("Voice replies disabled.");
     }
+  });
 
-    function updateScalars(newState) {
-      if (!newState) return;
+  stopVoiceBtn.addEventListener("click", stopSpeaking);
 
-      // simple smoothing so values move gently
-      const lerp = (a, b, t) => a + (b - a) * t;
+  micBtn.addEventListener("click", () => {
+    showToast("Voice input is not wired yet – type your text for now.");
+  });
 
-      state.tm = clamp(lerp(state.tm, newState.tm ?? state.tm, 0.35));
-      state.bm = clamp(lerp(state.bm, newState.bm ?? state.bm, 0.35));
-      state.d = clamp(lerp(state.d, newState.d ?? state.d, 0.35));
-      state.s = clamp(lerp(state.s, newState.s ?? state.s, 0.35));
-      state.beliefs = selectedBeliefs.slice();
+  // ===== Chat Sending =====
+  async function sendMessage() {
+    const text = userInput.value.trim();
+    if (!text) return;
 
-      tmValue.textContent = state.tm.toFixed(2);
-      bmValue.textContent = state.bm.toFixed(2);
-      dValue.textContent = state.d.toFixed(2);
-      sValue.textContent = state.s.toFixed(2);
+    appendBubble("user", text);
+    messages.push({ role: "user", content: text });
+    userInput.value = "";
+    userInput.focus();
 
-      tmBar.style.transform = `scaleX(${state.tm})`;
-      bmBar.style.transform = `scaleX(${state.bm})`;
-      dBar.style.transform = `scaleX(${state.d})`;
-      sBar.style.transform = `scaleX(${state.s})`;
+    // optimistic "thinking" bubble
+    const thinkingId = "thinking-" + Date.now();
+    appendBubble(
+      "assistant",
+      "<em>Processing your emotional line…</em>",
+      { meta: "Continuity engine", code: "Waiting for backend…", id: thinkingId }
+    );
 
-      // Captions (very simple interpretation)
-      tmCaption.textContent =
-        state.tm > 0.7
-          ? "Your memories feel anchored and reliable."
-          : state.tm > 0.4
-          ? "Memories are accessible but slightly shaky."
-          : "Memory feels scattered – it might help to slow down.";
+    try {
+      const payload = {
+        messages,
+        state,
+        beliefMode,
+      };
 
-      bmCaption.textContent =
-        state.bm > 0.7
-          ? "Your baseline mood is mostly positive."
-          : state.bm > 0.4
-          ? "Your mood is mixed but functional."
-          : "Mood is low – we will keep the tone gentle.";
+      const res = await fetch(API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
 
-      dCaption.textContent =
-        state.d < 0.3
-          ? "Mental noise is low – thoughts can flow clearly."
-          : state.d < 0.6
-          ? "There is some disturbance – we will keep answers structured."
-          : "High disturbance – short and grounded replies may help.";
-
-      sCaption.textContent =
-        state.s > 0.7
-          ? "Your story is following one main emotional line."
-          : state.s > 0.4
-          ? "Your emotional storyline is branching in a few directions."
-          : "Continuity is low – different feelings are pulling in many directions.";
-    }
-
-    // ===== Voice =====
-    function updateVoiceChip() {
-      if (voiceEnabled) {
-        voiceLabel.textContent = "ON";
-        voiceToggle.classList.add("active");
-      } else {
-        voiceLabel.textContent = "OFF";
-        voiceToggle.classList.remove("active");
-      }
-    }
-
-    function speakText(text) {
-      if (!voiceEnabled) return;
-      if (!("speechSynthesis" in window)) {
-        addMessage(
-          "⚠️ Voice playback is not supported in this browser. You can keep using text normally.",
-          "system"
+      if (!res.ok) {
+        setConnectionStatus(false);
+        appendBubble(
+          "assistant",
+          "There was a problem talking to the AURA-X backend.",
+          {
+            error: true,
+            meta: "The backend returned " + res.status,
+            code: "Message from server: " + (await res.text()),
+          }
         );
-        voiceEnabled = false;
-        updateVoiceChip();
         return;
       }
 
-      window.speechSynthesis.cancel();
-      const utter = new SpeechSynthesisUtterance(text);
-      utter.lang = "en-US";
-      utter.rate = 1;
-      utter.pitch = 1;
-      window.speechSynthesis.speak(utter);
-    }
+      const data = await res.json();
+      setConnectionStatus(true);
 
-    stopVoiceBtn.addEventListener("click", () => {
-      if ("speechSynthesis" in window) {
-        window.speechSynthesis.cancel();
-      }
-    });
+      const replyText = data.reply || "(Empty reply from backend.)";
+      const newState = data.state || {};
 
-    voiceToggle.addEventListener("click", () => {
-      voiceEnabled = !voiceEnabled;
-      updateVoiceChip();
-    });
+      messages.push({ role: "assistant", content: replyText });
 
-    // ===== Belief modal logic =====
-    function openBeliefModal() {
-      beliefModal.classList.add("open");
-    }
-    function closeBeliefModal() {
-      beliefModal.classList.remove("open");
-    }
-
-    beliefChip.addEventListener("click", openBeliefModal);
-    modalClose.addEventListener("click", closeBeliefModal);
-
-    beliefChips.forEach((chip) => {
-      chip.addEventListener("click", () => {
-        const value = chip.dataset.belief;
-        if (selectedBeliefs.includes(value)) {
-          selectedBeliefs = selectedBeliefs.filter((b) => b !== value);
-          chip.classList.remove("active");
-        } else {
-          selectedBeliefs.push(value);
-          chip.classList.add("active");
-        }
+      appendBubble("assistant", replyText, {
+        meta: "Continuity-aware response",
       });
-    });
 
-    clearBeliefsBtn.addEventListener("click", () => {
-      selectedBeliefs = [];
-      beliefChips.forEach((c) => c.classList.remove("active"));
-      beliefSummary.textContent = "Universal ethics only (no belief selected).";
-    });
-
-    applyBeliefsBtn.addEventListener("click", () => {
-      if (selectedBeliefs.length === 0) {
-        beliefSummary.textContent = "Universal ethics only (no belief selected).";
-      } else {
-        beliefSummary.textContent = `Universal ethics + ${selectedBeliefs.join(
-          ", "
-        )}.`;
-      }
-      closeBeliefModal();
-    });
-
-    // ===== Sending messages =====
-    async function sendMessage() {
-      const text = userInput.value.trim();
-      if (!text) return;
-
-      userInput.value = "";
-      addMessage(text, "user");
-      miniStatus.textContent = "Thinking…";
-      setConnectionStatus(true);
-
-      try {
-        const payload = {
-          userText: text,
-          state: {
-            tm: state.tm,
-            bm: state.bm,
-            d: state.d,
-            s: state.s,
-            beliefs: selectedBeliefs,
-          },
-        };
-
-        const res = await fetch(API_URL, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
-        });
-
-        if (!res.ok) {
-          setConnectionStatus(false);
-          const msg = await res.text();
-          addMessage(
-            `<span class="highlight">HTTP ERROR</span> · The backend returned ${res.status}.<div class="chat-meta">Message from server: ${msg}</div>`,
-            "error"
-          );
-          miniStatus.textContent = "";
-          return;
+      updateScalars(newState);
+      await speak(replyText);
+    } catch (err) {
+      console.error(err);
+      setConnectionStatus(false);
+      appendBubble(
+        "assistant",
+        "The backend could not be reached. It may be waking up.",
+        {
+          error: true,
+          meta: "Network or CORS error",
+          code: err.message || String(err),
         }
-
-        const data = await res.json();
-        const replyText = data.replyText || data.message || JSON.stringify(data);
-        addMessage(replyText, "bot");
-        speakText(replyText);
-
-        if (data.state) {
-          updateScalars(data.state);
-        } else {
-          // slight neutral drift if backend does not send state
-          updateScalars({
-            tm: state.tm,
-            bm: state.bm,
-            d: clamp(state.d * 0.98),
-            s: clamp(state.s * 1.01),
-          });
-        }
-
-        miniStatus.textContent = "";
-      } catch (err) {
-        console.error(err);
-        setConnectionStatus(false);
-        addMessage(
-          `<span class="highlight">Connection error.</span> Please check that the API_URL is correct and your Render instance is awake.`,
-          "error"
-        );
-        miniStatus.textContent = "";
-      }
+      );
+      showToast("Backend unreachable – try again in a few seconds.");
     }
+  }
 
-    sendButton.addEventListener("click", sendMessage);
-    userInput.addEventListener("keydown", (e) => {
-      if (e.key === "Enter" && !e.shiftKey) {
-        e.preventDefault();
-        sendMessage();
-      }
-    });
-
-    micButton.addEventListener("click", () => {
-      addMessage(
-        "🎙️ Voice input is not wired yet in this prototype. For now, please type your message.",
-        "system"
-      );
-    });
-
-    // ===== Initial welcome message =====
-    function init() {
-      addMessage(
-        "Assalam o Alaikum, Alim ul Haq 👋<br><br>" +
-          "I am <strong>AURA-X Ω</strong>, your emotional-continuity reactor. " +
-          "Talk to me the same way you would talk to a close friend. " +
-          "With every message, I will update a small emotional line for you: " +
-          "<strong>TM</strong> (Trust Memory), <strong>BM</strong> (Baseline Mood), " +
-          "<strong>D</strong> (Disturbance), and <strong>Σ</strong> (Continuity).<br><br>" +
-          "<span class='chat-meta'>Ω · baseline resonance ready · TM≈0.60 · D≈0.18</span>",
-        "bot"
-      );
-
-      addMessage(
-        "<strong>Ethics mode:</strong> For now I am using only universal ethics – " +
-          "respect, honesty, consent, harm-avoidance, justice, and emotional safety. " +
-          "If you wish, open the <strong>Belief &amp; Ethics</strong> panel below " +
-          "and select one or more belief lenses.",
-        "bot"
-      );
-
-      updateScalars(state);
-      updateVoiceChip();
-      setConnectionStatus(true);
+  sendBtn.addEventListener("click", sendMessage);
+  userInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      sendMessage();
     }
+  });
 
-    init();
-  </script>
+  // Initial scalars
+  updateScalars(state);
+  setConnectionStatus(false); // until first successful call
+</script>
 </body>
 </html>
