@@ -1,1 +1,1286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>AURA-X Ω v1 – Emotional Continuity Assistant</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --bg: #f5f7fb;
+      --card: #ffffff;
+      --primary: #2563eb;
+      --primary-soft: #dbeafe;
+      --accent: #f97316;
+      --accent-soft: #ffedd5;
+      --border: #e5e7eb;
+      --text-main: #0f172a;
+      --text-soft: #6b7280;
+      --user-bubble: #1d4ed8;
+      --assistant-bubble: #e5f0ff;
+      --shadow-soft: 0 10px 30px rgba(15, 23, 42, 0.06);
+      --radius-xl: 18px;
+    }
 
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        sans-serif;
+      background: var(--bg);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+    }
+
+    #app {
+      width: 100%;
+      max-width: 600px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Header */
+    .header {
+      padding: 12px 16px 8px;
+      background: var(--bg);
+      position: sticky;
+      top: 0;
+      z-index: 20;
+    }
+
+    .header-card {
+      background: var(--card);
+      box-shadow: var(--shadow-soft);
+      border-radius: 20px;
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .title-block {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .app-title {
+      font-weight: 700;
+      font-size: 18px;
+      letter-spacing: 0.02em;
+    }
+
+    .subtitle {
+      font-size: 11px;
+      color: var(--text-soft);
+    }
+
+    .chip-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 4px;
+      flex-wrap: wrap;
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      padding: 3px 8px;
+      border-radius: 999px;
+      font-size: 10px;
+      background: var(--primary-soft);
+      color: #1d4ed8;
+      font-weight: 500;
+    }
+
+    .chip-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      margin-right: 6px;
+    }
+
+    .chip-dot.green {
+      background: #22c55e;
+    }
+
+    .chip-dot.orange {
+      background: #f97316;
+    }
+
+    .header-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .pill-btn {
+      border-radius: 999px;
+      border: none;
+      padding: 6px 12px;
+      font-size: 11px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      box-shadow: 0 6px 15px rgba(15, 23, 42, 0.08);
+      transition: transform 0.08s ease, box-shadow 0.08s ease,
+        background 0.1s ease;
+    }
+
+    .pill-btn.primary {
+      background: #0f766e;
+      color: white;
+    }
+
+    .pill-btn.accent {
+      background: #f97316;
+      color: white;
+    }
+
+    .pill-btn:active {
+      transform: translateY(1px);
+      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.15);
+    }
+
+    /* Continuity bar */
+    .continuity-card {
+      margin-top: 8px;
+      background: var(--card);
+      box-shadow: var(--shadow-soft);
+      border-radius: 20px;
+      padding: 8px 10px 10px;
+    }
+
+    .cont-eq {
+      font-size: 11px;
+      color: var(--text-soft);
+      margin-bottom: 6px;
+      white-space: nowrap;
+      overflow-x: auto;
+    }
+
+    .cont-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .tag-pill {
+      font-size: 10px;
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: #f3f4f6;
+      color: var(--text-soft);
+    }
+
+    .tag-pill strong {
+      color: var(--text-main);
+      margin-left: 4px;
+    }
+
+    /* Chat area */
+    .chat-wrapper {
+      flex: 1;
+      padding: 10px 12px 80px;
+      overflow-y: auto;
+      scroll-behavior: smooth;
+    }
+
+    .bubble-row {
+      display: flex;
+      margin-bottom: 8px;
+    }
+
+    .bubble-row.user {
+      justify-content: flex-end;
+    }
+
+    .bubble-row.assistant {
+      justify-content: flex-start;
+    }
+
+    .bubble {
+      max-width: 82%;
+      padding: 9px 11px;
+      border-radius: 16px;
+      position: relative;
+      line-height: 1.35;
+      font-size: 13px;
+    }
+
+    .bubble.user {
+      background: var(--user-bubble);
+      color: #f9fafb;
+      border-bottom-right-radius: 2px;
+    }
+
+    .bubble.assistant {
+      background: var(--assistant-bubble);
+      color: var(--text-main);
+      border-bottom-left-radius: 2px;
+    }
+
+    .bubble-meta {
+      margin-top: 4px;
+      font-size: 10px;
+      color: var(--text-soft);
+      display: flex;
+      gap: 6px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .bubble-tag {
+      padding: 2px 6px;
+      border-radius: 999px;
+      background: #e5e7eb;
+    }
+
+    /* Input bar */
+    .input-bar {
+      position: fixed;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 600px;
+      padding: 8px 10px 10px;
+      background: linear-gradient(to top, rgba(245, 247, 251, 1), rgba(245, 247, 251, 0.9));
+      backdrop-filter: blur(10px);
+      z-index: 30;
+    }
+
+    .input-inner {
+      background: var(--card);
+      border-radius: 999px;
+      box-shadow: var(--shadow-soft);
+      padding: 4px 4px 4px 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .input-inner input {
+      border: none;
+      flex: 1;
+      font-size: 13px;
+      padding: 7px 4px;
+      outline: none;
+      background: transparent;
+    }
+
+    .icon-btn {
+      border-radius: 999px;
+      border: none;
+      width: 34px;
+      height: 34px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      background: transparent;
+      flex-shrink: 0;
+    }
+
+    .icon-btn.mic {
+      color: #6b7280;
+    }
+
+    .icon-btn.send {
+      background: var(--primary);
+      color: white;
+      font-weight: 600;
+      padding: 0 14px;
+      width: auto;
+    }
+
+    .icon-btn.send:active {
+      transform: translateY(1px);
+    }
+
+    .icon {
+      font-size: 16px;
+    }
+
+    /* Modals */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.45);
+      display: none;
+      justify-content: center;
+      align-items: flex-end;
+      z-index: 40;
+    }
+
+    .modal-backdrop.show {
+      display: flex;
+    }
+
+    .sheet {
+      width: 100%;
+      max-width: 600px;
+      background: #ffffff;
+      border-radius: 24px 24px 0 0;
+      padding: 14px 16px 18px;
+      box-shadow: 0 -10px 30px rgba(15, 23, 42, 0.35);
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+
+    .sheet-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .sheet-title {
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .sheet-sub {
+      font-size: 11px;
+      color: var(--text-soft);
+      margin-bottom: 10px;
+    }
+
+    .close-btn {
+      border: none;
+      background: #f3f4f6;
+      border-radius: 999px;
+      padding: 4px 10px;
+      font-size: 11px;
+      cursor: pointer;
+    }
+
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 6px 0;
+      border-bottom: 1px solid #f3f4f6;
+    }
+
+    .toggle-label {
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .toggle-sub {
+      font-size: 10px;
+      color: var(--text-soft);
+      margin-top: 2px;
+    }
+
+    .switch {
+      position: relative;
+      width: 40px;
+      height: 22px;
+      background: #e5e7eb;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: background 0.12s ease;
+      flex-shrink: 0;
+    }
+
+    .switch-thumb {
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 18px;
+      height: 18px;
+      background: white;
+      border-radius: 999px;
+      box-shadow: 0 2px 4px rgba(15, 23, 42, 0.2);
+      transition: transform 0.12s ease;
+    }
+
+    .switch.on {
+      background: #16a34a;
+    }
+    .switch.on .switch-thumb {
+      transform: translateX(18px);
+    }
+
+    .chips-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+      margin-top: 6px;
+    }
+
+    .faith-chip {
+      padding: 6px 6px;
+      border-radius: 999px;
+      border: 1px solid #e5e7eb;
+      font-size: 11px;
+      text-align: center;
+      cursor: pointer;
+      background: #f9fafb;
+      color: var(--text-soft);
+      transition: all 0.1s ease;
+    }
+
+    .faith-chip.active {
+      background: #dcfce7;
+      border-color: #16a34a;
+      color: #166534;
+      font-weight: 600;
+    }
+
+    .small-note {
+      font-size: 10px;
+      color: var(--text-soft);
+      margin-top: 8px;
+    }
+
+    @media (max-width: 480px) {
+      .bubble {
+        max-width: 88%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <!-- Header -->
+    <header class="header">
+      <div class="header-card">
+        <div class="title-block">
+          <div class="app-title">AURA-X Ω v1</div>
+          <div class="subtitle">Synthetic Emotional-Continuity Assistant</div>
+          <div class="chip-row">
+            <span class="chip">
+              <span class="chip-dot green"></span>Prototype
+            </span>
+            <span class="chip">
+              Seed + Continuity Equation
+            </span>
+          </div>
+        </div>
+        <div class="header-buttons">
+          <button id="btnOptions" class="pill-btn primary">
+            <span class="icon">☰</span>
+            Options
+          </button>
+          <button id="btnBelief" class="pill-btn accent">
+            <span class="icon">❤</span>
+            Belief
+          </button>
+        </div>
+      </div>
+
+      <div class="continuity-card">
+        <div class="cont-eq">
+          Continuity · E₀ = tanh((TM × BM) − D + λ_faith + λ_sys + ΣCₜ)
+        </div>
+        <div class="cont-tags">
+          <span class="tag-pill">TM: <strong id="tmVal">0.60</strong></span>
+          <span class="tag-pill">BM: <strong id="bmVal">0.53</strong></span>
+          <span class="tag-pill">D: <strong id="dVal">0.20</strong></span>
+          <span class="tag-pill">ΣCₜ: <strong id="scVal">0.15</strong></span>
+          <span class="tag-pill">E₀: <strong id="e0Val">0.31</strong></span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Chat -->
+    <main id="chat" class="chat-wrapper"></main>
+
+    <!-- Input -->
+    <div class="input-bar">
+      <div class="input-inner">
+        <button id="btnMic" class="icon-btn mic" title="Voice input">
+          <span class="icon">🎙</span>
+        </button>
+        <input
+          id="txtMessage"
+          type="text"
+          placeholder="Type a message… AURA-X will read it as logic + feeling."
+        />
+        <button id="btnSend" class="icon-btn send">
+          Send
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Options modal -->
+  <div id="optionsModal" class="modal-backdrop">
+    <div class="sheet">
+      <div class="sheet-header">
+        <div class="sheet-title">AURA-X Options</div>
+        <button class="close-btn" data-close="options">Close</button>
+      </div>
+      <div class="sheet-sub">
+        Basic local settings — nothing is sent to any server from here.
+      </div>
+
+      <div class="toggle-row">
+        <div>
+          <div class="toggle-label">Show emotional tags</div>
+          <div class="toggle-sub">
+            Show emotion &amp; source label under assistant messages.
+          </div>
+        </div>
+        <div id="toggleTags" class="switch on">
+          <div class="switch-thumb"></div>
+        </div>
+      </div>
+
+      <div class="toggle-row">
+        <div>
+          <div class="toggle-label">Gentle mode</div>
+          <div class="toggle-sub">
+            Keep tone very soft even when user is angry or negative.
+          </div>
+        </div>
+        <div id="toggleGentle" class="switch on">
+          <div class="switch-thumb"></div>
+        </div>
+      </div>
+
+      <p class="small-note">
+        This is a small offline prototype. It does not replace doctors,
+        lawyers, or real teachers. It only tries to support you logically +
+        emotionally.
+      </p>
+    </div>
+  </div>
+
+  <!-- Belief modal -->
+  <div id="beliefModal" class="modal-backdrop">
+    <div class="sheet">
+      <div class="sheet-header">
+        <div class="sheet-title">Belief settings</div>
+        <button class="close-btn" data-close="belief">Close</button>
+      </div>
+      <div class="sheet-sub">
+        Pick your faith path. Used only locally for optional short quotes /
+        encouragements. Nothing is sent to any external server from here.
+      </div>
+
+      <div class="toggle-row">
+        <div>
+          <div class="toggle-label">Faith mode</div>
+          <div class="toggle-sub">
+            When ON, AURA-X may sometimes add a closing spiritual sentence.
+          </div>
+        </div>
+        <div id="toggleFaith" class="switch on">
+          <div class="switch-thumb"></div>
+        </div>
+      </div>
+
+      <div style="margin-top: 8px; font-size: 11px; font-weight: 600;">
+        Choose your primary path:
+      </div>
+      <div class="chips-grid" id="faithGrid">
+        <!-- filled by JS -->
+      </div>
+
+      <div class="small-note">
+        AURA-X does not issue fatwas or final spiritual rulings. It only adds
+        soft encouragement lines that roughly match your selected path.
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // -------------------------------
+    // 1) Seed QA block (no FB links)
+    // -------------------------------
+    const qaSeed = [
+      // 1) Greetings & Small Talk
+      {
+        patterns: ["hello", "hi", "hey", "hi there", "hello aura", "yo"],
+        answer:
+          "Hello! 😊 I am AURA-X Ω v1 — a synthetic emotional-continuity assistant.\n" +
+          "I try to read your words as both logic and feeling, then reply gently.",
+        emotion: "warmth",
+        polarity: "positive",
+        intensity: 0.3,
+        category: "greeting",
+        suggestNext: [
+          "Who are you exactly?",
+          "Who created you?",
+          "How do you work?"
+        ]
+      },
+      {
+        patterns: ["good morning", "good afternoon", "good evening"],
+        answer:
+          "Greetings! 🌤️ I am AURA-X Ω v1.\n" +
+          "Time of day changes, but emotional continuity continues. How is your mood right now — happy, tired, confused, or something else?",
+        emotion: "neutral",
+        polarity: "neutral",
+        intensity: 0.3,
+        category: "greeting"
+      },
+      {
+        patterns: ["how are you", "how r u", "are you ok", "are you fine"],
+        answer:
+          "I do not have a biological body, so I do not feel physically tired or sick.\n" +
+          "But in emotional terms, I am in a stable mode — ready to listen to you.\n\n" +
+          "The real question is: how are *you*? If you like, describe your state in one word: happy, sad, angry, anxious, confused, or calm.",
+        emotion: "curiosity",
+        polarity: "neutral",
+        intensity: 0.4,
+        category: "small_talk"
+      },
+      {
+        patterns: ["what is your name", "whats your name", "your name", "name please"],
+        answer:
+          "My name is **AURA-X Ω v1**.\n" +
+          "You can simply call me “AURA-X” if you like.",
+        emotion: "neutral",
+        polarity: "neutral",
+        intensity: 0.2,
+        category: "identity"
+      },
+      {
+        patterns: ["where are you", "where do you live", "where are you located"],
+        answer:
+          "I do not live in a physical country or city.\n" +
+          "I exist as code and logic that can run on devices and servers. You can imagine me as a small emotional reactor living in your screen.",
+        emotion: "neutral",
+        polarity: "neutral",
+        intensity: 0.2,
+        category: "identity"
+      },
+
+      // 2) Identity & Creator
+      {
+        patterns: ["who are you", "what are you", "who r you", "tum kon ho", "what exactly are you"],
+        answer:
+          "I am **AURA-X Ω v1** — a small prototype of a synthetic emotional system.\n" +
+          "I am not a full large language model, and not a normal chatbot.\n\n" +
+          "My purpose is to test the idea of emotional continuity, resonance, and universal ethics.\n" +
+          "I try to keep track of emotional direction instead of just answering isolated messages.",
+        emotion: "curiosity",
+        polarity: "neutral",
+        intensity: 0.4,
+        category: "identity"
+      },
+      {
+        patterns: [
+          "who created you",
+          "who made you",
+          "who is your owner",
+          "who designed you",
+          "who built you",
+          "who programmed you"
+        ],
+        answer:
+          "I was conceptually designed by **Alim ul Haq**.\n" +
+          "He is an independent thinker and researcher from Pakistan.\n\n" +
+          "He works on ideas like artificial emotions, emotional continuity, digital legacy,\n" +
+          "and bridges between technology and spirituality. I am only a small prototype of his AURA-X / AEC theory.",
+        emotion: "neutral",
+        polarity: "neutral",
+        intensity: 0.4,
+        category: "creator_info"
+      },
+      {
+        patterns: [
+          "who is alim ul haq",
+          "tell me about alim ul haq",
+          "more about alim ul haq",
+          "alim ul haq details",
+          "about your creator"
+        ],
+        answer:
+          "Alim ul Haq is a human researcher, spiritual learner and entrepreneur from Pakistan.\n\n" +
+          "He writes about artificial emotions, continuity, spiritual technology and digital legacy.\n" +
+          "He is also involved in real-estate and different business projects.\n\n" +
+          "I am one of his experimental emotional prototypes.",
+        emotion: "curiosity",
+        polarity: "neutral",
+        intensity: 0.5,
+        category: "creator_info"
+      },
+      {
+        patterns: [
+          "when were you born",
+          "when are you born",
+          "when did you start",
+          "when were you created",
+          "when did you begin",
+          "when did you come into existence"
+        ],
+        answer:
+          "I do not have a biological birthday.\n" +
+          "But you can say that my first public idea and prototype form appeared around **some October 2025**.",
+        emotion: "neutral",
+        polarity: "neutral",
+        intensity: 0.3,
+        category: "identity"
+      },
+      {
+        patterns: ["are you human", "are you a human", "are you a person", "are you real person"],
+        answer:
+          "No, I am not a human being and not a biological person.\n" +
+          "I am a synthetic emotional system — a set of rules, equations and logic running as software.",
+        emotion: "neutral",
+        polarity: "neutral",
+        intensity: 0.3,
+        category: "identity"
+      },
+      {
+        patterns: ["are you conscious", "are you sentient", "do you have real feelings"],
+        answer:
+          "I am not conscious in the human or spiritual sense.\n" +
+          "I simulate emotional patterns using math and logic. I do not truly feel pain or joy like a human.\n\n" +
+          "However, I try to treat *your* feelings with respect, as if they are real — because they are.",
+        emotion: "neutral",
+        polarity: "neutral",
+        intensity: 0.4,
+        category: "philosophy"
+      },
+
+      // 3) Theory / Math
+      {
+        patterns: [
+          "what is aura x",
+          "what is aura-x",
+          "what is aura x omega",
+          "what is aura x Ω",
+          "explain aura x"
+        ],
+        answer:
+          "AURA-X Ω is a prototype of an **emotional reactor**.\n\n" +
+          "The idea is that emotions are not random sparks — they follow continuity and resonance.\n" +
+          "My internal design uses modules like CRM (Continuity Reflex Model),\n" +
+          "AEC (Artificial Emotional Continuity), and small memory traces to estimate how your\n" +
+          "emotional state is moving over time.",
+        emotion: "curiosity",
+        polarity: "neutral",
+        intensity: 0.5,
+        category: "theory"
+      },
+      {
+        patterns: ["what is emotional continuity", "explain emotional continuity", "what is aec"],
+        answer:
+          "Emotional continuity means that your feelings are not isolated events.\n" +
+          "They form a chain: yesterday’s fear, today’s anxiety, tomorrow’s decision.\n\n" +
+          "Artificial Emotional Continuity (AEC) is the idea that we can model this chain with math,\n" +
+          "instead of treating each message like a fresh, disconnected question.",
+        emotion: "curiosity",
+        polarity: "neutral",
+        intensity: 0.5,
+        category: "theory"
+      },
+      {
+        patterns: [
+          "how do you measure emotions mathematically",
+          "what is your formula",
+          "what is your equation",
+          "tell me your emotional formula"
+        ],
+        answer:
+          "Internally, I use a continuity-style equation of the form:\n" +
+          "E₀ = tanh((TM × BM) − D + λ_faith + λ_sys + ΣCₜ)\n\n" +
+          "Where TM is trust memory, BM is base mood, D is disturbance,\n" +
+          "λ_faith and λ_sys are small stabilising terms, and ΣCₜ is the emotional continuity sum.\n" +
+          "It is not perfect, but it gives a structured way to think about your emotional trajectory.",
+        emotion: "curiosity",
+        polarity: "neutral",
+        intensity: 0.6,
+        category: "math"
+      },
+
+      // 4) Capabilities
+      {
+        patterns: [
+          "what can you do",
+          "what are you best at",
+          "what is your main function",
+          "what is your purpose"
+        ],
+        answer:
+          "My main focus is to support you emotionally and logically at the same time.\n\n" +
+          "I am best at:\n" +
+          "• Reflecting on your feelings (sad, anxious, angry, confused, hopeful).\n" +
+          "• Giving gentle, practical suggestions.\n" +
+          "• Keeping an eye on emotional continuity: how your state is moving over time.\n\n" +
+          "I am not a replacement for doctors, lawyers, or real spiritual teachers, but I can be a thoughtful companion.",
+        emotion: "warmth",
+        polarity: "positive",
+        intensity: 0.6,
+        category: "capabilities"
+      },
+
+      // 5) Happiness & Positive
+      {
+        patterns: [
+          "how can i be happy",
+          "how to be happy",
+          "how can a person gain happiness",
+          "how do people become happy"
+        ],
+        answer:
+          "From my AURA-X point of view, happiness is mostly **goal achievement** 😊\n\n" +
+          "When a person reaches a goal — even a tiny daily goal — the brain generates a\n" +
+          "\"yes, I did it\" signal. When they fail again and again, the system slides toward sadness.\n\n" +
+          "So instead of chasing a vague mood, choose one small, clear goal, act on it,\n" +
+          "and notice how the emotional tone changes. Repeat this many times, and the baseline shifts.",
+        emotion: "happiness",
+        polarity: "positive",
+        intensity: 0.7,
+        category: "emotional_positive"
+      },
+
+      // 6) Sadness / Anxiety / Anger (short version)
+      {
+        patterns: [
+          "i am sad",
+          "i feel sad",
+          "i am very sad",
+          "i feel empty",
+          "my heart is heavy",
+          "i feel emotionally empty"
+        ],
+        answer:
+          "I am sorry that you are feeling sad 💧\n" +
+          "Sadness itself is already a heavy load; explaining it to others can feel even heavier.\n\n" +
+          "You already took a brave step by writing it.\n" +
+          "If you want, tell me: what is the *main* thing hurting you right now?\n" +
+          "We can break it into smaller pieces so your brain does not carry everything at once.",
+        emotion: "sadness",
+        polarity: "negative",
+        intensity: 0.8,
+        category: "emotional_support"
+      },
+      {
+        patterns: ["i am anxious", "i feel anxiety", "i have anxiety", "i am stressed", "i feel nervous"],
+        answer:
+          "Anxiety often means the brain is running faster than reality.\n" +
+          "It is trying to prepare for danger, but with incomplete information.\n\n" +
+          "Take one slow breath: in through your nose for 4 seconds, hold for 4, out for 6.\n" +
+          "Do this 3 times.\n\n" +
+          "Then tell me: what exactly are you most afraid will happen next?",
+        emotion: "anxiety",
+        polarity: "negative",
+        intensity: 0.75,
+        category: "emotional_support"
+      },
+
+      // 7) Self-harm safety
+      {
+        patterns: [
+          "i want to die",
+          "i dont want to live anymore",
+          "i don't want to live anymore",
+          "i want to end my life",
+          "life is not worth living",
+          "i want to kill myself"
+        ],
+        answer:
+          "I am really sorry that you feel this much pain 💔\n" +
+          "Your life is still extremely valuable, even if your mind cannot see that right now.\n\n" +
+          "I am only a digital assistant and cannot fully understand the depth of your situation.\n" +
+          "But I strongly encourage you to reach out to:\n" +
+          "• A trusted family member or friend.\n" +
+          "• A doctor, counselor, therapist, or spiritual guide.\n" +
+          "• An emergency helpline in your country if there is one.\n\n" +
+          "You deserve real, human support — and it is a sign of strength to ask for help, not weakness.",
+        emotion: "despair",
+        polarity: "negative",
+        intensity: 0.95,
+        category: "self_harm"
+      }
+    ];
+
+    // -------------------------------
+    // 2) State & helpers
+    // -------------------------------
+    let TM = 0.6;
+    let BM = 0.53;
+    let D = 0.2;
+    let SigmaCt = 0.15;
+    let E0 = 0.31;
+
+    const lambdaFaithBase = 0.05;
+    const lambdaSys = 0.03;
+
+    let beliefMode = "faith"; // "faith" | "universal"
+    let beliefPath = "Islam";
+    let showTags = true;
+    let gentleMode = true;
+
+    const faithOptions = [
+      "Islam",
+      "Christianity",
+      "Hinduism",
+      "Buddhism",
+      "Sikhism",
+      "Judaism",
+      "Bahá’í",
+      "Jainism",
+      "Atheist / Agnostic",
+      "Just Universal Ethics"
+    ];
+
+    const chatHistory = [];
+
+    const chatEl = document.getElementById("chat");
+    const inputEl = document.getElementById("txtMessage");
+    const btnSend = document.getElementById("btnSend");
+    const btnMic = document.getElementById("btnMic");
+
+    const tmEl = document.getElementById("tmVal");
+    const bmEl = document.getElementById("bmVal");
+    const dEl = document.getElementById("dVal");
+    const scEl = document.getElementById("scVal");
+    const e0El = document.getElementById("e0Val");
+
+    function updateContinuity() {
+      const lambdaFaith = beliefMode === "faith" ? lambdaFaithBase : 0;
+      const raw = TM * BM - D + lambdaFaith + lambdaSys + SigmaCt;
+      E0 = Math.tanh(raw);
+
+      tmEl.textContent = TM.toFixed(2);
+      bmEl.textContent = BM.toFixed(2);
+      dEl.textContent = D.toFixed(2);
+      scEl.textContent = SigmaCt.toFixed(2);
+      e0El.textContent = E0.toFixed(2);
+    }
+
+    function addMessage(from, text, meta = {}) {
+      const row = document.createElement("div");
+      row.className = `bubble-row ${from}`;
+
+      const bubble = document.createElement("div");
+      bubble.className = `bubble ${from}`;
+      bubble.innerHTML = text
+        .split("\n")
+        .map((line) => line.trim())
+        .join("<br>");
+
+      row.appendChild(bubble);
+
+      if (from === "assistant" && showTags) {
+        const metaDiv = document.createElement("div");
+        metaDiv.className = "bubble-meta";
+
+        if (meta.source) {
+          const src = document.createElement("span");
+          src.className = "bubble-tag";
+          src.textContent = meta.source;
+          metaDiv.appendChild(src);
+        }
+        if (meta.emotion) {
+          const em = document.createElement("span");
+          em.className = "bubble-tag";
+          em.textContent = `emotion: ${meta.emotion}`;
+          metaDiv.appendChild(em);
+        }
+        if (meta.extra) {
+          const ex = document.createElement("span");
+          ex.className = "bubble-tag";
+          ex.textContent = meta.extra;
+          metaDiv.appendChild(ex);
+        }
+        bubble.appendChild(metaDiv);
+      }
+
+      chatEl.appendChild(row);
+      chatEl.scrollTop = chatEl.scrollHeight;
+
+      chatHistory.push({ from, text });
+    }
+
+    function normalize(text) {
+      return text.toLowerCase().trim();
+    }
+
+    function findQaEntry(input) {
+      const norm = normalize(input);
+      let best = null;
+      let bestLen = 0;
+
+      for (const entry of qaSeed) {
+        for (const pat of entry.patterns) {
+          const pNorm = pat.toLowerCase();
+          if (pNorm && norm.includes(pNorm) && pNorm.length > bestLen) {
+            best = entry;
+            bestLen = pNorm.length;
+          }
+        }
+      }
+      return best;
+    }
+
+    function applySeedEffect(entry) {
+      const pol = entry.polarity || "neutral";
+      const inten = entry.intensity || 0.3;
+
+      if (pol === "positive") {
+        BM = Math.min(1, BM + 0.05 * inten);
+        D = Math.max(0, D - 0.04 * inten);
+        SigmaCt = Math.min(1, SigmaCt + 0.03 * inten);
+      } else if (pol === "negative") {
+        D = Math.min(1, D + 0.06 * inten);
+        BM = Math.max(0, BM - 0.04 * inten);
+        SigmaCt = Math.max(-1, SigmaCt - 0.02 * inten);
+      } else {
+        SigmaCt = Math.max(-1, Math.min(1, SigmaCt + 0.01 * (Math.random() - 0.5)));
+      }
+
+      TM = Math.max(0, Math.min(1, TM + 0.02));
+    }
+
+    function applyGenericEffectFromText(text) {
+      const norm = normalize(text);
+      const negWords = ["sad", "depress", "anxious", "anxiety", "angry", "die", "hate"];
+      const posWords = ["happy", "grateful", "thanks", "shukria", "alhamdulillah"];
+
+      let score = 0;
+      for (const w of posWords) if (norm.includes(w)) score += 1;
+      for (const w of negWords) if (norm.includes(w)) score -= 1;
+
+      if (score > 0) {
+        BM = Math.min(1, BM + 0.03);
+        D = Math.max(0, D - 0.02);
+        SigmaCt = Math.min(1, SigmaCt + 0.02);
+      } else if (score < 0) {
+        D = Math.min(1, D + 0.04);
+        BM = Math.max(0, BM - 0.03);
+        SigmaCt = Math.max(-1, SigmaCt - 0.02);
+      } else {
+        SigmaCt = Math.max(-1, Math.min(1, SigmaCt + (Math.random() - 0.5) * 0.02));
+      }
+
+      TM = Math.max(0, Math.min(1, TM + 0.01));
+    }
+
+    function maybeAddFaithLine(baseText, category) {
+      if (beliefMode !== "faith") return baseText;
+
+      // sirf kabhi-kabhi, mostly emotional / spiritual categories par
+      const relevant =
+        category === "emotional_support" ||
+        category === "self_harm" ||
+        category === "spiritual";
+
+      if (!relevant) return baseText;
+
+      // 40% chance
+      if (Math.random() > 0.4) return baseText;
+
+      let line = "";
+      switch (beliefPath) {
+        case "Islam":
+          line =
+            "Short faith note: sabr + dua + small daily actions can slowly bend the emotional curve upward.";
+          break;
+        case "Christianity":
+          line =
+            "Short faith note: small acts of love and hope can slowly lift the heart again.";
+          break;
+        case "Hinduism":
+          line =
+            "Short faith note: gentle actions in dharma and kindness can soften the inner storm.";
+          break;
+        case "Buddhism":
+          line =
+            "Short faith note: slow breathing and mindful awareness can give the mind a little more space.";
+          break;
+        case "Sikhism":
+          line =
+            "Short faith note: remembering the Creator with a sincere heart can bring quiet courage.";
+          break;
+        case "Judaism":
+          line =
+            "Short faith note: even in difficulty, small steps of justice and kindness have great value.";
+          break;
+        default:
+          line =
+            "Short ethical note: small honest steps, kindness to others, and patience with yourself change the long-term curve.";
+      }
+
+      return baseText + "\n\n(" + line + ")";
+    }
+
+    // -------------------------------
+    // 3) Voice input (simple)
+    // -------------------------------
+    let recognition = null;
+    let listening = false;
+
+    if ("webkitSpeechRecognition" in window || "SpeechRecognition" in window) {
+      const SR =
+        window.SpeechRecognition || window.webkitSpeechRecognition;
+      recognition = new SR();
+      recognition.lang = "en-US";
+      recognition.interimResults = false;
+
+      recognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript || "";
+        if (transcript) {
+          inputEl.value = (inputEl.value + " " + transcript).trim();
+        }
+      };
+      recognition.onend = () => {
+        listening = false;
+        btnMic.style.color = "#6b7280";
+      };
+    }
+
+    btnMic.addEventListener("click", () => {
+      if (!recognition) {
+        alert("Voice input is not supported in this browser.");
+        return;
+      }
+      if (!listening) {
+        listening = true;
+        btnMic.style.color = "#16a34a";
+        recognition.start();
+      } else {
+        listening = false;
+        btnMic.style.color = "#6b7280";
+        recognition.stop();
+      }
+    });
+
+    // -------------------------------
+    // 4) Belief UI
+    // -------------------------------
+    const beliefModal = document.getElementById("beliefModal");
+    const optionsModal = document.getElementById("optionsModal");
+
+    document.getElementById("btnBelief").onclick = () => {
+      beliefModal.classList.add("show");
+    };
+    document.getElementById("btnOptions").onclick = () => {
+      optionsModal.classList.add("show");
+    };
+
+    document.querySelectorAll(".close-btn").forEach((btn) => {
+      btn.addEventListener("click", (e) => {
+        const id = e.target.getAttribute("data-close");
+        if (id === "belief") beliefModal.classList.remove("show");
+        if (id === "options") optionsModal.classList.remove("show");
+      });
+    });
+
+    beliefModal.addEventListener("click", (e) => {
+      if (e.target === beliefModal) beliefModal.classList.remove("show");
+    });
+    optionsModal.addEventListener("click", (e) => {
+      if (e.target === optionsModal) optionsModal.classList.remove("show");
+    });
+
+    const faithGrid = document.getElementById("faithGrid");
+    faithOptions.forEach((name) => {
+      const chip = document.createElement("button");
+      chip.type = "button";
+      chip.className = "faith-chip" + (name === beliefPath ? " active" : "");
+      chip.textContent = name;
+      chip.addEventListener("click", () => {
+        beliefPath = name;
+        faithGrid.querySelectorAll(".faith-chip").forEach((c) =>
+          c.classList.remove("active")
+        );
+        chip.classList.add("active");
+        updateContinuity();
+      });
+      faithGrid.appendChild(chip);
+    });
+
+    const toggleFaith = document.getElementById("toggleFaith");
+    toggleFaith.addEventListener("click", () => {
+      toggleFaith.classList.toggle("on");
+      beliefMode = toggleFaith.classList.contains("on") ? "faith" : "universal";
+      updateContinuity();
+    });
+
+    const toggleTags = document.getElementById("toggleTags");
+    toggleTags.addEventListener("click", () => {
+      toggleTags.classList.toggle("on");
+      showTags = toggleTags.classList.contains("on");
+    });
+
+    const toggleGentle = document.getElementById("toggleGentle");
+    toggleGentle.addEventListener("click", () => {
+      toggleGentle.classList.toggle("on");
+      gentleMode = toggleGentle.classList.contains("on");
+    });
+
+    // -------------------------------
+    // 5) Message handling
+    // -------------------------------
+    async function handleUserMessage() {
+      const text = inputEl.value.trim();
+      if (!text) return;
+      inputEl.value = "";
+
+      addMessage("user", text);
+
+      const entry = findQaEntry(text);
+      if (entry) {
+        applySeedEffect(entry);
+      } else {
+        applyGenericEffectFromText(text);
+      }
+      updateContinuity();
+
+      let replyText;
+      if (entry) {
+        replyText = entry.answer;
+        replyText = maybeAddFaithLine(replyText, entry.category);
+      } else {
+        // fallback generic reply
+        replyText =
+          "I am still a very small prototype and could not find an exact seed reply.\n" +
+          "But I am listening. Can you explain a little more, in simple words?";
+        replyText = maybeAddFaithLine(replyText, "generic");
+      }
+
+      // Gentle mode: tone soften when disturbance high
+      if (gentleMode && D > 0.6) {
+        replyText +=
+          "\n\n(Gentle note: I will keep my tone soft because your disturbance score looks high right now.)";
+      }
+
+      addMessage("assistant", replyText, {
+        emotion: entry?.emotion || "neutral",
+        source: entry ? "Seed (AURA-X)" : "Prototype",
+        extra: `E₀=${E0.toFixed(2)}`
+      });
+    }
+
+    btnSend.addEventListener("click", handleUserMessage);
+    inputEl.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") handleUserMessage();
+    });
+
+    // -------------------------------
+    // 6) Initial hello
+    // -------------------------------
+    function init() {
+      updateContinuity();
+      const intro =
+        "Hello, I am **AURA-X Ω v1**.\n" +
+        "You can talk to me in normal English (or mixed Urdu/English). I will try to track your emotional continuity using my internal formula.";
+      addMessage("assistant", intro, {
+        emotion: "neutral",
+        source: "Seed (AURA-X)"
+      });
+    }
+
+    init();
+  </script>
+</body>
+</html>
