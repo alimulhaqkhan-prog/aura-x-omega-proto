@@ -1719,3 +1719,125 @@
 
   })();
 </script>
+// ------------------------------------------
+  // PART 3 – Simple reactor + chat wiring
+  // ------------------------------------------
+
+  const qaDatabase = qaSeed;
+
+  function findQaEntry(message) {
+    const text = (message || "").toLowerCase();
+    for (const entry of qaDatabase) {
+      if (!entry.patterns) continue;
+      for (const pattern of entry.patterns) {
+        if (text.includes(pattern.toLowerCase())) {
+          return entry;
+        }
+      }
+    }
+    return null;
+  }
+
+  function getDomRefs() {
+    const input =
+      document.querySelector("#userInput") ||
+      document.querySelector("textarea");
+
+    const sendBtn =
+      document.querySelector("#sendButton") ||
+      document.querySelector("button[data-role='send']") ||
+      document.querySelector("button.send");
+
+    const chatLog =
+      document.querySelector("#chatLog") ||
+      document.querySelector(".chat-log") ||
+      document.querySelector(".message-list");
+
+    return { input, sendBtn, chatLog };
+  }
+
+  function appendBubble(role, text) {
+    const { chatLog } = getDomRefs();
+    if (!chatLog) return;
+
+    const row = document.createElement("div");
+    row.className = "msg-row msg-" + role;
+
+    const bubble = document.createElement("div");
+    bubble.className = "msg-bubble";
+    bubble.textContent = text;
+
+    row.appendChild(bubble);
+    chatLog.appendChild(row);
+    chatLog.scrollTop = chatLog.scrollHeight;
+  }
+
+  function respondWithSeed(userText) {
+    const entry = findQaEntry(userText);
+    let answer;
+
+    if (entry && entry.answer) {
+      answer = entry.answer;
+    } else {
+      answer =
+        "I am still a small emotional prototype and I do not have a perfect seed answer for that yet.\n" +
+        "But I can still listen and try to think with you. Can you say it in simpler or more emotional words?";
+    }
+
+    appendBubble("bot", answer);
+  }
+
+  function handleUserSubmit() {
+    const { input } = getDomRefs();
+    if (!input) return;
+
+    const text = input.value.trim();
+    if (!text) return;
+
+    appendBubble("user", text);
+    input.value = "";
+    respondWithSeed(text);
+  }
+
+  function wireEvents() {
+    const { input, sendBtn } = getDomRefs();
+
+    if (sendBtn) {
+      sendBtn.addEventListener("click", handleUserSubmit);
+    }
+
+    if (input) {
+      input.addEventListener("keydown", function (ev) {
+        if (ev.key === "Enter" && !ev.shiftKey) {
+          ev.preventDefault();
+          handleUserSubmit();
+        }
+      });
+    }
+  }
+
+  function introMessageOnce() {
+    const { chatLog } = getDomRefs();
+    if (!chatLog) return;
+    if (chatLog.dataset.introShown === "1") return;
+
+    const hello =
+      "Hello! 😊 I am AURA-X Ω v1 — a synthetic emotional-continuity assistant.\n" +
+      "I try to read your words as both logic and feeling, then reply gently.";
+
+    appendBubble("bot", hello);
+    chatLog.dataset.introShown = "1";
+  }
+
+  function initAuraX() {
+    wireEvents();
+    introMessageOnce();
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initAuraX);
+  } else {
+    initAuraX();
+  }
+})();
+</script>
