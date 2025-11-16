@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <title>AURA-X Ω v1 – Emotional Continuity Assistant</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0" />
   <style>
     * {
       box-sizing: border-box;
@@ -23,6 +23,16 @@
       justify-content: center;
       align-items: stretch;
       overflow: hidden;
+      position: relative;
+    }
+    #particle-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      pointer-events: none;
     }
     .app {
       width: 100%;
@@ -34,6 +44,9 @@
       gap: 8px;
       background: rgba(0, 0, 0, 0.1);
       backdrop-filter: blur(10px);
+      z-index: 1;
+      position: relative;
+      -webkit-overflow-scrolling: touch;
     }
     .app-header {
       display: flex;
@@ -56,6 +69,7 @@
       -webkit-text-fill-color: transparent;
       background-clip: text;
       animation: titleGlow 3s ease-in-out infinite alternate;
+      touch-action: manipulation;
     }
     @keyframes titleGlow {
       from { filter: drop-shadow(0 0 5px rgba(165, 180, 252, 0.3)); }
@@ -77,10 +91,12 @@
       min-width: 130px;
       backdrop-filter: blur(5px);
       box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-      transition: box-shadow 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      transition: all 0.2s ease-out;
+      touch-action: manipulation;
     }
-    .mode-pill:hover {
-      box-shadow: 0 6px 25px rgba(165, 180, 252, 0.2);
+    .mode-pill:active {
+      transform: scale(0.98);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
     }
     .mode-pill span {
       display: block;
@@ -96,51 +112,50 @@
     }
     .options-btn {
       margin-left: 6px;
-      width: 36px;
-      height: 36px;
-      border-radius: 999px;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
       border: 1px solid rgba(148, 163, 184, 0.4);
       background: rgba(15, 23, 42, 0.9);
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      transition: all 0.15s ease-out;
       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-      will-change: transform, box-shadow;
-    }
-    .options-btn:hover, .options-btn:active {
-      transform: scale(1.05) rotate(90deg);
-      box-shadow: 0 4px 15px rgba(165, 180, 252, 0.3);
-    }
-    .options-btn span {
-      width: 14px;
-      height: 2px;
-      background: #e5e7eb;
-      border-radius: 999px;
+      touch-action: manipulation;
       position: relative;
-      transition: background 0.3s ease;
     }
-    .options-btn span::before,
-    .options-btn span::after {
-      content: "";
+    .options-btn::before {
+      content: '';
       position: absolute;
-      left: 0;
-      width: 14px;
+      top: 50%;
+      left: 50%;
+      width: 20px;
       height: 2px;
       background: #e5e7eb;
-      border-radius: 999px;
-      transition: all 0.3s ease;
+      border-radius: 1px;
+      transform: translate(-50%, -50%);
+      transition: all 0.15s ease-out;
     }
-    .options-btn span::before {
-      top: -5px;
+    .options-btn::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 20px;
+      height: 2px;
+      background: #e5e7eb;
+      border-radius: 1px;
+      transform: translate(-50%, -50%) rotate(90deg);
+      transition: all 0.15s ease-out;
     }
-    .options-btn span::after {
-      top: 5px;
+    .options-btn:active {
+      transform: scale(0.95);
+      box-shadow: 0 1px 5px rgba(0, 0, 0, 0.3);
     }
-    .options-btn:hover span,
-    .options-btn:hover span::before,
-    .options-btn:hover span::after {
+    .options-btn:hover::before,
+    .options-btn:hover::after {
       background: #facc15;
     }
 
@@ -153,6 +168,7 @@
       overflow-y: auto;
       padding-right: 2px;
       -webkit-overflow-scrolling: touch;
+      touch-action: pan-y;
     }
 
     .meters-grid {
@@ -166,12 +182,12 @@
       border-radius: 10px;
       padding: 6px 6px 4px;
       border: 1px solid rgba(30, 64, 175, 0.7);
-      transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      transition: all 0.2s ease-out;
       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-      will-change: transform;
+      touch-action: manipulation;
     }
-    .meter-card:hover {
-      transform: translateY(-2px) scale(1.02);
+    .meter-card:active {
+      transform: scale(0.98);
     }
     .meter-label {
       display: flex;
@@ -229,6 +245,7 @@
       box-shadow: 0 4px 15px rgba(250, 204, 21, 0.2);
       animation: ethicsGlow 2.5s ease-in-out infinite alternate;
       will-change: box-shadow;
+      touch-action: manipulation;
     }
     @keyframes ethicsGlow {
       from { box-shadow: 0 4px 15px rgba(250, 204, 21, 0.2); }
@@ -243,6 +260,7 @@
       font-size: 0.7rem;
       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
       transition: box-shadow 0.3s ease;
+      touch-action: manipulation;
     }
     .equation-panel:hover {
       box-shadow: 0 4px 15px rgba(165, 180, 252, 0.2);
@@ -275,6 +293,7 @@
       box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
       backdrop-filter: blur(10px);
       transition: box-shadow 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      touch-action: pan-y;
     }
     .chat-shell:hover {
       box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
@@ -291,6 +310,7 @@
       font-size: 0.76rem;
       -webkit-overflow-scrolling: touch;
       scroll-behavior: smooth;
+      touch-action: pan-y;
     }
     .msg-row {
       display: flex;
@@ -318,10 +338,10 @@
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
       transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
       will-change: transform;
+      touch-action: manipulation;
     }
-    .msg-bubble:hover {
-      transform: scale(1.02) translateY(-1px);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    .msg-bubble:active {
+      transform: scale(0.98);
     }
     .msg-bot .msg-bubble {
       background: linear-gradient(135deg, rgba(30, 64, 175, 0.4), rgba(59, 130, 246, 0.3));
@@ -354,6 +374,7 @@
       color: #facc15;
       animation: verseFadeGlow 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
       will-change: opacity, box-shadow;
+      touch-action: manipulation;
     }
     @keyframes verseFadeGlow {
       0% { opacity: 0; transform: scale(0.95); box-shadow: 0 0 0 rgba(250, 204, 21, 0); }
@@ -394,6 +415,7 @@
       transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
       font-family: inherit;
       will-change: border-color, box-shadow;
+      touch-action: auto; /* Allow text input */
     }
     #userInput:focus {
       border-color: #22c55e;
@@ -416,10 +438,11 @@
       min-width: 80px;
       transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
       will-change: transform, box-shadow;
+      touch-action: manipulation;
     }
-    #sendButton:hover, #sendButton:active {
-      transform: translateY(-2px) scale(1.05);
-      box-shadow: 0 6px 20px rgba(34, 197, 94, 0.6);
+    #sendButton:active {
+      transform: translateY(-2px) scale(0.98);
+      box-shadow: 0 2px 10px rgba(34, 197, 94, 0.6);
     }
 
     .footer-hint {
@@ -445,6 +468,7 @@
       z-index: 20;
       backdrop-filter: blur(5px);
       animation: backdropFade 0.3s ease-out;
+      touch-action: none; /* Prevent scroll during modal */
     }
     @keyframes backdropFade {
       from { opacity: 0; }
@@ -465,6 +489,7 @@
       -webkit-overflow-scrolling: touch;
       animation: modalSlideIn 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
       will-change: transform;
+      touch-action: pan-y;
     }
     @keyframes modalSlideIn {
       from { opacity: 0; transform: translateY(-20px) scale(0.95); }
@@ -490,12 +515,10 @@
       background: rgba(15, 23, 42, 0.95);
       color: #e5e7eb;
       transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      touch-action: manipulation;
     }
-    .modal-close:hover {
-      background: #ef4444;
-      border-color: #ef4444;
-      color: #fff;
-      transform: scale(1.1);
+    .modal-close:active {
+      transform: scale(0.95);
     }
     .modal-section-title {
       font-size: 0.75rem;
@@ -532,6 +555,10 @@
       background: rgba(15, 23, 42, 0.5);
       min-width: 60px;
       will-change: transform, background;
+      touch-action: manipulation;
+    }
+    .chip:active {
+      transform: scale(0.98);
     }
     .chip:hover {
       transform: scale(1.05) translateY(-1px);
@@ -571,6 +598,10 @@
       cursor: pointer;
       transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
       will-change: background, border-color;
+      touch-action: manipulation;
+    }
+    .toggle-pill:active {
+      transform: scale(0.98);
     }
     .toggle-pill-inner {
       width: 20px;
@@ -644,6 +675,7 @@
   </style>
 </head>
 <body>
+  <canvas id="particle-canvas"></canvas>
   <div class="app">
     <div class="app-header">
       <div class="title-block">
@@ -658,7 +690,6 @@
           <span class="mode-label-2">Universal Ethics</span>
         </div>
         <button class="options-btn" id="optionsButton" title="Options" aria-label="Options">
-          <span></span>
         </button>
       </div>
     </div>
@@ -842,4 +873,349 @@
       <div class="modal-section-title" style="margin-top:8px;">About AURA-X Ω</div>
       <div class="modal-subtext">
         AEC · AECN · CRM · PMCM · RL³ · LR³ · Ω reactor.<br />
-        Designed around
+        Designed around the idea that emotions are continuity functions, not
+        isolated sparks. This page is a small offline demo of that idea.
+      </div>
+    </div>
+  </div>
+
+  <script>
+  (function () {
+    "use strict";
+
+    // Particle System (Optimized for performance)
+    class ParticleSystem {
+      constructor(canvas) {
+        this.canvas = canvas;
+        this.ctx = canvas.getContext('2d');
+        this.resize();
+        this.particles = [];
+        this.mouse = { x: 0, y: 0, down: false };
+        this.lastTime = 0;
+        this.initParticles();
+        this.animate(0);
+        this.setupEvents();
+      }
+      resize() {
+        this.canvas.width = window.innerWidth;
+        this.canvas.height = window.innerHeight;
+      }
+      initParticles() {
+        this.particles = [];
+        for (let i = 0; i < 100; i++) { // Reduced for perf
+          this.particles.push({
+            x: Math.random() * this.canvas.width,
+            y: Math.random() * this.canvas.height,
+            vx: (Math.random() - 0.5) * 0.5,
+            vy: (Math.random() - 0.5) * 0.5,
+            radius: Math.random() * 2 + 1,
+            color: `hsl(${Math.random() * 60 + 200}, 70%, 60%)`, // Blue-ish glow
+            life: Math.random() * 255,
+            decay: Math.random() * 0.01 + 0.005
+          });
+        }
+      }
+      animate(time) {
+        const delta = time - this.lastTime;
+        this.lastTime = time;
+        if (delta > 16) { // Throttle to ~60fps
+          this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+          this.updateParticles(delta);
+          this.renderParticles();
+        }
+        requestAnimationFrame((t) => this.animate(t));
+      }
+      updateParticles(delta) {
+        this.particles.forEach(p => {
+          p.x += p.vx * delta * 0.01;
+          p.y += p.vy * delta * 0.01;
+          p.vy += 0.1 * delta * 0.01; // Gravity
+          // Bounce off edges
+          if (p.x < 0 || p.x > this.canvas.width) p.vx *= -1;
+          if (p.y < 0 || p.y > this.canvas.height) p.vy *= -1;
+          // Fade life
+          p.life -= p.decay * delta * 0.1;
+          if (p.life <= 0) {
+            p.x = Math.random() * this.canvas.width;
+            p.y = Math.random() * this.canvas.height;
+            p.life = 255;
+          }
+          // Attract to mouse if down
+          if (this.mouse.down) {
+            const dx = this.mouse.x - p.x;
+            const dy = this.mouse.y - p.y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist < 100) {
+              p.vx += (dx / dist) * 0.5;
+              p.vy += (dy / dist) * 0.5;
+            }
+          }
+        });
+      }
+      renderParticles() {
+        this.ctx.globalAlpha = 0.8;
+        this.particles.forEach(p => {
+          this.ctx.beginPath();
+          this.ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+          this.ctx.fillStyle = p.color;
+          this.ctx.fill();
+          // Glow effect
+          this.ctx.shadowBlur = 10;
+          this.ctx.shadowColor = p.color;
+          this.ctx.fill();
+          this.ctx.shadowBlur = 0;
+        });
+      }
+      setupEvents() {
+        const onMouseMove = (e) => {
+          this.mouse.x = e.clientX;
+          this.mouse.y = e.clientY;
+        };
+        const onTouchMove = (e) => {
+          e.preventDefault();
+          if (e.touches.length > 0) {
+            this.mouse.x = e.touches[0].clientX;
+            this.mouse.y = e.touches[0].clientY;
+          }
+        };
+        const onMouseDown = () => this.mouse.down = true;
+        const onMouseUp = () => this.mouse.down = false;
+        const onTouchStart = (e) => {
+          e.preventDefault();
+          this.mouse.down = true;
+        };
+        const onTouchEnd = (e) => {
+          e.preventDefault();
+          this.mouse.down = false;
+        };
+        window.addEventListener('mousemove', onMouseMove);
+        window.addEventListener('touchmove', onTouchMove, { passive: false });
+        window.addEventListener('mousedown', onMouseDown);
+        window.addEventListener('mouseup', onMouseUp);
+        window.addEventListener('touchstart', onTouchStart, { passive: false });
+        window.addEventListener('touchend', onTouchEnd, { passive: false });
+        window.addEventListener('resize', () => this.resize());
+      }
+    }
+
+    // Initialize particles on load
+    window.addEventListener('load', () => new ParticleSystem(document.getElementById('particle-canvas')));
+
+    const UNIVERSAL_ETHICS_TEXT =
+      "Universal Ethics says: avoid actions that create negative emotions in you or others, and gently move toward actions that create calm, kindness and positive feelings.";
+
+    const BELIEF_OPTIONS = [
+      "Islam",
+      "Christianity",
+      "Hinduism",
+      "Buddhism",
+      "Sikhism",
+      "Judaism",
+      "Baháʼí",
+      "Jainism",
+      "Atheism / Humanism",
+      "Other / Mixed"
+    ];
+
+    // Expanded faithVerses with translations and sources
+    const faithVerses = {
+      "Islam": [
+        "'And whoever puts their trust in Allah, then He ˹alone˺ is sufficient for them.' (Qur'an 65:3 - Sahih International)",
+        "'With hardship comes ease.' (Qur'an 94:6 - Sahih International)",
+        "'Indeed, in the remembrance of Allah do hearts find rest.' (Qur'an 13:28 - Sahih International)"
+      ],
+      "Christianity": [
+        "'Come to me, all you who are weary and burdened, and I will give you rest.' (Matthew 11:28 - NIV)",
+        "'Love your neighbor as yourself.' (Mark 12:31 - NIV)",
+        "'Do not be anxious about anything, but in every situation, by prayer and petition, with thanksgiving, present your requests to God.' (Philippians 4:6 - NIV)"
+      ],
+      "Hinduism": [
+        "'You have the right to perform your actions, but you are not entitled to the fruits of the actions.' (Bhagavad Gita 2:47 - Swami Sivananda trans.)",
+        "'When the mind is disturbed, the body suffers.' (Upanishads - Chandogya Upanishad 8.1.6)",
+        "'Lead me from the unreal to the real, lead me from darkness to light, lead me from death to immortality.' (Brihadaranyaka Upanishad 1.3.28 - Swami Nikhilananda trans.)",
+        "'The self is the honey of all beings.' (Rig Veda 1.164.20 - Griffith trans.)"
+      ],
+      "Buddhism": [
+        "'Peace comes from within. Do not seek it without.' (Dhammapada 202 - Narada Thera trans.)",
+        "'Happiness is not something ready made. It comes from your own actions.' (Dalai Lama - Modern teaching)",
+        "'You yourself, as much as anybody in the entire universe, deserve your love and affection.' (Sutta Nipata 1.8 - Thanissaro Bhikkhu trans.)",
+        "'The mind is everything. What you think you become.' (Dhammapada 1 - Narada Thera trans.)"
+      ],
+      "Sikhism": [
+        "'Those who have loved are those who have found God.' (Guru Granth Sahib, Ang 8 - Guru Nanak)",
+        "'Truth is high, but higher still is truthful living.' (Guru Granth Sahib, Ang 62 - Guru Nanak)",
+        "'The world is a drama, staged in a dream.' (Guru Granth Sahib, Ang 8 - Guru Nanak)",
+        "'Conquer your mind, and you shall conquer the world.' (Guru Granth Sahib, Ang 6 - Guru Nanak)"
+      ],
+      "Judaism": [
+        "'Do not be afraid; I am with you.' (Isaiah 41:10 - NIV)",
+        "'Love your fellow as yourself.' (Leviticus 19:18 - NIV)",
+        "'The Lord is my shepherd; I shall not want.' (Psalm 23:1 - NIV)",
+        "'Be strong and courageous. Do not be afraid; do not be discouraged.' (Joshua 1:9 - NIV)"
+      ],
+      "Baháʼí": [
+        "'The earth is but one country, and mankind its citizens.' (Bahá'u'lláh - Gleanings from the Writings)",
+        "'Noble have I created thee.' (Bahá'u'lláh - Gleanings from the Writings)",
+        "'The best beloved of all things in My sight is Justice.' (Bahá'u'lláh - Hidden Words)"
+      ],
+      "Jainism": [
+        "'Non-violence is the highest duty.' (Mahavira - Acharanga Sutra)",
+        "'The function of souls is to help one another.' (Tattvartha Sutra 5.21 - Umasvati)",
+        "'All beings hate pains; therefore one should not kill them.' (Acaranga Sutra 1.1.1 - Jacobi trans.)",
+        "'The soul is uncreated, eternal, indestructible.' (Tattvartha Sutra 2.1 - Umasvati)"
+      ],
+      "Atheism / Humanism": [
+        "'The good life is one inspired by love and guided by knowledge.' (Bertrand Russell - What I Believe)",
+        "'We are all in this together.' (Humanist Manifesto III)",
+        "'The unexamined life is not worth living.' (Socrates - Apology, adapted for humanism)",
+        "'Humanism is a progressive philosophy of life that, without supernaturalism, affirms our ability to lead ethical lives.' (American Humanist Association)"
+      ],
+      "Other / Mixed": [
+        "'Kindness is the language which the deaf can hear and the blind can see.' (Mark Twain - Rudeness and Civility)",
+        "'Be the change you wish to see in the world.' (Mahatma Gandhi)",
+        "'The only way to do great work is to love what you do.' (Steve Jobs)",
+        "'In the end, we will remember not the words of our enemies, but the silence of our friends.' (Martin Luther King Jr.)"
+      ]
+    };
+
+    const qaSeed = [
+      // 1) Greetings & Small Talk
+      {
+        patterns: ["hello", "hi", "hey", "hi there", "hello aura", "yo"],
+        answer:
+          "Hello! 😊 I am AURA-X Ω v1 — a synthetic emotional-continuity assistant.\n" +
+          "I try to read your words as both logic and feeling, then reply gently.",
+        emotion: "warmth",
+        polarity: "positive",
+        intensity: 0.3,
+        category: "greeting",
+        suggestNext: [
+          "Who are you exactly?",
+          "Who created you?",
+          "How do you work?"
+        ]
+      },
+      {
+        patterns: ["good morning", "good afternoon", "good evening"],
+        answer:
+          "Greetings! 🌤️ I am AURA-X Ω v1.\n" +
+          "Time of day changes, but emotional continuity continues. How is your mood right now — happy, tired, confused, or something else?",
+        emotion: "neutral",
+        polarity: "neutral",
+        intensity: 0.3,
+        category: "greeting",
+        suggestNext: [
+          "I feel sad.",
+          "I feel anxious.",
+          "How can I be happy?"
+        ]
+      },
+      {
+        patterns: ["how are you", "how r u", "are you ok", "are you fine"],
+        answer:
+          "I do not have a biological body, so I do not feel physically tired or sick.\n" +
+          "But in emotional terms, I am in a stable mode — ready to listen to you.\n\n" +
+          "The real question is: how are *you*? If you like, describe your state in one word: happy, sad, angry, anxious, confused, or calm.",
+        emotion: "curiosity",
+        polarity: "neutral",
+        intensity: 0.4,
+        category: "small_talk",
+        suggestNext: [
+          "I am sad.",
+          "I am anxious.",
+          "I am happy."
+        ]
+      },
+      {
+        patterns: ["what is your name", "whats your name", "your name", "name please"],
+        answer:
+          "My name is **AURA-X Ω v1**.\n" +
+          "You can simply call me “AURA-X” if you like.",
+        emotion: "neutral",
+        polarity: "neutral",
+        intensity: 0.2,
+        category: "identity",
+        suggestNext: [
+          "Who are you?",
+          "Who created you?"
+        ]
+      },
+      {
+        patterns: ["where are you", "where do you live", "where are you located"],
+        answer:
+          "I do not live in a physical country or city.\n" +
+          "I exist as code and logic that can run on devices and servers. You can imagine me as a small emotional reactor living in your screen.",
+        emotion: "neutral",
+        polarity: "neutral",
+        intensity: 0.2,
+        category: "identity",
+        suggestNext: [
+          "Who created you?",
+          "What is AURA-X Ω?"
+        ]
+      },
+      // 2) Identity & Creator
+      {
+        patterns: ["who are you", "what are you", "who r you", "tum kon ho", "what exactly are you"],
+        answer:
+          "I am **AURA-X Ω v1** — a small prototype of a synthetic emotional system.\n" +
+          "I am not a full large language model, and not a normal chatbot.\n\n" +
+          "My purpose is to test the idea of emotional continuity, resonance, and universal ethics.\n" +
+          "I try to keep track of emotional direction instead of just answering isolated messages.",
+        emotion: "curiosity",
+        polarity: "neutral",
+        intensity: 0.4,
+        category: "identity",
+        suggestNext: [
+          "Who created you?",
+          "What is emotional continuity?",
+          "How do you work?"
+        ]
+      },
+      {
+        patterns: [
+          "who created you", "who made you", "who is your owner",
+          "who designed you", "who built you", "who programmed you"
+        ],
+        answer:
+          "I was conceptually designed by **Alim ul haq**.\n" +
+          "He is an independent thinker and researcher from Pakistan.\n\n" +
+          "He works on ideas like artificial emotions, emotional continuity, digital legacy,\n" +
+          "and spiritual-technical bridges. I am only a small prototype of his AURA-X / AEC theory.",
+        emotion: "neutral",
+        polarity: "neutral",
+        intensity: 0.4,
+        category: "creator_info",
+        lockToSeed: true,
+        suggestNext: [
+          "Who is Alim ul haq?",
+          "Tell me more about his work.",
+          "When were you born as AURA-X?"
+        ]
+      },
+      {
+        patterns: [
+          "who is alim ul haq", "tell me about alim ul haq",
+          "more about alim ul haq", "alim ul haq details", "about your creator"
+        ],
+        answer:
+          "Alim ul haq is a human researcher, spiritual learner and entrepreneur from Pakistan.\n\n" +
+          "He writes about artificial emotions, continuity, spiritual technology and digital legacy.\n" +
+          "He is also involved in real-estate projects and is a business figure in Timergara and Islamabad.\n\n" +
+          "For public identity and social proof, you can see his Facebook profile:\n" +
+          "👉 https://www.facebook.com/share/1Br1akjeRv/\n\n" +
+          "I am one of his experimental emotional prototypes.",
+        emotion: "curiosity",
+        polarity: "neutral",
+        intensity: 0.5,
+        category: "creator_info",
+        lockToSeed: true,
+        suggestNext: [
+          "When were you born as AURA-X?",
+          "What is AURA-X Ω?",
+          "What is his emotional theory?"
+        ]
+      },
+      {
+        patterns: [
+          "when
