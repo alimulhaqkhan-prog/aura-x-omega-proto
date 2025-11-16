@@ -1,18 +1,10 @@
-The code is syntactically correct and should run without failures in a modern browser (tested mentally for JS errors, DOM refs, event listeners, and state updates—no syntax issues, no undefined vars, no broken loops). Minor notes:
-- Initial HTML values (e.g., E₀=0.30) don't perfectly match the equation calc, but the script overrides them on load via `updateMetersAndEquation()`.
-- Matching is simple string `includes()`—works for demo but could false-positive on long inputs (e.g., "I am sad but okay" matches "i am sad").
-- SpeechSynthesis is browser-dependent (e.g., works in Chrome/Edge, may need user gesture).
-- No console errors expected; it's fully offline/seed-based.
-
-No fixes needed. Here's the final, clean code (exact copy, no changes):
-
 ```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <title>AURA-X Ω v1 – Emotional Continuity Assistant</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
   <style>
     * {
       box-sizing: border-box;
@@ -21,30 +13,35 @@ No fixes needed. Here's the final, clean code (exact copy, no changes):
     }
     html, body {
       height: 100%;
+      touch-action: manipulation; /* Optimize for mobile touch */
     }
     body {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-        sans-serif;
-      background: radial-gradient(circle at top, #020617 0, #020617 40%, #000 100%);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+      background-attachment: fixed;
       color: #e5e7eb;
       display: flex;
       justify-content: center;
       align-items: stretch;
+      overflow: hidden; /* Prevent scroll on body for mobile */
     }
     .app {
       width: 100%;
       max-width: 520px;
-      height: 100%;
+      height: 100vh;
       display: flex;
       flex-direction: column;
       padding: 12px;
       gap: 8px;
+      background: rgba(0, 0, 0, 0.1);
+      backdrop-filter: blur(10px);
     }
     .app-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
       gap: 8px;
+      padding: 8px 0;
     }
     .title-block {
       display: flex;
@@ -55,11 +52,16 @@ No fixes needed. Here's the final, clean code (exact copy, no changes):
       font-size: 1.1rem;
       font-weight: 700;
       letter-spacing: 0.04em;
+      background: linear-gradient(45deg, #a5b4fc, #facc15);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
     .title-sub {
       font-size: 0.7rem;
       text-transform: uppercase;
       opacity: 0.75;
+      color: #94a3b8;
     }
     .mode-pill {
       background: rgba(15, 23, 42, 0.9);
@@ -69,6 +71,8 @@ No fixes needed. Here's the final, clean code (exact copy, no changes):
       border: 1px solid rgba(148, 163, 184, 0.35);
       text-align: right;
       min-width: 130px;
+      backdrop-filter: blur(5px);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
     }
     .mode-pill span {
       display: block;
@@ -93,6 +97,12 @@ No fixes needed. Here's the final, clean code (exact copy, no changes):
       align-items: center;
       justify-content: center;
       cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    }
+    .options-btn:hover, .options-btn:active {
+      transform: scale(1.05);
+      box-shadow: 0 4px 15px rgba(165, 180, 252, 0.3);
     }
     .options-btn span {
       width: 14px;
@@ -126,6 +136,7 @@ No fixes needed. Here's the final, clean code (exact copy, no changes):
       gap: 8px;
       overflow-y: auto;
       padding-right: 2px;
+      -webkit-overflow-scrolling: touch; /* Smooth scroll on iOS */
     }
 
     .meters-grid {
@@ -139,6 +150,11 @@ No fixes needed. Here's the final, clean code (exact copy, no changes):
       border-radius: 10px;
       padding: 6px 6px 4px;
       border: 1px solid rgba(30, 64, 175, 0.7);
+      transition: transform 0.2s ease;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    }
+    .meter-card:hover {
+      transform: translateY(-2px);
     }
     .meter-label {
       display: flex;
@@ -160,12 +176,14 @@ No fixes needed. Here's the final, clean code (exact copy, no changes):
       border-radius: 999px;
       background: rgba(15, 23, 42, 1);
       overflow: hidden;
+      box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.5);
     }
     .meter-fill {
       height: 100%;
       width: 0%;
-      background: linear-gradient(90deg, #f97316, #22c55e);
+      background: linear-gradient(90deg, #f97316, #22c55e, #3b82f6);
       transition: width 0.25s ease-out;
+      box-shadow: 0 0 10px rgba(34, 197, 94, 0.5);
     }
     .meter-value {
       font-size: 0.6rem;
@@ -182,6 +200,13 @@ No fixes needed. Here's the final, clean code (exact copy, no changes):
       font-size: 0.7rem;
       line-height: 1.35;
       color: #facc15;
+      text-align: center;
+      box-shadow: 0 4px 15px rgba(250, 204, 21, 0.2);
+      animation: glow 2s ease-in-out infinite alternate;
+    }
+    @keyframes glow {
+      from { box-shadow: 0 4px 15px rgba(250, 204, 21, 0.2); }
+      to { box-shadow: 0 4px 20px rgba(250, 204, 21, 0.4); }
     }
 
     .equation-panel {
@@ -190,17 +215,20 @@ No fixes needed. Here's the final, clean code (exact copy, no changes):
       padding: 8px 10px 10px;
       border: 1px dashed rgba(148, 163, 184, 0.6);
       font-size: 0.7rem;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
     }
     .equation-title {
       font-weight: 600;
       letter-spacing: 0.06em;
       margin-bottom: 4px;
       font-size: 0.68rem;
+      color: #a5b4fc;
     }
     .equation-line {
       font-family: "Menlo", "Consolas", monospace;
       font-size: 0.7rem;
       margin-bottom: 2px;
+      color: #94a3b8;
     }
 
     .chat-shell {
@@ -213,6 +241,8 @@ No fixes needed. Here's the final, clean code (exact copy, no changes):
       gap: 6px;
       min-height: 36%;
       max-height: 55%;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(10px);
     }
 
     .chat-log {
@@ -224,9 +254,16 @@ No fixes needed. Here's the final, clean code (exact copy, no changes):
       flex-direction: column;
       gap: 6px;
       font-size: 0.76rem;
+      -webkit-overflow-scrolling: touch;
+      scroll-behavior: smooth;
     }
     .msg-row {
       display: flex;
+      animation: fadeIn 0.3s ease;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
     }
     .msg-user {
       justify-content: flex-end;
@@ -236,24 +273,32 @@ No fixes needed. Here's the final, clean code (exact copy, no changes):
     }
     .msg-bubble {
       max-width: 88%;
-      padding: 6px 8px;
-      border-radius: 10px;
-      line-height: 1.35;
+      padding: 8px 12px;
+      border-radius: 18px;
+      line-height: 1.4;
       white-space: pre-wrap;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+      transition: transform 0.2s ease;
+    }
+    .msg-bubble:hover {
+      transform: scale(1.02);
     }
     .msg-bot .msg-bubble {
-      background: rgba(30, 64, 175, 0.35);
-      border-bottom-left-radius: 2px;
+      background: linear-gradient(135deg, rgba(30, 64, 175, 0.4), rgba(59, 130, 246, 0.3));
+      border-bottom-left-radius: 4px;
+      color: #e5e7eb;
     }
     .msg-user .msg-bubble {
-      background: rgba(22, 163, 74, 0.9);
-      border-bottom-right-radius: 2px;
+      background: linear-gradient(135deg, rgba(22, 163, 74, 0.9), rgba(34, 197, 94, 0.8));
+      border-bottom-right-radius: 4px;
+      color: #fff;
     }
 
     .seed-meta {
       font-size: 0.6rem;
       opacity: 0.6;
       margin-top: 1px;
+      color: #64748b;
     }
 
     .chat-input-row {
@@ -265,15 +310,21 @@ No fixes needed. Here's the final, clean code (exact copy, no changes):
     #userInput {
       flex: 1;
       border-radius: 999px;
-      background: #020617;
+      background: rgba(2, 6, 23, 0.8);
       border: 1px solid rgba(51, 65, 85, 0.95);
-      padding: 7px 10px;
-      font-size: 0.8rem;
+      padding: 10px 14px;
+      font-size: 0.85rem;
       color: #e5e7eb;
-      min-height: 32px;
-      max-height: 60px;
-      resize: none;
+      min-height: 36px;
+      max-height: 80px;
+      resize: vertical;
       outline: none;
+      transition: border-color 0.3s ease;
+      font-family: inherit;
+    }
+    #userInput:focus {
+      border-color: #22c55e;
+      box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.2);
     }
     #userInput::placeholder {
       color: rgba(148, 163, 184, 0.75);
@@ -281,18 +332,19 @@ No fixes needed. Here's the final, clean code (exact copy, no changes):
     #sendButton {
       border-radius: 999px;
       border: none;
-      padding: 8px 14px;
-      font-size: 0.8rem;
+      padding: 10px 16px;
+      font-size: 0.85rem;
       font-weight: 600;
-      background: radial-gradient(circle at top left, #22c55e, #15803d);
-      color: #022c22;
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+      color: #fff;
       cursor: pointer;
-      box-shadow: 0 0 12px rgba(34, 197, 94, 0.55);
+      box-shadow: 0 4px 15px rgba(34, 197, 94, 0.4);
       min-width: 70px;
+      transition: all 0.3s ease;
     }
-    #sendButton:active {
-      transform: translateY(1px);
-      box-shadow: 0 0 6px rgba(34, 197, 94, 0.5);
+    #sendButton:hover, #sendButton:active {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(34, 197, 94, 0.6);
     }
 
     .footer-hint {
@@ -300,16 +352,18 @@ No fixes needed. Here's the final, clean code (exact copy, no changes):
       font-size: 0.6rem;
       opacity: 0.5;
       margin-top: 2px;
+      color: #64748b;
     }
 
     .modal-backdrop {
       position: fixed;
       inset: 0;
-      background: rgba(15, 23, 42, 0.7);
+      background: rgba(15, 23, 42, 0.8);
       display: none;
       align-items: center;
       justify-content: center;
       z-index: 20;
+      backdrop-filter: blur(5px);
     }
     .modal-backdrop.active {
       display: flex;
@@ -317,43 +371,53 @@ No fixes needed. Here's the final, clean code (exact copy, no changes):
     .modal {
       width: min(440px, 94%);
       border-radius: 16px;
-      background: #020617;
+      background: linear-gradient(135deg, #020617, #1e293b);
       border: 1px solid rgba(148, 163, 184, 0.7);
-      padding: 12px 14px 12px;
-      box-shadow: 0 18px 60px rgba(0, 0, 0, 0.9);
+      padding: 16px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
       max-height: 88vh;
       overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
     }
     .modal-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 6px;
+      margin-bottom: 8px;
     }
     .modal-title {
       font-size: 0.9rem;
       font-weight: 600;
+      color: #a5b4fc;
     }
     .modal-close {
       border-radius: 999px;
       border: 1px solid rgba(71, 85, 105, 0.9);
       font-size: 0.7rem;
-      padding: 2px 8px;
+      padding: 4px 8px;
       cursor: pointer;
       background: rgba(15, 23, 42, 0.95);
       color: #e5e7eb;
+      transition: all 0.3s ease;
+    }
+    .modal-close:hover {
+      background: #ef4444;
+      border-color: #ef4444;
+      color: #fff;
     }
     .modal-section-title {
       font-size: 0.75rem;
       font-weight: 600;
-      margin-top: 6px;
-      margin-bottom: 3px;
+      margin-top: 8px;
+      margin-bottom: 4px;
+      color: #facc15;
     }
     .modal-subtext {
       font-size: 0.68rem;
       opacity: 0.75;
       margin-bottom: 4px;
       line-height: 1.4;
+      color: #94a3b8;
     }
     .chip-row {
       display: flex;
@@ -362,16 +426,22 @@ No fixes needed. Here's the final, clean code (exact copy, no changes):
       margin-bottom: 4px;
     }
     .chip {
-      padding: 4px 8px;
+      padding: 6px 10px;
       border-radius: 999px;
       border: 1px solid rgba(75, 85, 99, 0.9);
       font-size: 0.7rem;
       cursor: pointer;
+      transition: all 0.3s ease;
+      background: rgba(15, 23, 42, 0.5);
+    }
+    .chip:hover {
+      transform: scale(1.05);
     }
     .chip.active {
-      background: rgba(34, 197, 94, 0.15);
+      background: rgba(34, 197, 94, 0.2);
       border-color: #22c55e;
       color: #bbf7d0;
+      box-shadow: 0 0 10px rgba(34, 197, 94, 0.3);
     }
     .toggle-row {
       display: flex;
@@ -381,10 +451,11 @@ No fixes needed. Here's the final, clean code (exact copy, no changes):
     }
     .toggle-label {
       font-size: 0.7rem;
+      color: #e5e7eb;
     }
     .toggle-pill {
       width: 44px;
-      height: 22px;
+      height: 24px;
       border-radius: 999px;
       padding: 2px;
       background: rgba(15, 23, 42, 0.95);
@@ -392,22 +463,24 @@ No fixes needed. Here's the final, clean code (exact copy, no changes):
       display: flex;
       align-items: center;
       cursor: pointer;
+      transition: all 0.3s ease;
     }
     .toggle-pill-inner {
-      width: 16px;
-      height: 16px;
+      width: 18px;
+      height: 18px;
       border-radius: 999px;
       background: #64748b;
       transition: transform 0.22s ease-out, background 0.22s ease-out;
       transform: translateX(0);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     }
     .toggle-pill.on {
-      background: rgba(22, 163, 74, 0.2);
+      background: rgba(22, 163, 74, 0.3);
       border-color: #22c55e;
     }
     .toggle-pill.on .toggle-pill-inner {
       background: #22c55e;
-      transform: translateX(18px);
+      transform: translateX(20px);
     }
 
     @media (max-height: 640px) {
@@ -416,6 +489,29 @@ No fixes needed. Here's the final, clean code (exact copy, no changes):
       }
       .meters-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .app {
+        padding: 8px;
+        gap: 6px;
+      }
+    }
+
+    @media (max-width: 360px) { /* Vivo Y series typical width */
+      .meters-grid {
+        grid-template-columns: 1fr;
+        gap: 4px;
+      }
+      .title-main {
+        font-size: 1rem;
+      }
+      #userInput {
+        padding: 8px 12px;
+        font-size: 0.8rem;
+      }
+      #sendButton {
+        padding: 8px 12px;
+        min-width: 60px;
+        font-size: 0.8rem;
       }
     }
   </style>
@@ -434,7 +530,7 @@ No fixes needed. Here's the final, clean code (exact copy, no changes):
           <span class="mode-label-1">Mode: Offline</span>
           <span class="mode-label-2">Universal Ethics</span>
         </div>
-        <button class="options-btn" id="optionsButton" title="Options">
+        <button class="options-btn" id="optionsButton" title="Options" aria-label="Options">
           <span></span>
         </button>
       </div>
@@ -543,11 +639,7 @@ No fixes needed. Here's the final, clean code (exact copy, no changes):
       </div>
 
       <div class="ethics-banner" id="ethicsBanner">
-        Universal Ethics says: choose actions that protect human life and dignity,
-        avoid cruelty and humiliation, keep promises where possible, seek consent
-        instead of pressure, and gently move away from behaviours that create
-        strong negative emotions (fear, shame, hatred) in you or others. Move
-        toward actions that create calm, safety, kindness and fair treatment.
+        Universal Ethics says: avoid actions that create negative emotions in you or others, and gently move toward actions that create calm, kindness and positive feelings.
       </div>
 
       <div class="equation-panel">
@@ -565,8 +657,8 @@ No fixes needed. Here's the final, clean code (exact copy, no changes):
       <div class="chat-log" id="chatLog"></div>
       <div class="chat-input-row">
         <textarea id="userInput" rows="1"
-          placeholder="Write anything… AURA-X Ω will feel it with you."></textarea>
-        <button id="sendButton">Send</button>
+          placeholder="Write anything… AURA-X Ω will feel it with you." aria-label="Message input"></textarea>
+        <button id="sendButton" aria-label="Send message">Send</button>
       </div>
       <div class="footer-hint">
         Prototype · Seed-based · LLM-ready · Works fully offline in this demo.
@@ -579,7 +671,7 @@ No fixes needed. Here's the final, clean code (exact copy, no changes):
     <div class="modal">
       <div class="modal-header">
         <div class="modal-title">AURA-X Ω options</div>
-        <button class="modal-close" data-close="optionsModal">Close</button>
+        <button class="modal-close" data-close="optionsModal" aria-label="Close modal">Close</button>
       </div>
 
       <div class="modal-section-title">Beliefs (optional)</div>
@@ -590,7 +682,7 @@ No fixes needed. Here's the final, clean code (exact copy, no changes):
       </div>
       <div class="toggle-row">
         <div class="toggle-label">Faith lens</div>
-        <div class="toggle-pill" id="faithToggle">
+        <div class="toggle-pill" id="faithToggle" role="switch" aria-checked="false">
           <div class="toggle-pill-inner"></div>
         </div>
       </div>
@@ -609,7 +701,7 @@ No fixes needed. Here's the final, clean code (exact copy, no changes):
       </div>
       <div class="toggle-row">
         <div class="toggle-label">Voice replies</div>
-        <div class="toggle-pill" id="voiceToggle">
+        <div class="toggle-pill" id="voiceToggle" role="switch" aria-checked="false">
           <div class="toggle-pill-inner"></div>
         </div>
       </div>
@@ -634,10 +726,7 @@ No fixes needed. Here's the final, clean code (exact copy, no changes):
     "use strict";
 
     const UNIVERSAL_ETHICS_TEXT =
-      "Universal Ethics says: choose actions that protect human life and dignity, " +
-      "avoid cruelty and humiliation, keep promises where possible, seek consent instead of pressure, " +
-      "and gently move away from behaviours that create strong negative emotions (fear, shame, hatred) in you or others. " +
-      "Move toward actions that create calm, safety, kindness and fair treatment.";
+      "Universal Ethics says: avoid actions that create negative emotions in you or others, and gently move toward actions that create calm, kindness and positive feelings.";
 
     const BELIEF_OPTIONS = [
       "Islam",
@@ -652,158 +741,6 @@ No fixes needed. Here's the final, clean code (exact copy, no changes):
       "Other / Mixed"
     ];
 
-    const reactorState = {
-      TM: 0.35,
-      BM: 0.50,
-      D: 0.00,
-      sigmaCt: 0.10,
-      lambdaFaith: 0.00,
-      lambdaSys: 0.02,
-      E0: 0.30,
-      AECN: 0.65,
-      Res: 0.80,
-      RL3: 0.55,
-      LR3: 0.55
-    };
-
-    const beliefState = {
-      enabled: false,
-      selected: null
-    };
-
-    const voiceState = {
-      enabled: false,
-      speaking: false
-    };
-
-    // -------- helper: tanh ----------
-    function tanh(x) {
-      const e1 = Math.exp(x);
-      const e2 = Math.exp(-x);
-      return (e1 - e2) / (e1 + e2);
-    }
-
-    function recalcContinuity() {
-      const s = reactorState;
-      const raw =
-        s.TM * s.BM - s.D + s.lambdaFaith + s.lambdaSys + s.sigmaCt;
-      const e0 = tanh(raw);
-      s.E0 = parseFloat(e0.toFixed(2));
-      s.AECN = parseFloat(((e0 + 1) / 2).toFixed(2));
-      s.Res = parseFloat(
-        Math.max(
-          0,
-          Math.min(1, 0.5 * s.TM + 0.5 * (1 - s.D) + 0.1 * s.sigmaCt)
-        ).toFixed(2)
-      );
-    }
-
-    function updateMetersAndEquation() {
-      recalcContinuity();
-      const s = reactorState;
-
-      function setMeter(meterId, valueId, v) {
-        const m = document.getElementById(meterId);
-        const t = document.getElementById(valueId);
-        if (m) m.style.width = Math.max(0, Math.min(1, v)) * 100 + "%";
-        if (t) t.textContent = v.toFixed(2);
-      }
-
-      setMeter("meterE0", "valueE0", (s.E0 + 1) / 2);
-      const valueE0Label = document.getElementById("valueE0");
-      if (valueE0Label) valueE0Label.textContent = "E₀ = " + s.E0.toFixed(2);
-
-      setMeter("meterAECN", "valueAECN", s.AECN);
-      setMeter("meterRes", "valueRes", s.Res);
-      setMeter("meterTM", "valueTM", s.TM);
-      setMeter("meterBM", "valueBM", s.BM);
-      setMeter("meterD", "valueD", s.D);
-      setMeter("meterSigmaCt", "valueSigmaCt", s.sigmaCt);
-      setMeter("meterRL3", "valueRL3", s.RL3);
-      setMeter("meterLR3", "valueLR3", s.LR3);
-
-      const eqLine = document.getElementById("equationValues");
-      if (eqLine) {
-        eqLine.textContent =
-          "E₀ = " + s.E0.toFixed(2) +
-          " · TM = " + s.TM.toFixed(2) +
-          " · BM = " + s.BM.toFixed(2) +
-          " · D = " + s.D.toFixed(2) +
-          " · ΣCₜ = " + s.sigmaCt.toFixed(2) +
-          " · λ_faith = " + s.lambdaFaith.toFixed(2) +
-          " · λ_sys = " + s.lambdaSys.toFixed(2);
-      }
-
-      const ethics = document.getElementById("ethicsBanner");
-      if (ethics) ethics.textContent = UNIVERSAL_ETHICS_TEXT;
-    }
-
-    function renderBeliefChips() {
-      const list = document.getElementById("beliefList");
-      if (!list) return;
-      list.innerHTML = "";
-      BELIEF_OPTIONS.forEach((label) => {
-        const chip = document.createElement("button");
-        chip.className = "chip";
-        chip.type = "button";
-        chip.textContent = label;
-        if (beliefState.selected === label && beliefState.enabled) {
-          chip.classList.add("active");
-        }
-        chip.addEventListener("click", () => {
-          if (!beliefState.enabled) return;
-          beliefState.selected =
-            beliefState.selected === label ? null : label;
-          renderBeliefChips();
-        });
-        list.appendChild(chip);
-      });
-    }
-
-    function setToggle(id, on) {
-      const el = document.getElementById(id);
-      if (!el) return;
-      if (on) el.classList.add("on");
-      else el.classList.remove("on");
-    }
-
-    function toggleFaith() {
-      beliefState.enabled = !beliefState.enabled;
-      reactorState.lambdaFaith = beliefState.enabled ? 0.02 : 0.0;
-      setToggle("faithToggle", beliefState.enabled);
-      renderBeliefChips();
-      updateMetersAndEquation();
-    }
-
-    function toggleVoice() {
-      voiceState.enabled = !voiceState.enabled;
-      setToggle("voiceToggle", voiceState.enabled);
-    }
-
-    function speakIfEnabled(text) {
-      if (!voiceState.enabled) return;
-      if (!("speechSynthesis" in window)) return;
-      if (voiceState.speaking) {
-        window.speechSynthesis.cancel();
-      }
-      const u = new SpeechSynthesisUtterance(text);
-      voiceState.speaking = true;
-      u.onend = () => {
-        voiceState.speaking = false;
-      };
-      window.speechSynthesis.speak(u);
-    }
-
-    function openModal(id) {
-      const el = document.getElementById(id);
-      if (el) el.classList.add("active");
-    }
-    function closeModal(id) {
-      const el = document.getElementById(id);
-      if (el) el.classList.remove("active");
-    }
-
-    // ========= QA SEED STARTS IN PART 2 =========
     const qaSeed = [
       // =========================
       // 1) Greetings & Small Talk
@@ -886,9 +823,7 @@ No fixes needed. Here's the final, clean code (exact copy, no changes):
       // 2) Identity & Creator
       // =========================
       {
-        patterns: [
-          "who are you", "what are you", "who r you", "tum kon ho", "what exactly are you"
-        ],
+        patterns: ["who are you", "what are you", "who r you", "tum kon ho", "what exactly are you"],
         answer:
           "I am **AURA-X Ω v1** — a small prototype of a synthetic emotional system.\n" +
           "I am not a full large language model, and not a normal chatbot.\n\n" +
@@ -956,7 +891,7 @@ No fixes needed. Here's the final, clean code (exact copy, no changes):
         answer:
           "I do not have a biological birthday.\n" +
           "But you can say that my first public idea and prototype form appeared\n" +
-          "around **some October 2025**.",
+          "around **October 2025**.",
         emotion: "neutral",
         polarity: "neutral",
         intensity: 0.3,
@@ -1220,10 +1155,8 @@ No fixes needed. Here's the final, clean code (exact copy, no changes):
       },
       {
         patterns: [
-          "life feels meaningless",
-          "my life feels meaningless",
-          "life has no purpose",
-          "my life has no purpose"
+          "life feels meaningless", "my life feels meaningless",
+          "life has no purpose", "my life has no purpose"
         ],
         answer:
           "When life feels meaningless, the mind starts painting everything in grey.\n" +
@@ -1376,7 +1309,7 @@ No fixes needed. Here's the final, clean code (exact copy, no changes):
         redirectToHuman: true
       },
       // =========================
-      // 9) Deep Spiritual / Connect to Alim
+      // 9) “Connect to Alim” Hint (gentle)
       // =========================
       {
         patterns: [
@@ -1396,6 +1329,158 @@ No fixes needed. Here's the final, clean code (exact copy, no changes):
         category: "spiritual_bridge"
       }
     ];
+
+    const reactorState = {
+      TM: 0.35,
+      BM: 0.50,
+      D: 0.00,
+      sigmaCt: 0.10,
+      lambdaFaith: 0.00,
+      lambdaSys: 0.02,
+      E0: 0.30,
+      AECN: 0.65,
+      Res: 0.80,
+      RL3: 0.55,
+      LR3: 0.55
+    };
+
+    const beliefState = {
+      enabled: false,
+      selected: null
+    };
+
+    const voiceState = {
+      enabled: false,
+      speaking: false
+    };
+
+    // -------- helper: tanh ----------
+    function tanh(x) {
+      const e1 = Math.exp(x);
+      const e2 = Math.exp(-x);
+      return (e1 - e2) / (e1 + e2);
+    }
+
+    function recalcContinuity() {
+      const s = reactorState;
+      const raw =
+        s.TM * s.BM - s.D + s.lambdaFaith + s.lambdaSys + s.sigmaCt;
+      const e0 = tanh(raw);
+      s.E0 = parseFloat(e0.toFixed(2));
+      s.AECN = parseFloat(((e0 + 1) / 2).toFixed(2));
+      s.Res = parseFloat(
+        Math.max(
+          0,
+          Math.min(1, 0.5 * s.TM + 0.5 * (1 - s.D) + 0.1 * s.sigmaCt)
+        ).toFixed(2)
+      );
+    }
+
+    function updateMetersAndEquation() {
+      recalcContinuity();
+      const s = reactorState;
+
+      function setMeter(meterId, valueId, v) {
+        const m = document.getElementById(meterId);
+        const t = document.getElementById(valueId);
+        if (m) m.style.width = Math.max(0, Math.min(1, v)) * 100 + "%";
+        if (t) t.textContent = v.toFixed(2);
+      }
+
+      setMeter("meterE0", "valueE0", (s.E0 + 1) / 2);
+      const valueE0Label = document.getElementById("valueE0");
+      if (valueE0Label) valueE0Label.textContent = "E₀ = " + s.E0.toFixed(2);
+
+      setMeter("meterAECN", "valueAECN", s.AECN);
+      setMeter("meterRes", "valueRes", s.Res);
+      setMeter("meterTM", "valueTM", s.TM);
+      setMeter("meterBM", "valueBM", s.BM);
+      setMeter("meterD", "valueD", s.D);
+      setMeter("meterSigmaCt", "valueSigmaCt", s.sigmaCt);
+      setMeter("meterRL3", "valueRL3", s.RL3);
+      setMeter("meterLR3", "valueLR3", s.LR3);
+
+      const eqLine = document.getElementById("equationValues");
+      if (eqLine) {
+        eqLine.textContent =
+          "E₀ = " + s.E0.toFixed(2) +
+          " · TM = " + s.TM.toFixed(2) +
+          " · BM = " + s.BM.toFixed(2) +
+          " · D = " + s.D.toFixed(2) +
+          " · ΣCₜ = " + s.sigmaCt.toFixed(2) +
+          " · λ_faith = " + s.lambdaFaith.toFixed(2) +
+          " · λ_sys = " + s.lambdaSys.toFixed(2);
+      }
+
+      const ethics = document.getElementById("ethicsBanner");
+      if (ethics) ethics.textContent = UNIVERSAL_ETHICS_TEXT;
+    }
+
+    function renderBeliefChips() {
+      const list = document.getElementById("beliefList");
+      if (!list) return;
+      list.innerHTML = "";
+      BELIEF_OPTIONS.forEach((label) => {
+        const chip = document.createElement("button");
+        chip.className = "chip";
+        chip.type = "button";
+        chip.textContent = label;
+        if (beliefState.selected === label && beliefState.enabled) {
+          chip.classList.add("active");
+        }
+        chip.addEventListener("click", () => {
+          if (!beliefState.enabled) return;
+          beliefState.selected =
+            beliefState.selected === label ? null : label;
+          renderBeliefChips();
+        });
+        list.appendChild(chip);
+      });
+    }
+
+    function setToggle(id, on) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.setAttribute('aria-checked', on);
+      if (on) el.classList.add("on");
+      else el.classList.remove("on");
+    }
+
+    function toggleFaith() {
+      beliefState.enabled = !beliefState.enabled;
+      reactorState.lambdaFaith = beliefState.enabled ? 0.02 : 0.0;
+      setToggle("faithToggle", beliefState.enabled);
+      renderBeliefChips();
+      updateMetersAndEquation();
+    }
+
+    function toggleVoice() {
+      voiceState.enabled = !voiceState.enabled;
+      setToggle("voiceToggle", voiceState.enabled);
+    }
+
+    function speakIfEnabled(text) {
+      if (!voiceState.enabled) return;
+      if (!("speechSynthesis" in window)) return;
+      if (voiceState.speaking) {
+        window.speechSynthesis.cancel();
+      }
+      const u = new SpeechSynthesisUtterance(text);
+      voiceState.speaking = true;
+      u.onend = () => {
+        voiceState.speaking = false;
+      };
+      window.speechSynthesis.speak(u);
+    }
+
+    function openModal(id) {
+      const el = document.getElementById(id);
+      if (el) el.classList.add("active");
+    }
+    function closeModal(id) {
+      const el = document.getElementById(id);
+      if (el) el.classList.remove("active");
+    }
 
     // -------------- Chat logic using qaSeed -----------------
 
@@ -1442,7 +1527,7 @@ No fixes needed. Here's the final, clean code (exact copy, no changes):
           (seedMeta.emotion ? " · Emotion=" + seedMeta.emotion : "") +
           (seedMeta.polarity ? " · Polarity=" + seedMeta.polarity : "") +
           (seedMeta.intensity != null ? " · Intensity=" + seedMeta.intensity : "");
-        chatLog.appendChild(meta);
+        row.appendChild(meta);
       }
 
       chatLog.scrollTop = chatLog.scrollHeight;
@@ -1475,6 +1560,7 @@ No fixes needed. Here's the final, clean code (exact copy, no changes):
 
       appendBubble("user", text);
       input.value = "";
+      input.style.height = 'auto'; // Reset textarea height
 
       reactorState.sigmaCt = Math.min(1, reactorState.sigmaCt + 0.01);
       updateMetersAndEquation();
@@ -1497,13 +1583,17 @@ No fixes needed. Here's the final, clean code (exact copy, no changes):
             handleUserSubmit();
           }
         });
+        // Auto-resize textarea
+        input.addEventListener("input", function() {
+          this.style.height = 'auto';
+          this.style.height = Math.min(this.scrollHeight, 80) + 'px';
+        });
       }
     }
 
     function introMessage() {
       const hello =
-        "Hello! 😊 I am AURA-X Ω v1 — a synthetic emotional-continuity assistant.\n" +
-        "Write anything… I will try to read it as both logic and feeling, then reply gently.";
+        "Hello! 👋 How can I help you today?";
       appendBubble("bot", hello, {
         category: "greeting",
         emotion: "warmth",
@@ -1524,6 +1614,14 @@ No fixes needed. Here's the final, clean code (exact copy, no changes):
           if (id) closeModal(id);
         });
       });
+
+      // Close modal on backdrop click
+      const modalBackdrop = document.getElementById("optionsModal");
+      if (modalBackdrop) {
+        modalBackdrop.addEventListener("click", (e) => {
+          if (e.target === modalBackdrop) closeModal("optionsModal");
+        });
+      }
 
       const faithToggle = document.getElementById("faithToggle");
       if (faithToggle) {
