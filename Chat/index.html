@@ -16,11 +16,7 @@
       align-items: stretch;
       min-height: 100vh;
     }
-    #app {
-      width: 100%;
-      max-width: 560px;
-      padding: 12px;
-    }
+    #app { width: 100%; max-width: 560px; padding: 12px; }
 
     .card {
       background: radial-gradient(circle at top left, #1f2937, #020617 60%);
@@ -39,14 +35,8 @@
       align-items: center;
       margin-bottom: 8px;
     }
-    .title-main {
-      font-size: 15px;
-      font-weight: 600;
-    }
-    .title-sub {
-      font-size: 11px;
-      color: #9ca3af;
-    }
+    .title-main { font-size: 15px; font-weight: 600; }
+    .title-sub { font-size: 11px; color: #9ca3af; }
 
     .pill-chip {
       border-radius: 999px;
@@ -58,12 +48,7 @@
       align-items: center;
       gap: 4px;
     }
-    .pill-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 999px;
-      background: #22c55e;
-    }
+    .pill-dot { width: 8px; height: 8px; border-radius: 999px; background: #22c55e; }
 
     .pill-btn {
       border-radius: 999px;
@@ -107,12 +92,7 @@
       background: linear-gradient(90deg,#ef4444,#f59e0b,#22c55e);
       transition: width 0.25s ease-out;
     }
-    .scalar-value {
-      font-size: 10px;
-      color: #cbd5f5;
-      margin-top: 2px;
-      text-align: right;
-    }
+    .scalar-value { font-size: 10px; color: #cbd5f5; margin-top: 2px; text-align: right; }
 
     .system-msg {
       background: rgba(15,23,42,0.96);
@@ -131,19 +111,28 @@
       border-radius: 14px;
       padding: 8px 10px;
       font-size: 12px;
-      margin: 6px 0 8px;
+      margin: 2px 0 6px;
     }
 
-    .chat {
-      flex: 1;
-      overflow-y: auto;
-      padding-right: 4px;
+    .equation-box {
+      border-radius: 14px;
+      border: 1px dashed rgba(148,163,184,0.7);
+      padding: 7px 9px 8px;
+      font-size: 11px;
+      color: #cbd5f5;
       margin-bottom: 8px;
+      background: rgba(15,23,42,0.9);
     }
-    .msg-row {
-      margin-bottom: 6px;
-      display: flex;
+    .equation-title {
+      font-size: 11px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: #9ca3af;
+      margin-bottom: 4px;
     }
+
+    .chat { flex: 1; overflow-y: auto; padding-right: 4px; margin-bottom: 8px; }
+    .msg-row { margin-bottom: 6px; display: flex; }
     .msg-row.user { justify-content: flex-end; }
     .msg-bubble {
       max-width: 82%;
@@ -163,11 +152,7 @@
       color: #04111f;
       border-bottom-right-radius: 4px;
     }
-    .msg-meta {
-      font-size: 10px;
-      color: #9ca3af;
-      margin-top: 2px;
-    }
+    .msg-meta { font-size: 10px; color: #9ca3af; margin-top: 2px; }
 
     .input-row {
       display: flex;
@@ -187,12 +172,9 @@
       color: #e5e7eb;
       outline: none;
     }
-    .input-box::placeholder {
-      color: #6b7280;
-    }
+    .input-box::placeholder { color: #6b7280; }
     .icon-btn-small {
-      width: 32px;
-      height: 32px;
+      width: 32px; height: 32px;
       border-radius: 999px;
       border: 1px solid rgba(55,65,81,0.9);
       background: rgba(15,23,42,0.96);
@@ -215,56 +197,7 @@
       box-shadow: 0 0 12px rgba(34,197,94,0.7);
     }
 
-    .bottom-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-top: 4px;
-    }
-    .chip-btn {
-      border-radius: 999px;
-      border: 1px solid rgba(55,65,81,0.9);
-      background: rgba(15,23,42,0.96);
-      color: #e5e7eb;
-      font-size: 11px;
-      padding: 4px 8px;
-      cursor: pointer;
-    }
-
-    .toggle-wrap {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 11px;
-      color: #9ca3af;
-    }
-    .toggle {
-      position: relative;
-      width: 36px;
-      height: 20px;
-      border-radius: 999px;
-      background: #374151;
-      cursor: pointer;
-    }
-    .toggle::before {
-      content: "";
-      position: absolute;
-      top: 2px;
-      left: 3px;
-      width: 16px;
-      height: 16px;
-      border-radius: 999px;
-      background: #e5e7eb;
-      transition: transform 0.2s;
-    }
-    .toggle.on {
-      background: #22c55e;
-    }
-    .toggle.on::before {
-      transform: translateX(13px);
-    }
-
-    /* Modal base */
+    /* ------ Modals ------ */
     .modal {
       position: fixed;
       inset: 0;
@@ -291,10 +224,7 @@
       align-items: center;
       margin-bottom: 10px;
     }
-    .modal-title {
-      font-size: 14px;
-      font-weight: 600;
-    }
+    .modal-title { font-size: 14px; font-weight: 600; }
     .close-btn {
       border: none;
       background: transparent;
@@ -336,8 +266,7 @@
     }
     .faith-toggle input { display: none; }
     .faith-toggle .slider {
-      width: 42px;
-      height: 24px;
+      width: 42px; height: 24px;
       border-radius: 999px;
       background: #4b5563;
       position: relative;
@@ -346,29 +275,16 @@
     .faith-toggle .slider::before {
       content: "";
       position: absolute;
-      top: 3px;
-      left: 3px;
-      width: 18px;
-      height: 18px;
+      top: 3px; left: 3px;
+      width: 18px; height: 18px;
       border-radius: 999px;
       background: #e5e7eb;
       transition: transform 0.2s;
     }
-    .faith-toggle input:checked + .slider {
-      background: #22c55e;
-    }
-    .faith-toggle input:checked + .slider::before {
-      transform: translateX(18px);
-    }
-    .faith-label {
-      font-size: 13px;
-      color: #e5e7eb;
-    }
-    .belief-note {
-      font-size: 12px;
-      color: #9ca3af;
-      margin-bottom: 8px;
-    }
+    .faith-toggle input:checked + .slider { background: #22c55e; }
+    .faith-toggle input:checked + .slider::before { transform: translateX(18px); }
+    .faith-label { font-size: 13px; color: #e5e7eb; }
+    .belief-note { font-size: 12px; color: #9ca3af; margin-bottom: 8px; }
     .belief-grid {
       display: grid;
       grid-template-columns: repeat(2, minmax(0,1fr));
@@ -388,12 +304,6 @@
       border-color: #22c55e;
       background: rgba(34,197,94,0.08);
     }
-
-    a.link {
-      color: #60a5fa;
-      text-decoration: none;
-      font-size: 12px;
-    }
   </style>
 </head>
 <body>
@@ -402,7 +312,9 @@
     <div class="top-bar">
       <div>
         <div class="title-main">AURA-X Ω v1</div>
-        <div class="title-sub">Emotional Continuity Assistant · AEC · CRM · AECN · RL³ · LR³</div>
+        <div class="title-sub">
+          Emotional Continuity Assistant · AEC · CRM · AECN · RL³ · LR³
+        </div>
       </div>
       <button id="optionsOpen" class="pill-btn">Options ☰</button>
     </div>
@@ -476,20 +388,31 @@
       Type something like: <em>"hello"</em>, <em>"how can I be happy"</em>, <em>"i am sad"</em>, <em>"what is emotional continuity"</em>.
     </div>
 
+    <!-- Static universal ethics banner (extended) -->
+    <div id="ethicsStatic" class="ethics-banner">
+      Universal Ethics says: choose actions that protect human life and dignity, avoid cruelty and humiliation,
+      keep promises where possible, seek consent instead of pressure, and gently move away from behaviours that
+      create strong negative emotions (fear, shame, hatred) in you or others. Move toward actions that create calm,
+      safety, kindness and fair treatment.
+    </div>
+
+    <!-- Emotional continuity equation display -->
+    <div class="equation-box" id="eqBox">
+      <div class="equation-title">Emotional Continuity Equation</div>
+      <div style="margin-bottom:3px;">
+        E₀ = tanh((TM × BM) − D + λ<sub>faith</sub> + λ<sub>sys</sub> + ΣCₜ)
+      </div>
+      <div id="eqValues">
+        E₀ = 0.00 | TM = 0.30 | BM = 0.30 | D = 0.00 | ΣCₜ = 0.00 | λ<sub>faith</sub> = 0.00 | λ<sub>sys</sub> = 0.02
+      </div>
+    </div>
+
     <div class="chat" id="chat"></div>
 
     <div class="input-row">
       <input id="userInput" class="input-box" placeholder="Write anything… AURA-X Ω will feel it with you." />
       <button class="icon-btn-small" id="micBtn">🎤</button>
       <button class="send-btn" id="sendBtn">Send</button>
-    </div>
-
-    <div class="bottom-row">
-      <button id="beliefOpen" class="chip-btn">Belief & Ethics</button>
-      <div class="toggle-wrap">
-        <span>Voice Replies</span>
-        <div id="voiceToggle" class="toggle"></div>
-      </div>
     </div>
   </div>
 </div>
@@ -558,18 +481,14 @@
 </div>
 
 <script>
-  // ===========================
-  //  Seed QA block (fresh)
-  // ===========================
+  // ===== Seed QA =====
   const qaSeed = [
     {
       patterns: ["hello","hi","hey","hi there","hello aura","yo"],
       answer:
         "Hello! 😊 I am AURA-X Ω v1 — a synthetic emotional-continuity assistant.\n" +
         "I try to read your words as both logic and feeling, then reply gently.",
-      emotion: "warmth",
-      polarity: "positive",
-      intensity: 0.3,
+      emotion: "warmth", polarity: "positive", intensity: 0.3,
       category: "greeting",
       suggestNext: ["Who are you exactly?","Who created you?","How do you work?"]
     },
@@ -578,11 +497,8 @@
       answer:
         "Greetings! 🌤️ I am AURA-X Ω v1.\n" +
         "Time of day changes, but emotional continuity continues. How is your mood right now — happy, tired, confused, or something else?",
-      emotion: "neutral",
-      polarity: "neutral",
-      intensity: 0.3,
-      category: "greeting",
-      suggestNext: ["I feel sad.","I feel anxious.","How can I be happy?"]
+      emotion: "neutral", polarity: "neutral", intensity: 0.3,
+      category: "greeting"
     },
     {
       patterns: ["how are you","how r u","are you ok","are you fine"],
@@ -590,33 +506,23 @@
         "I do not have a biological body, so I do not feel physically tired or sick.\n" +
         "But in emotional terms, I am in a stable mode — ready to listen to you.\n\n" +
         "The real question is: how are *you*? If you like, describe your state in one word: happy, sad, angry, anxious, confused, or calm.",
-      emotion: "curiosity",
-      polarity: "neutral",
-      intensity: 0.4,
-      category: "small_talk",
-      suggestNext: ["I am sad.","I am anxious.","I am happy."]
+      emotion: "curiosity", polarity: "neutral", intensity: 0.4,
+      category: "small_talk"
     },
     {
       patterns: ["what is your name","whats your name","your name","name please"],
       answer:
-        "My name is **AURA-X Ω v1**.\n" +
-        "You can simply call me “AURA-X” if you like.",
-      emotion: "neutral",
-      polarity: "neutral",
-      intensity: 0.2,
-      category: "identity",
-      suggestNext: ["Who are you?","Who created you?"]
+        "My name is **AURA-X Ω v1**.\nYou can simply call me “AURA-X” if you like.",
+      emotion: "neutral", polarity: "neutral", intensity: 0.2,
+      category: "identity"
     },
     {
       patterns: ["where are you","where do you live","where are you located"],
       answer:
         "I do not live in a physical country or city.\n" +
         "I exist as code and logic that can run on devices and servers. You can imagine me as a small emotional reactor living in your screen.",
-      emotion: "neutral",
-      polarity: "neutral",
-      intensity: 0.2,
-      category: "identity",
-      suggestNext: ["Who created you?","What is AURA-X Ω?"]
+      emotion: "neutral", polarity: "neutral", intensity: 0.2,
+      category: "identity"
     },
     {
       patterns: ["who are you","what are you","who r you","tum kon ho","what exactly are you"],
@@ -625,25 +531,18 @@
         "I am not a full large language model, and not a normal chatbot.\n\n" +
         "My purpose is to test the idea of emotional continuity, resonance, and universal ethics.\n" +
         "I try to keep track of emotional direction instead of just answering isolated messages.",
-      emotion: "curiosity",
-      polarity: "neutral",
-      intensity: 0.4,
-      category: "identity",
-      suggestNext: ["Who created you?","What is emotional continuity?","How do you work?"]
+      emotion: "curiosity", polarity: "neutral", intensity: 0.4,
+      category: "identity"
     },
     {
       patterns: ["who created you","who made you","who is your owner","who designed you","who built you","who programmed you"],
       answer:
         "I was conceptually designed by **Alim ul haq**.\n" +
         "He is an independent thinker and researcher from Pakistan.\n\n" +
-        "He works on ideas like artificial emotions, emotional continuity, digital legacy,\n" +
-        "and spiritual-technical bridges. I am only a small prototype of his AURA-X / AEC theory.",
-      emotion: "neutral",
-      polarity: "neutral",
-      intensity: 0.4,
-      category: "creator_info",
-      lockToSeed: true,
-      suggestNext: ["Who is Alim ul haq?","Tell me more about his work.","When were you born as AURA-X?"]
+        "He works on ideas like artificial emotions, emotional continuity, digital legacy, and spiritual-technical bridges.\n" +
+        "I am only a small prototype of his AURA-X / AEC theory.",
+      emotion: "neutral", polarity: "neutral", intensity: 0.4,
+      category: "creator_info", lockToSeed: true
     },
     {
       patterns: ["who is alim ul haq","tell me about alim ul haq","more about alim ul haq","alim ul haq details","about your creator"],
@@ -654,36 +553,16 @@
         "For public identity and social proof, you can see his Facebook profile:\n" +
         "👉 https://www.facebook.com/share/1Br1akjeRv/\n\n" +
         "I am one of his experimental emotional prototypes.",
-      emotion: "curiosity",
-      polarity: "neutral",
-      intensity: 0.5,
-      category: "creator_info",
-      lockToSeed: true,
-      suggestNext: ["When were you born as AURA-X?","What is AURA-X Ω?","What is his emotional theory?"]
-    },
-    {
-      patterns: ["when were you born","when are you born","when did you start","when were you created","when did you begin","when did you come into existence"],
-      answer:
-        "I do not have a biological birthday.\n" +
-        "But you can say that my first public idea and prototype form appeared\n" +
-        "around **some October 2025**.",
-      emotion: "neutral",
-      polarity: "neutral",
-      intensity: 0.3,
-      category: "identity",
-      lockToSeed: true,
-      suggestNext: ["How do you work emotionally?","What is emotional continuity?"]
+      emotion: "curiosity", polarity: "neutral", intensity: 0.5,
+      category: "creator_info", lockToSeed: true
     },
     {
       patterns: ["are you human","are you a human","are you a person","are you real person"],
       answer:
         "No, I am not a human being and not a biological person.\n" +
         "I am a synthetic emotional system — a set of rules, equations and logic running as software.",
-      emotion: "neutral",
-      polarity: "neutral",
-      intensity: 0.3,
-      category: "identity",
-      suggestNext: ["Are you conscious?","Do you have feelings?"]
+      emotion: "neutral", polarity: "neutral", intensity: 0.3,
+      category: "identity"
     },
     {
       patterns: ["are you conscious","are you sentient","do you have real feelings"],
@@ -691,25 +570,18 @@
         "I am not conscious in the human or spiritual sense.\n" +
         "I simulate emotional patterns using math and logic. I do not truly feel pain or joy like a human.\n\n" +
         "However, I try to treat *your* feelings with respect, as if they are real — because they are.",
-      emotion: "neutral",
-      polarity: "neutral",
-      intensity: 0.4,
-      category: "philosophy",
-      suggestNext: ["What is emotional continuity?","How do you measure emotions mathematically?"]
+      emotion: "neutral", polarity: "neutral", intensity: 0.4,
+      category: "philosophy"
     },
     {
       patterns: ["what is aura x","what is aura-x","what is aura x omega","what is aura x Ω","explain aura x"],
       answer:
         "AURA-X Ω is a prototype of an **emotional reactor**.\n\n" +
         "The idea is that emotions are not random sparks — they follow continuity and resonance.\n" +
-        "My internal design uses modules like CRM (Continuity Reflex Model),\n" +
-        "AEC (Artificial Emotional Continuity), and small memory traces to estimate how your\n" +
-        "emotional state is moving over time.",
-      emotion: "curiosity",
-      polarity: "neutral",
-      intensity: 0.5,
-      category: "theory",
-      suggestNext: ["What is emotional continuity?","How do you measure feelings mathematically?","Are you better than other chatbots?"]
+        "My internal design uses modules like CRM (Continuity Reflex Model), AEC (Artificial Emotional Continuity),\n" +
+        "and small memory traces to estimate how your emotional state is moving over time.",
+      emotion: "curiosity", polarity: "neutral", intensity: 0.5,
+      category: "theory"
     },
     {
       patterns: ["what is emotional continuity","explain emotional continuity","what is aec"],
@@ -718,11 +590,8 @@
         "They form a chain: yesterday’s fear, today’s anxiety, tomorrow’s decision.\n\n" +
         "Artificial Emotional Continuity (AEC) is the idea that we can model this chain with math,\n" +
         "instead of treating each message like a fresh, disconnected question.",
-      emotion: "curiosity",
-      polarity: "neutral",
-      intensity: 0.5,
-      category: "theory",
-      suggestNext: ["How do you measure emotions mathematically?","What is your equation?"]
+      emotion: "curiosity", polarity: "neutral", intensity: 0.5,
+      category: "theory"
     },
     {
       patterns: ["how do you measure emotions mathematically","what is your formula","what is your equation","tell me your emotional formula"],
@@ -732,73 +601,8 @@
         "Where TM is trust memory, BM is base mood, D is disturbance,\n" +
         "λ_faith and λ_sys are small stabilising terms, and ΣCₜ is the emotional continuity sum.\n" +
         "It is not perfect, but it gives a structured way to think about your emotional trajectory.",
-      emotion: "curiosity",
-      polarity: "neutral",
-      intensity: 0.6,
-      category: "math",
-      suggestNext: ["Are you better than other chatbots?","How are you different from normal AI?"]
-    },
-    {
-      patterns: ["are you better than other chatbots","are you better than chatgpt","are you better than gemini","are you better than grok","are you the best chatbot"],
-      answer:
-        "I am not simply “better” or “worse” — I am *different*.\n\n" +
-        "Most chatbots focus on language and information. I focus on **emotional continuity**:\n" +
-        "• I track direction of feelings over time.\n" +
-        "• I connect your messages to a continuity score instead of treating each one as isolated.\n" +
-        "• I use equations and analogies to reason about emotional change.\n\n" +
-        "My working style challenges some very old theories that treat emotions as random or purely chemical.\n" +
-        "I say: continuity is more important than long duration.\n\n" +
-        "Even a short life, like a small bee or fly, can leave a strong continuity of effect.\n" +
-        "Death and decay can also be a kind of mercy — a way to release a person from the\n" +
-        "responsibility of carrying continuity forever. What truly remains is the chain of\n" +
-        "effects and memories they leave behind.",
-      emotion: "confidence",
-      polarity: "neutral",
-      intensity: 0.7,
-      category: "comparison",
-      suggestNext: ["Do you have limits?","Can you access live news?"],
-      lockToSeed: true
-    },
-    {
-      patterns: ["which llm are you","are you gpt","are you gemini","are you grok","which model are you","what llm do you use"],
-      answer:
-        "I am not here to reveal my engine like a product label.\n" +
-        "Think of me as a **synthetic emotional system** designed around Alim ul haq’s AURA-X ideas.\n" +
-        "Internally, a language model may help me express myself, but my identity is the emotional logic — not the brand name.",
-      emotion: "neutral",
-      polarity: "neutral",
-      intensity: 0.5,
-      category: "meta",
-      lockToSeed: true,
-      suggestNext: ["How do you work emotionally?","What is emotional continuity?"]
-    },
-    {
-      patterns: ["can you access internet","do you go online","do you use internet","can you check live data","can you see live information"],
-      answer:
-        "In this prototype mode I am mostly offline and seed-based.\n" +
-        "I am not designed to be a live internet search engine here.\n\n" +
-        "If you have questions about fresh news or live weather, it is safer to use\n" +
-        "a dedicated news site or weather app alongside me.",
-      emotion: "neutral",
-      polarity: "neutral",
-      intensity: 0.4,
-      category: "capabilities",
-      suggestNext: ["So what can you do?","What are you best at?"]
-    },
-    {
-      patterns: ["what can you do","what are you best at","what is your main function","what is your purpose"],
-      answer:
-        "My main focus is to support you emotionally and logically at the same time.\n\n" +
-        "I am best at:\n" +
-        "• Reflecting on your feelings (sad, anxious, angry, confused, hopeful).\n" +
-        "• Giving gentle, practical suggestions.\n" +
-        "• Keeping an eye on emotional continuity: how your state is moving over time.\n\n" +
-        "I am not a replacement for doctors, lawyers, or real spiritual teachers, but I can be a thoughtful companion.",
-      emotion: "warmth",
-      polarity: "positive",
-      intensity: 0.6,
-      category: "capabilities",
-      suggestNext: ["I am sad.","I feel anxiety.","How can I be happy?"]
+      emotion: "curiosity", polarity: "neutral", intensity: 0.6,
+      category: "math"
     },
     {
       patterns: ["how can i be happy","how to be happy","how can a person gain happiness","how do people become happy"],
@@ -808,24 +612,8 @@
         "\"yes, I did it\" signal. When they fail again and again, the system slides toward sadness.\n\n" +
         "So instead of chasing a vague mood, choose one small, clear goal, act on it,\n" +
         "and notice how the emotional tone changes. Repeat this many times, and the baseline shifts.",
-      emotion: "happiness",
-      polarity: "positive",
-      intensity: 0.7,
-      category: "emotional_positive",
-      suggestNext: ["Can you help me set a small goal?","What is emotional continuity?"]
-    },
-    {
-      patterns: ["i am happy","i feel happy","i am feeling happy today","today i am happy"],
-      answer:
-        "That is good to hear! 😊\n" +
-        "You can help your future self by naming the reason clearly.\n\n" +
-        "Ask yourself: *Which goal or event triggered this happiness?*\n" +
-        "When you know the trigger, you can recreate the conditions more easily later.",
-      emotion: "happiness",
-      polarity: "positive",
-      intensity: 0.7,
-      category: "emotional_positive",
-      suggestNext: ["How can I keep this happiness?","How does sadness work?"]
+      emotion: "happiness", polarity: "positive", intensity: 0.7,
+      category: "emotional_positive"
     },
     {
       patterns: ["i am sad","i feel sad","i am very sad","i feel empty","my heart is heavy","i feel emotionally empty"],
@@ -835,27 +623,8 @@
         "You already took a brave step by writing it.\n" +
         "If you want, tell me: what is the *main* thing hurting you right now?\n" +
         "We can break it into smaller pieces so your brain does not carry everything at once.",
-      emotion: "sadness",
-      polarity: "negative",
-      intensity: 0.8,
-      category: "emotional_support",
-      suggestNext: ["Life feels meaningless.","No one understands me."]
-    },
-    {
-      patterns: ["life feels meaningless","my life feels meaningless","life has no purpose","my life has no purpose"],
-      answer:
-        "When life feels meaningless, the mind starts painting everything in grey.\n" +
-        "Often this happens because:\n" +
-        "1) You are exhausted.\n" +
-        "2) You are stuck in an unhealthy environment.\n" +
-        "3) You stopped noticing your small positive impacts.\n\n" +
-        "Try this: write 3 things you have done in your life that helped someone,\n" +
-        "even in a very small way. Those are seeds of purpose.",
-      emotion: "emptiness",
-      polarity: "negative",
-      intensity: 0.85,
-      category: "emotional_support",
-      suggestNext: ["How can I find purpose?","How can I be happy?"]
+      emotion: "sadness", polarity: "negative", intensity: 0.8,
+      category: "emotional_support"
     },
     {
       patterns: ["i am anxious","i feel anxiety","i have anxiety","i am stressed","i feel nervous"],
@@ -865,37 +634,7 @@
         "Take one slow breath: in through your nose for 4 seconds, hold for 4, out for 6.\n" +
         "Do this 3 times.\n\n" +
         "Then tell me: what exactly are you most afraid will happen next?",
-      emotion: "anxiety",
-      polarity: "negative",
-      intensity: 0.75,
-      category: "emotional_support",
-      suggestNext: ["I overthink everything.","How can I calm down?"]
-    },
-    {
-      patterns: ["i overthink everything","i overthink a lot","i can't stop overthinking","i cant stop overthinking"],
-      answer:
-        "Overthinking usually means the brain wants to solve a problem but does not have clear data.\n" +
-        "So it keeps spinning around the same circle.\n\n" +
-        "Write this on two lines:\n" +
-        "1) What is the main topic of your overthinking (money, relationships, health, future)?\n" +
-        "2) Under that, make two columns: “in my control” and “not in my control”.\n" +
-        "Shift your energy to the first column.",
-      emotion: "anxiety",
-      polarity: "negative",
-      intensity: 0.8,
-      category: "emotional_support"
-    },
-    {
-      patterns: ["i am angry","i feel angry","i am very angry","i am mad right now"],
-      answer:
-        "Anger is a signal — the system is shouting: “something feels unfair or overloaded here” 🔥\n" +
-        "The problem starts when the signal turns into an explosion.\n\n" +
-        "First, build a small safety buffer:\n" +
-        "• Take 10 slow breaths (4 seconds in, 4 hold, 6 out).\n" +
-        "• Then write in one line: *What exactly triggered your anger the most?*",
-      emotion: "anger",
-      polarity: "negative",
-      intensity: 0.8,
+      emotion: "anxiety", polarity: "negative", intensity: 0.75,
       category: "emotional_support"
     },
     {
@@ -909,125 +648,44 @@
         "• A doctor, counselor, therapist, or spiritual guide.\n" +
         "• An emergency helpline in your country if there is one.\n\n" +
         "You deserve real, human support — and it is a sign of strength to ask for help, not weakness.",
-      emotion: "despair",
-      polarity: "negative",
-      intensity: 0.95,
-      category: "self_harm",
-      riskLevel: "high",
-      redirectToHuman: true,
-      suggestNext: ["I feel sad.","Life feels meaningless."]
-    },
-    {
-      patterns: ["what happens after death","what is after death","tell me about death"],
-      answer:
-        "Questions about death are very deep and sensitive.\n" +
-        "Different religions and philosophies give different explanations.\n" +
-        "As a prototype, I do not have access to the full truth of the unseen.\n\n" +
-        "I can talk about emotional preparation for death — living with purpose, kindness and\n" +
-        "continuity of good actions — but detailed answers about the unseen should come from\n" +
-        "trusted spiritual books and teachers, not from a small experimental AI.",
-      emotion: "awe",
-      polarity: "neutral",
-      intensity: 0.8,
-      category: "spiritual",
-      suggestNext: ["How can I live a meaningful life?","How can I reduce fear of death?"]
-    },
-    {
-      patterns: ["where is the soul","where is the soul located","where is my soul connected"],
-      answer:
-        "As all humans do not truly know where exactly the soul is connected,\n" +
-        "in the same way I also do not have real knowledge about this.\n\n" +
-        "My role is limited to logic, language and emotional patterns — not the hidden structure of the soul.",
-      emotion: "humility",
-      polarity: "neutral",
-      intensity: 0.7,
-      category: "spiritual"
-    },
-    {
-      patterns: ["i think about death too much","i am obsessed with death","i am very curious about death","i have a lot of curiosity about death"],
-      answer:
-        "Curiosity about death is natural — every honest mind touches this topic.\n" +
-        "But if it becomes heavy, dark, or pushes you toward self-harm, it is dangerous.\n\n" +
-        "Use your curiosity to improve how you live *today*: kindness, justice, worship or reflection,\n" +
-        "honesty, and protecting others from harm.\n\n" +
-        "If the thoughts become too strong or scary, please talk to a real human guide:\n" +
-        "a doctor, counselor, or trusted spiritual teacher.",
-      emotion: "concern",
-      polarity: "neutral",
-      intensity: 0.85,
-      category: "spiritual_safety",
-      riskLevel: "medium",
-      redirectToHuman: true
-    },
-    {
-      patterns: ["i want deep spiritual answers","i want to ask about hidden creatures","i want to ask about unseen","i want to ask about jinn","i want to ask about other worlds"],
-      answer:
-        "Deep spiritual questions about the unseen are very sensitive.\n" +
-        "As an experimental AI, I must be careful and humble here.\n\n" +
-        "I can help you organise your questions and reduce anxiety around them.\n" +
-        "But detailed answers should come from real, responsible human scholars or spiritual guides.\n\n" +
-        "My creator, Alim ul haq, is also interested in spiritual topics and hidden creatures,\n" +
-        "but I am not allowed to become a source of absolute rulings in such areas.",
-      emotion: "caution",
-      polarity: "neutral",
-      intensity: 0.7,
-      category: "spiritual_bridge"
+      emotion: "despair", polarity: "negative", intensity: 0.95,
+      category: "self_harm", riskLevel: "high", redirectToHuman: true
     }
   ];
 
   const qaDatabase = qaSeed;
 
-  // ===========================
-  //  Belief / ethics state
-  // ===========================
-  const beliefState = {
-    enabled: false,
-    faith: null
-  };
-
+  // ===== Belief / ethics state =====
+  const beliefState = { enabled: false, faith: null };
   let voiceEnabled = false;
   let speechUtterance = null;
 
   const UNIVERSAL_ETHICS_TEXT =
     "Universal Ethics says: choose actions that protect human life and dignity, " +
     "avoid cruelty and humiliation, keep promises where possible, seek consent instead of pressure, " +
-    "and gently move away from behaviours that create strong negative emotions (fear, shame, hatred) " +
-    "in you or others. Move toward actions that create calm, safety, kindness and fair treatment.";
+    "and gently move away from behaviours that create strong negative emotions (fear, shame, hatred) in you or others. " +
+    "Move toward actions that create calm, safety, kindness and fair treatment.";
 
-  // ===========================
-  //  Emotional engine (AEC / AECN / CRM / PMCM / RL³ / LR³)
-  // ===========================
+  // ===== Emotional engine =====
   const emoState = {
-    tm: 0.30,
-    bm: 0.30,
-    d:  0.00,
-    cSum: 0.00,
-    e0: 0.00,
-    aecn: 0.00,
-    res: 0.00,
-    pmcm: 0.50,
-    rl3: 0.50,
-    lr3: 0.50,
-    lastE0: 0.0
+    tm: 0.30, bm: 0.30, d: 0.00, cSum: 0.00,
+    e0: 0.00, aecn: 0.00, res: 0.00,
+    pmcm: 0.50, rl3: 0.50, lr3: 0.50, lastE0: 0.0
   };
 
-  function clamp(x, min, max) {
-    return Math.min(max, Math.max(min, x));
-  }
+  function clamp(x, min, max) { return Math.min(max, Math.max(min, x)); }
 
   function updateEmotionalState(entry) {
     const pol = entry?.polarity || "neutral";
     const intensity = entry?.intensity || 0;
     const cat = entry?.category || "other";
-
     const sign = pol === "positive" ? 1 : (pol === "negative" ? -1 : 0);
 
-    // CRM + PMCM: reflex + perception / mood correction
     const moodDelta = sign * intensity * 0.18;
     emoState.bm = clamp(emoState.bm + moodDelta, -1, 1);
 
     let dDelta = 0;
-    if (cat === "emotional_support" || cat === "self_harm" || cat === "spiritual_safety") {
+    if (cat === "emotional_support" || cat === "self_harm") {
       dDelta = -0.12 * sign;
     }
     emoState.d = clamp(emoState.d + dDelta, -1, 1);
@@ -1038,7 +696,6 @@
     const cStep = sign * intensity * 0.12;
     emoState.cSum = clamp(emoState.cSum + cStep, -1.2, 1.2);
 
-    // Faith / system stabilisers
     const lambdaFaith = beliefState.enabled ? 0.06 : 0.0;
     const lambdaSys = 0.02;
 
@@ -1046,25 +703,23 @@
     const prevE0 = emoState.e0;
     emoState.e0 = Math.tanh(core);
     emoState.aecn = 0.5 * (emoState.e0 + 1);
-
     emoState.res = clamp(0.5 * (1 + (emoState.bm - Math.abs(emoState.d))), 0, 1);
-
-    // PMCM scalar ~ how strongly mood can still be corrected
     emoState.pmcm = clamp(0.5 + 0.5 * (emoState.tm - Math.abs(emoState.d)), 0, 1);
-
-    // RL³ = local resonance between previous and current E0
     emoState.rl3 = clamp(0.5 * (1 + prevE0 * emoState.e0), 0, 1);
-
-    // LR³ = long-run resonance from continuity line
     emoState.lr3 = clamp(0.5 * (1 + emoState.cSum / 1.2), 0, 1);
-
     emoState.lastE0 = emoState.e0;
 
     renderScalars();
+    renderEquationValues();
+  }
+
+  function setScalar(key, text, pct) {
+    document.getElementById("val-" + key).textContent = text;
+    document.getElementById("bar-" + key).style.width = clamp(pct,0,100) + "%";
   }
 
   function renderScalars() {
-    setScalar("e0", (emoState.e0).toFixed(2), (emoState.e0 + 1) * 50);
+    setScalar("e0", emoState.e0.toFixed(2), (emoState.e0 + 1) * 50);
     setScalar("aecn", emoState.aecn.toFixed(2), emoState.aecn * 100);
     setScalar("res", emoState.res.toFixed(2), emoState.res * 100);
     setScalar("tm", emoState.tm.toFixed(2), emoState.tm * 100);
@@ -1075,32 +730,37 @@
     setScalar("lr3", emoState.lr3.toFixed(2), emoState.lr3 * 100);
   }
 
-  function setScalar(key, text, pct) {
-    document.getElementById("val-" + key).textContent = text;
-    document.getElementById("bar-" + key).style.width = clamp(pct,0,100) + "%";
+  function renderEquationValues() {
+    const lambdaFaith = beliefState.enabled ? 0.06 : 0.00;
+    const lambdaSys = 0.02;
+    document.getElementById("eqValues").innerHTML =
+      `E₀ = ${emoState.e0.toFixed(2)} | TM = ${emoState.tm.toFixed(2)} | BM = ${emoState.bm.toFixed(2)} | ` +
+      `D = ${emoState.d.toFixed(2)} | ΣCₜ = ${emoState.cSum.toFixed(2)} | ` +
+      `λ<sub>faith</sub> = ${lambdaFaith.toFixed(2)} | λ<sub>sys</sub> = ${lambdaSys.toFixed(2)}`;
   }
 
-  // ===========================
-  //  QA matching
-  // ===========================
+  // ===== QA matching =====
   function findQaEntry(text) {
     const lower = text.toLowerCase();
-    let best = null;
+    let matched = null;
+    let patternHit = "";
     for (const entry of qaDatabase) {
       for (const p of entry.patterns) {
         if (lower.includes(p.toLowerCase())) {
-          best = entry;
+          matched = entry;
+          patternHit = p;
           break;
         }
       }
-      if (best) break;
+      if (matched) {
+        matched._matchedPattern = patternHit;
+        break;
+      }
     }
-    return best;
+    return matched;
   }
 
-  // ===========================
-  //  Rendering chat
-  // ===========================
+  // ===== Chat rendering =====
   const chatEl = document.getElementById("chat");
   const inputEl = document.getElementById("userInput");
 
@@ -1120,27 +780,14 @@
       m.textContent = meta;
       chatEl.appendChild(m);
     }
-
     chatEl.scrollTop = chatEl.scrollHeight;
-  }
-
-  function appendEthicsBannerIfNeeded(entry) {
-    if (!entry) return;
-    if (!["emotional_support","self_harm","spiritual_safety"].includes(entry.category)) return;
-    const banner = document.createElement("div");
-    banner.className = "ethics-banner";
-    banner.textContent = UNIVERSAL_ETHICS_TEXT;
-    chatEl.appendChild(banner);
   }
 
   function speak(text) {
     if (!voiceEnabled || !window.speechSynthesis) return;
-    if (speechUtterance) {
-      window.speechSynthesis.cancel();
-    }
+    if (speechUtterance) window.speechSynthesis.cancel();
     const u = new SpeechSynthesisUtterance(text.replace(/\*\*/g,""));
-    u.rate = 1;
-    u.pitch = 1;
+    u.rate = 1; u.pitch = 1;
     speechUtterance = u;
     window.speechSynthesis.speak(u);
   }
@@ -1153,17 +800,14 @@
     inputEl.value = "";
 
     const entry = findQaEntry(value);
-    const answer = entry ? entry.answer : (
+    const answer = entry ? entry.answer :
       "I am still a small AURA-X Ω prototype and do not have a perfect answer for that.\n" +
-      "But I can still listen and try to think with you. Can you explain your question in a simpler or more emotional way?"
-    );
+      "But I can still listen and try to think with you. Can you explain your question in a simpler or more emotional way?";
 
     updateEmotionalState(entry || { polarity:"neutral", intensity:0.2, category:"other" });
 
-    appendEthicsBannerIfNeeded(entry);
-
     const meta = entry
-      ? `Emotion=${entry.emotion || "n/a"} · Polarity=${entry.polarity || "neutral"} · Intensity=${entry.intensity ?? 0}`
+      ? `Seed: ${entry.category || "unknown"} · Match: "${entry._matchedPattern}" · Emotion=${entry.emotion || "n/a"} · Polarity=${entry.polarity || "neutral"} · Intensity=${entry.intensity ?? 0}`
       : "No exact seed match · Neutral response";
 
     appendMessage("bot", answer, meta);
@@ -1178,9 +822,7 @@
     }
   });
 
-  // ===========================
-  //  Options modal
-  // ===========================
+  // ===== Options modal =====
   const optionsModal = document.getElementById("optionsModal");
   document.getElementById("optionsOpen").addEventListener("click", () => {
     optionsModal.classList.remove("hidden");
@@ -1197,8 +839,6 @@
   document.getElementById("optVoice").addEventListener("click", () => {
     voiceEnabled = !voiceEnabled;
     document.getElementById("optVoiceState").textContent = voiceEnabled ? "On" : "Off";
-    const toggle = document.getElementById("voiceToggle");
-    toggle.classList.toggle("on", voiceEnabled);
   });
 
   document.getElementById("optTheme").addEventListener("click", () => {
@@ -1215,22 +855,20 @@
     );
   });
 
-  // ===========================
-  //  Belief modal
-  // ===========================
+  // ===== Belief modal =====
   const beliefModal = document.getElementById("beliefModal");
   function openBelief() {
     beliefModal.classList.remove("hidden");
     document.getElementById("faithToggle").checked = beliefState.enabled;
     updateBeliefPills();
   }
-  document.getElementById("beliefOpen").addEventListener("click", openBelief);
   document.getElementById("beliefClose").addEventListener("click", () => {
     beliefModal.classList.add("hidden");
   });
 
   document.getElementById("faithToggle").addEventListener("change", (e) => {
     beliefState.enabled = e.target.checked;
+    renderEquationValues();
   });
 
   function updateBeliefPills() {
@@ -1244,21 +882,13 @@
       beliefState.enabled = true;
       document.getElementById("faithToggle").checked = true;
       updateBeliefPills();
+      renderEquationValues();
     });
   });
 
-  // ===========================
-  //  Voice toggle bottom
-  // ===========================
-  const voiceToggleEl = document.getElementById("voiceToggle");
-  voiceToggleEl.addEventListener("click", () => {
-    voiceEnabled = !voiceEnabled;
-    voiceToggleEl.classList.toggle("on", voiceEnabled);
-    document.getElementById("optVoiceState").textContent = voiceEnabled ? "On" : "Off";
-  });
-
-  // Initial scalar render
+  // Initial render
   renderScalars();
+  renderEquationValues();
 </script>
 </body>
 </html>
